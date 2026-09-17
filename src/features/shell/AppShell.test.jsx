@@ -64,6 +64,18 @@ it('uses the tablet breakpoint for the authenticated sidebar without leaving a c
   expect(css).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.sidebar\s*\{[^}]*translateX\(calc\(-100%\s*-\s*1rem\)\)/)
 })
 
+it('progressively reflows the workspace while the browser window is resized', () => {
+  const responsiveCss = readFileSync(join(cwd(), 'src/features/shell/responsiveShell.css'), 'utf8')
+
+  expect(responsiveCss).toMatch(/\.app-main\s*\{[^}]*min-width:\s*0[^}]*overflow-x:\s*clip/)
+  expect(responsiveCss).toMatch(/@media\s*\(max-width:\s*1100px\)[\s\S]*?\.navigator-entry-grid\s*\{[^}]*grid-template-columns:\s*1fr/)
+  expect(responsiveCss).toMatch(/@media\s*\(max-width:\s*1100px\)[\s\S]*?\.agent-workflow\s*\{[^}]*flex-direction:\s*column/)
+  expect(responsiveCss).toMatch(/@media\s*\(max-width:\s*920px\)[\s\S]*?\.category-grid\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/)
+  expect(responsiveCss).toMatch(/@media\s*\(max-width:\s*920px\)[\s\S]*?\.agent-workflow ol\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/)
+  expect(responsiveCss).toMatch(/@media\s*\(max-width:\s*620px\)[\s\S]*?\.category-grid\s*\{[^}]*grid-template-columns:\s*1fr/)
+  expect(responsiveCss).toMatch(/@media\s*\(max-width:\s*620px\)[\s\S]*?\.agent-workflow ol\s*\{[^}]*grid-template-columns:\s*1fr/)
+})
+
 it('keeps the console brand horizontal and removes nonessential header text on compact screens', () => {
   const accessibilityCss = readFileSync(join(cwd(), 'src/accessibility-ui.css'), 'utf8')
   const responsiveCss = readFileSync(join(cwd(), 'src/features/shell/responsiveShell.css'), 'utf8')
