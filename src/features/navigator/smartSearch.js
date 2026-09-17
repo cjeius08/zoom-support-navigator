@@ -112,9 +112,21 @@ function isAdjacentTransposition(left, right) {
   return second === first + 1 && left[first] === right[second] && left[second] === right[first]
 }
 
+function prefixStrength(queryToken, candidateToken) {
+  if (!candidateToken.startsWith(queryToken)) return 0
+  if (queryToken.length >= 4) return 0.84
+  if (queryToken.length === 3) return 0.72
+  if (queryToken.length === 2) return 0.6
+  if (queryToken.length === 1) return 0.45
+  return 0
+}
+
 function fuzzyStrength(queryToken, candidateToken) {
   if (queryToken === candidateToken) return 1
-  if (queryToken.length >= 4 && candidateToken.startsWith(queryToken)) return 0.84
+
+  const prefixMatch = prefixStrength(queryToken, candidateToken)
+  if (prefixMatch) return prefixMatch
+
   if (candidateToken.length >= 4 && queryToken.startsWith(candidateToken)) return 0.8
   if (isAdjacentTransposition(queryToken, candidateToken)) return 0.8
 
