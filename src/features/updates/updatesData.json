@@ -8,6 +8,18 @@
   },
   "updates": [
     {
+      "id": "wide-short-window-sidebar-footer",
+      "date": "2026-09-18",
+      "area": "Responsive Navigation",
+      "title": "Sidebar footer stays visible in wide but short windows",
+      "changed": "Extended the sidebar vertical-space protection to every browser width. When the window is wide but vertically short, the navigation list now owns the scrolling space while the console metadata and Logout remain anchored and readable instead of being pushed below the viewport.",
+      "checks": [
+        "Keep the browser fairly wide, then reduce only its height and confirm the sidebar does not clip the bottom metadata.",
+        "Confirm the navigation list scrolls when needed while Console v1.0, Owner Cjei A., Collaborator Nina F., and Logout remain visible.",
+        "Repeat with the admin account, where the navigation list is longest, and confirm the footer remains readable."
+      ]
+    },
+    {
       "id": "mobile-admin-drawer-footer",
       "date": "2026-09-18",
       "area": "Responsive Navigation",
