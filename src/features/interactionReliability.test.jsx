@@ -7,8 +7,11 @@ import { Navigator } from './navigator/Navigator'
 import { AppShell } from './shell/AppShell'
 import { TeamManagement } from './admin/AdminViews'
 
-const loadTeam = vi.fn()
-const runAdminAction = vi.fn()
+const { loadTeam, runAdminAction } = vi.hoisted(() => ({
+  loadTeam: vi.fn(),
+  runAdminAction: vi.fn(),
+}))
+
 vi.mock('../lib/adminApi', () => ({
   loadFeedback: vi.fn(),
   loadTeam,
