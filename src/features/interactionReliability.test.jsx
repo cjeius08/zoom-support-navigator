@@ -19,6 +19,7 @@ vi.mock('../lib/adminApi', () => ({
   loadFeedback: vi.fn(),
   loadTeam,
   loadUsage: vi.fn(),
+  updateFeedbackStatus: vi.fn(),
   runAdminAction,
 }))
 
