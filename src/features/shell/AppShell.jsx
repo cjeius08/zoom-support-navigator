@@ -13,9 +13,56 @@ function ConsoleBrandIcon() {
 }
 
 export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, currentView = 'navigator', onNavigate = () => {} }) {
-  const [open, setOpen] = useState(false); const [profileOpen, setProfileOpen] = useState(false); const [avatarOpen, setAvatarOpen] = useState(false); const [passwordOpen, setPasswordOpen] = useState(false); const [message, setMessage] = useState('')
-  const isAdmin = profile.role === 'creator_admin'; const visibleLinks = isAdmin ? [...agentLinks, ...adminLinks] : agentLinks
+  const [open, setOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
+  const [avatarOpen, setAvatarOpen] = useState(false)
+  const [passwordOpen, setPasswordOpen] = useState(false)
+  const [message, setMessage] = useState('')
+  const isAdmin = profile.role === 'creator_admin'
+  const visibleLinks = isAdmin ? [...agentLinks, ...adminLinks] : agentLinks
   const style = { '--workspace-image': `url(${assetUrl('assets/login-workspace-background.png')})` }
-  async function submitPassword(event) { event.preventDefault(); const form = new FormData(event.currentTarget); const password = String(form.get('password')); const confirm = String(form.get('confirm')); if (password.length < 8) return setMessage('Password must be at least 8 characters.'); if (password !== confirm) return setMessage('Passwords do not match.'); await onPasswordChange?.(password); setMessage('Password changed.'); setPasswordOpen(false) }
-  return <div className="app-shell" style={style}><header className="app-header"><button className="menu-toggle" aria-label="Toggle navigation" onClick={() => setOpen(!open)}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg></button><div className="console-brand"><ConsoleBrandIcon /><span className="console-brand-copy"><strong>zoom</strong><span>Support Console</span></span></div><div className="header-context">Support workspace</div><button className="account-menu" aria-expanded={profileOpen} aria-label={`${profile.username} account`} onClick={() => setProfileOpen(!profileOpen)}>{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<span className="account-copy"><strong>{profile.username}</strong><small>{isAdmin ? 'JA Admin' : 'Agent'}</small></span><svg className="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></button></header><aside className={`sidebar ${open ? 'open' : ''}`}><div><p className="sidebar-label">Support workspace</p><nav aria-label="Primary navigation">{visibleLinks.map(([id, label]) => <button key={id} className={currentView === id ? 'active' : ''} onClick={() => { onNavigate(id); setOpen(false) }}><Icon type={id} /><span>{label}</span></button>)}</nav></div><button className="logout-button" onClick={onLogout}>Logout</button></aside><main className="app-main">{children}</main>{profileOpen && <div className="modal-backdrop" role="presentation" onClick={event => event.target === event.currentTarget && setProfileOpen(false)}><div className="profile-panel" role="dialog" aria-modal="true" aria-labelledby="profile-title"><div className="profile-summary">{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<div><h2 id="profile-title">My Profile</h2><strong>{profile.username}</strong><p>{profile.initials} · {isAdmin ? 'JA Admin' : 'Agent'}</p></div></div>{message && <p className="success-message" role="status">{message}</p>}{avatarOpen ? <AvatarPicker selectedId={profile.avatar_id} onCancel={() => setAvatarOpen(false)} onSave={async id => { await onAvatarChange?.(id); setAvatarOpen(false) }} /> : passwordOpen ? <form onSubmit={submitPassword}><h3>Change Password</h3><label>New password<input name="password" type="password" autoComplete="new-password" /></label><label>Confirm password<input name="confirm" type="password" autoComplete="new-password" /></label><div className="dialog-actions"><button type="button" onClick={() => setPasswordOpen(false)}>Cancel</button><button>Save Password</button></div></form> : <div className="profile-actions"><button onClick={() => setAvatarOpen(true)}>Change Avatar</button><button onClick={() => setPasswordOpen(true)}>Change Password</button><button onClick={onLogout}>Logout</button></div>}</div></div>}</div>
+
+  async function submitPassword(event) {
+    event.preventDefault()
+    const form = new FormData(event.currentTarget)
+    const password = String(form.get('password'))
+    const confirm = String(form.get('confirm'))
+    if (password.length < 8) return setMessage('Password must be at least 8 characters.')
+    if (password !== confirm) return setMessage('Passwords do not match.')
+    await onPasswordChange?.(password)
+    setMessage('Password changed.')
+    setPasswordOpen(false)
+  }
+
+  return <div className="app-shell" style={style}>
+    <header className="app-header">
+      <button
+        className="menu-toggle"
+        type="button"
+        aria-label="Toggle navigation"
+        aria-expanded={open}
+        aria-controls="primary-sidebar"
+        onClick={() => setOpen(value => !value)}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+      </button>
+      <div className="console-brand"><ConsoleBrandIcon /><span className="console-brand-copy"><strong>zoom</strong><span>Support Console</span></span></div>
+      <div className="header-context">Support workspace</div>
+      <button className="account-menu" aria-expanded={profileOpen} aria-label={`${profile.username} account`} onClick={() => setProfileOpen(!profileOpen)}>{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<span className="account-copy"><strong>{profile.username}</strong><small>{isAdmin ? 'JA Admin' : 'Agent'}</small></span><svg className="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></button>
+    </header>
+
+    {open && <button type="button" className="sidebar-backdrop" aria-label="Close navigation" onClick={() => setOpen(false)} />}
+
+    <aside id="primary-sidebar" className={`sidebar ${open ? 'open' : ''}`}>
+      <div>
+        <p className="sidebar-label">Support workspace</p>
+        <nav aria-label="Primary navigation">{visibleLinks.map(([id, label]) => <button key={id} className={currentView === id ? 'active' : ''} onClick={() => { onNavigate(id); setOpen(false) }}><Icon type={id} /><span>{label}</span></button>)}</nav>
+      </div>
+      <button className="logout-button" onClick={onLogout}>Logout</button>
+    </aside>
+
+    <main className="app-main">{children}</main>
+
+    {profileOpen && <div className="modal-backdrop" role="presentation" onClick={event => event.target === event.currentTarget && setProfileOpen(false)}><div className="profile-panel" role="dialog" aria-modal="true" aria-labelledby="profile-title"><div className="profile-summary">{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<div><h2 id="profile-title">My Profile</h2><strong>{profile.username}</strong><p>{profile.initials} · {isAdmin ? 'JA Admin' : 'Agent'}</p></div></div>{message && <p className="success-message" role="status">{message}</p>}{avatarOpen ? <AvatarPicker selectedId={profile.avatar_id} onCancel={() => setAvatarOpen(false)} onSave={async id => { await onAvatarChange?.(id); setAvatarOpen(false) }} /> : passwordOpen ? <form onSubmit={submitPassword}><h3>Change Password</h3><label>New password<input name="password" type="password" autoComplete="new-password" /></label><label>Confirm password<input name="confirm" type="password" autoComplete="new-password" /></label><div className="dialog-actions"><button type="button" onClick={() => setPasswordOpen(false)}>Cancel</button><button>Save Password</button></div></form> : <div className="profile-actions"><button onClick={() => setAvatarOpen(true)}>Change Avatar</button><button onClick={() => setPasswordOpen(true)}>Change Password</button><button onClick={onLogout}>Logout</button></div>}</div></div>}
+  </div>
 }
