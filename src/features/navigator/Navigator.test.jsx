@@ -55,3 +55,21 @@ it('offers keyboard-accessible search suggestions and opens the highlighted proc
 
   expect(screen.getByRole('dialog')).toBeInTheDocument()
 })
+
+it('suggests and opens the intended process even when the search has a typo', async () => {
+  const user = userEvent.setup()
+  render(<Navigator />)
+  const search = screen.getByRole('combobox', { name: 'Search support processes' })
+
+  await user.type(search, 'cant jion')
+
+  const listbox = screen.getByRole('listbox', { name: 'Search suggestions' })
+  const options = within(listbox).getAllByRole('option')
+  expect(options.length).toBeLessThanOrEqual(6)
+  const joinSuggestion = within(listbox).getByRole('option', { name: /Troubleshooting When You Can’t Join a Zoom Meeting/i })
+
+  await user.click(joinSuggestion)
+
+  const dialog = screen.getByRole('dialog')
+  expect(within(dialog).getByRole('heading', { name: /Troubleshooting When You Can’t Join a Zoom Meeting/i })).toBeInTheDocument()
+})
