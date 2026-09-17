@@ -11,6 +11,7 @@ import { TrainingResources } from './features/training/TrainingResources'
 import { FeedbackPage } from './features/feedback/FeedbackPage'
 import { UpdatesView } from './features/updates/UpdatesView'
 import { assetUrl } from './lib/assetUrl'
+import { useUsageTracking } from './features/analytics/usePresence'
 import './styles.css'
 import './accessibility-ui.css'
 import './features/shell/responsiveShell.css'
@@ -22,17 +23,33 @@ export default function App() {
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState('navigator')
   const [trainingVideoId, setTrainingVideoId] = useState(null)
+  const [navigatorProcessId, setNavigatorProcessId] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
+  const { trackEvent } = useUsageTracking(profile?.id ?? null, profile ? view : null)
   const accessStyle = { '--login-workspace-image': `url(${assetUrl('assets/login-workspace-background.png')})` }
 
   function navigate(nextView) {
+    trackEvent({ eventType: 'navigation', routeId: nextView, toolId: 'navigation' })
     if (nextView === 'training') setTrainingVideoId(null)
+    if (nextView === 'navigator') setNavigatorProcessId(null)
     setView(nextView)
   }
 
   function openTraining(videoId) {
+    trackEvent({ eventType: 'training_open', routeId: 'training', toolId: typeof videoId === 'string' ? videoId : 'library' })
     setTrainingVideoId(typeof videoId === 'string' ? videoId : null)
     setView('training')
+  }
+
+  function openFeedbackTarget(item) {
+    const safeRoutes = new Set(['navigator', 'training', 'updates', 'feedback'])
+    if (item?.process_id) {
+      setNavigatorProcessId(item.process_id)
+      setView('navigator')
+      return
+    }
+    setNavigatorProcessId(null)
+    setView(safeRoutes.has(item?.route_id) ? item.route_id : 'navigator')
   }
 
   useEffect(() => { getCurrentProfile().then(setProfile).catch(() => signOut()).finally(() => setLoading(false)) }, [])
@@ -51,7 +68,7 @@ export default function App() {
   if (loading) return <main className="access-shell"><p>Loading secure session…</p></main>
   if (profile?.must_change_password) return <ForcePasswordChange onChange={async password => { await changeOwnPassword(password); setProfile(await getCurrentProfile()) }} onLogout={async () => { await signOut(); setProfile(null) }} />
   if (profile) {
-    const content = view==='navigator'?<Navigator onFeedback={submitFeedback} onOpenTraining={openTraining}/>:view==='training'?<TrainingResources initialVideoId={trainingVideoId}/>:view==='updates'?<UpdatesView/>:view==='feedback'?<FeedbackPage onSubmit={submitFeedback} onCancel={()=>setView('navigator')}/>:view==='admin'?<AdminHome onNavigate={navigate}/>:view==='team'?<TeamManagement/>:view==='usage'?<UsageAnalytics/>:<FeedbackQueue/>
+    const content = view==='navigator'?<Navigator onFeedback={submitFeedback} onOpenTraining={openTraining} onTrackEvent={trackEvent} initialProcessId={navigatorProcessId}/>:view==='training'?<TrainingResources initialVideoId={trainingVideoId}/>:view==='updates'?<UpdatesView/>:view==='feedback'?<FeedbackPage onSubmit={submitFeedback} onCancel={()=>navigate('navigator')}/>:view==='admin'?<AdminHome onNavigate={navigate}/>:view==='team'?<TeamManagement/>:view==='usage'?<UsageAnalytics/>:<FeedbackQueue onOpenPage={openFeedbackTarget}/>
     return <AppShell profile={profile} currentView={view} onNavigate={navigate} onPasswordChange={changeOwnPassword} onAvatarChange={async avatarId=>{await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}} onLogout={async()=>{await signOut();setProfile(null)}}>{content}</AppShell>
   }
 
