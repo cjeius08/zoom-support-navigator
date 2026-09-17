@@ -32,9 +32,9 @@ export default function App() {
 
   return <main className="access-shell">
     <section className="access-card" aria-labelledby="app-title">
-      <p className="eyebrow">Zoom Support</p>
-      <h1 id="app-title">Navigator</h1>
-      <p>Sign in to access the support-process Navigator.</p>
+      <p className="eyebrow">Zoom</p>
+      <h1 id="app-title">Support Console</h1>
+      <p>Sign in to access the support-process workspace.</p>
       <form onSubmit={submit} noValidate>
         <label>Username<input name="username" autoComplete="username" required /></label>
         <label>Password<input name="password" type="password" autoComplete="current-password" required /></label>
