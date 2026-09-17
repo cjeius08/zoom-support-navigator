@@ -1,6 +1,6 @@
-import { render, screen, within, waitFor } from '@testing-library/react'
+import { cleanup, render, screen, within, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { FeedbackPage } from './feedback/FeedbackPage'
 import { TrainingResources } from './training/TrainingResources'
 import { Navigator } from './navigator/Navigator'
@@ -36,6 +36,10 @@ beforeEach(() => {
     configurable: true,
     value: { writeText: vi.fn().mockResolvedValue(undefined) },
   })
+})
+
+afterEach(() => {
+  cleanup()
 })
 
 it('keeps Feedback Cancel inside the Support Console', async () => {
