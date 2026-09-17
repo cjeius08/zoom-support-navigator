@@ -1,0 +1,43 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { TRAINING_CATEGORIES, TRAINING_VIDEOS, trainingEmbedUrl } from '../../data/trainingVideos'
+
+function VideoViewer({ videos, index, onClose }) {
+  const closeRef = useRef(null)
+  const video = videos[index]
+  useEffect(() => {
+    closeRef.current?.focus()
+    const onKeyDown = (event) => event.key === 'Escape' && onClose()
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [onClose])
+
+  return <div className="modal-backdrop training-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+    <section className="training-viewer" role="dialog" aria-modal="true" aria-label={video.title}>
+      <header><div><p className="eyebrow">Zoom training video</p><h2>{video.title}</h2></div><button ref={closeRef} className="drawer-close" type="button" aria-label="Close video" onClick={onClose}>×</button></header>
+      <div className="video-frame"><iframe title={`Video player: ${video.title}`} src={trainingEmbedUrl(video.videoId)} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div>
+      <p><strong>Useful for:</strong> {video.usefulFor}</p>
+      {video.relatedCategories.length > 0 && <div className="training-tags">{video.relatedCategories.map((category) => <span key={category}>{category}</span>)}</div>}
+      <footer><div className="viewer-navigation"><button type="button" disabled={index === 0} onClick={() => videos.onChange(index - 1)}>Previous Video</button><button type="button" disabled={index === videos.length - 1} onClick={() => videos.onChange(index + 1)}>Next Video</button></div><a href={video.youtubeUrl} target="_blank" rel="noreferrer">Open on YouTube</a></footer>
+    </section>
+  </div>
+}
+
+export function TrainingResources() {
+  const [query, setQuery] = useState('')
+  const [category, setCategory] = useState('All')
+  const [activeIndex, setActiveIndex] = useState(null)
+  const filteredVideos = useMemo(() => TRAINING_VIDEOS.filter((video) => {
+    const haystack = `${video.title} ${video.usefulFor} ${video.relatedCategories.join(' ')}`.toLowerCase()
+    return haystack.includes(query.trim().toLowerCase()) && (category === 'All' || video.relatedCategories.includes(category))
+  }), [query, category])
+  const viewerVideos = Object.assign(filteredVideos, { onChange: setActiveIndex })
+
+  return <section className="console-view training-library">
+    <div className="view-heading"><div><p className="eyebrow">Zoom learning playlist</p><h1>Training &amp; Resources</h1><p>Learn the workflows, features, and troubleshooting basics without leaving the Support Console.</p></div><span className="playlist-label">Getting Started with Zoom · {TRAINING_VIDEOS.length} videos</span></div>
+    <div className="training-controls"><label>Search training videos<input type="search" aria-label="Search training videos" value={query} onChange={(event) => { setQuery(event.target.value); setActiveIndex(null) }} placeholder="Search topics and support categories" /></label><label>Filter by category<select aria-label="Filter training by category" value={category} onChange={(event) => { setCategory(event.target.value); setActiveIndex(null) }}>{TRAINING_CATEGORIES.map((name) => <option key={name}>{name}</option>)}</select></label></div>
+    <p className="library-count">{filteredVideos.length} {filteredVideos.length === 1 ? 'video' : 'videos'} available</p>
+    <div className="training-grid">{filteredVideos.map((video, index) => <article key={video.id} className="training-card"><img loading="lazy" src={video.thumbnailUrl} alt="" /><div className="training-card-body"><h2>{video.title}</h2><p><strong>Useful for:</strong> {video.usefulFor}</p>{video.relatedCategories.length > 0 && <div className="training-tags">{video.relatedCategories.map((tag) => <span key={tag}>{tag}</span>)}</div>}<button type="button" onClick={() => setActiveIndex(index)}>Watch Video</button></div></article>)}</div>
+    {filteredVideos.length === 0 && <div className="empty-state"><h2>No training videos found</h2><p>Try another keyword or category.</p></div>}
+    {activeIndex !== null && <VideoViewer videos={viewerVideos} index={activeIndex} onClose={() => setActiveIndex(null)} />}
+  </section>
+}

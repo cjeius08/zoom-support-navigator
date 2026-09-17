@@ -7,6 +7,8 @@ import { submitFeedback } from './lib/feedbackApi'
 import { Navigator } from './features/navigator/Navigator'
 import { AppShell } from './features/shell/AppShell'
 import { AdminHome, FeedbackQueue, TeamManagement, UsageAnalytics } from './features/admin/AdminViews'
+import { TrainingResources } from './features/training/TrainingResources'
+import { FeedbackPage } from './features/feedback/FeedbackPage'
 import './styles.css'
 
 export default function App() {
@@ -32,14 +34,14 @@ export default function App() {
   if (loading) return <main className="access-shell"><p>Loading secure session…</p></main>
   if (profile?.must_change_password) return <ForcePasswordChange onChange={async password => { await changeOwnPassword(password); setProfile(await getCurrentProfile()) }} onLogout={async () => { await signOut(); setProfile(null) }} />
   if (profile) {
-    const content = view==='navigator'?<Navigator onFeedback={submitFeedback}/>:view==='admin'?<AdminHome onNavigate={setView}/>:view==='team'?<TeamManagement/>:view==='usage'?<UsageAnalytics/>:<FeedbackQueue/>
+    const content = view==='navigator'?<Navigator onFeedback={submitFeedback} onOpenTraining={()=>setView('training')}/>:view==='training'?<TrainingResources/>:view==='feedback'?<FeedbackPage onSubmit={submitFeedback}/>:view==='admin'?<AdminHome onNavigate={setView}/>:view==='team'?<TeamManagement/>:view==='usage'?<UsageAnalytics/>:<FeedbackQueue/>
     return <AppShell profile={profile} currentView={view} onNavigate={setView} onPasswordChange={changeOwnPassword} onAvatarChange={async avatarId=>{await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}} onLogout={async()=>{await signOut();setProfile(null)}}>{content}</AppShell>
   }
 
   if (activationOpen) return <main className="access-shell"><section className="access-card"><ActivateAccountForm onActivate={activateAccount} onCancel={()=>setActivationOpen(false)}/></section></main>
   return <main className="access-shell">
     <section className="access-card" aria-labelledby="app-title">
-      <p className="eyebrow">Zoom</p>
+      <div className="access-brand"><p className="eyebrow">Zoom</p><span>Internal Support Workspace</span></div>
       <h1 id="app-title">Support Console</h1>
       <p>Sign in to access the support-process workspace.</p>
       <form onSubmit={submit} noValidate>

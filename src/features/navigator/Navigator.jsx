@@ -22,7 +22,7 @@ const commonIssues = [
   ['Bluetooth headset issue', 'using-bluetooth-headphones-with-zoom-on-android-ios'],
 ]
 
-export function Navigator({ onFeedback }) {
+export function Navigator({ onFeedback, onOpenTraining }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -37,7 +37,7 @@ export function Navigator({ onFeedback }) {
     <div className="navigator-entry-grid"><section><p className="eyebrow">Start here</p><h2>What does the customer need?</h2><div className="category-grid">{categories.map(([id,name,description])=><button key={id} onClick={()=>{setCategory(id);setQuery('')}}><strong>{name}</strong><span>{description}</span></button>)}</div></section><section className="common-issues"><p className="eyebrow">Fastest routes</p><h2>Common Issues</h2><div>{commonIssues.map(([label,id])=><button key={id} onClick={()=>setSelected(PROCESSES.find(process=>process.id===id))}>{label}<span>→</span></button>)}</div></section></div>
     {visible.length>0&&<section><h2>{query?`Results for “${query}”`:categories.find(c=>c[0]===category)?.[1]}</h2><div className="process-grid">{visible.map(process=><button className="process-card" key={process.id} onClick={()=>setSelected(process)}><small>{process.category}</small><strong>{process.title}</strong><span>{process.purpose}</span><div className="process-meta">{process.images?.length>0&&<span>{process.images.length} source {process.images.length===1?'page':'pages'}</span>}{process.visualReferences?.length>0&&<span>{process.visualReferences.length} Zoom {process.visualReferences.length===1?'visual':'visuals'}</span>}</div><b>Open process →</b></button>)}</div></section>}
     <button className="feedback-fab" onClick={()=>setFeedbackOpen(true)}>Report an issue</button>
-    {selected&&<ProcessDrawer process={selected} onClose={()=>setSelected(null)}/>}
+    {selected&&<ProcessDrawer process={selected} onClose={()=>setSelected(null)} onOpenTraining={onOpenTraining}/>}
     {feedbackOpen&&<div className="modal-backdrop"><div className="profile-panel"><FeedbackForm context={{page_label:'Navigator',process_id:selected?.id??null,category_id:selected?.category??null}} onCancel={()=>setFeedbackOpen(false)} onSubmit={async payload=>{await onFeedback?.(payload);setFeedbackOpen(false)}}/></div></div>}
   </main>
 }
