@@ -1,0 +1,28 @@
+name: UI TDD
+
+on:
+  push:
+    branches: [feature/accessibility-search-icons]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Test navigator and shell
+        run: npm test -- --run src/features/navigator/Navigator.test.jsx src/features/shell/AppShell.test.jsx
+      - name: Lint
+        run: npm run lint
+      - name: Build
+        run: npm run build
