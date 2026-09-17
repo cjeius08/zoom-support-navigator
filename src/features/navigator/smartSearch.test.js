@@ -12,6 +12,12 @@ describe('smart support search', () => {
     expect(normalizeSearchText("CAN'T HEAR")).toBe('cant hear')
   })
 
+  it('returns suggestions from the first few typed characters', () => {
+    expect(searchProcesses(PROCESSES, 's').length).toBeGreaterThan(0)
+    expect(searchProcesses(PROCESSES, 'ca').length).toBeGreaterThan(0)
+    expect(searchProcesses(PROCESSES, 'mi').length).toBeGreaterThan(0)
+  })
+
   it.each([
     ['cant hear', 'zoom-audio-troubleshooting'],
     ['CAN’T HEAR', 'zoom-audio-troubleshooting'],
