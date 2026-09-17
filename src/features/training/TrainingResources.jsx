@@ -1,19 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { TRAINING_CATEGORIES, TRAINING_VIDEOS, trainingEmbedUrl } from '../../data/trainingVideos'
+import { useDialogFocus } from '../../lib/useDialogFocus'
 
 function VideoViewer({ videos, index, onClose }) {
-  const closeRef = useRef(null)
+  const dialogRef = useRef(null)
   const video = videos[index]
-  useEffect(() => {
-    closeRef.current?.focus()
-    const onKeyDown = (event) => event.key === 'Escape' && onClose()
-    document.addEventListener('keydown', onKeyDown)
-    return () => document.removeEventListener('keydown', onKeyDown)
-  }, [onClose])
+  useDialogFocus(dialogRef, true, onClose)
 
   return <div className="modal-backdrop training-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-    <section className="training-viewer" role="dialog" aria-modal="true" aria-label={video.title}>
-      <header><div><p className="eyebrow">Zoom training video</p><h2>{video.title}</h2></div><button ref={closeRef} className="drawer-close" type="button" aria-label="Close video" onClick={onClose}>×</button></header>
+    <section ref={dialogRef} tabIndex={-1} className="training-viewer" role="dialog" aria-modal="true" aria-label={video.title}>
+      <header><div><p className="eyebrow">Zoom training video</p><h2>{video.title}</h2></div><button className="drawer-close" type="button" aria-label="Close video" onClick={onClose}>×</button></header>
       <div className="video-frame"><iframe title={`Video player: ${video.title}`} src={trainingEmbedUrl(video.videoId)} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div>
       <p><strong>Useful for:</strong> {video.usefulFor}</p>
       {video.relatedCategories.length > 0 && <div className="training-tags">{video.relatedCategories.map((category) => <span key={category}>{category}</span>)}</div>}
@@ -22,10 +18,20 @@ function VideoViewer({ videos, index, onClose }) {
   </div>
 }
 
-export function TrainingResources() {
+export function TrainingResources({ initialVideoId = null }) {
+  const initialIndex = initialVideoId ? TRAINING_VIDEOS.findIndex(video => video.id === initialVideoId) : -1
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
-  const [activeIndex, setActiveIndex] = useState(null)
+  const [activeIndex, setActiveIndex] = useState(initialIndex >= 0 ? initialIndex : null)
+  useEffect(() => {
+    if (!initialVideoId) return
+    const nextIndex = TRAINING_VIDEOS.findIndex(video => video.id === initialVideoId)
+    if (nextIndex >= 0) {
+      setQuery('')
+      setCategory('All')
+      setActiveIndex(nextIndex)
+    }
+  }, [initialVideoId])
   const filteredVideos = useMemo(() => TRAINING_VIDEOS.filter((video) => {
     const haystack = `${video.title} ${video.usefulFor} ${video.relatedCategories.join(' ')}`.toLowerCase()
     return haystack.includes(query.trim().toLowerCase()) && (category === 'All' || video.relatedCategories.includes(category))

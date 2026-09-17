@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { assetUrl } from "../../lib/assetUrl";
 import { buildCallGuide, processSections } from "./processText";
 import { relatedTrainingForCategory } from "../../data/trainingVideos";
+import { useDialogFocus } from "../../lib/useDialogFocus";
 
 const TABS = [
   ["quick", "Call Guide"],
@@ -21,18 +22,31 @@ const trainingCategoryByProcessCategory = {
 
 export function ProcessDrawer({ process, onClose, onOpenTraining }) {
   const [tab, setTab] = useState("quick");
-  const closeRef = useRef(null);
-  const [copied, setCopied] = useState(false);
+  const dialogRef = useRef(null);
+  const copyResetRef = useRef(null);
+  const [copyState, setCopyState] = useState({ id: "", status: "" });
   const guide = useMemo(() => buildCallGuide(process), [process]);
-  useEffect(() => {
-    closeRef.current?.focus();
-    const key = (e) => e.key === "Escape" && onClose();
-    document.addEventListener("keydown", key);
-    return () => document.removeEventListener("keydown", key);
-  }, [onClose]);
-  async function copyText(text) {
-    await navigator.clipboard?.writeText(text);
-    setCopied(true);
+  useDialogFocus(dialogRef, true, onClose);
+  useEffect(() => () => window.clearTimeout(copyResetRef.current), []);
+
+  function copyLabel(id, defaultLabel) {
+    if (copyState.id !== id) return defaultLabel;
+    return copyState.status === "copied" ? "Copied ✓" : "Copy failed";
+  }
+
+  async function copyText(text, id) {
+    window.clearTimeout(copyResetRef.current);
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(text);
+      setCopyState({ id, status: "copied" });
+    } catch {
+      setCopyState({ id, status: "failed" });
+    }
+    copyResetRef.current = window.setTimeout(
+      () => setCopyState({ id: "", status: "" }),
+      1600,
+    );
   }
   async function copySteps() {
     await copyText(
@@ -42,6 +56,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining }) {
             `${step.number}. ${step.title}\n${step.instructions.join("\n")}`,
         )
         .join("\n\n"),
+      "quick-steps",
     );
   }
   function openVisual(visual) {
@@ -62,6 +77,8 @@ export function ProcessDrawer({ process, onClose, onOpenTraining }) {
       onMouseDown={(e) => e.target === e.currentTarget && onClose()}
     >
       <aside
+        ref={dialogRef}
+        tabIndex={-1}
         className="process-drawer"
         role="dialog"
         aria-modal="true"
@@ -74,7 +91,6 @@ export function ProcessDrawer({ process, onClose, onOpenTraining }) {
             <p>{process.purpose}</p>
           </div>
           <button
-            ref={closeRef}
             className="drawer-close"
             aria-label="Close process"
             onClick={onClose}
@@ -103,7 +119,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining }) {
                   <h3>Call Guide</h3>
                 </div>
                 <button onClick={copySteps}>
-                  {copied ? "Copied" : "Copy Quick Steps"}
+                  {copyLabel("quick-steps", "Copy Quick Steps")}
                 </button>
               </div>
               {guide.quickGuide.length > 0 && (
@@ -133,8 +149,8 @@ export function ProcessDrawer({ process, onClose, onOpenTraining }) {
                 <section className="suggested-script">
                   <p className="eyebrow">{guide.suggestedScript.label}</p>
                   <blockquote>{guide.suggestedScript.text}</blockquote>
-                  <button onClick={() => copyText(guide.suggestedScript.text)}>
-                    Copy Script
+                  <button onClick={() => copyText(guide.suggestedScript.text, "suggested-script")}>
+                    {copyLabel("suggested-script", "Copy Script")}
                   </button>
                   <small>
                     Console wording derived only from this approved process.
@@ -145,7 +161,9 @@ export function ProcessDrawer({ process, onClose, onOpenTraining }) {
                 <section className="suggested-script" key={`global-${index}`}>
                   <p className="eyebrow">Additional Source Script</p>
                   <blockquote>{script}</blockquote>
-                  <button onClick={() => copyText(script)}>Copy Script</button>
+                  <button onClick={() => copyText(script, `global-script-${index}`)}>
+                    {copyLabel(`global-script-${index}`, "Copy Script")}
+                  </button>
                 </section>
               ))}
               <div className="call-step-list">
@@ -166,10 +184,11 @@ export function ProcessDrawer({ process, onClose, onOpenTraining }) {
                               ...step.instructions,
                               ...step.scripts,
                             ].join("\n"),
+                            `step-${index}`,
                           )
                         }
                       >
-                        Copy Step
+                        {copyLabel(`step-${index}`, "Copy Step")}
                       </button>
                     </div>
                     {step.instructions.length > 0 && (
@@ -188,8 +207,8 @@ export function ProcessDrawer({ process, onClose, onOpenTraining }) {
                         {step.scripts.map((script, scriptIndex) => (
                           <div key={scriptIndex}>
                             <blockquote>{script}</blockquote>
-                            <button onClick={() => copyText(script)}>
-                              Copy Script
+                            <button onClick={() => copyText(script, `step-${index}-script-${scriptIndex}`)}>
+                              {copyLabel(`step-${index}-script-${scriptIndex}`, "Copy Script")}
                             </button>
                           </div>
                         ))}
@@ -267,7 +286,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining }) {
                           </button>
                         ))}
                     </div>
-                    <button onClick={onOpenTraining}>
+                    <button onClick={() => onOpenTraining?.()}>
                       Open Training &amp; Resources
                     </button>
                   </div>

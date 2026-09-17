@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { assetUrl } from '../../lib/assetUrl'
 import { avatarUrl } from '../profile/avatarCatalog'
 import { AvatarPicker } from '../profile/AvatarPicker'
 import { CONSOLE_METADATA, LAST_UPDATED, formatShortConsoleDate } from '../updates/updatesData'
 import '../updates/updates.css'
+import { useDialogFocus } from '../../lib/useDialogFocus'
 
 const agentLinks = [['navigator', 'Navigator'], ['training', 'Training & Resources'], ['updates', 'What’s New / Updates'], ['feedback', 'Feedback']]
 const adminLinks = [['admin', 'Admin Home'], ['team', 'Team Management'], ['usage', 'Usage Analytics'], ['feedback_queue', 'Feedback Queue']]
@@ -20,20 +21,41 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   const [avatarOpen, setAvatarOpen] = useState(false)
   const [passwordOpen, setPasswordOpen] = useState(false)
   const [message, setMessage] = useState('')
+  const [profileError, setProfileError] = useState('')
+  const [passwordSaving, setPasswordSaving] = useState(false)
+  const profileDialogRef = useRef(null)
   const isAdmin = profile.role === 'creator_admin'
   const visibleLinks = isAdmin ? [...agentLinks, ...adminLinks] : agentLinks
   const style = { '--workspace-image': `url(${assetUrl('assets/login-workspace-background.png')})` }
+
+  function closeProfile() {
+    setProfileOpen(false)
+    setAvatarOpen(false)
+    setPasswordOpen(false)
+    setProfileError('')
+  }
+
+  useDialogFocus(profileDialogRef, profileOpen, closeProfile)
 
   async function submitPassword(event) {
     event.preventDefault()
     const form = new FormData(event.currentTarget)
     const password = String(form.get('password'))
     const confirm = String(form.get('confirm'))
-    if (password.length < 8) return setMessage('Password must be at least 8 characters.')
-    if (password !== confirm) return setMessage('Passwords do not match.')
-    await onPasswordChange?.(password)
-    setMessage('Password changed.')
-    setPasswordOpen(false)
+    setMessage('')
+    if (password.length < 8) return setProfileError('Password must be at least 8 characters.')
+    if (password !== confirm) return setProfileError('Passwords do not match.')
+    setProfileError('')
+    setPasswordSaving(true)
+    try {
+      await onPasswordChange?.(password)
+      setMessage('Password changed.')
+      setPasswordOpen(false)
+    } catch (changeError) {
+      setProfileError(changeError?.message || 'Could not change password.')
+    } finally {
+      setPasswordSaving(false)
+    }
   }
 
   return <div className="app-shell" style={style}>
@@ -52,7 +74,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
       <button className="console-version-chip" type="button" onClick={() => onNavigate('updates')}>
         <span className="version-console-label">Console </span>v{CONSOLE_METADATA.version}<span className="version-updated-label"> · Updated {formatShortConsoleDate(LAST_UPDATED)}</span>
       </button>
-      <button className="account-menu" aria-expanded={profileOpen} aria-label={`${profile.username} account`} onClick={() => setProfileOpen(!profileOpen)}>{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<span className="account-copy"><strong>{profile.username}</strong><small>{isAdmin ? 'JA Admin' : 'Agent'}</small></span><svg className="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></button>
+      <button className="account-menu" aria-expanded={profileOpen} aria-label={`${profile.username} account`} onClick={() => { const next = !profileOpen; setProfileOpen(next); if (next) { setMessage(''); setProfileError('') } }}>{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<span className="account-copy"><strong>{profile.username}</strong><small>{isAdmin ? 'JA Admin' : 'Agent'}</small></span><svg className="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></button>
     </header>
 
     {open && <button type="button" className="sidebar-backdrop" aria-label="Close navigation" onClick={() => setOpen(false)} />}
@@ -75,6 +97,6 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
 
     <main className="app-main">{children}</main>
 
-    {profileOpen && <div className="modal-backdrop" role="presentation" onClick={event => event.target === event.currentTarget && setProfileOpen(false)}><div className="profile-panel" role="dialog" aria-modal="true" aria-labelledby="profile-title"><div className="profile-summary">{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<div><h2 id="profile-title">My Profile</h2><strong>{profile.username}</strong><p>{profile.initials} · {isAdmin ? 'JA Admin' : 'Agent'}</p></div></div>{message && <p className="success-message" role="status">{message}</p>}{avatarOpen ? <AvatarPicker selectedId={profile.avatar_id} onCancel={() => setAvatarOpen(false)} onSave={async id => { await onAvatarChange?.(id); setAvatarOpen(false) }} /> : passwordOpen ? <form onSubmit={submitPassword}><h3>Change Password</h3><label>New password<input name="password" type="password" autoComplete="new-password" /></label><label>Confirm password<input name="confirm" type="password" autoComplete="new-password" /></label><div className="dialog-actions"><button type="button" onClick={() => setPasswordOpen(false)}>Cancel</button><button>Save Password</button></div></form> : <div className="profile-actions"><button onClick={() => setAvatarOpen(true)}>Change Avatar</button><button onClick={() => setPasswordOpen(true)}>Change Password</button><button onClick={onLogout}>Logout</button></div>}</div></div>}
+    {profileOpen && <div className="modal-backdrop" role="presentation" onClick={event => event.target === event.currentTarget && closeProfile()}><div ref={profileDialogRef} tabIndex={-1} className="profile-panel" role="dialog" aria-modal="true" aria-labelledby="profile-title"><div className="profile-summary">{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<div><h2 id="profile-title">My Profile</h2><strong>{profile.username}</strong><p>{profile.initials} · {isAdmin ? 'JA Admin' : 'Agent'}</p></div></div>{message && <p className="success-message" role="status">{message}</p>}{profileError && <p role="alert">{profileError}</p>}{avatarOpen ? <AvatarPicker selectedId={profile.avatar_id} onCancel={() => setAvatarOpen(false)} onSave={async id => { setMessage(''); setProfileError(''); try { await onAvatarChange?.(id); setAvatarOpen(false); setMessage('Avatar updated.') } catch (avatarError) { setProfileError(avatarError?.message || 'Could not update avatar.') } }} /> : passwordOpen ? <form onSubmit={submitPassword}><h3>Change Password</h3><label>New password<input name="password" type="password" autoComplete="new-password" disabled={passwordSaving} /></label><label>Confirm password<input name="confirm" type="password" autoComplete="new-password" disabled={passwordSaving} /></label><div className="dialog-actions"><button type="button" disabled={passwordSaving} onClick={() => setPasswordOpen(false)}>Cancel</button><button disabled={passwordSaving}>{passwordSaving ? 'Saving…' : 'Save Password'}</button></div></form> : <div className="profile-actions"><button onClick={() => { setMessage(''); setProfileError(''); setAvatarOpen(true) }}>Change Avatar</button><button onClick={() => { setMessage(''); setProfileError(''); setPasswordOpen(true) }}>Change Password</button><button onClick={onLogout}>Logout</button></div>}</div></div>}
   </div>
 }

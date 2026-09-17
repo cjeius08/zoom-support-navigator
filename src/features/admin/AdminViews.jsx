@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   loadFeedback,
   loadTeam,
@@ -6,6 +6,7 @@ import {
   runAdminAction,
 } from "../../lib/adminApi";
 import { avatarUrl } from "../profile/avatarCatalog";
+import { useDialogFocus } from "../../lib/useDialogFocus";
 
 function useData(loader) {
   const [state, setState] = useState({ loading: true, data: null, error: "" });
@@ -57,10 +58,13 @@ export function AdminHome({ onNavigate }) {
   );
 }
 
-function TeamDialog({ person, onClose, onAction }) {
+function TeamDialog({ person, onClose, onAction, busy }) {
   const [mode, setMode] = useState("");
+  const dialogRef = useRef(null);
+  useDialogFocus(dialogRef, true, onClose);
   const submit = (event, payload) => {
     event.preventDefault();
+    if (busy) return;
     onAction(payload);
   };
   return (
@@ -70,6 +74,8 @@ function TeamDialog({ person, onClose, onAction }) {
       onMouseDown={(event) => event.target === event.currentTarget && onClose()}
     >
       <div
+        ref={dialogRef}
+        tabIndex={-1}
         className="profile-panel admin-dialog"
         role="dialog"
         aria-modal="true"
@@ -120,7 +126,7 @@ function TeamDialog({ person, onClose, onAction }) {
               <button type="button" onClick={() => setMode("")}>
                 Cancel
               </button>
-              <button>Save Username</button>
+              <button disabled={busy}>{busy ? "Processing…" : "Save Username"}</button>
             </div>
           </form>
         )}
@@ -155,7 +161,7 @@ function TeamDialog({ person, onClose, onAction }) {
               <button type="button" onClick={() => setMode("")}>
                 Cancel
               </button>
-              <button>Save Initials</button>
+              <button disabled={busy}>{busy ? "Processing…" : "Save Initials"}</button>
             </div>
           </form>
         )}
@@ -186,7 +192,7 @@ function TeamDialog({ person, onClose, onAction }) {
               <button type="button" onClick={() => setMode("")}>
                 Cancel
               </button>
-              <button>Reset Password</button>
+              <button disabled={busy}>{busy ? "Processing…" : "Reset Password"}</button>
             </div>
           </form>
         )}
@@ -200,11 +206,10 @@ function TeamDialog({ person, onClose, onAction }) {
               <button onClick={() => setMode("")}>Cancel</button>
               <button
                 className="danger-action"
-                onClick={() =>
-                  onAction({ action: "deactivate", user_id: person.id })
-                }
+                disabled={busy}
+                onClick={() => !busy && onAction({ action: "deactivate", user_id: person.id })}
               >
-                Confirm Deactivate
+                {busy ? "Processing…" : "Confirm Deactivate"}
               </button>
             </div>
           </div>
@@ -218,11 +223,10 @@ function TeamDialog({ person, onClose, onAction }) {
             <div className="dialog-actions">
               <button onClick={() => setMode("")}>Cancel</button>
               <button
-                onClick={() =>
-                  onAction({ action: "reactivate", user_id: person.id })
-                }
+                disabled={busy}
+                onClick={() => !busy && onAction({ action: "reactivate", user_id: person.id })}
               >
-                Confirm Reactivate
+                {busy ? "Processing…" : "Confirm Reactivate"}
               </button>
             </div>
           </div>
@@ -251,7 +255,7 @@ function TeamDialog({ person, onClose, onAction }) {
               <button type="button" onClick={() => setMode("")}>
                 Cancel
               </button>
-              <button className="danger-action">Permanently Delete</button>
+              <button className="danger-action" disabled={busy}>{busy ? "Processing…" : "Permanently Delete"}</button>
             </div>
           </form>
         )}
@@ -268,6 +272,12 @@ export function TeamManagement() {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteCode, setInviteCode] = useState("");
   const [inviteInitials, setInviteInitials] = useState("");
+  const [inviteSaving, setInviteSaving] = useState(false);
+  const [actionSaving, setActionSaving] = useState(false);
+  const inviteLockRef = useRef(false);
+  const actionLockRef = useRef(false);
+  const inviteDialogRef = useRef(null);
+  useDialogFocus(inviteDialogRef, inviteOpen, () => setInviteOpen(false));
   const refresh = async () => {
     setLoading(true);
     try {
@@ -283,16 +293,26 @@ export function TeamManagement() {
     refresh();
   }, []);
   const action = async (payload) => {
+    if (actionLockRef.current) return;
+    actionLockRef.current = true;
+    setActionSaving(true);
+    setError("");
     try {
       await runAdminAction(payload);
       await refresh();
       setSelected(null);
     } catch (actionError) {
       setError(actionError.message);
+    } finally {
+      actionLockRef.current = false;
+      setActionSaving(false);
     }
   };
   const generateInvite = async (event) => {
     event.preventDefault();
+    if (inviteLockRef.current) return;
+    inviteLockRef.current = true;
+    setInviteSaving(true);
     const initials = String(
       new FormData(event.currentTarget).get("initials") || "",
     )
@@ -307,6 +327,9 @@ export function TeamManagement() {
       await refresh();
     } catch (actionError) {
       setError(actionError.message);
+    } finally {
+      inviteLockRef.current = false;
+      setInviteSaving(false);
     }
   };
   return (
@@ -389,6 +412,8 @@ export function TeamManagement() {
           }
         >
           <form
+            ref={inviteDialogRef}
+            tabIndex={-1}
             className="profile-panel admin-dialog"
             onSubmit={generateInvite}
             role="dialog"
@@ -432,7 +457,7 @@ export function TeamManagement() {
               <button type="button" onClick={() => setInviteOpen(false)}>
                 Close
               </button>
-              <button className="primary-action">Generate Invite</button>
+              <button className="primary-action" disabled={inviteSaving}>{inviteSaving ? "Generating…" : "Generate Invite"}</button>
             </div>
           </form>
         </div>
@@ -442,6 +467,7 @@ export function TeamManagement() {
           person={selected}
           onClose={() => setSelected(null)}
           onAction={action}
+          busy={actionSaving}
         />
       )}
     </section>
