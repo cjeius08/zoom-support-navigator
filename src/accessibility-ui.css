@@ -17,6 +17,13 @@
   margin-top: 1rem;
 }
 
+/* The suggestion list intentionally extends outside the hero card. */
+.hero {
+  position: relative;
+  z-index: 5;
+  overflow: visible;
+}
+
 .hero .search-combobox input {
   width: 100%;
   margin-top: 0;
