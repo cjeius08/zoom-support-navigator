@@ -24,6 +24,20 @@ it('does not render admin navigation for agents', () => {
   expect(screen.getByRole('navigation')).toHaveTextContent('Training & Resources')
 })
 
+it('exposes What’s New and console ownership metadata to all agents', async () => {
+  const user = userEvent.setup()
+  const onNavigate = vi.fn()
+  render(<AppShell profile={agentProfile} onNavigate={onNavigate} />)
+
+  expect(screen.getByRole('navigation')).toHaveTextContent('What’s New / Updates')
+  expect(screen.getByText(/Owner\s+Cjei A\./i)).toBeInTheDocument()
+  expect(screen.getByText(/Collaborator\s+Nina F\./i)).toBeInTheDocument()
+
+  const versionChip = screen.getByRole('button', { name: /Console v1\.0.*Updated Sep 18/i })
+  await user.click(versionChip)
+  expect(onNavigate).toHaveBeenCalledWith('updates')
+})
+
 it('exposes mobile navigation state and closes it after navigation', async () => {
   const user = userEvent.setup()
   const onNavigate = vi.fn()
