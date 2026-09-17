@@ -8,6 +8,18 @@
   },
   "updates": [
     {
+      "id": "mobile-admin-drawer-footer",
+      "date": "2026-09-18",
+      "area": "Responsive Navigation",
+      "title": "Mobile admin drawer keeps console metadata visible",
+      "changed": "Adjusted the short-window mobile and tablet drawer so the navigation list scrolls inside its own area instead of pushing the console metadata off-screen. Console version, update and review dates, Owner Cjei A., Collaborator Nina F., and Logout remain readable at the bottom, and the drawer width adapts to the available screen width.",
+      "checks": [
+        "Open the hamburger menu while the browser is narrow and vertically short, especially while signed in as an admin.",
+        "Confirm the navigation list can scroll without pushing the console metadata below the screen.",
+        "Confirm Console v1.0, Owner Cjei A., Collaborator Nina F., and Logout remain fully visible and readable at the bottom of the open drawer."
+      ]
+    },
+    {
       "id": "progressive-window-reflow",
       "date": "2026-09-18",
       "area": "Responsive Layout",
