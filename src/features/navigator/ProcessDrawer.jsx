@@ -20,7 +20,7 @@ const trainingCategoryByProcessCategory = {
   devices: "Devices & App",
 };
 
-export function ProcessDrawer({ process, onClose, onOpenTraining }) {
+export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent }) {
   const [tab, setTab] = useState("quick");
   const dialogRef = useRef(null);
   const copyResetRef = useRef(null);
@@ -36,6 +36,13 @@ export function ProcessDrawer({ process, onClose, onOpenTraining }) {
 
   async function copyText(text, id) {
     window.clearTimeout(copyResetRef.current);
+    onTrackEvent?.({
+      eventType: "copy_action",
+      routeId: "navigator",
+      processId: process.id,
+      categoryId: process.category,
+      toolId: id,
+    });
     try {
       if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
       await navigator.clipboard.writeText(text);
@@ -59,9 +66,20 @@ export function ProcessDrawer({ process, onClose, onOpenTraining }) {
       "quick-steps",
     );
   }
+  function selectTab(id) {
+    setTab(id);
+    onTrackEvent?.({
+      eventType: "tool_open",
+      routeId: "navigator",
+      processId: process.id,
+      categoryId: process.category,
+      toolId: `tab_${id}`,
+    });
+  }
+
   function openVisual(visual) {
     const index = process.visualReferences?.indexOf(visual) ?? -1;
-    setTab("visual");
+    selectTab("visual");
     window.setTimeout(
       () =>
         document
@@ -104,7 +122,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining }) {
               key={id}
               role="tab"
               aria-selected={tab === id}
-              onClick={() => setTab(id)}
+              onClick={() => selectTab(id)}
             >
               {label}
             </button>
