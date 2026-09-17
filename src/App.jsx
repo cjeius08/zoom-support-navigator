@@ -12,6 +12,7 @@ import { FeedbackPage } from './features/feedback/FeedbackPage'
 import { assetUrl } from './lib/assetUrl'
 import './styles.css'
 import './accessibility-ui.css'
+import './features/shell/responsiveShell.css'
 
 export default function App() {
   const [activationOpen, setActivationOpen] = useState(false)
