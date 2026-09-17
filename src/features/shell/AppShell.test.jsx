@@ -1,6 +1,10 @@
+import { readFileSync } from 'node:fs'
 import { render, screen } from '@testing-library/react'
-import { expect, it } from 'vitest'
+import userEvent from '@testing-library/user-event'
+import { expect, it, vi } from 'vitest'
 import { AppShell } from './AppShell'
+
+const agentProfile = { username: 'agent_1', initials: 'AG', role: 'agent' }
 
 it('shows role-aware navigation and account controls', () => {
   render(<AppShell profile={{ username: 'ja_admin', initials: 'JA', role: 'creator_admin', avatar_id: 'avatar_001' }} />)
@@ -13,7 +17,31 @@ it('shows role-aware navigation and account controls', () => {
 })
 
 it('does not render admin navigation for agents', () => {
-  render(<AppShell profile={{ username: 'agent_1', initials: 'AG', role: 'agent' }} />)
+  render(<AppShell profile={agentProfile} />)
   expect(screen.queryByText('Team Management')).not.toBeInTheDocument()
   expect(screen.getByRole('navigation')).toHaveTextContent('Training & Resources')
+})
+
+it('exposes mobile navigation state and closes it after navigation', async () => {
+  const user = userEvent.setup()
+  const onNavigate = vi.fn()
+  render(<AppShell profile={agentProfile} onNavigate={onNavigate} />)
+
+  const toggle = screen.getByRole('button', { name: 'Toggle navigation' })
+  expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  expect(toggle).toHaveAttribute('aria-controls', 'primary-sidebar')
+
+  await user.click(toggle)
+  expect(toggle).toHaveAttribute('aria-expanded', 'true')
+  expect(screen.getByRole('button', { name: 'Close navigation' })).toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: 'Training & Resources' }))
+  expect(onNavigate).toHaveBeenCalledWith('training')
+  expect(toggle).toHaveAttribute('aria-expanded', 'false')
+})
+
+it('uses the tablet breakpoint for the authenticated sidebar without leaving a closed-sidebar sliver', () => {
+  const css = readFileSync(new URL('../../styles.css', import.meta.url), 'utf8')
+  expect(css).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.menu-toggle\s*\{[^}]*display:/)
+  expect(css).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.sidebar\s*\{[^}]*translateX\(calc\(-100%\s*-\s*1rem\)\)/)
 })
