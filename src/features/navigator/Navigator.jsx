@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
 import { FeedbackForm } from '../feedback/FeedbackForm'
 import { ProcessDrawer } from './ProcessDrawer'
+import { searchProcesses } from './smartSearch'
 
 const categories = [
   ['join', 'Joining Meetings', 'Links, waiting rooms, access errors'],
@@ -40,18 +41,6 @@ function categoryLabel(id) {
   return categories.find(([categoryId]) => categoryId === id)?.[1] ?? id
 }
 
-function matchesSearch(process, terms) {
-  const searchable = `${process.title} ${process.purpose} ${process.keywords} ${process.text}`.toLowerCase()
-  return terms.every(term => searchable.includes(term))
-}
-
-function searchScore(process, terms) {
-  const title = process.title.toLowerCase()
-  const purpose = String(process.purpose ?? '').toLowerCase()
-  const keywords = String(process.keywords ?? '').toLowerCase()
-  return terms.reduce((score, term) => score + (title.startsWith(term) ? 12 : title.includes(term) ? 8 : keywords.includes(term) ? 4 : purpose.includes(term) ? 2 : 0), 0)
-}
-
 export function Navigator({ onFeedback, onOpenTraining }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
@@ -60,16 +49,7 @@ export function Navigator({ onFeedback, onOpenTraining }) {
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
   const [activeSuggestion, setActiveSuggestion] = useState(-1)
 
-  const searchMatches = useMemo(() => {
-    const normalized = query.toLowerCase().trim()
-    if (!normalized) return []
-    const terms = normalized.split(/\s+/)
-    return PROCESSES
-      .filter(process => matchesSearch(process, terms))
-      .map((process, sourceIndex) => ({ process, sourceIndex, score: searchScore(process, terms) }))
-      .sort((a, b) => b.score - a.score || a.sourceIndex - b.sourceIndex)
-      .map(({ process }) => process)
-  }, [query])
+  const searchMatches = useMemo(() => query.trim() ? searchProcesses(PROCESSES, query) : [], [query])
 
   const visible = useMemo(() => {
     if (query.trim()) return searchMatches
