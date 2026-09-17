@@ -1,17 +1,24 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   loadFeedback,
   loadTeam,
   loadUsage,
   runAdminAction,
+  updateFeedbackStatus,
 } from "../../lib/adminApi";
 import { avatarUrl } from "../profile/avatarCatalog";
+import {
+  buildUsageSummary,
+  dateRangeForPeriod,
+  formatActiveDuration,
+} from "../analytics/usageSummary";
 import { useDialogFocus } from "../../lib/useDialogFocus";
 
 function useData(loader) {
   const [state, setState] = useState({ loading: true, data: null, error: "" });
   useEffect(() => {
     let live = true;
+    setState((current) => ({ ...current, loading: true, error: "" }));
     loader()
       .then((data) => live && setState({ loading: false, data, error: "" }))
       .catch(
@@ -474,57 +481,162 @@ export function TeamManagement() {
   );
 }
 
+const USAGE_PERIODS = [
+  ["daily", "Daily"],
+  ["weekly", "Weekly"],
+  ["monthly", "Monthly"],
+  ["custom", "Custom"],
+];
+
 export function UsageAnalytics() {
-  const state = useData(loadUsage);
+  const [period, setPeriod] = useState("daily");
+  const [customStart, setCustomStart] = useState("");
+  const [customEnd, setCustomEnd] = useState("");
+  const range = useMemo(
+    () => dateRangeForPeriod(period, { customStart, customEnd }),
+    [customEnd, customStart, period],
+  );
+  const loader = useCallback(
+    () => loadUsage(range),
+    [range.end, range.start],
+  );
+  const state = useData(loader);
+
   return (
-    <section className="console-view">
-      <p className="eyebrow">Privacy-safe metadata</p>
-      <h1>Usage Analytics</h1>
+    <section className="console-view usage-analytics">
+      <div className="view-heading">
+        <div>
+          <p className="eyebrow">Privacy-safe metadata</p>
+          <h1>Usage Analytics</h1>
+          <p>
+            Active time counts only recent-interaction windows. Idle browser
+            tabs do not continue accumulating active hours.
+          </p>
+        </div>
+      </div>
+
+      <div className="usage-period-controls" role="group" aria-label="Usage period">
+        {USAGE_PERIODS.map(([id, label]) => (
+          <button
+            type="button"
+            className={period === id ? "active" : ""}
+            aria-pressed={period === id}
+            key={id}
+            onClick={() => setPeriod(id)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {period === "custom" && (
+        <div className="usage-custom-range">
+          <label>
+            Start date
+            <input type="date" value={customStart} onChange={(event) => setCustomStart(event.target.value)} />
+          </label>
+          <label>
+            End date
+            <input type="date" value={customEnd} onChange={(event) => setCustomEnd(event.target.value)} />
+          </label>
+        </div>
+      )}
+
       <State state={state}>
-        {(data) => (
-          <>
-            <div className="real-summary">
-              <div>
-                <strong>{data.events.length}</strong>
-                <span>recent recorded events</span>
+        {(data) => {
+          const summary = buildUsageSummary({ ...data, start: range.start, end: range.end });
+          return (
+            <>
+              <div className="real-summary usage-summary" aria-label="Usage summary">
+                <div aria-label={`Total Users: ${summary.totalUsers}`}>
+                  <strong>{summary.totalUsers}</strong>
+                  <span>Total Users</span>
+                </div>
+                <div aria-label={`Active Now: ${summary.active}`}>
+                  <strong>{summary.active}</strong>
+                  <span>Active Now</span>
+                </div>
+                <div aria-label={`Idle: ${summary.idle}`}>
+                  <strong>{summary.idle}</strong>
+                  <span>Idle</span>
+                </div>
+                <div aria-label={`Offline: ${summary.offline}`}>
+                  <strong>{summary.offline}</strong>
+                  <span>Offline</span>
+                </div>
+                <div aria-label={`Active Time: ${formatActiveDuration(summary.activeSeconds)}`}>
+                  <strong>{formatActiveDuration(summary.activeSeconds)}</strong>
+                  <span>Active Time</span>
+                </div>
               </div>
-              <div>
-                <strong>
-                  {
-                    data.presence.filter(
-                      (presence) => presence.state === "active",
-                    ).length
-                  }
-                </strong>
-                <span>active now</span>
+
+              <div className="usage-user-list" aria-label="Usage by user">
+                {summary.users.map((user) => (
+                  <article className="usage-user-row" key={user.id}>
+                    <div className="usage-user-identity">
+                      <strong>{user.username || user.initials}</strong>
+                      <small>
+                        {user.initials} · {user.role === "creator_admin" ? "JA Admin" : "Agent"}
+                      </small>
+                    </div>
+                    <span className={`presence-badge ${user.presence}`}>{user.presence}</span>
+                    <dl>
+                      <div><dt>Active time</dt><dd>{formatActiveDuration(user.activeSeconds)}</dd></div>
+                      <div><dt>Sessions</dt><dd>{user.sessions}</dd></div>
+                      <div><dt>Events</dt><dd>{user.events}</dd></div>
+                      <div><dt>Top process</dt><dd>{user.topProcess || "—"}</dd></div>
+                      <div><dt>Top category</dt><dd>{user.topCategory || "—"}</dd></div>
+                      <div><dt>Top tool</dt><dd>{user.topTool || "—"}</dd></div>
+                    </dl>
+                  </article>
+                ))}
               </div>
-              <div>
-                <strong>
-                  {
-                    data.presence.filter(
-                      (presence) => presence.state === "idle",
-                    ).length
-                  }
-                </strong>
-                <span>idle</span>
-              </div>
-            </div>
-            <p>
-              Counts use identifiers and timestamps only; no support-call
-              content is tracked.
-            </p>
-          </>
-        )}
+
+              <p className="usage-privacy-note">
+                Analytics stores identifiers and timestamps only. Search text,
+                call notes, clipboard content, and customer-entered form values
+                are not captured.
+              </p>
+            </>
+          );
+        }}
       </State>
     </section>
   );
 }
-export function FeedbackQueue() {
-  const state = useData(loadFeedback);
+
+const FEEDBACK_STATUSES = ["new", "reviewing", "planned", "resolved", "closed", "dismissed"];
+
+export function FeedbackQueue({ onOpenPage }) {
+  const [refreshVersion, setRefreshVersion] = useState(0);
+  const [updatingId, setUpdatingId] = useState("");
+  const [actionError, setActionError] = useState("");
+  const loader = useCallback(() => loadFeedback(), [refreshVersion]);
+  const state = useData(loader);
+
+  async function changeStatus(item, status) {
+    if (status === item.status || updatingId) return;
+    setUpdatingId(item.id);
+    setActionError("");
+    try {
+      await updateFeedbackStatus(item.id, status);
+      setRefreshVersion((value) => value + 1);
+    } catch (error) {
+      setActionError(error.message);
+    } finally {
+      setUpdatingId("");
+    }
+  }
+
   return (
-    <section className="console-view">
+    <section className="console-view feedback-queue">
       <p className="eyebrow">JA only</p>
       <h1>Feedback Queue</h1>
+      <p>
+        Review agent reports, update their status, and jump back to the stored
+        safe page or process context.
+      </p>
+      {actionError && <p role="alert">{actionError}</p>}
       <State state={state}>
         {(items) =>
           items.length ? (
@@ -533,24 +645,51 @@ export function FeedbackQueue() {
                 <article key={item.id}>
                   <header>
                     <strong>{item.type.replaceAll("_", " ")}</strong>
-                    <span>{item.status}</span>
+                    <label className="feedback-status-control">
+                      <span className="sr-only">Status</span>
+                      <select
+                        aria-label={`Status for feedback ${item.id}`}
+                        value={item.status}
+                        disabled={updatingId === item.id}
+                        onChange={(event) => changeStatus(item, event.target.value)}
+                      >
+                        {FEEDBACK_STATUSES.map((status) => (
+                          <option value={status} key={status}>{status}</option>
+                        ))}
+                      </select>
+                    </label>
                   </header>
                   <p>{item.what_noticed}</p>
                   {item.suggested_change && (
-                    <p>
-                      <b>Suggestion:</b> {item.suggested_change}
-                    </p>
+                    <p><b>Suggestion:</b> {item.suggested_change}</p>
                   )}
-                  <small>
-                    {item.page_label}
-                    {item.process_id ? ` · ${item.process_id}` : ""}
-                  </small>
+                  <div className="feedback-context-row">
+                    <small>
+                      {item.page_label}
+                      {item.process_id ? ` · ${item.process_id}` : ""}
+                    </small>
+                    <button type="button" onClick={() => onOpenPage?.(item)}>Open Page</button>
+                  </div>
+                  {updatingId === item.id && <small role="status">Saving…</small>}
+                  {item.history?.length > 0 && (
+                    <div className="feedback-history">
+                      <small>Status history</small>
+                      <ul>
+                        {item.history.slice(-3).map((history, index) => (
+                          <li key={`${history.created_at}-${index}`}>
+                            {history.previous_status || "new"} → {history.new_status}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </article>
               ))}
             </div>
           ) : (
             <div className="empty-state">
-              <h2>No feedback submitted yet</h2>
+              <h2>No feedback yet</h2>
+              <p>Submitted agent reports will appear here.</p>
             </div>
           )
         }
