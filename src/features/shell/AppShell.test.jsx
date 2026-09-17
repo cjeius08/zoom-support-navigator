@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { cwd } from 'node:process'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
@@ -42,8 +43,8 @@ it('exposes mobile navigation state and closes it after navigation', async () =>
 })
 
 it('uses the tablet breakpoint for the authenticated sidebar without leaving a closed-sidebar sliver', () => {
-  const baseCss = readFileSync(join(process.cwd(), 'src/styles.css'), 'utf8')
-  const responsiveCss = readFileSync(join(process.cwd(), 'src/features/shell/responsiveShell.css'), 'utf8')
+  const baseCss = readFileSync(join(cwd(), 'src/styles.css'), 'utf8')
+  const responsiveCss = readFileSync(join(cwd(), 'src/features/shell/responsiveShell.css'), 'utf8')
   const css = `${baseCss}\n${responsiveCss}`
   expect(css).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.menu-toggle\s*\{[^}]*display:/)
   expect(css).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.sidebar\s*\{[^}]*translateX\(calc\(-100%\s*-\s*1rem\)\)/)
