@@ -73,3 +73,22 @@ it('suggests and opens the intended process even when the search has a typo', as
   const dialog = screen.getByRole('dialog')
   expect(within(dialog).getByRole('heading', { name: /Troubleshooting When You Can’t Join a Zoom Meeting/i })).toBeInTheDocument()
 })
+
+it('opens the exact process selected from meeting control suggestions', async () => {
+  const user = userEvent.setup()
+  render(<Navigator />)
+  const search = screen.getByRole('combobox', { name: 'Search support processes' })
+
+  await user.type(search, 'meeting control')
+
+  const listbox = screen.getByRole('listbox', { name: 'Search suggestions' })
+  const selectedOption = within(listbox).getAllByRole('option')[0]
+  const selectedTitle = selectedOption.querySelector('strong')?.textContent
+  expect(selectedTitle).toBeTruthy()
+
+  await user.click(selectedOption)
+
+  const dialog = screen.getByRole('dialog')
+  expect(within(dialog).getByRole('heading', { name: selectedTitle })).toBeInTheDocument()
+  expect(screen.queryByRole('listbox', { name: 'Search suggestions' })).not.toBeInTheDocument()
+})
