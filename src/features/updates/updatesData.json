@@ -1,0 +1,70 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "effectiveDate": "2026-09-18",
+    "owner": "Cjei A.",
+    "collaborator": "Nina F.",
+    "nextReview": "2026-10-18"
+  },
+  "updates": [
+    {
+      "id": "updates-console-metadata",
+      "date": "2026-09-18",
+      "area": "Support Console",
+      "title": "What’s New / Updates and console metadata",
+      "changed": "Added a shared update history for user-facing changes, plus visible console version, effective date, last updated date, owner, collaborator, and next review information.",
+      "checks": [
+        "Open What’s New / Updates from the sidebar or the version chip in the header.",
+        "Confirm Console Version 1.0, Owner Cjei A., Collaborator Nina F., and the review dates are visible.",
+        "Confirm update entries show both What changed and What to check."
+      ]
+    },
+    {
+      "id": "call-guide-script-cleanup",
+      "date": "2026-09-18",
+      "area": "Call Guide",
+      "title": "Duplicate combined Suggested Script removed",
+      "changed": "Removed the long combined Suggested Script block that repeated scripts already shown under individual steps. Per-step scripts remain where they are needed, while source-level scripts are shown once as Additional Source Script.",
+      "checks": [
+        "Open a process with multiple scripted steps and confirm the giant duplicate script block is gone.",
+        "Confirm each relevant step still has its own Suggested Script and Copy Script control.",
+        "If a process has a source-level script, confirm it appears once as Additional Source Script."
+      ]
+    },
+    {
+      "id": "smart-search",
+      "date": "2026-09-18",
+      "area": "Navigator Search",
+      "title": "Smart Search and live suggestions",
+      "changed": "Search now normalizes case, apostrophes, punctuation, and spacing; understands controlled support aliases and synonyms; tolerates close typos; shows suggestions from short prefixes; keeps the list to six results; keeps the dropdown fully visible; and opens the exact process selected.",
+      "checks": [
+        "Search cant jion, camra, bluetooh, and meeting control and confirm useful suggestions appear while typing.",
+        "Confirm the suggestions are fully visible over the content below the search field.",
+        "Click a suggestion and confirm the process that opens has the same title as the selected suggestion."
+      ]
+    },
+    {
+      "id": "responsive-console-shell",
+      "date": "2026-09-18",
+      "area": "Console Navigation",
+      "title": "Responsive sidebar and compact header stabilized",
+      "changed": "Unified the authenticated console at the 800px breakpoint, fixed tablet overlap and hidden-sidebar slivers, added click-outside closing, closed the drawer after navigation, exposed menu state for accessibility, and corrected the compact Zoom Support Console brand alignment.",
+      "checks": [
+        "At desktop width, confirm the sidebar remains normally visible.",
+        "At 768px or mobile width, confirm the hamburger opens the drawer and the backdrop closes it.",
+        "Confirm the closed drawer leaves no strip on the left edge and the header brand does not stack or collide."
+      ]
+    },
+    {
+      "id": "navigator-accessibility",
+      "date": "2026-09-18",
+      "area": "Navigator",
+      "title": "Accessible category icons and keyboard search controls",
+      "changed": "Added distinct visual icons to support category cards and retained keyboard-friendly search suggestion controls so agents can move through suggestions with the keyboard.",
+      "checks": [
+        "Confirm every support category card has a distinct visible icon.",
+        "In search, use Arrow Up or Arrow Down, Enter, and Escape and confirm the suggestion list responds correctly."
+      ]
+    }
+  ]
+}
