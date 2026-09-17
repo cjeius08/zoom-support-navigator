@@ -16,12 +16,12 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Test navigator and shell
-        run: npm test -- --run src/features/navigator/Navigator.test.jsx src/features/shell/AppShell.test.jsx
+      - name: Test
+        run: npm test -- --run
       - name: Lint
         run: npm run lint
       - name: Build
