@@ -1,6 +1,47 @@
-/* Phase 1: authenticated shell responsiveness only. Keep visual design/content unchanged. */
+/* Authenticated shell and workspace reflow. Keep visual design/content unchanged. */
 .sidebar-backdrop { display: none; }
 
+.app-main {
+  min-width: 0;
+  overflow-x: clip;
+}
+
+.navigator,
+.navigator > *,
+.navigator-entry-grid > *,
+.agent-workflow > * {
+  min-width: 0;
+}
+
+/* Compact desktop: stack the main Navigator columns before they become cramped beside the fixed sidebar. */
+@media (max-width: 1100px) {
+  .navigator-entry-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .agent-workflow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .agent-workflow ol {
+    width: 100%;
+  }
+}
+
+/* Narrow desktop / landscape tablet: reduce dense multi-column content while keeping the desktop shell. */
+@media (max-width: 920px) {
+  .category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .agent-workflow ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Tablet and mobile shell: sidebar becomes an off-canvas drawer. */
 @media (max-width: 800px) {
   .menu-toggle {
     display: grid;
@@ -65,6 +106,27 @@
 
   .team-list article {
     flex-wrap: wrap;
+  }
+}
+
+/* Narrow phones / narrow restored windows: finish the reflow to one column. */
+@media (max-width: 620px) {
+  .category-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .agent-workflow ol {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    padding: 1.25rem;
+  }
+
+  .feedback-fab {
+    right: .75rem;
+    bottom: .75rem;
+    max-width: calc(100vw - 1.5rem);
   }
 }
 
