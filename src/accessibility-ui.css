@@ -140,12 +140,15 @@
 /* Give the Support Console its own recognizable product mark instead of a generic/plain symbol. */
 .console-brand {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: .62rem;
+  min-width: 0;
 }
 
 .console-brand-copy {
   display: grid;
+  min-width: 0;
   gap: .02rem;
 }
 
