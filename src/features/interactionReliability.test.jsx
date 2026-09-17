@@ -6,10 +6,13 @@ import { TrainingResources } from './training/TrainingResources'
 import { Navigator } from './navigator/Navigator'
 import { AppShell } from './shell/AppShell'
 import { TeamManagement } from './admin/AdminViews'
+import App from '../App'
 
-const { loadTeam, runAdminAction } = vi.hoisted(() => ({
+const { loadTeam, runAdminAction, getCurrentProfile, signOut } = vi.hoisted(() => ({
   loadTeam: vi.fn(),
   runAdminAction: vi.fn(),
+  getCurrentProfile: vi.fn(),
+  signOut: vi.fn(),
 }))
 
 vi.mock('../lib/adminApi', () => ({
@@ -17,6 +20,15 @@ vi.mock('../lib/adminApi', () => ({
   loadTeam,
   loadUsage: vi.fn(),
   runAdminAction,
+}))
+
+vi.mock('../lib/authApi', () => ({
+  activateAccount: vi.fn(),
+  changeOwnPassword: vi.fn(),
+  getCurrentProfile,
+  loginWithUsername: vi.fn(),
+  signOut,
+  updateOwnAvatar: vi.fn(),
 }))
 
 const agentProfile = { username: 'agent_1', initials: 'AG', role: 'agent', avatar_id: null }
@@ -31,7 +43,11 @@ function deferred() {
 beforeEach(() => {
   loadTeam.mockReset()
   runAdminAction.mockReset()
+  getCurrentProfile.mockReset()
+  signOut.mockReset()
   loadTeam.mockResolvedValue([{ id: 'agent-1', username: 'agent_one', initials: 'AO', role: 'agent', status: 'active', avatar_id: null, presence: 'active' }])
+  getCurrentProfile.mockResolvedValue(agentProfile)
+  signOut.mockResolvedValue(undefined)
   Object.defineProperty(navigator, 'clipboard', {
     configurable: true,
     value: { writeText: vi.fn().mockResolvedValue(undefined) },
@@ -54,6 +70,19 @@ it('keeps Feedback Cancel inside the Support Console', async () => {
 it('opens the exact related training video requested by a process', () => {
   render(<TrainingResources initialVideoId="training-05" />)
   const dialog = screen.getByRole('dialog', { name: 'How to Join a Zoom Meeting' })
+  expect(within(dialog).getByTitle('Video player: How to Join a Zoom Meeting')).toBeInTheDocument()
+})
+
+
+it('carries a related training selection through the full app route', async () => {
+  const user = userEvent.setup()
+  render(<App />)
+
+  const route = await screen.findByRole('button', { name: /Customer cannot join/i })
+  await user.click(route)
+  await user.click(screen.getByRole('button', { name: 'How to Join a Zoom Meeting' }))
+
+  const dialog = await screen.findByRole('dialog', { name: 'How to Join a Zoom Meeting' })
   expect(within(dialog).getByTitle('Video player: How to Join a Zoom Meeting')).toBeInTheDocument()
 })
 
@@ -146,4 +175,29 @@ it('prevents duplicate admin invite submissions while the request is pending', a
 
   pending.resolve({ invite_code: 'ABCDEF-012345' })
   await waitFor(() => expect(screen.getByText('ABCDEF-012345')).toBeInTheDocument())
+})
+
+
+it('prevents duplicate admin account actions while the request is pending', async () => {
+  const user = userEvent.setup()
+  const pending = deferred()
+  runAdminAction.mockImplementation(() => pending.promise)
+  render(<TeamManagement />)
+
+  expect(await screen.findByText('agent_one')).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Manage agent_one' }))
+  await user.click(screen.getByRole('button', { name: 'Edit Username' }))
+  const username = screen.getByLabelText('Username')
+  await user.clear(username)
+  await user.type(username, 'agent_two')
+  await user.click(screen.getByRole('button', { name: 'Save Username' }))
+
+  const busy = screen.getByRole('button', { name: 'Processing…' })
+  expect(busy).toBeDisabled()
+  expect(runAdminAction).toHaveBeenCalledTimes(1)
+  await user.click(busy)
+  expect(runAdminAction).toHaveBeenCalledTimes(1)
+
+  pending.resolve({})
+  await waitFor(() => expect(screen.queryByRole('dialog', { name: /Manage agent_one/i })).not.toBeInTheDocument())
 })
