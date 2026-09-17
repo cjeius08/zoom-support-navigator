@@ -129,21 +129,21 @@ export function ProcessDrawer({ process, onClose, onOpenTraining }) {
                   </ul>
                 </section>
               )}
-              <section className="suggested-script">
-                <p className="eyebrow">{guide.suggestedScript.label}</p>
-                <blockquote>{guide.suggestedScript.text}</blockquote>
-                <button onClick={() => copyText(guide.suggestedScript.text)}>
-                  Copy Script
-                </button>
-                {guide.suggestedScript.origin === "derived" && (
+              {guide.suggestedScript.origin === "derived" && (
+                <section className="suggested-script">
+                  <p className="eyebrow">{guide.suggestedScript.label}</p>
+                  <blockquote>{guide.suggestedScript.text}</blockquote>
+                  <button onClick={() => copyText(guide.suggestedScript.text)}>
+                    Copy Script
+                  </button>
                   <small>
                     Console wording derived only from this approved process.
                   </small>
-                )}
-              </section>
-              {guide.globalScripts.slice(1).map((script, index) => (
-                <section className="suggested-script" key={`closing-${index}`}>
-                  <p className="eyebrow">Additional Source Closing Script</p>
+                </section>
+              )}
+              {guide.globalScripts.map((script, index) => (
+                <section className="suggested-script" key={`global-${index}`}>
+                  <p className="eyebrow">Additional Source Script</p>
                   <blockquote>{script}</blockquote>
                   <button onClick={() => copyText(script)}>Copy Script</button>
                 </section>
