@@ -3,15 +3,17 @@ import userEvent from '@testing-library/user-event'
 import { expect, it } from 'vitest'
 import { Navigator } from './Navigator'
 
-it('restores common routes, metadata, and the four-tab process drawer', async () => {
+it('opens a source-driven Call Guide with safe copy actions before lossless source views', async () => {
   const user = userEvent.setup()
   render(<Navigator />)
   expect(screen.getByRole('heading', { name: 'Locate → Describe → Guide → Confirm' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Common Issues' })).toBeInTheDocument()
   await user.click(screen.getByRole('button', { name: /Customer cannot join/i }))
   const dialog = screen.getByRole('dialog')
-  expect(within(dialog).getByRole('tab', { name: 'Quick View' })).toHaveAttribute('aria-selected', 'true')
+  expect(within(dialog).getByRole('tab', { name: 'Call Guide' })).toHaveAttribute('aria-selected', 'true')
   expect(within(dialog).getByRole('button', { name: 'Copy Quick Steps' })).toBeInTheDocument()
+  expect(within(dialog).getAllByRole('button', { name: 'Copy Script' }).length).toBeGreaterThan(0)
+  expect(within(dialog).getAllByText(/Confirm with Customer/i).length).toBeGreaterThan(0)
   await user.click(within(dialog).getByRole('tab', { name: 'Visual Guide' }))
   expect(within(dialog).getByText(/No visual reference available|Visual 1/i)).toBeInTheDocument()
   await user.click(within(dialog).getByRole('tab', { name: 'Source Pages' }))
