@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { expect, it } from 'vitest'
+import { expect, it, vi } from 'vitest'
 import { Navigator } from './Navigator'
 
 it('opens a source-driven Call Guide with safe copy actions before lossless source views', async () => {
@@ -91,4 +91,30 @@ it('opens the exact process selected from meeting control suggestions', async ()
   const dialog = screen.getByRole('dialog')
   expect(within(dialog).getByRole('heading', { name: selectedTitle })).toBeInTheDocument()
   expect(screen.queryByRole('listbox', { name: 'Search suggestions' })).not.toBeInTheDocument()
+})
+
+
+it('emits only identifier-based analytics events for support interactions', async () => {
+  const user = userEvent.setup()
+  const onTrackEvent = vi.fn()
+  render(<Navigator onTrackEvent={onTrackEvent} />)
+
+  await user.click(screen.getByRole('button', { name: /Audio & Microphone/i }))
+  expect(onTrackEvent).toHaveBeenCalledWith({
+    eventType: 'category_open',
+    routeId: 'navigator',
+    categoryId: 'audio',
+  })
+
+  await user.click(screen.getByRole('button', { name: /Customer cannot join/i }))
+  const dialog = screen.getByRole('dialog')
+  await user.click(within(dialog).getAllByRole('button', { name: 'Copy Script' })[0])
+
+  const copyEvent = onTrackEvent.mock.calls.map(([event]) => event).find(event => event.eventType === 'copy_action')
+  expect(copyEvent).toBeTruthy()
+  expect(copyEvent).toMatchObject({ routeId: 'navigator' })
+  expect(Object.keys(copyEvent)).toEqual(expect.arrayContaining(['eventType', 'routeId', 'processId', 'categoryId', 'toolId']))
+  expect(copyEvent).not.toHaveProperty('text')
+  expect(copyEvent).not.toHaveProperty('searchQuery')
+  expect(copyEvent).not.toHaveProperty('clipboard')
 })
