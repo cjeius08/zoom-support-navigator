@@ -49,3 +49,10 @@ it('uses the tablet breakpoint for the authenticated sidebar without leaving a c
   expect(css).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.menu-toggle\s*\{[^}]*display:/)
   expect(css).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.sidebar\s*\{[^}]*translateX\(calc\(-100%\s*-\s*1rem\)\)/)
 })
+
+it('keeps the console brand horizontal and removes nonessential header text on compact screens', () => {
+  const accessibilityCss = readFileSync(join(cwd(), 'src/accessibility-ui.css'), 'utf8')
+  const responsiveCss = readFileSync(join(cwd(), 'src/features/shell/responsiveShell.css'), 'utf8')
+  expect(accessibilityCss).toMatch(/\.console-brand\s*\{[^}]*flex-direction:\s*row/)
+  expect(responsiveCss).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.header-context,[\s\S]*?\.account-menu \.account-copy\s*\{[^}]*display:\s*none/)
+})
