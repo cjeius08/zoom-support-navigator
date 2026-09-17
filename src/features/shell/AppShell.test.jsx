@@ -85,6 +85,16 @@ it('keeps admin navigation scrollable while console metadata stays visible in sh
   expect(responsiveCss).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.console-meta-mini span\s*\{[^}]*overflow-wrap:\s*anywhere/)
 })
 
+it('keeps the sidebar footer visible when a wide browser window has limited vertical space', () => {
+  const responsiveCss = readFileSync(join(cwd(), 'src/features/shell/responsiveShell.css'), 'utf8')
+  const globalCss = responsiveCss.split('@media')[0]
+
+  expect(globalCss).toMatch(/\.sidebar\s*\{[^}]*overflow:\s*hidden/)
+  expect(globalCss).toMatch(/\.sidebar\s*>\s*div:first-child\s*\{[^}]*flex:\s*1\s+1\s+auto[^}]*min-height:\s*0[^}]*overflow-y:\s*auto/)
+  expect(globalCss).toMatch(/\.sidebar-footer\s*\{[^}]*flex:\s*0\s+0\s+auto/)
+  expect(globalCss).toMatch(/\.console-meta-mini span\s*\{[^}]*overflow-wrap:\s*anywhere/)
+})
+
 it('keeps the console brand horizontal and removes nonessential header text on compact screens', () => {
   const accessibilityCss = readFileSync(join(cwd(), 'src/accessibility-ui.css'), 'utf8')
   const responsiveCss = readFileSync(join(cwd(), 'src/features/shell/responsiveShell.css'), 'utf8')
