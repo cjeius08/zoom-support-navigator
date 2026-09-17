@@ -1,6 +1,29 @@
 /* Authenticated shell and workspace reflow. Keep visual design/content unchanged. */
 .sidebar-backdrop { display: none; }
 
+/* Vertical-space protection applies at every width, including wide but short windows. */
+.sidebar {
+  overflow: hidden;
+}
+
+.sidebar > div:first-child {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding-right: .2rem;
+}
+
+.sidebar-footer {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.console-meta-mini span {
+  overflow-wrap: anywhere;
+}
+
 .app-main {
   min-width: 0;
   overflow-x: clip;
