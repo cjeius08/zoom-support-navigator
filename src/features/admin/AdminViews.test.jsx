@@ -3,10 +3,16 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, expect, it, vi } from 'vitest'
 
 const loadTeam = vi.fn()
+const loadUsage = vi.fn()
+const loadFeedback = vi.fn()
+const updateFeedbackStatus = vi.fn()
 const runAdminAction = vi.fn()
-vi.mock('../../lib/adminApi', () => ({ loadFeedback: vi.fn(), loadTeam, loadUsage: vi.fn(), runAdminAction }))
+vi.mock('../../lib/adminApi', () => ({ loadFeedback, loadTeam, loadUsage, updateFeedbackStatus, runAdminAction }))
 
 beforeEach(() => {
+  loadUsage.mockReset()
+  loadFeedback.mockReset()
+  updateFeedbackStatus.mockReset()
   loadTeam.mockResolvedValue([{ id: 'agent-1', username: 'agent_one', initials: 'AO', role: 'agent', status: 'active', avatar_id: null, presence: 'active' }])
   runAdminAction.mockReset()
 })
@@ -40,4 +46,75 @@ it('labels a pending member action as regeneration', async () => {
   const { TeamManagement } = await import('./AdminViews')
   render(<TeamManagement />)
   expect(await screen.findByRole('button', { name: /regenerate invite for AB/i })).toBeInTheDocument()
+})
+
+
+it('shows accurate presence and zero-usage users across usage periods', async () => {
+  const now = new Date()
+  const recent = now.toISOString()
+  const tenMinutesAgo = new Date(now.getTime() - 10 * 60 * 1000).toISOString()
+  loadUsage.mockResolvedValue({
+    profiles: [
+      { id: 'u1', username: 'active_agent', initials: 'AA', status: 'active' },
+      { id: 'u2', username: 'idle_agent', initials: 'IA', status: 'active' },
+      { id: 'u3', username: 'zero_agent', initials: 'ZA', status: 'active' },
+    ],
+    events: [
+      { user_id: 'u1', event_type: 'process_open', process_id: 'audio-one', category_id: 'audio', tool_id: null, created_at: recent },
+    ],
+    sessions: [
+      { session_id: 's1', user_id: 'u1', started_at: recent, ended_at: null, active_seconds: 600, last_interaction: recent },
+    ],
+    presence: [
+      { user_id: 'u1', state: 'active', last_heartbeat: recent, last_interaction: recent },
+      { user_id: 'u2', state: 'active', last_heartbeat: recent, last_interaction: tenMinutesAgo },
+    ],
+  })
+
+  const { UsageAnalytics } = await import('./AdminViews')
+  render(<UsageAnalytics />)
+
+  expect(await screen.findByLabelText('Total Users: 3')).toBeInTheDocument()
+  expect(screen.getByLabelText('Active Now: 1')).toBeInTheDocument()
+  expect(screen.getByLabelText('Idle: 1')).toBeInTheDocument()
+  expect(screen.getByLabelText('Offline: 1')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Daily' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Weekly' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Monthly' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Custom' })).toBeInTheDocument()
+  expect(screen.getByText('zero_agent')).toBeInTheDocument()
+})
+
+it('lets JA update feedback status, see history, and open the stored page', async () => {
+  const user = userEvent.setup()
+  const onOpenPage = vi.fn()
+  loadFeedback.mockResolvedValue([{
+    id: 'feedback-1',
+    type: 'ui_ux',
+    status: 'new',
+    route_id: 'navigator',
+    process_id: 'zoom-audio-troubleshooting',
+    category_id: 'audio',
+    page_label: 'Navigator',
+    what_noticed: 'The route needs review.',
+    suggested_change: null,
+    created_at: new Date().toISOString(),
+    history: [{ previous_status: 'new', new_status: 'reviewing', created_at: new Date().toISOString() }],
+  }])
+  updateFeedbackStatus.mockResolvedValue({ id: 'feedback-1', status: 'reviewing' })
+
+  const { FeedbackQueue } = await import('./AdminViews')
+  render(<FeedbackQueue onOpenPage={onOpenPage} />)
+
+  expect(await screen.findByText('The route needs review.')).toBeInTheDocument()
+  expect(screen.getByText(/new → reviewing/i)).toBeInTheDocument()
+
+  await user.selectOptions(screen.getByLabelText('Status for feedback feedback-1'), 'reviewing')
+  expect(updateFeedbackStatus).toHaveBeenCalledWith('feedback-1', 'reviewing')
+
+  await user.click(screen.getByRole('button', { name: 'Open Page' }))
+  expect(onOpenPage).toHaveBeenCalledWith(expect.objectContaining({
+    route_id: 'navigator',
+    process_id: 'zoom-audio-troubleshooting',
+  }))
 })
