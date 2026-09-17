@@ -41,7 +41,9 @@ it('exposes mobile navigation state and closes it after navigation', async () =>
 })
 
 it('uses the tablet breakpoint for the authenticated sidebar without leaving a closed-sidebar sliver', () => {
-  const css = readFileSync(new URL('../../styles.css', import.meta.url), 'utf8')
+  const baseCss = readFileSync(new URL('../../styles.css', import.meta.url), 'utf8')
+  const responsiveCss = readFileSync(new URL('./responsiveShell.css', import.meta.url), 'utf8')
+  const css = `${baseCss}\n${responsiveCss}`
   expect(css).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.menu-toggle\s*\{[^}]*display:/)
   expect(css).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.sidebar\s*\{[^}]*translateX\(calc\(-100%\s*-\s*1rem\)\)/)
 })
