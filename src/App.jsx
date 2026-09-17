@@ -11,6 +11,7 @@ import { TrainingResources } from './features/training/TrainingResources'
 import { FeedbackPage } from './features/feedback/FeedbackPage'
 import { assetUrl } from './lib/assetUrl'
 import './styles.css'
+import './accessibility-ui.css'
 
 export default function App() {
   const [activationOpen, setActivationOpen] = useState(false)
