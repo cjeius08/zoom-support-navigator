@@ -76,6 +76,15 @@ it('progressively reflows the workspace while the browser window is resized', ()
   expect(responsiveCss).toMatch(/@media\s*\(max-width:\s*620px\)[\s\S]*?\.agent-workflow ol\s*\{[^}]*grid-template-columns:\s*1fr/)
 })
 
+it('keeps admin navigation scrollable while console metadata stays visible in short mobile drawers', () => {
+  const responsiveCss = readFileSync(join(cwd(), 'src/features/shell/responsiveShell.css'), 'utf8')
+
+  expect(responsiveCss).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.sidebar\s*\{[^}]*overflow:\s*hidden/)
+  expect(responsiveCss).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.sidebar\s*>\s*div:first-child\s*\{[^}]*min-height:\s*0[^}]*overflow-y:\s*auto/)
+  expect(responsiveCss).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.sidebar-footer\s*\{[^}]*flex:\s*0\s+0\s+auto/)
+  expect(responsiveCss).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.console-meta-mini span\s*\{[^}]*overflow-wrap:\s*anywhere/)
+})
+
 it('keeps the console brand horizontal and removes nonessential header text on compact screens', () => {
   const accessibilityCss = readFileSync(join(cwd(), 'src/accessibility-ui.css'), 'utf8')
   const responsiveCss = readFileSync(join(cwd(), 'src/features/shell/responsiveShell.css'), 'utf8')
