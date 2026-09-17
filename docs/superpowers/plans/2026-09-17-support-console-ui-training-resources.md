@@ -21,5 +21,5 @@ Preserve all current support, Supabase, avatar, and GitHub Pages functionality w
 ## Verification and release
 
 1. [x] Run focused UI/training tests, full tests, lint, build, diff check, and a frontend secret scan.
-2. [ ] Push to the dedicated Zoom repository only; deploy via existing GitHub Pages workflow.
-3. [ ] Verify the live bundle, referenced process/visual/avatar assets, training thumbnails/player URLs, and production CORS. Report authenticated-only checks that cannot be completed without the user's private credential separately.
+2. [x] Push to the dedicated Zoom repository only; deploy via existing GitHub Pages workflow.
+3. [x] Verify the live bundle, representative process/visual/avatar assets, training-player code path, and production CORS. JA login remains an authenticated manual smoke check because no credential is retained or exposed.
