@@ -17,6 +17,13 @@ export async function changeOwnPassword(password) {
   return data
 }
 
+export async function activateAccount(payload) {
+  if (!supabaseConfigured) throw new Error('Supabase is not configured.')
+  const { data, error } = await supabase.functions.invoke('activate-account', { body: { initials: payload.initials, invite_code: payload.inviteCode, username: payload.username, password: payload.password } })
+  if (error || data?.error) throw new Error(data?.error ?? 'Activation could not be completed.')
+  return data
+}
+
 export async function getCurrentProfile() {
   if (!supabaseConfigured) return null
   const { data: sessionData } = await supabase.auth.getSession()

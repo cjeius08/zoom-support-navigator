@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { validateCredentials } from './features/auth/credentials'
 import { ForcePasswordChange } from './features/auth/ForcePasswordChange'
-import { changeOwnPassword, getCurrentProfile, loginWithUsername, signOut, updateOwnAvatar } from './lib/authApi'
+import { activateAccount, changeOwnPassword, getCurrentProfile, loginWithUsername, signOut, updateOwnAvatar } from './lib/authApi'
+import { ActivateAccountForm } from './features/auth/ActivateAccountForm'
 import { submitFeedback } from './lib/feedbackApi'
 import { Navigator } from './features/navigator/Navigator'
 import { AppShell } from './features/shell/AppShell'
+import { AdminHome, FeedbackQueue, TeamManagement, UsageAnalytics } from './features/admin/AdminViews'
 import './styles.css'
 
 export default function App() {
@@ -12,6 +14,7 @@ export default function App() {
   const [error, setError] = useState('')
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [view, setView] = useState('navigator')
 
   useEffect(() => { getCurrentProfile().then(setProfile).catch(() => signOut()).finally(() => setLoading(false)) }, [])
 
@@ -28,8 +31,12 @@ export default function App() {
 
   if (loading) return <main className="access-shell"><p>Loading secure session…</p></main>
   if (profile?.must_change_password) return <ForcePasswordChange onChange={async password => { await changeOwnPassword(password); setProfile(await getCurrentProfile()) }} onLogout={async () => { await signOut(); setProfile(null) }} />
-  if (profile) return <AppShell profile={profile} onAvatarChange={async avatarId => { await updateOwnAvatar(avatarId); setProfile(current => ({ ...current, avatar_id: avatarId })) }} onLogout={async () => { await signOut(); setProfile(null) }}><Navigator onFeedback={submitFeedback} /></AppShell>
+  if (profile) {
+    const content = view==='navigator'?<Navigator onFeedback={submitFeedback}/>:view==='admin'?<AdminHome onNavigate={setView}/>:view==='team'?<TeamManagement/>:view==='usage'?<UsageAnalytics/>:<FeedbackQueue/>
+    return <AppShell profile={profile} currentView={view} onNavigate={setView} onPasswordChange={changeOwnPassword} onAvatarChange={async avatarId=>{await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}} onLogout={async()=>{await signOut();setProfile(null)}}>{content}</AppShell>
+  }
 
+  if (activationOpen) return <main className="access-shell"><section className="access-card"><ActivateAccountForm onActivate={activateAccount} onCancel={()=>setActivationOpen(false)}/></section></main>
   return <main className="access-shell">
     <section className="access-card" aria-labelledby="app-title">
       <p className="eyebrow">Zoom</p>
@@ -42,7 +49,6 @@ export default function App() {
         <button type="submit">Sign In</button>
       </form>
       <button className="link-button" type="button" onClick={() => setActivationOpen(!activationOpen)}>Activate Account</button>
-      {activationOpen && <p className="activation-note">Use the initials and one-time invite code provided by JA to activate your account.</p>}
     </section>
   </main>
 }

@@ -8,4 +8,5 @@ export const AVATAR_IDS = Object.freeze(
 )
 
 export const isApprovedAvatarId = avatarId => AVATAR_IDS.includes(avatarId)
-export const avatarUrl = avatarId => isApprovedAvatarId(avatarId) ? `/avatars/${avatarId}.png` : null
+export const avatarUrl = avatarId => isApprovedAvatarId(avatarId) ? assetUrl(`avatars/${avatarId}.png`) : null
+import { assetUrl } from '../../lib/assetUrl'

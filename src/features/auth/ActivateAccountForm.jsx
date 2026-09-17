@@ -1,0 +1,9 @@
+import { useState } from 'react'
+import { validateActivation } from './credentials'
+
+export function ActivateAccountForm({ onActivate, onCancel }) {
+  const [error,setError]=useState(''); const [saving,setSaving]=useState(false); const [complete,setComplete]=useState(false)
+  async function submit(event){event.preventDefault(); const form=new FormData(event.currentTarget); const values={initials:String(form.get('initials')).trim().toUpperCase(),inviteCode:String(form.get('inviteCode')).trim(),username:String(form.get('username')).trim().toLowerCase(),password:String(form.get('password')),confirmPassword:String(form.get('confirmPassword'))}; const result=validateActivation(values); const message=Object.values(result.errors)[0]; if(message)return setError(message); setSaving(true);setError('');try{await onActivate(values);setComplete(true)}catch(e){setError(e.message)}finally{setSaving(false)}}
+  if(complete)return <section><h2>Account activated</h2><p>You can now sign in with your username and password.</p><button onClick={onCancel}>Return to sign in</button></section>
+  return <form onSubmit={submit} className="activation-form"><h2>Activate Account</h2><p>Use the initials and one-time invite code provided by JA.</p><label>Initials<input name="initials" autoComplete="off" maxLength={3} required/></label><label>Invite code<input name="inviteCode" autoComplete="one-time-code" required/></label><label>Choose username<input name="username" autoComplete="username" required/></label><label>Password<input name="password" type="password" autoComplete="new-password" required/></label><label>Confirm password<input name="confirmPassword" type="password" autoComplete="new-password" required/></label>{error&&<p role="alert">{error}</p>}<div className="dialog-actions"><button type="button" onClick={onCancel}>Cancel</button><button disabled={saving}>{saving?'Activating…':'Activate'}</button></div></form>
+}
