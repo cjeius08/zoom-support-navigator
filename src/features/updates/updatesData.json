@@ -8,6 +8,19 @@
   },
   "updates": [
     {
+      "id": "progressive-window-reflow",
+      "date": "2026-09-18",
+      "area": "Responsive Layout",
+      "title": "Workspace now follows browser window resizing progressively",
+      "changed": "Improved responsive behavior so the support workspace reflows in stages as the browser window becomes narrower instead of waiting for one mobile breakpoint. The Navigator main columns stack on compact desktop, category cards and workflow steps reduce from multiple columns as space tightens, and the mobile sidebar still switches to the off-canvas drawer at tablet widths.",
+      "checks": [
+        "Start with the browser maximized, then slowly drag the window narrower and confirm content reflows without horizontal clipping or overlapping.",
+        "Around compact desktop widths, confirm Common Issues moves below the main category section before the cards become cramped.",
+        "Continue narrowing the window and confirm category cards move from three columns to two, then one, while the four-step workflow becomes two columns, then one.",
+        "At tablet/mobile widths, confirm the fixed sidebar changes to the hamburger drawer and leaves no hidden strip or content overlap."
+      ]
+    },
+    {
       "id": "updates-console-metadata",
       "date": "2026-09-18",
       "area": "Support Console",
