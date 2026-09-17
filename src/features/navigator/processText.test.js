@@ -40,6 +40,11 @@ describe('buildCallGuide', () => {
     expect(guide.suggestedScript.label).toBe('Console Suggested Script')
   })
 
+  it('keeps every source-level closing script separately available', () => {
+    const guide = buildCallGuide({ text: 'Process / Step-by-Step Guide\n1. Help\nDo the approved action.\nSample Closing Scripts:\nFirst approved closing.\nSecond approved closing.' })
+    expect(guide.globalScripts).toEqual(['First approved closing.', 'Second approved closing.'])
+  })
+
   it('returns usable source-driven guidance for every approved process', () => {
     for (const process of PROCESSES) {
       const guide = buildCallGuide(process)

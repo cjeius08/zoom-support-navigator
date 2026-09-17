@@ -34,3 +34,10 @@ it('generates an invite one time from initials', async () => {
   expect(await screen.findByText('ABCDEF-012345')).toBeInTheDocument()
   expect(runAdminAction).toHaveBeenCalledWith({ action: 'generate_invite', initials: 'AB' })
 })
+
+it('labels a pending member action as regeneration', async () => {
+  loadTeam.mockResolvedValueOnce([{ id: 'pending-AB', initials: 'AB', pending: true, status: 'pending', role: 'agent', avatar_id: null }])
+  const { TeamManagement } = await import('./AdminViews')
+  render(<TeamManagement />)
+  expect(await screen.findByRole('button', { name: /regenerate invite for AB/i })).toBeInTheDocument()
+})

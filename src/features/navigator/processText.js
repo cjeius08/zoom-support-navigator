@@ -82,6 +82,7 @@ export function buildCallGuide(process) {
     const useLetteredStep = Boolean(lettered && (/\d/.test(lettered[1]) || !STEP_PATTERN.test(lines[index + 1] || '')))
     const stepMatch = inProcess ? (line.match(STEP_PATTERN) || (useLetteredStep ? lettered : null)) : null
     if (SAMPLE_SCRIPT_PATTERN.test(line)) {
+      if (/^sample closing scripts?/i.test(line)) currentStep = null
       collectingScript = true
       currentCallout = null
       continue
@@ -139,10 +140,11 @@ export function buildCallGuide(process) {
 
   return {
     steps,
+    globalScripts,
     quickGuide,
     callouts,
     referralDetails: [process?.referral, ...callouts.filter((callout) => callout.kind === 'referral').flatMap((callout) => callout.lines)].filter(Boolean),
     whatToAsk: questionLines.map((text) => ({ text, origin: 'source' })).concat(derivedQuestion ? [{ text: derivedQuestion, origin: 'derived' }] : []),
-    suggestedScript: allScripts.length ? { label: 'Suggested Script', origin: 'source', text: allScripts[0] } : { label: 'Console Suggested Script', origin: 'derived', text: derivedScript(process) },
+    suggestedScript: allScripts.length ? { label: 'Suggested Script', origin: 'source', text: allScripts.join('\n\n') } : { label: 'Console Suggested Script', origin: 'derived', text: derivedScript(process) },
   }
 }
