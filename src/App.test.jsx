@@ -10,4 +10,12 @@ describe('application access gate', () => {
     expect(screen.getByRole('button', { name: 'Activate Account' })).toBeInTheDocument()
     expect(screen.queryByLabelText('Email')).not.toBeInTheDocument()
   })
+
+  it('provides icon inputs and a password visibility control', async () => {
+    render(<App />)
+    await waitFor(() => expect(screen.getByLabelText('Username')).toBeInTheDocument())
+    expect(screen.getByTestId('username-icon')).toBeInTheDocument()
+    expect(screen.getByTestId('password-icon')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Show password' })).toBeInTheDocument()
+  })
 })
