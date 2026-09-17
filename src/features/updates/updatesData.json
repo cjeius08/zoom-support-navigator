@@ -8,6 +8,32 @@
   },
   "updates": [
     {
+      "id": "admin-analytics-accuracy",
+      "date": "2026-09-18",
+      "area": "Admin / Analytics",
+      "title": "Privacy-safe usage, presence, and feedback administration",
+      "changed": "Connected the existing analytics tables to the Support Console. Authenticated sessions now heartbeat roughly once per minute, active time stops after five minutes without interaction, stale presence is treated as offline, Usage Analytics includes zero-usage users with Daily/Weekly/Monthly/Custom views, and the Feedback Queue now supports audited status changes plus Open Page routing. Production CI also moved to Node 24 for compatibility with the current Supabase packages.",
+      "checks": [
+        "Sign in, use the Navigator, and confirm Admin Usage Analytics begins showing privacy-safe activity without storing search text, notes, clipboard content, or customer form values.",
+        "Leave the Console untouched for more than five minutes and confirm the account becomes Idle rather than continuing to accumulate active time; stale heartbeat records should display Offline.",
+        "In Usage Analytics, switch between Daily, Weekly, Monthly, and Custom and confirm every team member remains listed even when they have zero events.",
+        "In Feedback Queue, change a report status and confirm its history is recorded, then use Open Page to return to the stored process or safe Console page."
+      ]
+    },
+    {
+      "id": "interaction-reliability",
+      "date": "2026-09-18",
+      "area": "Interaction Reliability",
+      "title": "Dialogs, copy actions, training links, and admin actions stabilized",
+      "changed": "Repaired Feedback Cancel navigation, exact Related Training deep-links, per-button copy success/failure states, dialog Escape/focus trapping/focus restoration, profile save error recovery, and duplicate-submit protection for admin actions.",
+      "checks": [
+        "Cancel from the Feedback page and confirm you remain inside the Support Console.",
+        "Open a Related Training item from a process and confirm the exact selected video opens.",
+        "Use multiple Copy controls and confirm only the clicked control shows Copied ✓ or Copy failed.",
+        "Open process, report, profile, and admin dialogs with the keyboard and confirm Escape closes them and focus returns to the opener."
+      ]
+    },
+    {
       "id": "wide-short-window-sidebar-footer",
       "date": "2026-09-18",
       "area": "Responsive Navigation",
