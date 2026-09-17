@@ -30,3 +30,28 @@ it('shows source-page and Zoom-visual counts on process cards', async () => {
   expect(screen.getAllByText(/source pages?/i).length).toBeGreaterThan(0)
   expect(screen.getAllByText(/Zoom visuals?/i).length).toBeGreaterThan(0)
 })
+
+it('shows a friendly decorative icon on every support category card', () => {
+  render(<Navigator />)
+  const icons = screen.getAllByTestId('category-icon')
+  expect(icons).toHaveLength(7)
+  icons.forEach(icon => expect(icon).toHaveAttribute('aria-hidden', 'true'))
+})
+
+it('offers keyboard-accessible search suggestions and opens the highlighted process', async () => {
+  const user = userEvent.setup()
+  render(<Navigator />)
+  const search = screen.getByRole('combobox', { name: 'Search support processes' })
+
+  await user.type(search, 'camera')
+
+  expect(search).toHaveAttribute('aria-expanded', 'true')
+  const listbox = screen.getByRole('listbox', { name: 'Search suggestions' })
+  expect(within(listbox).getAllByRole('option').length).toBeGreaterThan(0)
+
+  await user.keyboard('{ArrowDown}')
+  expect(search).toHaveAttribute('aria-activedescendant')
+  await user.keyboard('{Enter}')
+
+  expect(screen.getByRole('dialog')).toBeInTheDocument()
+})

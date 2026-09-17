@@ -9,6 +9,7 @@ it('shows role-aware navigation and account controls', () => {
   expect(screen.getByRole('navigation')).toHaveTextContent('Training & Resources')
   expect(screen.getByRole('button', { name: /ja_admin/i })).toBeInTheDocument()
   expect(screen.getAllByTestId('nav-icon').length).toBeGreaterThan(3)
+  expect(screen.getByTestId('console-brand-icon')).toHaveAttribute('aria-hidden', 'true')
 })
 
 it('does not render admin navigation for agents', () => {
