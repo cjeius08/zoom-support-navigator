@@ -96,6 +96,6 @@ export function DeviceWalkthroughs() {
       </section>
     </section>
 
-    <p className="device-coming-next">Next Phase 3 batch: Browser + final device walkthrough QA/freeze.</p>
+    <p className="device-coming-next">Phase 3 device walkthrough baseline: Windows, Mac, iPhone, Android, and Browser.</p>
   </section>
 }
