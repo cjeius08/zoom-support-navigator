@@ -346,12 +346,20 @@ export const COMMON_ISSUE_ROUTES = [
         badge: 'Host has not started the session',
         body: 'Zoom’s current guidance says this means the participant has successfully connected to Zoom, but the host has not started the meeting/webinar yet.',
         action: 'Do not start audio, video, network, or reinstall troubleshooting solely because this screen appears. The participant can wait for the host or contact the host/organizer if the timing seems wrong.',
+        roleActions: {
+          Participant: 'Wait for the host to start the session. If the scheduled time seems wrong or the wait is unexpected, contact the host/organizer.',
+          Host: 'If you are the scheduled host, sign in to the correct Zoom account and start the scheduled meeting. If Zoom does not recognize your host access, stop and verify the organizer/account rather than troubleshooting participant audio or video.',
+        },
       },
       {
         title: 'Waiting Room',
         badge: 'Host controls admission',
         body: 'The participant is being held in the meeting’s Waiting Room. The host controls admission; the support agent cannot admit the participant.',
         action: 'Participant: remain in the Waiting Room or contact the meeting organizer if needed. Host: open Participants and select Admit next to the participant, or Admit all when appropriate.',
+        roleActions: {
+          Participant: 'Remain in the Waiting Room until the host admits you. Contact the organizer if admission is unexpectedly delayed.',
+          Host: 'Open Participants. In the Waiting Room section, select Admit next to the participant or Admit all when appropriate.',
+        },
       },
       {
         title: 'Scheduled for a different date or time',
@@ -416,6 +424,7 @@ export const COMMON_ISSUE_ROUTES = [
       },
       {
         title: 'Confirm the host allows participant sharing',
+        roles: ['Participant'],
         instruction: 'If the caller is a participant and sharing is unavailable or blocked, explain that the host can control whether participants may share. Do not bypass the host restriction.',
         expected: 'The issue is correctly identified as either a usable sharing control or a host-controlled permission.',
       },
@@ -705,6 +714,8 @@ export const COMMON_ISSUE_ROUTES = [
     subtitle: 'Known macOS connection error with a specific approved recovery path',
     classification: 'Specific macOS secure-connection error',
     classificationNote: 'Use this route only when the caller reports the exact “Unable to establish secure connection to Zoom” message on a Mac. Do not treat every connection problem as this known macOS error.',
+    supportedDevices: ['Mac'],
+    unsupportedDeviceNote: 'This approved secure-connection route is macOS-specific. For Windows, iPhone, Android, or Browser callers, return to Can’t join the meeting and classify the exact error instead.',
     searchPhrases: [
       'unable to establish secure connection', 'secure connection error', 'zoom secure connection error',
       'cant establish secure connection', 'cannot establish secure connection', 'secure connection to zoom',
@@ -777,6 +788,8 @@ export const COMMON_ISSUE_ROUTES = [
     subtitle: 'Headphones are connected but Zoom is using the wrong speaker or microphone',
     classification: 'Bluetooth audio-device selection or connection symptom',
     classificationNote: 'First separate device pairing from Zoom device selection. A headset can be paired to the computer or phone but still not be selected as Zoom’s active speaker and microphone.',
+    supportedDevices: ['Windows', 'Mac', 'iPhone', 'Android'],
+    unsupportedDeviceNote: 'This approved Bluetooth route covers the Zoom desktop and mobile apps. For Browser callers, use the general speaker/microphone route and the browser’s available audio-device controls instead of applying app-specific Bluetooth steps.',
     searchPhrases: [
       'bluetooth headset not working', 'bluetooth headphones not working', 'airpods not working zoom',
       'zoom not using bluetooth', 'cant hear through bluetooth', 'they cant hear me bluetooth',
@@ -796,11 +809,13 @@ export const COMMON_ISSUE_ROUTES = [
       },
       {
         title: 'Select the headset as both speaker and microphone',
+        devices: ['Windows', 'Mac'],
         instruction: 'Desktop: next to Mute/Unmute, open the audio-device choices and select the Bluetooth headset under both Microphone and Speaker. If it is not listed, reconnect the headset before continuing.',
         expected: 'Zoom shows the Bluetooth headset as the selected microphone and speaker.',
       },
       {
         title: 'Use the mobile Bluetooth audio path',
+        devices: ['iPhone', 'Android'],
         instruction: 'Android/iOS: join meeting audio using the internet-audio option shown on the device, then use the Bluetooth indicator when available to confirm the headset is selected. If the Bluetooth indicator is missing, reconnect the headset while in the meeting.',
         expected: 'Meeting audio routes through the Bluetooth headset on the mobile device.',
       },
@@ -908,6 +923,8 @@ export const COMMON_ISSUE_ROUTES = [
     subtitle: 'Set mute-on-join or choose not to connect audio for one meeting',
     classification: 'Pre-join microphone/audio preference',
     classificationNote: 'Keep “join muted” separate from “don’t connect to audio.” Joining muted still connects the caller to meeting audio; Don’t connect to audio prevents the Zoom audio connection for that join.',
+    supportedDevices: ['Windows', 'Mac', 'iPhone', 'Android'],
+    unsupportedDeviceNote: 'This approved mute-on-join route covers the Zoom desktop and mobile apps. Do not apply these app-setting labels to a Browser caller.',
     searchPhrases: [
       'join muted', 'always join muted', 'mute microphone when joining', 'mic muted on join',
       'keep my microphone muted', 'always mute my mic', 'dont connect to audio', 'join without audio',
@@ -921,11 +938,13 @@ export const COMMON_ISSUE_ROUTES = [
     checks: [
       {
         title: 'For every desktop meeting, enable Keep my microphone muted',
+        devices: ['Windows', 'Mac'],
         instruction: 'Desktop: sign in to Zoom, open Settings, choose Meetings & webinars, then under the join settings enable Keep my microphone muted.',
         expected: 'Future meetings start with the caller connected to audio but muted.',
       },
       {
         title: 'For mobile, use the platform mute-on-join setting',
+        devices: ['iPhone', 'Android'],
         instruction: 'Android/iOS: open Zoom Settings → Meetings and enable the mute-on-join option shown on that device, such as Always Mute My Microphone or Mute My Microphone.',
         expected: 'Future mobile meetings start with the microphone muted.',
       },
@@ -968,6 +987,8 @@ export const COMMON_ISSUE_ROUTES = [
     subtitle: 'Set the default camera state or change video for one meeting before joining',
     classification: 'Pre-join camera preference',
     classificationNote: 'First determine whether the caller wants a default for future meetings or only wants to change the next join. The desktop and mobile setting labels differ.',
+    supportedDevices: ['Windows', 'Mac', 'iPhone', 'Android'],
+    unsupportedDeviceNote: 'This approved camera-on-join route covers the Zoom desktop and mobile apps. Do not apply these app-setting labels to a Browser caller.',
     searchPhrases: [
       'camera off when joining', 'camera on when joining', 'video off when joining', 'video on when joining',
       'always join camera off', 'always join video off', 'keep my camera off', 'turn off my video join',
@@ -981,11 +1002,13 @@ export const COMMON_ISSUE_ROUTES = [
     checks: [
       {
         title: 'Set the desktop default with Keep my camera off',
+        devices: ['Windows', 'Mac'],
         instruction: 'Desktop: sign in to Zoom, open Settings → Meetings & webinars, then use Keep my camera off under the join experience. Enable it to join with camera off by default; disable it to allow camera-on joining.',
         expected: 'The desktop default reflects the caller’s preferred camera state for future joins.',
       },
       {
         title: 'Set the mobile default with Turn off my video',
+        devices: ['iPhone', 'Android'],
         instruction: 'Android/iOS: open Zoom Settings → Meetings and use Turn off my video. Enable it to join with video off by default; disable it when the caller wants video available on join.',
         expected: 'The mobile default reflects the caller’s intended video behavior.',
       },
@@ -1031,6 +1054,8 @@ export const COMMON_ISSUE_ROUTES = [
     subtitle: 'Adjust Zoom speaker volume before or during a meeting',
     classification: 'Meeting-volume / speaker-output request',
     classificationNote: 'First determine whether the entire Zoom meeting is too loud or too quiet, or whether only one participant sounds different. Zoom does not provide a per-participant volume control.',
+    supportedDevices: ['Windows', 'Mac', 'iPhone', 'Android'],
+    unsupportedDeviceNote: 'This approved route covers Zoom desktop-app volume controls and mobile device volume controls. Do not apply the desktop Audio Settings steps to a Browser caller.',
     searchPhrases: [
       'meeting too loud', 'meeting too quiet', 'zoom too loud', 'zoom too quiet',
       'turn zoom volume up', 'turn zoom volume down', 'change zoom volume',
@@ -1044,17 +1069,26 @@ export const COMMON_ISSUE_ROUTES = [
     ],
     checks: [
       {
-        title: 'Use the correct volume control for the platform',
-        instruction: 'Desktop: open Zoom Settings → Audio and adjust the Speaker volume slider. During a meeting, open the arrow next to Mute/Unmute → Audio Settings. Mobile: use the phone or tablet’s physical/system volume controls.',
+        title: 'Adjust Zoom speaker volume on desktop',
+        devices: ['Windows', 'Mac'],
+        instruction: 'Open Zoom Settings → Audio and adjust the Speaker volume slider. During a meeting, open the arrow next to Mute/Unmute → Audio Settings.',
         expected: 'The overall Zoom meeting volume changes to a comfortable level.',
       },
       {
+        title: 'Adjust volume with the mobile device controls',
+        devices: ['iPhone', 'Android'],
+        instruction: 'On iPhone or Android, use the device’s physical/system volume controls to adjust the Zoom meeting volume.',
+        expected: 'The mobile meeting volume changes to a comfortable level.',
+      },
+      {
         title: 'Use Test Speaker before or after adjusting',
+        devices: ['Windows', 'Mac'],
         instruction: 'On desktop, use Test Speaker when helpful to hear the current output level before returning to the meeting.',
         expected: 'The caller hears the test tone at a comfortable level through the intended speaker.',
       },
       {
         title: 'For Windows only, adjust Zoom separately in Volume Mixer',
+        devices: ['Windows'],
         instruction: 'If the caller wants Zoom louder or quieter without changing other apps, open Windows Volume Mixer and adjust the Zoom Meetings app entry. If multiple Zoom entries appear, test them to identify the active meeting audio.',
         expected: 'Zoom’s meeting volume changes while the rest of the Windows device volume remains unchanged.',
       },
@@ -1098,6 +1132,8 @@ export const COMMON_ISSUE_ROUTES = [
     subtitle: 'Skip the audio-method prompt for future desktop joins',
     classification: 'Desktop join-audio preference',
     classificationNote: 'Use this only when the caller regularly wants the computer speaker and microphone to connect automatically. It is a desktop app setting for Windows, macOS, or Linux and may be controlled by an administrator.',
+    supportedDevices: ['Windows', 'Mac'],
+    unsupportedDeviceNote: 'Automatically connect to computer audio is an approved desktop-app route. On iPhone, Android, or Browser, do not apply these desktop Join experience steps.',
     searchPhrases: [
       'automatically connect to computer audio', 'auto connect computer audio',
       'automatically join with computer audio', 'skip audio prompt', 'stop asking how to join audio',
@@ -1162,6 +1198,8 @@ export const COMMON_ISSUE_ROUTES = [
     subtitle: 'Select channels from a multi-channel audio interface',
     classification: 'Multi-channel audio-interface configuration',
     classificationNote: 'This is a specialized desktop-audio path. Zoom shows the specific input-channel controls only when the selected input device is detected with three or more audio channels.',
+    supportedDevices: ['Windows', 'Mac'],
+    unsupportedDeviceNote: 'Specific audio input channels is supported by Zoom’s Windows and macOS desktop apps. Do not apply this route to iPhone, Android, or Browser callers.',
     searchPhrases: [
       'specific audio input channels', 'multiple audio input channels', 'choose audio channels',
       'select input channels zoom', 'multi channel audio interface', 'audio interface channels zoom',
@@ -1226,6 +1264,8 @@ export const COMMON_ISSUE_ROUTES = [
     subtitle: 'View participants in an eligible scheduled meeting before joining',
     classification: 'Pre-join participant-view request',
     classificationNote: 'This feature is not a universal participant list. Zoom currently requires an eligible Pro, Business, Enterprise, or Education account, the desktop app, Zoom Calendar enabled, and an integrated calendar service.',
+    supportedDevices: ['Windows', 'Mac'],
+    unsupportedDeviceNote: 'This pre-join participant view is a Zoom desktop-app feature. Do not promise this Home/Calendar participant preview on iPhone, Android, or Browser.',
     searchPhrases: [
       'who is already in the meeting', 'see who is in meeting before joining',
       'see participants before joining', 'view participants before joining',
