@@ -4,7 +4,7 @@ import { FeedbackForm } from '../feedback/FeedbackForm'
 import { ProcessDrawer } from './ProcessDrawer'
 import { searchProcesses } from './smartSearch'
 import { useDialogFocus } from '../../lib/useDialogFocus'
-import { LiveCallFlow } from './LiveCallFlow'
+import { LiveCallFlow, LiveCallFlowDetails } from './LiveCallFlow'
 import { CommonIssueDrawer } from './CommonIssueDrawer'
 import { COMMON_ISSUE_ROUTES, routeById, searchCommonIssueRoutes } from './commonIssueRoutes'
 
@@ -45,6 +45,7 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
   const [activeSuggestion, setActiveSuggestion] = useState(-1)
   const [libraryTab, setLibraryTab] = useState('fastest')
+  const [callFlowExpanded, setCallFlowExpanded] = useState(false)
   const feedbackDialogRef = useRef(null)
   useDialogFocus(feedbackDialogRef, feedbackOpen, () => setFeedbackOpen(false))
 
@@ -218,8 +219,16 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
         <span className="sr-only" role="status" aria-live="polite">{query.trim() ? `${routeMatches.length} common issue ${routeMatches.length === 1 ? 'route' : 'routes'} and ${processMatches.length} related ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.` : ''}</span>
       </section>
 
-      <LiveCallFlow value={callContext} onChange={setCallContext} />
+      <LiveCallFlow
+        value={callContext}
+        onChange={setCallContext}
+        expanded={callFlowExpanded}
+        onExpandedChange={setCallFlowExpanded}
+      />
     </section>
+
+    {callFlowExpanded && <LiveCallFlowDetails onClose={() => setCallFlowExpanded(false)} />}
+
     <section className="navigator-library" aria-label="Navigator library">
       <div className="navigator-library-tabs" role="tablist" aria-label="Navigator views">
         <button type="button" role="tab" aria-selected={libraryTab === 'fastest'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('fastest')}>Fastest Routes</button>
