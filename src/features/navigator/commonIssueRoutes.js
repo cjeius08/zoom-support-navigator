@@ -374,6 +374,266 @@ export const COMMON_ISSUE_ROUTES = [
     ],
     visuals: [],
   },
+
+  {
+    id: 'cant-share',
+    group: 'SCREEN SHARING',
+    categoryId: 'sharing',
+    title: 'Can’t share my screen',
+    subtitle: 'Share / Start share is missing, disabled, or not working',
+    classification: 'Screen-sharing symptom or permission boundary',
+    classificationNote: 'First determine whether the control is simply hidden or moved, whether the host allows participant sharing, or whether the device/browser is blocking screen capture. Do not bypass host- or organization-controlled permissions.',
+    searchPhrases: [
+      'cant share', 'cant share screen', 'cannot share screen', 'share button missing', 'start share missing',
+      'screen share disabled', 'screen sharing not working', 'wont let me share', 'cannot present', 'cant present',
+    ],
+    confirm: [
+      'Which platform are they using: desktop app, mobile app, or Zoom Web App?',
+      'Do they see Share or Start share anywhere in the meeting controls or under More?',
+      'Are they a participant, host, or co-host, and are participants allowed to share in this meeting?',
+    ],
+    checks: [
+      {
+        title: 'Locate Share / Start share before treating it as missing',
+        instruction: 'Reveal the meeting controls. On desktop or web, look for Share / Share Screen and check additional controls if needed. On mobile, tap the meeting screen and check More when Start share is not on the visible toolbar.',
+        expected: 'The caller either locates the sharing control or confirms that the option is genuinely unavailable.',
+      },
+      {
+        title: 'Confirm the host allows participant sharing',
+        instruction: 'If the caller is a participant and sharing is unavailable or blocked, explain that the host can control whether participants may share. Do not bypass the host restriction.',
+        expected: 'The issue is correctly identified as either a usable sharing control or a host-controlled permission.',
+      },
+      {
+        title: 'Start only the intended share',
+        instruction: 'Choose the intended screen, window, tab, document, or other supported content. Enable Share sound only when needed. Follow any operating-system or browser screen-capture prompt, then start the share.',
+        expected: 'Zoom shows an active sharing state and participants can see the selected content.',
+      },
+    ],
+    success: 'The caller starts the intended share, or the remaining blocker is clearly identified as a host/device/browser permission boundary.',
+    unresolved: 'If a managed device, browser policy, or operating-system permission blocks sharing, refer to the caller’s IT/device support. If participant sharing is disabled, the host/organizer owns the next action.',
+    script: '“Let’s first find the Share control and confirm whether this is a hidden control or a meeting permission. We won’t change or bypass anything controlled by the host.”',
+    processIds: [
+      'sharing-your-screen-desktop-or-content-in-zoom',
+      'using-participant-controls-in-a-zoom-meeting',
+      'zoom-basic-support-boundaries-decision-path-referral-process',
+    ],
+    primarySource: {
+      title: 'Sharing your screen or desktop on Zoom',
+      url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060596',
+    },
+    supportingSources: [
+      { title: 'Participant controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062674' },
+      { title: 'Using host and co-host controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065164' },
+    ],
+    discrepancy: 'Current Zoom documentation can place Start share under More on mobile while the dedicated screen-sharing article refers to Share in the meeting controls. OGCon therefore guides by the visible Share / Start share label and checks More before calling the control missing.',
+    visuals: [],
+  },
+  {
+    id: 'chat',
+    group: 'MEETING CONTROLS',
+    categoryId: 'controls',
+    title: 'Can’t find chat / can’t send a message',
+    subtitle: 'Chat is missing, restricted, or the intended recipient is unavailable',
+    classification: 'Meeting-chat control or permission symptom',
+    classificationNote: 'A missing private-chat option may be a host/admin restriction rather than an app failure. Confirm the intended recipient before sending so a private message is not accidentally sent to everyone.',
+    searchPhrases: [
+      'cant find chat', 'can’t find chat', 'chat missing', 'chat disabled', 'cant send message',
+      'cannot send chat', 'private chat missing', 'zoom chat not working', 'where is chat', 'message everyone',
+    ],
+    confirm: [
+      'Are they trying to message everyone, the host, or one specific participant?',
+      'Do they see Chat anywhere in the meeting controls or under More?',
+      'Are they using the desktop app, mobile app, or Zoom Web App?',
+    ],
+    checks: [
+      {
+        title: 'Locate meeting Chat',
+        instruction: 'Reveal the meeting controls and select Chat when available. On mobile, tap the meeting screen first and check the available controls or More.',
+        expected: 'The meeting chat panel or mobile chat view opens.',
+      },
+      {
+        title: 'Confirm the recipient before sending',
+        instruction: 'For a meeting-wide message, use the main/everyone chat. For a private message when allowed, select the intended participant before typing and sending.',
+        expected: 'The message is addressed to the intended meeting conversation or private recipient.',
+      },
+      {
+        title: 'Treat missing chat options as a permission check',
+        instruction: 'If Chat, private chat, or a needed recipient is unavailable, confirm whether the host or administrator has limited meeting chat. Do not attempt to bypass that restriction.',
+        expected: 'The caller can distinguish a meeting permission from a Zoom malfunction.',
+      },
+    ],
+    success: 'The caller opens meeting chat and sends to the intended recipient, or the remaining limitation is correctly identified as host/admin controlled.',
+    unresolved: 'If the needed chat option is restricted by the meeting host or organization, direct the caller to the host/organizer or organization support. Do not change meeting-owner policy.',
+    script: '“Let’s first find the meeting Chat control, then we’ll confirm exactly who the message should go to before you send anything.”',
+    processIds: [
+      'chatting-in-a-zoom-meeting',
+      'using-participant-controls-in-a-zoom-meeting',
+      'zoom-basic-support-boundaries-decision-path-referral-process',
+    ],
+    primarySource: {
+      title: 'Chatting in a Zoom meeting',
+      url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0064400',
+    },
+    supportingSources: [
+      { title: 'Participant controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062674' },
+    ],
+    visuals: [],
+  },
+  {
+    id: 'meeting-controls',
+    group: 'MEETING CONTROLS',
+    categoryId: 'controls',
+    title: 'Can’t find a meeting control',
+    subtitle: 'Mute, Video, Participants, Chat, Share, React, More, or Leave is hard to locate',
+    classification: 'Navigation / meeting-control location symptom',
+    classificationNote: 'Do not troubleshoot a feature until you establish whether the control is simply hidden, moved, placed under More, or genuinely unavailable. Placement can vary by platform, role, settings, and supported features.',
+    searchPhrases: [
+      'find a meeting control', 'cant find meeting control', 'zoom buttons disappeared', 'controls missing',
+      'meeting controls missing', 'toolbar disappeared', 'cant find mute', 'cant find participants',
+      'cant find more', 'where are zoom controls', 'where is mute button', 'zoom toolbar missing', 'buttons missing',
+    ],
+    confirm: [
+      'Which exact control are they trying to find?',
+      'Are they on the desktop app, mobile app, or Zoom Web App?',
+      'Can they currently see any meeting toolbar at all?',
+    ],
+    checks: [
+      {
+        title: 'Reveal the meeting controls',
+        instruction: 'Desktop/Web: move the pointer over the meeting window when controls are hidden. Mobile: tap once on the meeting screen to reveal controls.',
+        expected: 'The meeting toolbar becomes visible.',
+      },
+      {
+        title: 'Check the visible toolbar, then More',
+        instruction: 'Look for the requested control in the visible meeting toolbar. If it is not shown, check More or the available additional controls before treating it as missing.',
+        expected: 'The caller locates the requested control or confirms that it is unavailable in the current meeting.',
+      },
+      {
+        title: 'Identify permission or support boundaries',
+        instruction: 'If the feature is genuinely absent, determine whether the caller’s role, host/admin settings, plan, device, or organization policy controls availability. Do not bypass restrictions.',
+        expected: 'The remaining issue has a clear owner instead of becoming random troubleshooting.',
+      },
+    ],
+    success: 'The caller locates the requested control or the agent identifies why it is not available.',
+    unresolved: 'If the control is unavailable because of host/admin settings or managed organization policy, refer to the appropriate owner. If the issue is device/app specific, open the relevant approved Process Guide.',
+    script: '“Tell me the exact control you’re looking for. We’ll reveal the toolbar first, then check the visible controls and More before we assume anything is missing.”',
+    processIds: [
+      'zoom-meeting-controls-icons',
+      'using-participant-controls-in-a-zoom-meeting',
+      'zoom-basic-support-boundaries-decision-path-referral-process',
+    ],
+    primarySource: {
+      title: 'Participant controls in a meeting',
+      url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062674',
+    },
+    supportingSources: [
+      { title: 'Using host and co-host controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065164' },
+    ],
+    visuals: [],
+  },
+  {
+    id: 'reactions',
+    group: 'MEETING CONTROLS',
+    categoryId: 'controls',
+    title: 'Raise hand / reactions',
+    subtitle: 'Raise or lower a hand, send feedback, or find meeting reactions',
+    classification: 'Meeting reaction / non-verbal feedback request',
+    classificationNote: 'Raise Hand and persistent non-verbal feedback stay active until removed, while ordinary emoji reactions are temporary. Availability can depend on meeting/account settings.',
+    searchPhrases: [
+      'raise hand', 'how to raise hand', 'lower hand', 'reactions missing', 'where are reactions',
+      'thumbs up zoom', 'non verbal feedback', 'slow down reaction', 'speed up reaction', 'react button',
+    ],
+    confirm: [
+      'Are they trying to raise their hand, lower it, or send another reaction?',
+      'Are they using desktop, mobile, or the Zoom Web App?',
+      'Do they see React, Reactions, or More in the meeting controls?',
+    ],
+    checks: [
+      {
+        title: 'Open reactions / feedback',
+        instruction: 'Desktop/Web: select React / Reactions. Mobile: tap More, then choose the available reaction or feedback control.',
+        expected: 'The reaction/feedback choices become visible.',
+      },
+      {
+        title: 'Raise or lower the hand',
+        instruction: 'Choose Raise Hand when needed. To remove it, use Lower Hand when shown. Hosts can also lower a participant’s hand from Participants.',
+        expected: 'The raised-hand indicator appears and remains until it is lowered.',
+      },
+      {
+        title: 'Keep ordinary reactions separate from Raise Hand',
+        instruction: 'Explain that ordinary emoji reactions are temporary, while Raise Hand or other persistent feedback stays until removed. Do not confuse OS-level gesture effects with Zoom reactions.',
+        expected: 'The caller uses the intended feedback type and understands its behavior.',
+      },
+    ],
+    success: 'The intended reaction/feedback appears and persistent feedback can be removed correctly.',
+    unresolved: 'If reactions are unavailable because they are disabled by the host/account administrator, stop at that permission boundary and direct the caller to the appropriate meeting owner.',
+    script: '“Let’s open the reactions menu first. If you’re raising your hand, I’ll also show you how to lower it afterward because that one stays active until it’s cleared.”',
+    processIds: [
+      'using-non-verbal-feedback-and-meeting-reactions',
+      'using-participant-controls-in-a-zoom-meeting',
+      'zoom-basic-support-boundaries-decision-path-referral-process',
+    ],
+    primarySource: {
+      title: 'Using non-verbal feedback and meeting reactions',
+      url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0063323',
+    },
+    supportingSources: [
+      { title: 'Participant controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062674' },
+    ],
+    visuals: [],
+  },
+  {
+    id: 'invite',
+    group: 'HOST / MEETING ENTRY',
+    categoryId: 'controls',
+    title: 'Invite someone / copy invite link',
+    subtitle: 'Bring someone into the current meeting or copy the current invitation',
+    classification: 'Active-meeting invitation request',
+    classificationNote: 'Use the actual invitation/link shown by Zoom or supplied by the organizer. Technical support can explain where the control is, but cannot decide who is authorized to join the proceeding.',
+    searchPhrases: [
+      'invite someone', 'invite participant', 'copy invite link', 'copy invitation', 'send zoom link',
+      'how do i invite someone', 'bring someone into meeting', 'meeting invitation', 'invite another participant',
+    ],
+    confirm: [
+      'Are they inviting someone to a meeting that is already in progress, or sharing details for a scheduled meeting?',
+      'Are they using the desktop app, mobile app, or Zoom Web App?',
+      'Do they need only the join link or the full invitation text?',
+    ],
+    checks: [
+      {
+        title: 'Open the active-meeting invite controls',
+        instruction: 'Open Participants. Use Invite or the available add/invite control when the caller’s role and meeting allow it.',
+        expected: 'Zoom opens the current meeting’s invitation options.',
+      },
+      {
+        title: 'Copy the current link or invitation',
+        instruction: 'Use Copy invite link or Copy invitation when shown, then paste it only into the caller’s approved communication method. Do not alter the meeting details.',
+        expected: 'The current Zoom meeting invitation/link is copied exactly as provided by Zoom.',
+      },
+      {
+        title: 'Stop at role or proceeding boundaries',
+        instruction: 'If Invite is unavailable because of role/meeting policy, or if the caller is asking whether someone should be invited, direct them to the host/organizer or designated proceeding contact.',
+        expected: 'The agent explains the technical control without making an authorization decision.',
+      },
+    ],
+    success: 'The caller obtains the current meeting invitation/link using an allowed Zoom invite control.',
+    unresolved: 'If role or meeting policy prevents inviting, the host/organizer owns the next action. If the question is about who may attend, refer to the designated proceeding contact rather than deciding it.',
+    script: '“I can show you where Zoom’s invite control is and how to copy the current meeting link. We’ll use the invitation Zoom provides without changing any meeting details.”',
+    processIds: [
+      'using-participant-controls-in-a-zoom-meeting',
+      'joining-a-zoom-meeting',
+      'zoom-basic-support-boundaries-decision-path-referral-process',
+    ],
+    primarySource: {
+      title: 'Inviting others to join a meeting',
+      url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0063688',
+    },
+    supportingSources: [
+      { title: 'Participant controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062674' },
+      { title: 'Using host and co-host controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065164' },
+    ],
+    visuals: [],
+  },
 ]
 
 const routeSearchDocs = COMMON_ISSUE_ROUTES.map(route => ({
