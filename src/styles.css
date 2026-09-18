@@ -3306,3 +3306,34 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     gap: .2rem;
   }
 }
+
+
+/* Readiness Lab · multi-part JA reporting */
+.readiness-report-parts {
+  display: grid;
+  gap: 1rem;
+}
+.readiness-report-part {
+  display: grid;
+  gap: .65rem;
+}
+.readiness-report-part + .readiness-report-part {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.readiness-report-part-heading {
+  display: flex;
+  align-items: baseline;
+  gap: .55rem;
+}
+.readiness-report-part-heading span {
+  color: #7fa0b5;
+  font-size: .7rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.readiness-report-part-heading h3 {
+  margin: 0;
+  font-size: 1rem;
+}
