@@ -288,3 +288,121 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   .route-browser-grid { grid-template-columns: 1fr; }
   .navigator-library-tabs { padding-left: .45rem; padding-right: .45rem; }
 }
+
+
+/* Compact Navigator workspace: Smart Search + Live Call Flow */
+.navigator-top-workspace {
+  position: relative;
+  z-index: 6;
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(22rem, 2fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.smart-search-card {
+  position: relative;
+  z-index: 8;
+  min-width: 0;
+  overflow: visible;
+  padding: 1.15rem 1.25rem;
+  border: 1px solid rgba(243, 226, 206, .18);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, rgba(30, 34, 38, .76), rgba(18, 24, 30, .68));
+  box-shadow: 0 .9rem 2.2rem rgba(0,0,0,.18);
+  backdrop-filter: blur(12px);
+}
+
+.smart-search-heading h1 {
+  margin: .18rem 0 .28rem;
+  color: #f5f8fb;
+  font-size: clamp(1.45rem, 2.2vw, 1.9rem);
+  letter-spacing: -.03em;
+}
+
+.smart-search-heading > p:last-child {
+  margin: 0;
+  color: #aebfcc;
+  font-size: .86rem;
+  line-height: 1.5;
+}
+
+.smart-search-card .search-combobox {
+  width: 100%;
+  max-width: none;
+  margin-top: .9rem;
+}
+
+.smart-search-card .search-combobox input {
+  width: 100%;
+  margin-top: 0;
+  padding: .9rem 1rem;
+  border: 1px solid rgba(132, 177, 214, .34);
+  border-radius: .72rem;
+  color: #f6fbff;
+  background: rgba(5, 12, 19, .56);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+}
+
+.smart-search-card .search-combobox input:focus {
+  border-color: #58a9ff;
+  box-shadow: 0 0 0 .2rem rgba(47, 137, 229, .14);
+}
+
+.smart-search-examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .38rem;
+  margin-top: .72rem;
+}
+
+.smart-search-examples > span {
+  margin-right: .08rem;
+  color: #8096a8;
+  font-size: .68rem;
+  font-weight: 750;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.smart-search-examples button {
+  min-height: 1.9rem;
+  padding: .3rem .55rem;
+  border: 1px solid rgba(105, 168, 219, .22);
+  border-radius: 999px;
+  color: #b9dfff;
+  background: rgba(25, 102, 166, .12);
+  font-size: .7rem;
+}
+
+.smart-search-examples button:hover,
+.smart-search-examples button:focus-visible {
+  border-color: rgba(88, 169, 255, .6);
+  background: rgba(25, 114, 190, .2);
+}
+
+.navigator-top-workspace > .live-call-flow {
+  min-width: 0;
+}
+
+.navigator-library {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 1050px) {
+  .navigator-top-workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .smart-search-card {
+    padding: 1rem;
+  }
+
+  .smart-search-examples {
+    gap: .32rem;
+  }
+}
