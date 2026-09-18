@@ -231,7 +231,8 @@ export const SCENARIO_DISCOVERY = {
       if (answers.platform === 'mobile') return ready('Use the device volume controls', 'On iPhone or Android, adjust the meeting volume with the device’s physical or system volume controls.')
       if (answers.platform === 'browser') return ready('Use the browser/device output controls', 'Do not apply desktop Zoom Audio Settings instructions to the browser.')
       if (answers.control === 'zoom-only') return ready('Adjust Zoom speaker volume', 'On desktop, open Zoom Settings → Audio and adjust Speaker volume. On Windows, Volume Mixer can adjust Zoom separately from other apps when needed.')
-      return ready('Adjust the device volume', 'Use the computer’s normal system volume control when the caller wants all audio on the device louder or quieter.')
+      if (answers.control === 'device') return ready('Adjust the device volume', 'Use the computer’s normal system volume control when the caller wants all audio on the device louder or quieter.')
+      return null
     },
   },
   'auto-computer-audio': {
