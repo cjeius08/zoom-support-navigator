@@ -61,10 +61,10 @@ it('resets the live call context for the next caller', async () => {
 
   await user.click(screen.getByRole('button', { name: 'Mac' }))
   await user.click(screen.getByRole('button', { name: 'Host' }))
-  await user.click(screen.getByRole('button', { name: 'Escalation Needed' }))
+  await user.click(screen.getByRole('button', { name: 'Referral Needed' }))
   await user.click(screen.getByRole('button', { name: 'Reset call' }))
 
   expect(screen.getByRole('button', { name: 'Mac' })).toHaveAttribute('aria-pressed', 'false')
   expect(screen.getByRole('button', { name: 'Host' })).toHaveAttribute('aria-pressed', 'false')
-  expect(screen.getByRole('button', { name: 'Escalation Needed' })).toHaveAttribute('aria-pressed', 'false')
+  expect(screen.getByRole('button', { name: 'Referral Needed' })).toHaveAttribute('aria-pressed', 'false')
 })
