@@ -24,7 +24,7 @@ it('does not render admin navigation for agents', () => {
   expect(screen.getByRole('navigation')).toHaveTextContent('Training & Resources')
 })
 
-it('exposes What’s New and console ownership metadata to all agents', async () => {
+it('exposes What’s New and workspace ownership metadata to all agents', async () => {
   const user = userEvent.setup()
   const onNavigate = vi.fn()
   render(<AppShell profile={agentProfile} onNavigate={onNavigate} />)
@@ -160,7 +160,7 @@ it('keeps the sidebar footer visible when a wide browser window has limited vert
   expect(globalCss).toMatch(/\.console-meta-mini span\s*\{[^}]*overflow-wrap:\s*anywhere/)
 })
 
-it('keeps the neutral workspace title horizontal and removes nonessential header text on compact screens', () => {
+it('keeps the workspace title horizontal and removes nonessential header text on compact screens', () => {
   const accessibilityCss = readFileSync(join(cwd(), 'src/accessibility-ui.css'), 'utf8')
   const responsiveCss = readFileSync(join(cwd(), 'src/features/shell/responsiveShell.css'), 'utf8')
   expect(accessibilityCss).toMatch(/\.console-brand\s*\{[^}]*flex-direction:\s*row/)
