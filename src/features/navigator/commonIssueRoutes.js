@@ -960,6 +960,243 @@ export const COMMON_ISSUE_ROUTES = [
       },
     ],
   },
+
+  {
+    id: 'meeting-volume',
+    group: 'AUDIO',
+    categoryId: 'audio',
+    title: 'The meeting is too loud / too quiet',
+    subtitle: 'Adjust Zoom speaker volume before or during a meeting',
+    classification: 'Meeting-volume / speaker-output request',
+    classificationNote: 'First determine whether the entire Zoom meeting is too loud or too quiet, or whether only one participant sounds different. Zoom does not provide a per-participant volume control.',
+    searchPhrases: [
+      'meeting too loud', 'meeting too quiet', 'zoom too loud', 'zoom too quiet',
+      'turn zoom volume up', 'turn zoom volume down', 'change zoom volume',
+      'adjust zoom volume', 'speaker volume zoom', 'zoom volume slider',
+      'make zoom louder', 'make zoom quieter', 'only zoom volume', 'volume mixer zoom',
+    ],
+    confirm: [
+      'Is the whole meeting too loud or too quiet, or is only one participant affected?',
+      'Are they using desktop or mobile?',
+      'Do they want to change Zoom volume only, or the entire device volume?',
+    ],
+    checks: [
+      {
+        title: 'Use the correct volume control for the platform',
+        instruction: 'Desktop: open Zoom Settings → Audio and adjust the Speaker volume slider. During a meeting, open the arrow next to Mute/Unmute → Audio Settings. Mobile: use the phone or tablet’s physical/system volume controls.',
+        expected: 'The overall Zoom meeting volume changes to a comfortable level.',
+      },
+      {
+        title: 'Use Test Speaker before or after adjusting',
+        instruction: 'On desktop, use Test Speaker when helpful to hear the current output level before returning to the meeting.',
+        expected: 'The caller hears the test tone at a comfortable level through the intended speaker.',
+      },
+      {
+        title: 'For Windows only, adjust Zoom separately in Volume Mixer',
+        instruction: 'If the caller wants Zoom louder or quieter without changing other apps, open Windows Volume Mixer and adjust the Zoom Meetings app entry. If multiple Zoom entries appear, test them to identify the active meeting audio.',
+        expected: 'Zoom’s meeting volume changes while the rest of the Windows device volume remains unchanged.',
+      },
+      {
+        title: 'Do not promise per-participant volume control',
+        instruction: 'If only one participant is too quiet or too loud, explain that Zoom does not provide individual participant volume adjustment. A quiet participant may need to check their microphone instead.',
+        expected: 'The caller understands whether the issue is local meeting volume or another participant’s microphone.',
+      },
+    ],
+    success: 'The caller hears the meeting at a comfortable level using the appropriate Zoom or device volume control.',
+    unresolved: 'If the device cannot produce usable audio even after the correct speaker/output path and volume controls are confirmed, continue with the approved audio troubleshooting route. Do not install third-party volume software as part of basic support.',
+    script: '“Is the whole Zoom meeting too loud or too quiet, or is it just one person? That tells us whether to adjust your Zoom volume or troubleshoot that participant’s microphone.”',
+    processIds: [
+      'adjusting-the-volume-of-a-zoom-meeting',
+      'testing-your-audio-settings-for-zoom-meetings',
+      'zoom-basic-support-boundaries-decision-path-referral-process',
+    ],
+    primarySource: {
+      title: 'Adjusting the volume of a Zoom meeting',
+      url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0057968',
+    },
+    supportingSources: [
+      { title: 'Testing your audio settings for Zoom meetings', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062765' },
+    ],
+    visuals: [
+      {
+        title: 'Find the speaker test and volume controls',
+        src: 'assets/visual-references/audio-settings.png',
+        alt: 'Zoom audio settings showing the selected speaker, Test Speaker, and speaker volume controls',
+        note: 'Use the Speaker section to test the current output and adjust the meeting volume on desktop.',
+        sourceLabel: 'Real Zoom audio settings screen matched to the approved process',
+        sourceUrl: 'https://www.rcmusic.com/learning/examinations/remote-exams/help-with-remote-practical-exams/remote-examination-zoom-guide',
+      },
+    ],
+  },
+  {
+    id: 'auto-computer-audio',
+    group: 'AUDIO',
+    categoryId: 'audio',
+    title: 'I want Zoom to connect to computer audio automatically',
+    subtitle: 'Skip the audio-method prompt for future desktop joins',
+    classification: 'Desktop join-audio preference',
+    classificationNote: 'Use this only when the caller regularly wants the computer speaker and microphone to connect automatically. It is a desktop app setting for Windows, macOS, or Linux and may be controlled by an administrator.',
+    searchPhrases: [
+      'automatically connect to computer audio', 'auto connect computer audio',
+      'automatically join with computer audio', 'skip audio prompt', 'stop asking how to join audio',
+      'always use computer audio', 'always connect speaker and mic', 'auto join audio',
+      'connect audio automatically', 'computer audio automatically',
+    ],
+    confirm: [
+      'Are they using the Zoom desktop app on Windows, macOS, or Linux?',
+      'Do they normally want to use the same computer speaker and microphone for Zoom?',
+      'Do they sometimes need another audio type, such as telephone audio?',
+    ],
+    checks: [
+      {
+        title: 'Open the desktop Join experience settings',
+        instruction: 'Sign in to the Zoom desktop app. Open Settings → Meetings & webinars. Under Join experience, locate When joining meetings and webinars.',
+        expected: 'The caller reaches the desktop join-experience settings.',
+      },
+      {
+        title: 'Enable Automatically connect to computer audio',
+        instruction: 'Turn on Automatically connect to computer audio. Zoom saves the setting automatically.',
+        expected: 'The setting is enabled for future desktop joins.',
+      },
+      {
+        title: 'Test with a meeting',
+        instruction: 'Join a meeting and confirm that Zoom connects directly to the computer speaker and microphone without showing the usual audio-method prompt.',
+        expected: 'The meeting connects to computer audio automatically.',
+      },
+      {
+        title: 'Stop at an admin-controlled setting',
+        instruction: 'If the option is missing or cannot be changed, explain that an administrator may control it. Do not bypass or alter managed policy.',
+        expected: 'The caller either has the setting enabled or knows the appropriate administrator owns the next action.',
+      },
+    ],
+    success: 'Future eligible desktop meetings connect directly to computer audio without asking the caller to choose an audio method first.',
+    unresolved: 'If the setting is unavailable or locked, refer to the Zoom administrator. If the caller sometimes needs another audio type, leave the setting off so Zoom can offer the available audio methods.',
+    script: '“If you usually use the same computer speaker and microphone, we can have Zoom connect to computer audio automatically so you don’t have to choose it every time.”',
+    processIds: [
+      'automatically-joining-meetings-with-computer-audio',
+      'zoom-basic-support-boundaries-decision-path-referral-process',
+    ],
+    primarySource: {
+      title: 'Automatically joining meetings with computer audio',
+      url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060983',
+    },
+    supportingSources: [],
+    visuals: [
+      {
+        title: 'Automatically connect to computer audio',
+        src: 'assets/visual-references/join-experience-settings.png',
+        alt: 'Zoom Workplace Join experience settings showing Automatically connect to computer audio',
+        note: 'Enable this desktop setting when the caller wants Zoom to use the computer speaker and microphone automatically for future joins.',
+        sourceLabel: 'Recent real Zoom Workplace Join experience settings matched to the approved process',
+        sourceUrl: 'https://zapier.com/blog/zoom-tips/',
+      },
+    ],
+  },
+  {
+    id: 'multiple-audio-input-channels',
+    group: 'AUDIO',
+    categoryId: 'audio',
+    title: 'I need to choose specific audio input channels',
+    subtitle: 'Select channels from a multi-channel audio interface',
+    classification: 'Multi-channel audio-interface configuration',
+    classificationNote: 'This is a specialized desktop-audio path. Zoom shows the specific input-channel controls only when the selected input device is detected with three or more audio channels.',
+    searchPhrases: [
+      'specific audio input channels', 'multiple audio input channels', 'choose audio channels',
+      'select input channels zoom', 'multi channel audio interface', 'audio interface channels zoom',
+      'zoom sees multiple channels', 'which microphone channels zoom uses', '3 audio channels zoom',
+      'three input channels zoom', 'channel selection zoom microphone',
+    ],
+    confirm: [
+      'Are they using the Zoom desktop app on Windows or macOS?',
+      'Is a multi-channel microphone or audio interface connected and recognized by the operating system?',
+      'Does the selected input device expose at least three input channels?',
+    ],
+    checks: [
+      {
+        title: 'Select the connected audio interface',
+        instruction: 'Open Zoom Settings → Audio. Under Microphone, select the connected multi-channel audio interface or input device.',
+        expected: 'Zoom uses the intended interface as the active microphone device.',
+      },
+      {
+        title: 'Confirm that specific input channels appear',
+        instruction: 'If Zoom detects three or more input channels on the selected device, Use specific audio input channels should become available and Audio input channels should show the enabled channel count.',
+        expected: 'The channel-selection controls appear for the eligible device.',
+      },
+      {
+        title: 'Choose the channels to use',
+        instruction: 'Next to Audio input channels, open the channel count. Select the checkbox for one or more channels the caller wants Zoom to use.',
+        expected: 'Only the intended input channels are selected.',
+      },
+      {
+        title: 'Save before testing',
+        instruction: 'Click Save. The selected channels do not take effect in a live meeting or webinar until the selection is saved.',
+        expected: 'The chosen channels are applied and can be tested in a live meeting or webinar.',
+      },
+    ],
+    success: 'Zoom uses the saved input channels from the selected multi-channel audio interface.',
+    unresolved: 'If the channel option does not appear, confirm the Zoom version and that the operating system and Zoom detect at least three channels. Hardware, driver, routing, or managed-device issues belong to device/IT support.',
+    script: '“This option only appears when Zoom detects at least three input channels from the selected audio interface. We’ll confirm the device first, choose the channels, then save before testing.”',
+    processIds: [
+      'enabling-and-managing-multiple-audio-input-channels-in-zoom',
+      'zoom-basic-support-boundaries-decision-path-referral-process',
+    ],
+    primarySource: {
+      title: 'Managing multiple audio channels',
+      url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0057961',
+    },
+    supportingSources: [],
+    visuals: [],
+  },
+  {
+    id: 'participants-before-join',
+    group: 'MEETING CONTROLS',
+    categoryId: 'controls',
+    title: 'Who is already in the meeting?',
+    subtitle: 'View participants in an eligible scheduled meeting before joining',
+    classification: 'Pre-join participant-view request',
+    classificationNote: 'This feature is not a universal participant list. Zoom currently requires an eligible Pro, Business, Enterprise, or Education account, the desktop app, Zoom Calendar enabled, and an integrated calendar service.',
+    searchPhrases: [
+      'who is already in the meeting', 'see who is in meeting before joining',
+      'see participants before joining', 'view participants before joining',
+      'who joined already', 'who is inside zoom meeting', 'check attendees before joining',
+      'participants already joined', 'see invitees before joining', 'check meeting attendance before join',
+    ],
+    confirm: [
+      'Are they trying to check a scheduled meeting before they enter it?',
+      'Are they using the Zoom desktop app with Zoom Calendar enabled?',
+      'Is a supported calendar service integrated with Zoom, and is the account Pro, Business, Enterprise, or Education?',
+    ],
+    checks: [
+      {
+        title: 'Use Home when the meeting is visible there',
+        instruction: 'Sign in to the Zoom desktop app → Home. Find the scheduled meeting and open its details. Under Host, look for participant initials or profile pictures already shown for the active meeting.',
+        expected: 'The meeting details show the people Zoom reports as already joined.',
+      },
+      {
+        title: 'Use Calendar and Invitees',
+        instruction: 'Open Calendar, select the scheduled meeting, then under Invitees use the forward arrow to view the participants who have already joined.',
+        expected: 'Zoom shows the joined participants from the calendar event card.',
+      },
+      {
+        title: 'Check the feature requirements before troubleshooting',
+        instruction: 'If participant information is not displayed, confirm the eligible account, Zoom Calendar, calendar integration, and correct scheduled meeting. Do not assume the meeting is empty simply because the pre-join participant display is unavailable.',
+        expected: 'The caller either sees the joined participants or identifies a missing requirement for the feature.',
+      },
+    ],
+    success: 'The caller can see the participants Zoom reports as already joined before entering the eligible scheduled meeting.',
+    unresolved: 'If all stated requirements are met but participant information remains unavailable, follow the organization’s Zoom Calendar/escalation path. Do not change account or calendar integration settings outside the caller’s authorization.',
+    script: '“Before we assume nobody is there, let’s confirm whether your account and Zoom Calendar setup support the pre-join participant view.”',
+    processIds: [
+      'viewing-participants-already-in-a-meeting-before-joining',
+      'zoom-basic-support-boundaries-decision-path-referral-process',
+    ],
+    primarySource: {
+      title: 'Viewing participants already in a meeting before joining',
+      url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0083311',
+    },
+    supportingSources: [],
+    visuals: [],
+  },
 ]
 
 const routeSearchDocs = COMMON_ISSUE_ROUTES.map(route => ({
