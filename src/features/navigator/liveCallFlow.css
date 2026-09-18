@@ -405,3 +405,73 @@
     text-transform: uppercase;
   }
 }
+
+
+.live-call-workflow-panel {
+  display: grid;
+  gap: .9rem;
+  min-width: 0;
+  padding: 1rem 1.1rem 1.1rem;
+  border: 1px solid rgba(125, 181, 228, .2);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, rgba(18, 28, 37, .9), rgba(14, 21, 28, .82));
+  box-shadow: 0 .9rem 2.2rem rgba(0, 0, 0, .18);
+  backdrop-filter: blur(12px);
+}
+
+.live-call-workflow-panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.live-call-workflow-panel-heading h2 {
+  margin: .15rem 0 .25rem;
+  color: #f5f9fc;
+  font-size: 1.2rem;
+  letter-spacing: -.02em;
+}
+
+.live-call-workflow-panel-heading p:last-child {
+  max-width: 56rem;
+  margin: 0;
+  color: #9fb3c3;
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+.live-call-panel-close {
+  flex: 0 0 auto;
+  padding: .48rem .68rem;
+  border: 1px solid rgba(126, 177, 216, .24);
+  border-radius: .58rem;
+  color: #cfe2f0;
+  background: rgba(8, 16, 23, .4);
+  font-size: .74rem;
+}
+
+.live-call-panel-close:hover,
+.live-call-panel-close:focus-visible {
+  border-color: rgba(87, 177, 251, .62);
+  background: rgba(27, 104, 169, .18);
+}
+
+.live-call-workflow-panel .live-call-table-wrap {
+  width: 100%;
+}
+
+@media (max-width: 700px) {
+  .live-call-workflow-panel {
+    padding: .9rem;
+  }
+
+  .live-call-workflow-panel-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .live-call-panel-close {
+    align-self: flex-start;
+  }
+}
