@@ -25,8 +25,8 @@ export const READINESS_PARTS = [
     title: 'Troubleshooting Judgment',
     shortTitle: 'Troubleshooting',
     purpose: 'Can the agent choose the next approved action from the caller’s symptom and observed result?',
-    questionSetVersion: null,
-    status: 'planned',
+    questionSetVersion: READINESS_QUESTION_SETS.troubleshootingJudgment,
+    status: 'available',
   },
   {
     id: 'scope-referral',
