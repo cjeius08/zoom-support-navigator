@@ -105,7 +105,7 @@ export function CallDocumentation({ open = false, minimized = false, onMinimize 
 
   if (minimized) {
     return <aside className="documentation-dock documentation-dock-minimized" aria-label="Call Documentation minimized">
-      <button type="button" className="documentation-dock-restore" onClick={onMinimize}>
+      <button type="button" className="documentation-dock-restore" aria-label="Restore Call Documentation" onClick={onMinimize}>
         <span>
           <strong>Call Documentation</strong>
           <small>{filledCount ? `${filledCount} fields in draft` : 'Draft ready'}</small>
