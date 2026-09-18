@@ -1,4 +1,5 @@
-export const COMMUNICATION_VERIFIED_AT = 'September 18, 2026'
+export const COMMUNICATION_VERIFIED_AT = 'September 19, 2026'
+export const COMMUNICATION_CALL_FLOW_SOURCE = 'Ogletree – Tier 1 Zoom Support · Standard Call Flow Outline'
 
 export const COMMUNICATION_SOURCE_IDS = {
   method: 'locate-describe-guide-confirm',
@@ -8,65 +9,125 @@ export const COMMUNICATION_SOURCE_IDS = {
 export const COMMUNICATION_SECTIONS = [
   {
     id: 'opening',
-    title: 'Opening & scope',
-    purpose: 'Set a calm expectation that you will help with the basic Zoom issue, then move straight into discovery.',
+    title: 'Opening / Greeting',
+    purpose: 'Establish a professional and welcoming tone, identify the support team, and invite the caller to explain the issue.',
     sourceProcessIds: [COMMUNICATION_SOURCE_IDS.boundaries],
     phrases: [
       {
-        label: 'Start the Zoom check',
-        text: 'I’ll help you check the basic Zoom setup. First, can you tell me what you’re trying to do and what happens when you try?',
-      },
-      {
-        label: 'Set the support scope',
-        text: 'Based on what you’re seeing, I’ll first check the basic Zoom settings and controls that we can assist you with.',
+        label: 'Standard opening',
+        text: 'Thank you for calling Ogletree Zoom Support. This is [Name]. How may I assist you today?',
       },
     ],
   },
   {
-    id: 'acknowledgment',
-    title: 'Acknowledgment',
-    purpose: 'Acknowledge the caller without guessing the cause, then slow the interaction into one clear step at a time.',
+    id: 'listen',
+    title: 'Listen & Acknowledge',
+    purpose: 'Allow the caller to explain the concern before beginning troubleshooting. Listen first, then acknowledge what you heard.',
+    sourceProcessIds: [COMMUNICATION_SOURCE_IDS.boundaries],
+    phrases: [
+      {
+        label: 'Acknowledge the concern',
+        text: 'I understand. Let me help you get that sorted out.',
+      },
+      {
+        label: 'When you need the caller to finish explaining',
+        text: 'Go ahead and walk me through what you’re seeing. I’ll listen first, then we’ll go through the next step together.',
+      },
+    ],
+  },
+  {
+    id: 'empathy',
+    title: 'Empathy Statement',
+    purpose: 'Show understanding, especially when the issue may affect a hearing that is about to begin or is already active.',
+    sourceProcessIds: [COMMUNICATION_SOURCE_IDS.boundaries],
+    phrases: [
+      {
+        label: 'Before the hearing',
+        text: 'I understand how important it is to have everything working properly before your hearing begins.',
+      },
+      {
+        label: 'Hearing impact',
+        text: 'I understand this can be frustrating, especially when you’re trying to get the hearing started.',
+      },
+    ],
+  },
+  {
+    id: 'assurance',
+    title: 'Assure / Take Ownership',
+    purpose: 'Give the caller confidence that you will assist while avoiding promises about an outcome you cannot guarantee.',
+    sourceProcessIds: [COMMUNICATION_SOURCE_IDS.boundaries],
+    phrases: [
+      {
+        label: 'Take ownership of the support steps',
+        text: 'I’ll walk you through a few steps to identify the issue and get you connected.',
+      },
+      {
+        label: 'Outcome-safe assurance',
+        text: 'I’ll stay with you through the approved checks and explain the next step based on what we find.',
+      },
+    ],
+  },
+  {
+    id: 'identify',
+    title: 'Identify Caller / Hearing',
+    purpose: 'Gather the minimum information needed to understand the situation before troubleshooting.',
+    sourceProcessIds: [COMMUNICATION_SOURCE_IDS.boundaries],
+    phrases: [
+      {
+        label: 'Device + access',
+        text: 'What device are you using, and are you in the Zoom application or using a web browser?',
+      },
+      {
+        label: 'Hearing status',
+        text: 'Has the hearing already started, or are you still preparing to join?',
+      },
+      {
+        label: 'Who is affected',
+        text: 'Is this affecting only you, or are other participants experiencing the same issue?',
+      },
+      {
+        label: 'Hearing identification',
+        text: 'If applicable, can you confirm the hearing or arbitrator information you were provided?',
+      },
+    ],
+  },
+  {
+    id: 'probe',
+    title: 'Probe & Diagnose',
+    purpose: 'Identify the specific problem before taking action. Start with open-ended questions, then move to targeted questions that change the troubleshooting route.',
     sourceProcessIds: [COMMUNICATION_SOURCE_IDS.method, COMMUNICATION_SOURCE_IDS.boundaries],
     phrases: [
       {
-        label: 'Acknowledge + guide',
-        text: 'I understand. I’ll guide you one step at a time, and I’ll wait for you to tell me what you see before we continue.',
+        label: 'Open-ended first',
+        text: 'Can you tell me what you’re experiencing?',
       },
       {
-        label: 'When the screen looks different',
-        text: 'That’s okay. Zoom can look different depending on the device and meeting settings. Tell me what options you can see right now, and we’ll use those.',
+        label: 'Timing',
+        text: 'When did the issue start?',
+      },
+      {
+        label: 'Join issue',
+        text: 'What happens when you try to join?',
+      },
+      {
+        label: 'Audio direction',
+        text: 'Can you hear the other participants, and can they hear you?',
+      },
+      {
+        label: 'Video',
+        text: 'Can you see the other participants, and is your camera showing an image?',
+      },
+      {
+        label: 'Visible Zoom state',
+        text: 'Do you see the meeting controls at the bottom of the screen?',
       },
     ],
   },
   {
-    id: 'discovery',
-    title: 'Discovery questions',
-    purpose: 'Ask only what changes the route: goal, symptom, device, exact error, and what the caller can currently see.',
+    id: 'troubleshoot',
+    title: 'Troubleshoot',
+    purpose: 'Use the approved Tier 1 troubleshooting process. Give one instruction at a time and confirm the caller’s result before moving forward.',
     sourceProcessIds: [COMMUNICATION_SOURCE_IDS.method, COMMUNICATION_SOURCE_IDS.boundaries],
-    phrases: [
-      {
-        label: 'Goal + symptom',
-        text: 'What are you trying to do in Zoom, and what happens instead when you try?',
-      },
-      {
-        label: 'Device',
-        text: 'Are you using a Windows computer, Mac, web browser, iPhone, or Android device?',
-      },
-      {
-        label: 'Exact error',
-        text: 'If there’s an error message, can you read the exact wording to me?',
-      },
-      {
-        label: 'Visible controls',
-        text: 'What buttons or labels can you currently see on the Zoom screen?',
-      },
-    ],
-  },
-  {
-    id: 'guide',
-    title: 'Locate → Describe → Guide → Confirm',
-    purpose: 'Use one instruction at a time. Do not move forward until the caller confirms the control or result.',
-    sourceProcessIds: [COMMUNICATION_SOURCE_IDS.method],
     framework: [
       {
         stage: 'Locate',
@@ -91,58 +152,70 @@ export const COMMUNICATION_SECTIONS = [
     ],
   },
   {
-    id: 'recap',
-    title: 'Recap & confirmation',
-    purpose: 'Confirm the outcome before closing or moving to the next approved step.',
+    id: 'confirm-resolution',
+    title: 'Confirm Resolution',
+    purpose: 'Never assume the issue is fixed. Ask the caller to confirm the exact function that was failing.',
     sourceProcessIds: [COMMUNICATION_SOURCE_IDS.method, COMMUNICATION_SOURCE_IDS.boundaries],
     phrases: [
       {
-        label: 'Test the result',
-        text: 'Let’s check whether that resolved the issue. Can you confirm if you’re now able to use the feature as expected?',
+        label: 'Audio check',
+        text: 'Can you confirm if you can hear me clearly now?',
       },
       {
-        label: 'If the result is different',
-        text: 'Thanks. Since the result is different from what we expected, I’m going to stop there and use what you’re seeing to reassess the next approved step.',
+        label: 'Microphone check',
+        text: 'Can the other participants hear you?',
+      },
+      {
+        label: 'Camera check',
+        text: 'Can you confirm that your camera is now working?',
+      },
+      {
+        label: 'Overall check',
+        text: 'Before we end the call, is everything working as expected on your end?',
       },
     ],
   },
   {
-    id: 'boundary',
-    title: 'Support boundary & referral',
-    purpose: 'Stop when the remaining action requires host, admin, IT, device, network, or proceeding authority outside basic Zoom support.',
+    id: 'recap',
+    title: 'Recap / Summary',
+    purpose: 'Confirm that both parties have the same understanding of the issue, the steps completed, the result, and the next step if unresolved.',
     sourceProcessIds: [COMMUNICATION_SOURCE_IDS.boundaries],
     phrases: [
       {
-        label: 'Basic troubleshooting exhausted',
-        text: 'We’ve completed the basic troubleshooting steps available to us, and the issue is still occurring. The next step requires assistance outside the level of access we provide.',
+        label: 'Resolved recap',
+        text: 'To recap, we completed the troubleshooting steps and confirmed the Zoom issue is now working as expected.',
       },
       {
-        label: 'Host-controlled action',
-        text: 'Your Zoom setup appears to be working, but the next step may be controlled by the meeting host or organizer. Please contact the host or the contact listed in your meeting invitation for further assistance.',
+        label: 'Unresolved recap',
+        text: 'To recap, we identified the issue and completed the Tier 1 troubleshooting steps, but the issue remains. I’ve documented what we completed and the next step we discussed.',
       },
+    ],
+  },
+  {
+    id: 'final-check',
+    title: 'Final Check',
+    purpose: 'Give the caller one last opportunity to raise another Zoom connection concern before closing.',
+    sourceProcessIds: [COMMUNICATION_SOURCE_IDS.boundaries],
+    phrases: [
       {
-        label: 'Organization IT / admin',
-        text: 'This appears to involve your Zoom account, device, network, or organization-level access. Please contact your organization’s IT help desk or Zoom administrator for additional assistance.',
-      },
-      {
-        label: 'Proceeding decision',
-        text: 'We can assist with the technical Zoom steps, but we’re unable to make decisions regarding the proceeding. Please contact the designated arbitration contact or meeting organizer for guidance.',
+        label: 'Final assistance check',
+        text: 'Is there anything else I can assist you with regarding your Zoom connection today?',
       },
     ],
   },
   {
     id: 'closing',
-    title: 'Recap & closing',
-    purpose: 'Close with the result, next step, and one final opportunity to clarify basic Zoom setup or controls.',
+    title: 'Closing',
+    purpose: 'End professionally and confidently with either the confirmed resolution or the documented next step.',
     sourceProcessIds: [COMMUNICATION_SOURCE_IDS.boundaries],
     phrases: [
       {
-        label: 'Resolved',
-        text: 'Your Zoom issue has been resolved. Before we end the call, is there anything else regarding the basic Zoom setup or meeting controls that you would like me to clarify?',
+        label: 'Resolved closing',
+        text: 'Thank you for calling Ogletree Zoom Support. We’re glad we were able to assist you. Have a great day.',
       },
       {
-        label: 'Referred for additional assistance',
-        text: 'I’ll document the troubleshooting we completed today and the next step we discussed. Is there anything else within the basic Zoom setup or controls that I can clarify before we end the call?',
+        label: 'Unresolved / next-step closing',
+        text: 'Thank you for your patience. We’ve documented the issue and the next step we discussed. Thank you for calling Ogletree Zoom Support.',
       },
     ],
   },
@@ -188,10 +261,13 @@ export const COMMUNICATION_AVOID_PAIRS = [
 ]
 
 export const COMMUNICATION_SELF_CHECK = [
-  'Did I identify the caller’s goal and exact symptom?',
-  'Did I identify the correct device or platform when it changes the steps?',
-  'Did I give only one instruction at a time?',
-  'Did I ask what the caller saw when the interface differed?',
+  'Did I let the caller explain the concern before troubleshooting?',
+  'Did I acknowledge the issue and use empathy appropriate to the hearing status?',
+  'Did I avoid promising an outcome I cannot guarantee?',
+  'Did I identify the device, app/browser, hearing status, and who is affected?',
+  'Did I start with an open-ended question before targeted diagnostic questions?',
+  'Did I give only one troubleshooting instruction at a time?',
   'Did I confirm the result instead of assuming success?',
-  'Did I stay within the approved basic support scope?',
+  'Did I recap the result or next step before the final check and closing?',
+  'Did I stay within the approved Tier 1 support boundary?',
 ]
