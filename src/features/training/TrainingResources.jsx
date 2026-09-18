@@ -100,9 +100,9 @@ export function TrainingResources({ initialVideoId = null, onReportContextChange
     </div>
 
     {section === 'devices'
-      ? <DeviceWalkthroughs />
+      ? <DeviceWalkthroughs onReportContextChange={onReportContextChange} />
       : section === 'scripts'
-        ? <ScriptsCommunication />
+        ? <ScriptsCommunication onReportContextChange={onReportContextChange} />
         : <>
           <div className="training-controls"><label>Search training videos<input type="search" aria-label="Search training videos" value={query} onChange={(event) => { setQuery(event.target.value); setActiveIndex(null) }} placeholder="Search topics and support categories" /></label><label>Filter by category<select aria-label="Filter training by category" value={category} onChange={(event) => { setCategory(event.target.value); setActiveIndex(null) }}>{TRAINING_CATEGORIES.map((name) => <option key={name}>{name}</option>)}</select></label></div>
           <p className="library-count">{filteredVideos.length} {filteredVideos.length === 1 ? 'video' : 'videos'} available</p>
