@@ -3,6 +3,7 @@ import {
   loadFeedback,
   loadTeam,
   loadUsage,
+  loadReadinessReport,
   runAdminAction,
   updateFeedbackStatus,
 } from "../../lib/adminApi";
@@ -501,6 +502,8 @@ export function UsageAnalytics() {
     [range.end, range.start],
   );
   const state = useData(loader);
+  const readinessLoader = useCallback(() => loadReadinessReport(), []);
+  const readinessState = useData(readinessLoader);
 
   return (
     <section className="console-view usage-analytics">
@@ -601,6 +604,91 @@ export function UsageAnalytics() {
           );
         }}
       </State>
+
+      <section className="readiness-admin-report" aria-labelledby="readiness-report-title">
+        <div className="view-heading">
+          <div>
+            <p className="eyebrow">Readiness validation</p>
+            <h2 id="readiness-report-title">Readiness Lab Report</h2>
+            <p>
+              Attempt history is kept separately from usage activity. Attempt 1,
+              Attempt 2, and Attempt 3 remain visible with their scores and
+              incorrect answers.
+            </p>
+          </div>
+        </div>
+
+        <State state={readinessState}>
+          {(report) => (
+            <div className="usage-user-list" aria-label="Readiness Lab attempts by user">
+              {(report?.users || []).map((user) => (
+                <article className="usage-user-row readiness-report-user" key={user.id}>
+                  <div className="usage-user-identity">
+                    <strong>{user.username || user.initials}</strong>
+                    <small>
+                      {user.initials} · {user.role === "creator_admin" ? "JA Admin" : "Agent"}
+                    </small>
+                  </div>
+
+                  {user.attempts?.length ? (
+                    <div className="readiness-report-attempts">
+                      {user.attempts.map((attempt) => (
+                        <details key={attempt.id} open={attempt.status === "active"}>
+                          <summary>
+                            <strong>Attempt {attempt.attemptNumber}</strong>
+                            <span>
+                              {attempt.status === "submitted"
+                                ? `Score ${attempt.score}/${attempt.totalQuestions}`
+                                : `${attempt.checkedCount}/${attempt.totalQuestions} checked · In progress`}
+                            </span>
+                          </summary>
+                          <dl>
+                            <div>
+                              <dt>Status</dt>
+                              <dd>{attempt.status === "submitted" ? "Submitted" : "In progress"}</dd>
+                            </div>
+                            <div>
+                              <dt>Started</dt>
+                              <dd>{attempt.startedAt ? new Date(attempt.startedAt).toLocaleString() : "—"}</dd>
+                            </div>
+                            <div>
+                              <dt>Submitted</dt>
+                              <dd>{attempt.submittedAt ? new Date(attempt.submittedAt).toLocaleString() : "—"}</dd>
+                            </div>
+                          </dl>
+
+                          <div className="readiness-report-misses">
+                            <strong>Incorrect answers</strong>
+                            {attempt.incorrectAnswers?.length ? (
+                              <ol>
+                                {attempt.incorrectAnswers.map((miss) => (
+                                  <li key={`${attempt.id}-${miss.questionId}`}>
+                                    <p>{miss.prompt}</p>
+                                    <small><b>Selected:</b> {miss.selectedAnswer || miss.selectedOptionId}</small>
+                                    <small><b>Correct:</b> {miss.correctAnswer || miss.correctOptionId}</small>
+                                  </li>
+                                ))}
+                              </ol>
+                            ) : (
+                              <small>
+                                {attempt.status === "submitted"
+                                  ? "No incorrect answers recorded."
+                                  : "Incorrect answers will appear here as this attempt is checked."}
+                              </small>
+                            )}
+                          </div>
+                        </details>
+                      ))}
+                    </div>
+                  ) : (
+                    <p>No Readiness Lab attempts yet.</p>
+                  )}
+                </article>
+              ))}
+            </div>
+          )}
+        </State>
+      </section>
     </section>
   );
 }
