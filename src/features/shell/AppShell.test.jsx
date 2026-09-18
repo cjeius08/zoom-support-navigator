@@ -98,6 +98,30 @@ it('opens Call Documentation as a global dock without navigating away and preser
   expect(screen.getByLabelText('Caller name')).toHaveValue('Persistent Caller')
 })
 
+
+it('opens Scope Check as a global live tool and preserves the Documentation draft when switching tools', async () => {
+  const user = userEvent.setup()
+  const onNavigate = vi.fn()
+  render(<AppShell profile={agentProfile} onNavigate={onNavigate}><div>Current page content</div></AppShell>)
+
+  await user.click(screen.getByRole('button', { name: 'Call Documentation' }))
+  await user.type(screen.getByLabelText('Caller name'), 'Persistent Caller')
+
+  await user.click(screen.getByRole('button', { name: 'Scope Check' }))
+  expect(onNavigate).not.toHaveBeenCalled()
+  expect(screen.getByRole('button', { name: 'Scope Check' })).toHaveAttribute('aria-pressed', 'true')
+  expect(screen.getByRole('heading', { name: 'Scope Check' })).toBeInTheDocument()
+  expect(screen.queryByLabelText('Caller name')).not.toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: /Host action or meeting-owner permission/i }))
+  await user.click(screen.getByRole('button', { name: /Approved troubleshooting not started yet/i }))
+  await user.click(screen.getByRole('button', { name: /No — next step stays inside approved scope/i }))
+  expect(screen.getByText('STOP + REFER')).toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: 'Call Documentation' }))
+  expect(screen.getByLabelText('Caller name')).toHaveValue('Persistent Caller')
+})
+
 it('uses the tablet breakpoint for the authenticated sidebar without leaving a closed-sidebar sliver', () => {
   const baseCss = readFileSync(join(cwd(), 'src/styles.css'), 'utf8')
   const responsiveCss = readFileSync(join(cwd(), 'src/features/shell/responsiveShell.css'), 'utf8')
