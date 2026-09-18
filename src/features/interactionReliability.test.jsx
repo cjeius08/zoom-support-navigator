@@ -134,9 +134,9 @@ it('traps focus in the process drawer and restores focus to its opener on Escape
   expect(opener).toHaveFocus()
 })
 
-it('lets the report modal close with Escape and restores focus to Report an issue', async () => {
+it('lets the global report modal close with Escape and restores focus to Report an issue', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<AppShell profile={agentProfile} onFeedback={vi.fn()}><Navigator /></AppShell>)
   const opener = screen.getByRole('button', { name: 'Report an issue' })
   await user.click(opener)
   expect(screen.getByRole('dialog', { name: 'Report an issue' })).toBeInTheDocument()
