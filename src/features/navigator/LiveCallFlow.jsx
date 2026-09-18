@@ -1,0 +1,127 @@
+import { useState } from 'react'
+import './liveCallFlow.css'
+
+const DEVICES = ['Windows', 'Mac', 'iPhone', 'Android', 'Browser']
+const ROLES = ['Host', 'Participant']
+const STATUSES = ['Resolved', 'Unresolved', 'Escalation Needed']
+
+const CALL_STEPS = [
+  {
+    name: 'Opening',
+    action: 'Greet the caller, introduce yourself, and invite them to explain what they need help with.',
+    script: '“Thank you for calling. This is [Name]. How can I help you today?”',
+  },
+  {
+    name: 'Acknowledgment',
+    action: 'Briefly restate the concern so the caller knows you understood before troubleshooting.',
+    script: '“I understand. I’ll help you work through that.”',
+  },
+  {
+    name: 'Identify',
+    action: 'Confirm the caller’s device, whether they are the host or a participant, and the exact symptom.',
+    script: '“Before we start, what device are you using, and are you the host or a participant?”',
+  },
+  {
+    name: 'Resolution',
+    action: 'Guide one step at a time. Pause after each action and confirm what the caller sees before continuing.',
+    script: '“I’ll guide you one step at a time. Let me know what you see after each step.”',
+  },
+  {
+    name: 'Recap',
+    action: 'Summarize what changed and confirm whether the original issue is now resolved.',
+    script: '“We’ve completed those steps. Is everything working as expected now?”',
+  },
+  {
+    name: 'Adjacent Issues',
+    action: 'After the primary concern is addressed, check whether the caller needs help with anything closely related.',
+    script: '“Before we finish, is there anything else in Zoom you need help with today?”',
+  },
+  {
+    name: 'Closing',
+    action: 'State the final resolution or next action, then close the call clearly and courteously.',
+    script: '“Thank you for calling. I’m glad we could work through that with you today.”',
+  },
+]
+
+function ChoiceGroup({ label, options, value, onChange, className = '' }) {
+  return <div className={`live-call-choice-group ${className}`}>
+    <span className="live-call-choice-label">{label}</span>
+    <div className="live-call-choice-options" role="group" aria-label={label}>
+      {options.map(option => <button
+        type="button"
+        key={option}
+        aria-pressed={value === option}
+        className={value === option ? 'selected' : ''}
+        onClick={() => onChange(option)}
+      >
+        {option}
+      </button>)}
+    </div>
+  </div>
+}
+
+export function LiveCallFlow() {
+  const [device, setDevice] = useState(null)
+  const [role, setRole] = useState(null)
+  const [status, setStatus] = useState(null)
+
+  function resetCall() {
+    setDevice(null)
+    setRole(null)
+    setStatus(null)
+  }
+
+  return <section className="live-call-flow" aria-label="Core Live Call Flow">
+    <div className="live-call-flow-heading">
+      <div>
+        <p className="eyebrow">Phase 1 · Core workflow</p>
+        <h2>Live Call Flow</h2>
+        <p>Use this from top to bottom while you’re on the call. Keep the conversation natural and move one step at a time.</p>
+      </div>
+      <button type="button" className="live-call-reset" onClick={resetCall}>Reset call</button>
+    </div>
+
+    <div className="live-call-context" aria-label="Call context">
+      <ChoiceGroup label="Device" options={DEVICES} value={device} onChange={setDevice} />
+      <ChoiceGroup label="Caller role" options={ROLES} value={role} onChange={setRole} />
+    </div>
+
+    <div className="live-call-table-wrap">
+      <table className="live-call-table" aria-label="Live call flow">
+        <thead>
+          <tr>
+            <th scope="col">Step</th>
+            <th scope="col">Agent Action</th>
+            <th scope="col">Suggested Script</th>
+          </tr>
+        </thead>
+        <tbody>
+          {CALL_STEPS.map((step, index) => <tr key={step.name}>
+            <th scope="row">
+              <span className="live-call-step-number">{index + 1}</span>
+              <span>{step.name}</span>
+            </th>
+            <td>
+              <span className="live-call-cell-label">Agent Action</span>
+              <p>{step.action}</p>
+            </td>
+            <td>
+              <span className="live-call-cell-label">Suggested Script</span>
+              <blockquote>{step.script}</blockquote>
+            </td>
+          </tr>)}
+        </tbody>
+      </table>
+    </div>
+
+    <div className="live-call-resolution">
+      <ChoiceGroup
+        label="Resolution status"
+        options={STATUSES}
+        value={status}
+        onChange={setStatus}
+        className="live-call-status"
+      />
+    </div>
+  </section>
+}
