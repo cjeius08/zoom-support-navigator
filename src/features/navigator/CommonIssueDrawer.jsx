@@ -33,6 +33,9 @@ export function CommonIssueDrawer({
   const processEntries = route.processIds
     .map(id => PROCESSES.find(process => process.id === id))
     .filter(Boolean)
+  const visualEntries = Array.isArray(route.visuals)
+    ? route.visuals.filter(visual => visual?.src && visual?.title)
+    : []
 
   const selectedDevice = callContext?.device ?? null
   const desktopAppDevice = selectedDevice === 'Windows' || selectedDevice === 'Mac'
@@ -215,8 +218,8 @@ export function CommonIssueDrawer({
               <h3>Visual Guide</h3>
             </div>
           </div>
-          {route.visuals.length > 0
-            ? <div className="common-issue-visual-grid">{route.visuals.map(visual => <figure key={visual.src}>
+          {visualEntries.length > 0
+            ? <div className="common-issue-visual-grid">{visualEntries.map(visual => <figure key={visual.src}>
                 <div className="common-issue-visual-frame">
                   <img src={visualSource(visual.src)} alt={visual.alt} loading="lazy" />
                 </div>
@@ -224,6 +227,7 @@ export function CommonIssueDrawer({
                   <strong>{visual.title}</strong>
                   <span>{visual.note}</span>
                   {visual.sourceUrl && <a href={visual.sourceUrl} target="_blank" rel="noreferrer">{visual.sourceLabel || 'Open visual source'} ↗</a>}
+                  {route.primarySource?.url && route.primarySource.url !== visual.sourceUrl && <a href={route.primarySource.url} target="_blank" rel="noreferrer">Official Zoom Support ↗</a>}
                 </figcaption>
               </figure>)}</div>
             : <div className="common-issue-empty">
