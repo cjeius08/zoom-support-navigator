@@ -34,8 +34,8 @@ export const READINESS_PARTS = [
     title: 'Scope & Referral Judgment',
     shortTitle: 'Scope',
     purpose: 'Can the agent recognize the support boundary and identify the correct next owner?',
-    questionSetVersion: null,
-    status: 'planned',
+    questionSetVersion: READINESS_QUESTION_SETS.scopeReferralJudgment,
+    status: 'available',
   },
   {
     id: 'live-call-readiness',
