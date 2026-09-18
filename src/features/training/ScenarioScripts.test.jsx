@@ -16,12 +16,22 @@ const EXPECTED_SCENARIOS = [
   'meeting-controls',
   'chat',
   'reactions',
+  'bluetooth-headset',
+  'secure-connection',
+  'transfer-device',
+  'join-muted',
+  'join-video-preference',
+  'meeting-volume',
+  'auto-computer-audio',
+  'multiple-audio-input-channels',
+  'participants-before-join',
+  'invite',
 ]
 
-it('locks the Phase 4 Batch 2 scenario inventory to nine high-frequency Common Issues', () => {
-  expect(SCENARIO_SCRIPT_VERIFIED_AT).toBe('September 18, 2026')
+it('locks the Phase 4 Batch 3 scenario inventory to nineteen Common Issues', () => {
+  expect(SCENARIO_SCRIPT_VERIFIED_AT).toBe('September 19, 2026')
   expect(SCENARIO_SCRIPTS.map(scenario => scenario.id)).toEqual(EXPECTED_SCENARIOS)
-  expect(SCENARIO_SCRIPTS).toHaveLength(9)
+  expect(SCENARIO_SCRIPTS).toHaveLength(19)
 })
 
 it('links every scenario to an existing Common Issue and approved Process Guides', () => {
