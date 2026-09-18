@@ -667,9 +667,27 @@ export function FeedbackQueue({ onOpenPage }) {
                     <small>
                       {item.page_label}
                       {item.process_id ? ` · ${item.process_id}` : ""}
+                      {item.active_common_issue ? ` · ${item.active_common_issue}` : ""}
                     </small>
                     <button type="button" onClick={() => onOpenPage?.(item)}>Open Page</button>
                   </div>
+                  <details className="feedback-screen-context">
+                    <summary>Captured screen context</summary>
+                    <dl>
+                      <div><dt>Route</dt><dd>{item.route_id || "—"}</dd></div>
+                      <div><dt>Selected tab</dt><dd>{item.selected_tab || "—"}</dd></div>
+                      <div><dt>Section</dt><dd>{item.current_section || "—"}</dd></div>
+                      <div><dt>Device filter</dt><dd>{item.active_device || "—"}</dd></div>
+                      <div><dt>Caller role</dt><dd>{item.active_caller_role || "—"}</dd></div>
+                      <div><dt>Common issue</dt><dd>{item.active_common_issue || "—"}</dd></div>
+                      <div><dt>Process</dt><dd>{item.process_id || "—"}</dd></div>
+                      <div><dt>Category</dt><dd>{item.category_id || "—"}</dd></div>
+                      <div><dt>Viewport</dt><dd>{item.viewport_width && item.viewport_height ? `${item.viewport_width} × ${item.viewport_height}` : "—"}</dd></div>
+                      <div><dt>Page path</dt><dd>{[item.page_path, item.page_hash].filter(Boolean).join("") || "—"}</dd></div>
+                      <div className="feedback-context-wide"><dt>Browser</dt><dd>{item.browser_user_agent || "—"}</dd></div>
+                      <div><dt>Client time</dt><dd>{item.client_reported_at ? new Date(item.client_reported_at).toLocaleString() : "—"}</dd></div>
+                    </dl>
+                  </details>
                   {updatingId === item.id && <small role="status">Saving…</small>}
                   {item.history?.length > 0 && (
                     <div className="feedback-history">
