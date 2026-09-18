@@ -10,6 +10,7 @@ it('keeps the summary card compact and uses the toggle only to request full work
 
   const toggle = screen.getByRole('button', { name: /View full call flow/i })
   expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  expect(toggle).toHaveTextContent('11 steps')
   expect(screen.queryByRole('table', { name: 'Live call flow' })).not.toBeInTheDocument()
 
   await user.click(toggle)
@@ -18,7 +19,7 @@ it('keeps the summary card compact and uses the toggle only to request full work
   expect(screen.queryByRole('table', { name: 'Live call flow' })).not.toBeInTheDocument()
 })
 
-it('renders the seven-stage detailed workflow when the parent chooses to show it', () => {
+it('renders the eleven-stage Ogletree workflow when the parent chooses to show it', () => {
   render(<LiveCallFlowDetails />)
 
   const table = screen.getByRole('table', { name: 'Live call flow' })
@@ -26,45 +27,76 @@ it('renders the seven-stage detailed workflow when the parent chooses to show it
   expect(within(table).getByRole('columnheader', { name: 'Agent Action' })).toBeInTheDocument()
   expect(within(table).getByRole('columnheader', { name: 'Suggested Script' })).toBeInTheDocument()
 
-  for (const label of ['Opening', 'Acknowledgment', 'Identify', 'Resolution', 'Recap', 'Adjacent Issues', 'Closing']) {
-    expect(within(table).getByRole('rowheader', { name: new RegExp('\\b' + label + '$', 'i') })).toBeInTheDocument()
+  for (const label of [
+    'Opening / Greeting',
+    'Active Listening & Acknowledgment',
+    'Empathy Statement',
+    'Assurance / Ownership',
+    'Caller & Hearing Identification',
+    'Probing / Diagnostic Questions',
+    'Troubleshooting',
+    'Confirmation of Resolution',
+    'Recap / Summary',
+    'Final Check',
+    'Closing Spiel',
+  ]) {
+    expect(within(table).getByText(label, { selector: 'th span:last-child' })).toBeInTheDocument()
   }
 })
 
+it('shows the official simple formula and the resolved versus unresolved branch', () => {
+  render(<LiveCallFlowDetails />)
 
-it('shows the approved Locate Describe Guide Confirm method in the detailed workflow', () => {
+  const formula = screen.getByRole('region', { name: 'Simple Agent Formula' })
+  expect(within(formula).getByText(/Greet → Listen → Empathize → Assure → Probe → Troubleshoot → Confirm → Close/i)).toBeInTheDocument()
+
+  const branch = screen.getByRole('heading', { name: 'Resolved?' }).closest('section')
+  expect(within(branch).getByText('YES — Resolved')).toBeInTheDocument()
+  expect(within(branch).getByText(/Recap → Final Check → Closing/i)).toBeInTheDocument()
+  expect(within(branch).getByText('NO — Unresolved')).toBeInTheDocument()
+  expect(within(branch).getByText(/Explain Next Step → Escalate \/ Document → Recap → Closing/i)).toBeInTheDocument()
+  expect(within(branch).getByText(/Use the current Scope Check \/ referral guidance/i)).toBeInTheDocument()
+})
+
+it('keeps Locate Describe Guide Confirm inside the Troubleshooting stage', () => {
   render(<LiveCallFlowDetails />)
 
   const method = screen.getByRole('region', { name: 'Locate Describe Guide Confirm method' })
+  expect(within(method).getByText(/Use inside Step 7/i)).toBeInTheDocument()
   for (const stage of ['Locate', 'Describe', 'Guide', 'Confirm']) {
     expect(within(method).getByText(stage)).toBeInTheDocument()
   }
-  expect(within(method).getByText(/Do not move to the next instruction until the caller confirms/i)).toBeInTheDocument()
 })
 
-it('captures device, caller role, and resolution status with clear pressed states', async () => {
+it('captures device, caller role, hearing status, affected scope, and resolution status', async () => {
   const user = userEvent.setup()
   render(<LiveCallFlow />)
 
   await user.click(screen.getByRole('button', { name: 'Windows' }))
   await user.click(screen.getByRole('button', { name: 'Participant' }))
+  await user.click(screen.getByRole('button', { name: 'Active hearing' }))
+  await user.click(screen.getByRole('button', { name: 'Others affected' }))
   await user.click(screen.getByRole('button', { name: 'Resolved' }))
 
   expect(screen.getByRole('button', { name: 'Windows' })).toHaveAttribute('aria-pressed', 'true')
   expect(screen.getByRole('button', { name: 'Participant' })).toHaveAttribute('aria-pressed', 'true')
+  expect(screen.getByRole('button', { name: 'Active hearing' })).toHaveAttribute('aria-pressed', 'true')
+  expect(screen.getByRole('button', { name: 'Others affected' })).toHaveAttribute('aria-pressed', 'true')
   expect(screen.getByRole('button', { name: 'Resolved' })).toHaveAttribute('aria-pressed', 'true')
 })
 
-it('resets the live call context for the next caller', async () => {
+it('resets the expanded live call context for the next caller', async () => {
   const user = userEvent.setup()
   render(<LiveCallFlow />)
 
   await user.click(screen.getByRole('button', { name: 'Mac' }))
   await user.click(screen.getByRole('button', { name: 'Host' }))
+  await user.click(screen.getByRole('button', { name: 'Preparing / not started' }))
+  await user.click(screen.getByRole('button', { name: 'Caller only' }))
   await user.click(screen.getByRole('button', { name: 'Referral Needed' }))
   await user.click(screen.getByRole('button', { name: 'Reset call' }))
 
-  expect(screen.getByRole('button', { name: 'Mac' })).toHaveAttribute('aria-pressed', 'false')
-  expect(screen.getByRole('button', { name: 'Host' })).toHaveAttribute('aria-pressed', 'false')
-  expect(screen.getByRole('button', { name: 'Referral Needed' })).toHaveAttribute('aria-pressed', 'false')
+  for (const label of ['Mac', 'Host', 'Preparing / not started', 'Caller only', 'Referral Needed']) {
+    expect(screen.getByRole('button', { name: label })).toHaveAttribute('aria-pressed', 'false')
+  }
 })

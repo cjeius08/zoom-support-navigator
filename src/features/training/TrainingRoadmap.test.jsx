@@ -26,7 +26,7 @@ it('shows a progressive visual path without pretending unfinished modules are av
   const modules = within(list).getAllByRole('listitem')
   expect(modules).toHaveLength(6)
 
-  expect(screen.getByRole('button', { name: 'Open call method' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Open call flow language' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Open device walkthroughs' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Open wording guardrails' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Open scenario scripts' })).toBeInTheDocument()
@@ -42,11 +42,11 @@ it('routes existing roadmap modules to the exact current training resource', asy
   const onOpenResource = vi.fn()
   render(<TrainingRoadmap onOpenResource={onOpenResource} />)
 
-  await user.click(screen.getByRole('button', { name: 'Open call method' }))
+  await user.click(screen.getByRole('button', { name: 'Open call flow language' }))
   expect(onOpenResource).toHaveBeenLastCalledWith({
     section: 'scripts',
     mode: 'language',
-    subsection: 'guide',
+    subsection: 'opening',
   })
 
   await user.click(screen.getByRole('button', { name: 'Open scenario scripts' }))

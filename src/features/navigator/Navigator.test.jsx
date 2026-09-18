@@ -153,7 +153,7 @@ it('emits only identifier-based analytics events for support interactions', asyn
 it('keeps the top workspace compact and renders the expanded call workflow full-width below it', async () => {
   const user = userEvent.setup()
   render(<Navigator />)
-  const liveFlow = screen.getByRole('region', { name: 'Core Live Call Flow' })
+  const liveFlow = screen.getByRole('region', { name: 'Ogletree Tier 1 Live Call Flow' })
   const search = screen.getByRole('combobox', { name: 'Search support processes' })
   const searchCard = search.closest('.smart-search-card')
   const workspace = search.closest('.navigator-top-workspace')
@@ -165,11 +165,11 @@ it('keeps the top workspace compact and renders the expanded call workflow full-
   expect(workspace).toContainElement(liveFlow)
   expect(searchCard?.parentElement).toBe(liveFlow.parentElement)
   expect(toggle).toHaveAttribute('aria-expanded', 'false')
-  expect(screen.queryByRole('region', { name: 'Detailed Live Call Flow' })).not.toBeInTheDocument()
+  expect(screen.queryByRole('region', { name: 'Detailed Ogletree Tier 1 Live Call Flow' })).not.toBeInTheDocument()
 
   await user.click(toggle)
 
-  const details = screen.getByRole('region', { name: 'Detailed Live Call Flow' })
+  const details = screen.getByRole('region', { name: 'Detailed Ogletree Tier 1 Live Call Flow' })
   expect(screen.getByRole('button', { name: /Hide full call flow/i })).toHaveAttribute('aria-expanded', 'true')
   expect(workspace).not.toContainElement(details)
   expect(details.parentElement).toBe(workspace.parentElement)

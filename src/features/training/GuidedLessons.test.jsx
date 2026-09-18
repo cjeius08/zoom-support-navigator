@@ -6,7 +6,7 @@ import { GUIDED_LESSONS, GuidedLessons } from './GuidedLessons'
 it('locks Phase 6 Batch 2 to five source-backed guided lessons', () => {
   expect(GUIDED_LESSONS).toHaveLength(5)
   expect(GUIDED_LESSONS.map(lesson => lesson.id)).toEqual([
-    'one-step-method',
+    'official-call-flow',
     'device-first',
     'audio-direction',
     'waiting-state',
@@ -27,13 +27,13 @@ it('renders the visual call-method lesson first without adding a scored knowledg
   render(<GuidedLessons />)
 
   expect(screen.getByRole('heading', { name: /Learn the pattern before practicing the call/i })).toBeInTheDocument()
-  expect(screen.getByRole('tabpanel', { name: 'Guide one visible action at a time' })).toBeInTheDocument()
+  expect(screen.getByRole('tabpanel', { name: 'Follow the Ogletree call flow before troubleshooting' })).toBeInTheDocument()
 
-  const panel = screen.getByRole('tabpanel', { name: 'Guide one visible action at a time' })
-  for (const stage of ['Locate', 'Describe', 'Guide', 'Confirm']) {
+  const panel = screen.getByRole('tabpanel', { name: 'Follow the Ogletree call flow before troubleshooting' })
+  for (const stage of ['Greet', 'Listen', 'Empathize', 'Assure', 'Probe', 'Troubleshoot', 'Confirm', 'Close']) {
     expect(within(panel).getByText(stage, { selector: 'strong' })).toBeInTheDocument()
   }
-  expect(within(panel).getByText(/If the caller cannot find the control/i)).toBeInTheDocument()
+  expect(within(panel).getByText(/Greet → Listen → Empathize → Assure → Probe → Troubleshoot → Confirm → Close/i)).toBeInTheDocument()
   expect(screen.getByText(/Practice questions are intentionally saved for Phase 6 Batch 3/i)).toBeInTheDocument()
 })
 
@@ -70,11 +70,11 @@ it('routes each lesson to its existing approved resource instead of duplicating 
   const onOpenResource = vi.fn()
   render(<GuidedLessons onOpenResource={onOpenResource} />)
 
-  await user.click(screen.getByRole('button', { name: 'Open the full call method' }))
+  await user.click(screen.getByRole('button', { name: 'Open the call flow language' }))
   expect(onOpenResource).toHaveBeenLastCalledWith({
     section: 'scripts',
     mode: 'language',
-    subsection: 'guide',
+    subsection: 'opening',
   })
 
   await user.click(screen.getByRole('tab', { name: /Separate speaker problems from microphone problems/i }))
@@ -101,7 +101,7 @@ it('publishes the active guided lesson as report context', async () => {
 
   expect(onReportContextChange).toHaveBeenLastCalledWith(expect.objectContaining({
     selected_tab: 'Guided Visual Lessons',
-    current_section: 'Guide one visible action at a time',
+    current_section: 'Follow the Ogletree call flow before troubleshooting',
   }))
 
   await user.click(screen.getByRole('tab', { name: /Know when basic support should stop/i }))

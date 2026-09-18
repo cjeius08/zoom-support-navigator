@@ -1,10 +1,17 @@
 import { useState } from 'react'
+import {
+  OGLETREE_CALL_FLOW_SOURCE,
+  OGLETREE_CALL_FLOW_STEPS,
+  OGLETREE_RESOLUTION_BRANCH,
+  OGLETREE_SIMPLE_AGENT_FORMULA,
+} from '../../data/ogletreeCallFlow'
 import './liveCallFlow.css'
 
 const DEVICES = ['Windows', 'Mac', 'iPhone', 'Android', 'Browser']
 const ROLES = ['Host', 'Participant']
+const HEARING_STATUSES = ['Preparing / not started', 'Active hearing']
+const IMPACT_OPTIONS = ['Caller only', 'Others affected']
 const STATUSES = ['Resolved', 'Unresolved', 'Referral Needed']
-
 
 const GUIDANCE_METHOD = [
   {
@@ -22,44 +29,6 @@ const GUIDANCE_METHOD = [
   {
     name: 'Confirm',
     detail: 'Verify what changed or test the function before moving to the next step or closing the call.',
-  },
-]
-
-const CALL_STEPS = [
-  {
-    name: 'Opening',
-    action: 'Greet the caller, introduce yourself, and invite them to explain what they need help with.',
-    script: '“Thank you for calling. This is [Name]. How can I help you today?”',
-  },
-  {
-    name: 'Acknowledgment',
-    action: 'Briefly restate the concern so the caller knows you understood before troubleshooting.',
-    script: '“I understand. I’ll help you work through that.”',
-  },
-  {
-    name: 'Identify',
-    action: 'Confirm the caller’s device, whether they are the host or a participant, and the exact symptom.',
-    script: '“Before we start, what device are you using, and are you the host or a participant?”',
-  },
-  {
-    name: 'Resolution',
-    action: 'Guide one step at a time. Pause after each action and confirm what the caller sees before continuing.',
-    script: '“I’ll guide you one step at a time. Let me know what you see after each step.”',
-  },
-  {
-    name: 'Recap',
-    action: 'Summarize what changed and confirm whether the original issue is now resolved.',
-    script: '“We’ve completed those steps. Is everything working as expected now?”',
-  },
-  {
-    name: 'Adjacent Issues',
-    action: 'After the primary concern is addressed, check whether the caller needs help with anything closely related.',
-    script: '“Before we finish, is there anything else in Zoom you need help with today?”',
-  },
-  {
-    name: 'Closing',
-    action: 'State the final resolution or next action, then close the call clearly and courteously.',
-    script: '“Thank you for calling. I’m glad we could work through that with you today.”',
   },
 ]
 
@@ -83,12 +52,16 @@ function ChoiceGroup({ label, options, value, onChange, className = '' }) {
 export function LiveCallFlow({ value, onChange, expanded: controlledExpanded, onExpandedChange }) {
   const [internalDevice, setInternalDevice] = useState(null)
   const [internalRole, setInternalRole] = useState(null)
+  const [internalHearingStatus, setInternalHearingStatus] = useState(null)
+  const [internalImpact, setInternalImpact] = useState(null)
   const [internalStatus, setInternalStatus] = useState(null)
   const [internalExpanded, setInternalExpanded] = useState(false)
   const controlled = value !== undefined
   const expandedControlled = controlledExpanded !== undefined
   const device = controlled ? value.device : internalDevice
   const role = controlled ? value.role : internalRole
+  const hearingStatus = controlled ? value.hearingStatus : internalHearingStatus
+  const impact = controlled ? value.impact : internalImpact
   const status = controlled ? value.status : internalStatus
   const expanded = expandedControlled ? controlledExpanded : internalExpanded
 
@@ -96,18 +69,22 @@ export function LiveCallFlow({ value, onChange, expanded: controlledExpanded, on
     if (!controlled) {
       if (field === 'device') setInternalDevice(nextValue)
       if (field === 'role') setInternalRole(nextValue)
+      if (field === 'hearingStatus') setInternalHearingStatus(nextValue)
+      if (field === 'impact') setInternalImpact(nextValue)
       if (field === 'status') setInternalStatus(nextValue)
     }
-    onChange?.({ device, role, status, [field]: nextValue })
+    onChange?.({ device, role, hearingStatus, impact, status, [field]: nextValue })
   }
 
   function resetCall() {
     if (!controlled) {
       setInternalDevice(null)
       setInternalRole(null)
+      setInternalHearingStatus(null)
+      setInternalImpact(null)
       setInternalStatus(null)
     }
-    onChange?.({ device: null, role: null, status: null })
+    onChange?.({ device: null, role: null, hearingStatus: null, impact: null, status: null })
   }
 
   function toggleExpanded() {
@@ -116,12 +93,12 @@ export function LiveCallFlow({ value, onChange, expanded: controlledExpanded, on
     onExpandedChange?.(next)
   }
 
-  return <section className="live-call-flow" aria-label="Core Live Call Flow">
+  return <section className="live-call-flow" aria-label="Ogletree Tier 1 Live Call Flow">
     <div className="live-call-flow-heading">
       <div>
-        <p className="eyebrow">Live call context</p>
+        <p className="eyebrow">Live call context · Official Ogletree flow</p>
         <h2>Live Call Flow</h2>
-        <p>Set the caller context once. The workspace carries it into the troubleshooting route.</p>
+        <p>Set the call context early. Hearing status matters because troubleshooting urgency can change once a hearing is already active.</p>
       </div>
       <button type="button" className="live-call-reset" onClick={resetCall}>Reset call</button>
     </div>
@@ -129,6 +106,8 @@ export function LiveCallFlow({ value, onChange, expanded: controlledExpanded, on
     <div className="live-call-context" aria-label="Call context">
       <ChoiceGroup label="Device" options={DEVICES} value={device} onChange={next => updateContext('device', next)} />
       <ChoiceGroup label="Caller role" options={ROLES} value={role} onChange={next => updateContext('role', next)} />
+      <ChoiceGroup label="Hearing status" options={HEARING_STATUSES} value={hearingStatus} onChange={next => updateContext('hearingStatus', next)} />
+      <ChoiceGroup label="Who is affected" options={IMPACT_OPTIONS} value={impact} onChange={next => updateContext('impact', next)} />
     </div>
 
     <div className="live-call-resolution">
@@ -149,7 +128,7 @@ export function LiveCallFlow({ value, onChange, expanded: controlledExpanded, on
       onClick={toggleExpanded}
     >
       <span>{expanded ? 'Hide full call flow' : 'View full call flow'}</span>
-      <small>7 steps</small>
+      <small>{OGLETREE_CALL_FLOW_STEPS.length} steps</small>
       <span className="live-call-toggle-icon" aria-hidden="true">{expanded ? '−' : '+'}</span>
     </button>
   </section>
@@ -159,24 +138,32 @@ export function LiveCallFlowDetails({ onClose }) {
   return <section
     id="live-call-workflow-details"
     className="live-call-workflow-panel"
-    aria-label="Detailed Live Call Flow"
+    aria-label="Detailed Ogletree Tier 1 Live Call Flow"
   >
     <div className="live-call-workflow-panel-heading">
       <div>
-        <p className="eyebrow">Full call workflow</p>
+        <p className="eyebrow">Official Tier 1 call workflow</p>
         <h2>Detailed Call Workflow</h2>
-        <p>Use these stages as a conversation guide. Keep the call natural and move one step at a time.</p>
+        <p>Follow the call stages in order, but keep the conversation natural. Listen before troubleshooting and confirm the caller’s result before closing.</p>
       </div>
       {onClose && <button type="button" className="live-call-panel-close" onClick={onClose}>Close detailed flow</button>}
     </div>
 
+    <section className="live-call-agent-formula" aria-label="Simple Agent Formula">
+      <div>
+        <p className="eyebrow">Simple agent formula</p>
+        <h3>{OGLETREE_SIMPLE_AGENT_FORMULA.join(' → ')}</h3>
+      </div>
+      <small>Source · {OGLETREE_CALL_FLOW_SOURCE.title}</small>
+    </section>
+
     <section className="live-call-guidance-method" aria-label="Locate Describe Guide Confirm method">
       <div className="live-call-guidance-heading">
         <div>
-          <p className="eyebrow">Approved agent guidance method</p>
+          <p className="eyebrow">Troubleshooting guidance method</p>
           <h3>Locate → Describe → Guide → Confirm</h3>
         </div>
-        <span>Use with every troubleshooting route</span>
+        <span>Use inside Step 7 · Troubleshooting</span>
       </div>
       <div className="live-call-guidance-grid">
         {GUIDANCE_METHOD.map((stage, index) => <article key={stage.name}>
@@ -187,7 +174,7 @@ export function LiveCallFlowDetails({ onClose }) {
           </div>
         </article>)}
       </div>
-      <p className="live-call-guidance-rule"><strong>Core rule:</strong> Do not move to the next instruction until the caller confirms what they see or what happened.</p>
+      <p className="live-call-guidance-rule"><strong>Core rule:</strong> Do not move to the next troubleshooting instruction until the caller confirms what they see or what happened.</p>
     </section>
 
     <div className="live-call-table-wrap">
@@ -200,22 +187,44 @@ export function LiveCallFlowDetails({ onClose }) {
           </tr>
         </thead>
         <tbody>
-          {CALL_STEPS.map((step, index) => <tr key={step.name}>
+          {OGLETREE_CALL_FLOW_STEPS.map(step => <tr key={step.id}>
             <th scope="row">
-              <span className="live-call-step-number">{index + 1}</span>
+              <span className="live-call-step-number">{step.number}</span>
               <span>{step.name}</span>
             </th>
             <td>
               <span className="live-call-cell-label">Agent Action</span>
+              <strong className="live-call-objective">{step.objective}</strong>
               <p>{step.action}</p>
             </td>
             <td>
               <span className="live-call-cell-label">Suggested Script</span>
-              <blockquote>{step.script}</blockquote>
+              <blockquote>“{step.script}”</blockquote>
             </td>
           </tr>)}
         </tbody>
       </table>
     </div>
+
+    <section className="live-call-resolution-branch" aria-labelledby="resolution-branch-title">
+      <div className="live-call-resolution-branch-heading">
+        <p className="eyebrow">After Step 8 · Confirm resolution</p>
+        <h3 id="resolution-branch-title">Resolved?</h3>
+      </div>
+      <div className="live-call-resolution-paths">
+        <article className="live-call-resolution-path live-call-resolution-path-resolved">
+          <strong>{OGLETREE_RESOLUTION_BRANCH.resolved.label}</strong>
+          <p>{OGLETREE_RESOLUTION_BRANCH.resolved.path.join(' → ')}</p>
+        </article>
+        <article className="live-call-resolution-path live-call-resolution-path-unresolved">
+          <strong>{OGLETREE_RESOLUTION_BRANCH.unresolved.label}</strong>
+          <p>{OGLETREE_RESOLUTION_BRANCH.unresolved.path.join(' → ')}</p>
+        </article>
+      </div>
+      <aside>
+        <strong>Escalation / referral note</strong>
+        <p>{OGLETREE_RESOLUTION_BRANCH.boundaryNote}</p>
+      </aside>
+    </section>
   </section>
 }

@@ -1994,6 +1994,18 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   color: #aabcc9;
   line-height: 1.5;
 }
+.communication-source-stamp {
+  display: grid;
+  justify-items: end;
+  gap: .3rem;
+  max-width: 24rem;
+}
+.communication-source-stamp small {
+  color: #7891a2;
+  font-size: .6rem;
+  line-height: 1.35;
+  text-align: right;
+}
 .communication-mode-tabs {
   display: inline-flex;
   gap: .4rem;
@@ -2284,6 +2296,25 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   display: grid;
   gap: .9rem;
 }
+.scenario-call-flow-note {
+  display: grid;
+  gap: .18rem;
+  padding: .68rem .75rem;
+  border-left: 3px solid rgba(82, 178, 232, .62);
+  border-radius: .28rem .65rem .65rem .28rem;
+  background: rgba(30, 101, 158, .07);
+}
+.scenario-call-flow-note strong {
+  color: #9fd6fb;
+  font-size: .66rem;
+}
+.scenario-call-flow-note p {
+  margin: 0;
+  color: #91a8b7;
+  font-size: .66rem;
+  line-height: 1.45;
+}
+
 .scenario-script-picker {
   display: flex;
   flex-wrap: wrap;

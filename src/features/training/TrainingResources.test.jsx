@@ -23,11 +23,11 @@ describe('Training & Resources', () => {
     expect(screen.getByRole('tab', { name: 'Training Roadmap' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.getByRole('heading', { name: /Follow one learning path/i })).toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: 'Open call method' }))
+    await user.click(screen.getByRole('button', { name: 'Open call flow language' }))
 
     expect(screen.getByRole('tab', { name: 'Scripts & Communication' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.getByRole('tab', { name: 'Call Language' })).toHaveAttribute('aria-selected', 'true')
-    expect(screen.getByRole('tabpanel', { name: 'Locate → Describe → Guide → Confirm' })).toBeInTheDocument()
+    expect(screen.getByRole('tabpanel', { name: 'Opening / Greeting' })).toBeInTheDocument()
 
     await user.click(screen.getByRole('tab', { name: 'Training Roadmap' }))
     await user.click(screen.getByRole('button', { name: 'Open scenario scripts' }))
