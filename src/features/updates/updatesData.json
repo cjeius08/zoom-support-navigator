@@ -10,6 +10,18 @@
   },
   "updates": [
     {
+      "id": "avatar-selected-indicator",
+      "date": "2026-09-19",
+      "area": "Profile / Avatar",
+      "title": "Avatar picker now clearly marks the selected avatar",
+      "changed": "Added a visible check badge and stronger selected ring to the active avatar in Change Avatar so agents can immediately see which avatar is currently selected while browsing the gallery. The existing radio selection state remains accessible to keyboard and assistive-technology users.",
+      "checks": [
+        "Open My Profile → Change Avatar and confirm the current avatar has a visible check badge and selected ring.",
+        "Choose a different avatar and confirm the indicator moves immediately to the newly selected avatar.",
+        "Confirm only one avatar shows the selected indicator at a time."
+      ]
+    },
+    {
       "id": "avatar-persistence-polish",
       "date": "2026-09-19",
       "area": "Profile / Avatar",
