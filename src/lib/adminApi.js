@@ -79,6 +79,14 @@ export async function loadUsage({ start, end } = {}) {
   return { profiles, events, sessions, presence }
 }
 
+export async function loadReadinessReport() {
+  const { data, error } = await supabase.rpc('zoom_readiness_admin_report', {
+    p_question_set_version: 'zoom_general_scenarios_v1',
+  })
+  if (error) throw error
+  return data
+}
+
 export async function loadFeedback() {
   const reportsPromise = loadPaged(() => supabase
     .from('zoom_feedback_reports')
