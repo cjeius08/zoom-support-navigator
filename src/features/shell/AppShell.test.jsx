@@ -39,21 +39,29 @@ it('exposes What’s New and console ownership metadata to all agents', async ()
 })
 
 it('exposes mobile navigation state and closes it after navigation', async () => {
-  const user = userEvent.setup()
-  const onNavigate = vi.fn()
-  render(<AppShell profile={agentProfile} onNavigate={onNavigate} />)
+  const originalWidth = window.innerWidth
+  Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390 })
+  window.dispatchEvent(new Event('resize'))
+  try {
+    const user = userEvent.setup()
+    const onNavigate = vi.fn()
+    render(<AppShell profile={agentProfile} onNavigate={onNavigate} />)
 
-  const toggle = screen.getByRole('button', { name: 'Toggle navigation' })
-  expect(toggle).toHaveAttribute('aria-expanded', 'false')
-  expect(toggle).toHaveAttribute('aria-controls', 'primary-sidebar')
+    const toggle = screen.getByRole('button', { name: 'Toggle navigation' })
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+    expect(toggle).toHaveAttribute('aria-controls', 'primary-sidebar')
 
-  await user.click(toggle)
-  expect(toggle).toHaveAttribute('aria-expanded', 'true')
-  expect(screen.getByRole('button', { name: 'Close navigation' })).toBeInTheDocument()
+    await user.click(toggle)
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByRole('button', { name: 'Close navigation' })).toBeInTheDocument()
 
-  await user.click(screen.getByRole('button', { name: 'Training & Resources' }))
-  expect(onNavigate).toHaveBeenCalledWith('training')
-  expect(toggle).toHaveAttribute('aria-expanded', 'false')
+    await user.click(screen.getByRole('button', { name: 'Training & Resources' }))
+    expect(onNavigate).toHaveBeenCalledWith('training')
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  } finally {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: originalWidth })
+    window.dispatchEvent(new Event('resize'))
+  }
 })
 
 it('uses the tablet breakpoint for the authenticated sidebar without leaving a closed-sidebar sliver', () => {
