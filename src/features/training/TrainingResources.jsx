@@ -28,6 +28,7 @@ export function TrainingResources({ initialVideoId = null, initialTarget = null,
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
   const [activeIndex, setActiveIndex] = useState(initialIndex >= 0 ? initialIndex : null)
+  const [deviceTarget, setDeviceTarget] = useState(initialTarget?.device || null)
   const [scriptTarget, setScriptTarget] = useState({
     mode: initialTarget?.mode || null,
     subsection: initialTarget?.subsection || null,
@@ -49,6 +50,9 @@ export function TrainingResources({ initialVideoId = null, initialTarget = null,
     if (!initialTarget?.section) return
     setSection(initialTarget.section)
     setActiveIndex(null)
+    if (initialTarget.section === 'devices') {
+      setDeviceTarget(initialTarget.device || null)
+    }
     if (initialTarget.section === 'scripts') {
       setScriptTarget({
         mode: initialTarget.mode || 'language',
@@ -95,6 +99,9 @@ export function TrainingResources({ initialVideoId = null, initialTarget = null,
   }
 
   function openRoadmapResource(target) {
+    if (target.section === 'devices') {
+      setDeviceTarget(target.device || null)
+    }
     if (target.section === 'scripts') {
       setScriptTarget({
         mode: target.mode || 'language',
@@ -154,7 +161,7 @@ export function TrainingResources({ initialVideoId = null, initialTarget = null,
       : section === 'lessons'
         ? <GuidedLessons onOpenResource={openRoadmapResource} onReportContextChange={onReportContextChange} />
         : section === 'devices'
-          ? <DeviceWalkthroughs onReportContextChange={onReportContextChange} />
+          ? <DeviceWalkthroughs initialDeviceId={deviceTarget} onReportContextChange={onReportContextChange} />
         : section === 'scripts'
           ? <ScriptsCommunication
               onReportContextChange={onReportContextChange}
