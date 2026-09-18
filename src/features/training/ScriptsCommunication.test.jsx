@@ -182,3 +182,12 @@ it('can open a roadmap-targeted communication mode and subsection', () => {
   rerender(<ScriptsCommunication initialMode="scenarios" />)
   expect(screen.getByRole('tab', { name: 'Scenario Scripts' })).toHaveAttribute('aria-selected', 'true')
 })
+
+
+it('can open the exact scenario requested by a guided lesson', () => {
+  render(<ScriptsCommunication initialMode="scenarios" initialScenarioId="waiting-entry" />)
+
+  expect(screen.getByRole('tab', { name: 'Scenario Scripts' })).toHaveAttribute('aria-selected', 'true')
+  expect(screen.getByRole('tab', { name: 'Waiting to Get In' })).toHaveAttribute('aria-selected', 'true')
+  expect(screen.getByRole('region', { name: 'Waiting to Get In scenario' })).toBeInTheDocument()
+})
