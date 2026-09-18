@@ -3,6 +3,7 @@ import { TRAINING_CATEGORIES, TRAINING_VIDEOS, trainingEmbedUrl } from '../../da
 import { useDialogFocus } from '../../lib/useDialogFocus'
 import { DeviceWalkthroughs } from './DeviceWalkthroughs'
 import { ScriptsCommunication } from './ScriptsCommunication'
+import { TrainingRoadmap } from './TrainingRoadmap'
 
 function VideoViewer({ videos, index, onClose }) {
   const dialogRef = useRef(null)
@@ -22,10 +23,11 @@ function VideoViewer({ videos, index, onClose }) {
 
 export function TrainingResources({ initialVideoId = null, onReportContextChange = () => {} }) {
   const initialIndex = initialVideoId ? TRAINING_VIDEOS.findIndex(video => video.id === initialVideoId) : -1
-  const [section, setSection] = useState(initialVideoId ? 'videos' : 'devices')
+  const [section, setSection] = useState(initialVideoId ? 'videos' : 'roadmap')
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
   const [activeIndex, setActiveIndex] = useState(initialIndex >= 0 ? initialIndex : null)
+  const [scriptTarget, setScriptTarget] = useState({ mode: null, subsection: null })
 
   useEffect(() => {
     if (!initialVideoId) return
@@ -46,6 +48,7 @@ export function TrainingResources({ initialVideoId = null, onReportContextChange
 
   useEffect(() => {
     const sectionLabels = {
+      roadmap: 'Training Roadmap',
       devices: 'Device Walkthroughs',
       scripts: 'Scripts & Communication',
       videos: 'Video Library',
@@ -54,7 +57,9 @@ export function TrainingResources({ initialVideoId = null, onReportContextChange
       selected_tab: sectionLabels[section] || section,
       current_section: section === 'videos'
         ? (activeIndex !== null ? filteredVideos[activeIndex]?.title || 'Video Library' : category !== 'All' ? category : null)
-        : null,
+        : section === 'roadmap'
+          ? 'Phase 6 learning path'
+          : null,
       active_device: null,
       active_caller_role: null,
       active_common_issue: null,
@@ -68,17 +73,34 @@ export function TrainingResources({ initialVideoId = null, onReportContextChange
     setActiveIndex(null)
   }
 
+  function openRoadmapResource(target) {
+    if (target.section === 'scripts') {
+      setScriptTarget({
+        mode: target.mode || 'language',
+        subsection: target.subsection || null,
+      })
+    }
+    setSection(target.section)
+    setActiveIndex(null)
+  }
+
   return <section className="console-view training-library">
     <div className="view-heading">
       <div>
         <p className="eyebrow">Zoom learning workspace</p>
         <h1>Training &amp; Resources</h1>
-        <p>Use visual device walkthroughs for live guidance, or open the training video library for deeper learning.</p>
+        <p>Start with the roadmap, then open the visual walkthroughs, communication lessons, scenarios, and videos when you need them.</p>
       </div>
-      <span className="playlist-label">{section === 'devices' ? 'Phase 3 · Windows + Mac + iPhone + Android + Browser' : section === 'scripts' ? 'Phase 4 · Call language + scenario scripts' : 'Getting Started with Zoom · ' + TRAINING_VIDEOS.length + ' videos'}</span>
+      <span className="playlist-label">{section === 'roadmap' ? 'Phase 6 · Structured learning path' : section === 'devices' ? 'Phase 3 · Windows + Mac + iPhone + Android + Browser' : section === 'scripts' ? 'Phase 4 · Call language + scenario scripts' : 'Getting Started with Zoom · ' + TRAINING_VIDEOS.length + ' videos'}</span>
     </div>
 
     <div className="training-section-tabs" role="tablist" aria-label="Training resource sections">
+      <button
+        type="button"
+        role="tab"
+        aria-selected={section === 'roadmap'}
+        onClick={() => changeSection('roadmap')}
+      >Training Roadmap</button>
       <button
         type="button"
         role="tab"
@@ -99,11 +121,17 @@ export function TrainingResources({ initialVideoId = null, onReportContextChange
       >Video Library</button>
     </div>
 
-    {section === 'devices'
-      ? <DeviceWalkthroughs onReportContextChange={onReportContextChange} />
-      : section === 'scripts'
-        ? <ScriptsCommunication onReportContextChange={onReportContextChange} />
-        : <>
+    {section === 'roadmap'
+      ? <TrainingRoadmap onOpenResource={openRoadmapResource} />
+      : section === 'devices'
+        ? <DeviceWalkthroughs onReportContextChange={onReportContextChange} />
+        : section === 'scripts'
+          ? <ScriptsCommunication
+              onReportContextChange={onReportContextChange}
+              initialMode={scriptTarget.mode}
+              initialSectionId={scriptTarget.subsection}
+            />
+          : <>
           <div className="training-controls"><label>Search training videos<input type="search" aria-label="Search training videos" value={query} onChange={(event) => { setQuery(event.target.value); setActiveIndex(null) }} placeholder="Search topics and support categories" /></label><label>Filter by category<select aria-label="Filter training by category" value={category} onChange={(event) => { setCategory(event.target.value); setActiveIndex(null) }}>{TRAINING_CATEGORIES.map((name) => <option key={name}>{name}</option>)}</select></label></div>
           <p className="library-count">{filteredVideos.length} {filteredVideos.length === 1 ? 'video' : 'videos'} available</p>
           <div className="training-grid">{filteredVideos.map((video, index) => <article key={video.id} className="training-card"><img loading="lazy" src={video.thumbnailUrl} alt="" /><div className="training-card-body"><h2>{video.title}</h2><p><strong>Useful for:</strong> {video.usefulFor}</p>{video.relatedCategories.length > 0 && <div className="training-tags">{video.relatedCategories.map((tag) => <span key={tag}>{tag}</span>)}</div>}<button type="button" onClick={() => setActiveIndex(index)}>Watch Video</button></div></article>)}</div>
