@@ -9,6 +9,20 @@
   },
   "updates": [
     {
+      "id": "phase5-documentation-workspace",
+      "date": "2026-09-19",
+      "area": "Training / Documentation",
+      "title": "Phase 5 call documentation workspace added",
+      "changed": "Added a dedicated Documentation tab inside Training & Resources for live-call note capture. Agents can record caller details, date/time, caller reference, device/platform, device/access context, exact issue, completed troubleshooting and observed result, resolution/next steps, recommended contact when referred, and the final call outcome. The workspace generates a copy-ready summary, keeps the draft local to the browser session, does not send caller-entered text to OGCon analytics or report context, and includes a clear-draft action for the next call.",
+      "checks": [
+        "Open Training & Resources → Documentation and confirm the Phase 5 call documentation form appears.",
+        "Enter sample caller details, device, exact issue, troubleshooting/result, next steps, and a call outcome; confirm the Documentation preview updates immediately.",
+        "Select Copy documentation and confirm the complete labeled summary is copied for use in the approved case system.",
+        "Select Clear documentation, confirm the prompt, and verify the caller-entered fields and outcome reset for the next call.",
+        "Use Report an issue from the Documentation tab and confirm only screen context such as Documentation, device, and outcome is captured—not caller name, phone number, issue text, or notes."
+      ]
+    },
+    {
       "id": "interactive-guided-discovery",
       "date": "2026-09-19",
       "area": "Training / Live Call Support",
