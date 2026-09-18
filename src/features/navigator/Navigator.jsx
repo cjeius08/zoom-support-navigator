@@ -18,6 +18,8 @@ const categories = [
   ['support', 'Support Boundaries', 'Locate → Describe → Guide → Confirm'],
 ]
 
+const FASTEST_ROUTE_IDS = ['cant-join', 'waiting-entry', 'cant-hear', 'cant-be-heard', 'camera-not-working']
+
 const categoryIconPaths = {
   join: 'M5 4h9v16H5z M14 12h6 M17 9l3 3-3 3 M9 12h.01',
   audio: 'M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z M5 11a7 7 0 0 0 14 0 M12 18v3 M9 21h6',
@@ -46,6 +48,7 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
   const [activeSuggestion, setActiveSuggestion] = useState(-1)
+  const [libraryTab, setLibraryTab] = useState('fastest')
   const feedbackDialogRef = useRef(null)
   useDialogFocus(feedbackDialogRef, feedbackOpen, () => setFeedbackOpen(false))
 
@@ -66,10 +69,10 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
   const searchMatches = useMemo(() => query.trim() ? searchProcesses(PROCESSES, query) : [], [query])
   const routeMatches = useMemo(() => query.trim() ? searchCommonIssueRoutes(query) : [], [query])
 
-  const visible = useMemo(() => {
-    if (query.trim()) return searchMatches
-    return category ? PROCESSES.filter(process => process.category === category) : []
-  }, [category, query, searchMatches])
+  const categoryProcesses = useMemo(() => (
+    category ? PROCESSES.filter(process => process.category === category) : []
+  ), [category])
+  const fastestRoutes = useMemo(() => FASTEST_ROUTE_IDS.map(routeById).filter(Boolean), [])
 
   const suggestions = query.trim()
     ? [
@@ -78,6 +81,15 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
       ].slice(0, 6)
     : []
   const showSuggestions = suggestionsOpen && suggestions.length > 0
+
+  function switchLibraryTab(nextTab) {
+    setLibraryTab(nextTab)
+    setCategory(null)
+    setQuery('')
+    setSuggestionsOpen(false)
+    setActiveSuggestion(-1)
+    onTrackEvent?.({ eventType: 'tool_open', routeId: 'navigator', toolId: `navigator_tab_${nextTab}` })
+  }
 
   function openProcess(process, toolId = 'process_card') {
     if (!process) return
@@ -137,7 +149,7 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
     <section className="hero">
       <div className="hero-kicker"><span className="status-dot" /> Support process workspace</div>
       <h1>Find the next step <em>without opening documents.</em></h1>
-      <p>Search approved Zoom support processes, then follow a short visual route.</p>
+      <p>Search by caller symptom or approved process name, then follow the right support route.</p>
       <div className="search-combobox" onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) { setSuggestionsOpen(false); setActiveSuggestion(-1) } }}>
         <input
           role="combobox"
@@ -174,36 +186,107 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
               onClick={() => selectSuggestion(suggestion)}
             >
               <span className="search-suggestion-copy"><strong>{item.title}</strong><small>{isRoute ? item.subtitle : item.purpose}</small></span>
-              <span className="search-suggestion-category">{isRoute ? 'Common Issue Route' : categoryLabel(item.category)}</span>
+              <span className="search-suggestion-category">{isRoute ? 'Common Issue' : 'Process Guide'}</span>
             </button>
           })}
         </div>}
       </div>
       <span className="sr-only" role="status" aria-live="polite">{query.trim() ? `${routeMatches.length} common issue ${routeMatches.length === 1 ? 'route' : 'routes'} and ${searchMatches.length} matching support ${searchMatches.length === 1 ? 'process' : 'processes'}.` : ''}</span>
     </section>
-    <div className="navigator-entry-grid">
-      <section>
-        <p className="eyebrow">Start here</p>
-        <h2>What does the customer need?</h2>
-        <div className="category-grid">{categories.map(([id,name,description])=><button key={id} onClick={()=>{setCategory(id);setQuery('');setSuggestionsOpen(false);setActiveSuggestion(-1);onTrackEvent?.({eventType:'category_open',routeId:'navigator',categoryId:id})}}><CategoryIcon type={id} /><strong>{name}</strong><span>{description}</span></button>)}</div>
-      </section>
-      <section className="common-issues">
-        <p className="eyebrow">Fastest routes · Phase 2</p>
-        <h2>Common Issues</h2>
-        <p className="common-issues-intro">Start with what the caller is experiencing. Confirm the symptom before choosing the cause.</p>
-        <div className="phase-two-routes">
-          {[...new Set(COMMON_ISSUE_ROUTES.map(route => route.group))].map(group => <div className="phase-two-route-group" key={group}>
-            <span>{group}</span>
-            {COMMON_ISSUE_ROUTES.filter(route => route.group === group).map(route => <button type="button" key={route.id} onClick={() => openRoute(route)}>
-              <strong>{route.title}</strong>
-              <small>{route.subtitle}</small>
-              <span>→</span>
-            </button>)}
-          </div>)}
-        </div>
-      </section>
-    </div>
-    {visible.length>0&&<section id="search-results" aria-live="polite"><h2>{query?`Results for “${query}”`:categories.find(c=>c[0]===category)?.[1]}</h2><div className="process-grid">{visible.map(process=><button className="process-card" key={process.id} onClick={()=>openProcess(process,'process_card')}><small>{process.category}</small><strong>{process.title}</strong><span>{process.purpose}</span><div className="process-meta">{process.images?.length>0&&<span>{process.images.length} source {process.images.length===1?'page':'pages'}</span>}{process.visualReferences?.length>0&&<span>{process.visualReferences.length} Zoom {process.visualReferences.length===1?'visual':'visuals'}</span>}</div><b>Open process →</b></button>)}</div></section>}
+    <section className="navigator-library" aria-label="Navigator library">
+      <div className="navigator-library-tabs" role="tablist" aria-label="Navigator views">
+        <button type="button" role="tab" aria-selected={libraryTab === 'fastest'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('fastest')}>Fastest Routes</button>
+        <button type="button" role="tab" aria-selected={libraryTab === 'common'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('common')}>Common Issues</button>
+        <button type="button" role="tab" aria-selected={libraryTab === 'processes'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('processes')}>Process Guides</button>
+      </div>
+
+      <div id="navigator-library-panel" className="navigator-tab-panel" role="tabpanel">
+        {query.trim() ? <section id="search-results" className="combined-search-results" aria-live="polite">
+          <div className="search-results-heading">
+            <p className="eyebrow">Smart Search</p>
+            <h2>Results for “{query}”</h2>
+            <p>Common caller issues are shown first. Approved Process Guides remain available underneath for the full procedure.</p>
+          </div>
+
+          <section className="search-result-block" aria-labelledby="common-search-heading">
+            <div className="search-result-block-heading">
+              <h3 id="common-search-heading">Common Issues</h3>
+              <span>{routeMatches.length}</span>
+            </div>
+            {routeMatches.length > 0 ? <div className="route-browser-grid">
+              {routeMatches.map(route => <button type="button" className="route-card" key={route.id} onClick={() => openRoute(route, 'search_result')}>
+                <span className="result-type-badge">Common Issue</span>
+                <strong>{route.title}</strong>
+                <small>{route.subtitle}</small>
+                <b>Open Quick Guide →</b>
+              </button>)}
+            </div> : <div className="navigator-empty-state">No reviewed Common Issue route matches this search yet.</div>}
+          </section>
+
+          <section className="search-result-block" aria-labelledby="process-search-heading">
+            <div className="search-result-block-heading">
+              <h3 id="process-search-heading">Process Guides</h3>
+              <span>{searchMatches.length}</span>
+            </div>
+            {searchMatches.length > 0 ? <div className="process-grid">
+              {searchMatches.map(process => <button className="process-card" key={process.id} onClick={() => openProcess(process, 'search_result')}>
+                <small className="result-type-badge">Process Guide</small>
+                <strong>{process.title}</strong>
+                <span>{process.purpose}</span>
+                <div className="process-meta">{process.images?.length>0&&<span>{process.images.length} source {process.images.length===1?'page':'pages'}</span>}{process.visualReferences?.length>0&&<span>{process.visualReferences.length} Zoom {process.visualReferences.length===1?'visual':'visuals'}</span>}</div>
+                <b>Open process →</b>
+              </button>)}
+            </div> : <div className="navigator-empty-state">No approved Process Guide matches this search.</div>}
+          </section>
+        </section> : <>
+          {libraryTab === 'fastest' && <section aria-labelledby="fastest-routes-heading">
+            <p className="eyebrow">Live-call shortcuts · Phase 2</p>
+            <h2 id="fastest-routes-heading">Fastest Routes</h2>
+            <p className="navigator-tab-intro">Keep the original high-frequency routes one click away. Start with the caller’s symptom, not a document title.</p>
+            <div className="fastest-route-grid">
+              {fastestRoutes.map(route => <button type="button" className="route-card route-card-fast" key={route.id} onClick={() => openRoute(route, 'fastest_route')}>
+                <span>{route.group}</span>
+                <strong>{route.title}</strong>
+                <small>{route.subtitle}</small>
+                <b>Open Quick Guide →</b>
+              </button>)}
+            </div>
+          </section>}
+
+          {libraryTab === 'common' && <section aria-labelledby="common-issues-heading">
+            <p className="eyebrow">Browse by caller language</p>
+            <h2 id="common-issues-heading">Common Issues</h2>
+            <p className="navigator-tab-intro">All reviewed live-call routes, grouped by what the caller is experiencing.</p>
+            <div className="common-issue-browser">
+              {[...new Set(COMMON_ISSUE_ROUTES.map(route => route.group))].map(group => <section className="route-group" key={group}>
+                <h3>{group}</h3>
+                <div className="route-browser-grid">
+                  {COMMON_ISSUE_ROUTES.filter(route => route.group === group).map(route => <button type="button" className="route-card" key={route.id} onClick={() => openRoute(route, 'common_issues_tab')}>
+                    <strong>{route.title}</strong>
+                    <small>{route.subtitle}</small>
+                    <b>Open Quick Guide →</b>
+                  </button>)}
+                </div>
+              </section>)}
+            </div>
+          </section>}
+
+          {libraryTab === 'processes' && <section aria-labelledby="process-guides-heading">
+            <p className="eyebrow">Approved documentation</p>
+            <h2 id="process-guides-heading">Process Guides</h2>
+            <p className="navigator-tab-intro">Browse the approved internal procedures by support area. These remain the full-process reference behind the faster Common Issue routes.</p>
+            <div className="category-grid">{categories.map(([id,name,description])=><button key={id} aria-pressed={category === id} onClick={()=>{setCategory(id);onTrackEvent?.({eventType:'category_open',routeId:'navigator',categoryId:id})}}><CategoryIcon type={id} /><strong>{name}</strong><span>{description}</span></button>)}</div>
+            {category && <section className="process-guide-results" aria-live="polite">
+              <div className="search-result-block-heading">
+                <h3>{categories.find(c=>c[0]===category)?.[1]}</h3>
+                <span>{categoryProcesses.length}</span>
+              </div>
+              <div className="process-grid">{categoryProcesses.map(process=><button className="process-card" key={process.id} onClick={()=>openProcess(process,'process_card')}><small className="result-type-badge">Process Guide</small><strong>{process.title}</strong><span>{process.purpose}</span><div className="process-meta">{process.images?.length>0&&<span>{process.images.length} source {process.images.length===1?'page':'pages'}</span>}{process.visualReferences?.length>0&&<span>{process.visualReferences.length} Zoom {process.visualReferences.length===1?'visual':'visuals'}</span>}</div><b>Open process →</b></button>)}</div>
+            </section>}
+          </section>}
+        </>}
+      </div>
+    </section>
     <button type="button" className="feedback-fab" onClick={()=>setFeedbackOpen(true)}>Report an issue</button>
     {selected&&<ProcessDrawer process={selected} onClose={()=>setSelected(null)} onOpenTraining={onOpenTraining} onTrackEvent={onTrackEvent}/>}
     {selectedRoute&&<CommonIssueDrawer
