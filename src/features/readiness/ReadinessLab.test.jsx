@@ -1,93 +1,294 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { expect, it, vi } from 'vitest'
+import { beforeEach, expect, it, vi } from 'vitest'
 import { ReadinessLab } from './ReadinessLab'
-import { FOUNDATION_QUESTIONS, READINESS_PARTS } from './readinessLabData'
+import { READINESS_PARTS } from './readinessLabData'
 
-it('shows the five-part readiness path while keeping only Part 1 interactive in Batch 3A', () => {
+const readinessMocks = vi.hoisted(() => ({
+  getReadinessState: vi.fn(),
+  startOrResumeReadiness: vi.fn(),
+  checkReadinessAnswer: vi.fn(),
+  submitReadinessAttempt: vi.fn(),
+}))
+
+vi.mock('../../lib/readinessApi', () => readinessMocks)
+
+const QUESTIONS = [
+  {
+    id: 'join-exact-state',
+    order: 1,
+    type: 'Scenario',
+    prompt: 'A Zoom user says, “I can’t get into the meeting.” What is the best first move?',
+    options: [
+      { id: 'a', text: 'Restart the computer immediately.' },
+      { id: 'b', text: 'Ask what exact Zoom screen or message appears and confirm the meeting details.' },
+    ],
+    locationLabel: 'Training & Resources → Scenario Scripts → Can’t Join',
+    resourceTarget: { view: 'training', section: 'scripts', mode: 'scenarios', scenario: 'cant-join' },
+    source: 'Scripts & Communication · Can’t Join',
+  },
+  {
+    id: 'cant-hear-output',
+    order: 2,
+    type: 'Scenario',
+    prompt: 'A user is inside Zoom but cannot hear anyone. What should be checked first?',
+    options: [
+      { id: 'a', text: 'Check the speaker/output path.' },
+      { id: 'b', text: 'Check the microphone/input path.' },
+    ],
+    locationLabel: 'Training & Resources → Scenario Scripts → Can’t Hear',
+    resourceTarget: { view: 'training', section: 'scripts', mode: 'scenarios', scenario: 'cant-hear' },
+    source: 'Scripts & Communication · Can’t Hear',
+  },
+  {
+    id: 'cant-be-heard-input',
+    order: 3,
+    type: 'Scenario',
+    prompt: 'Other participants cannot hear the user. What should be checked first?',
+    options: [
+      { id: 'a', text: 'Check speaker volume.' },
+      { id: 'b', text: 'Check Zoom mute and microphone input.' },
+    ],
+    locationLabel: 'Training & Resources → Scenario Scripts → They Can’t Hear Me',
+    resourceTarget: { view: 'training', section: 'scripts', mode: 'scenarios', scenario: 'cant-be-heard' },
+    source: 'Scripts & Communication · They Can’t Hear Me',
+  },
+  {
+    id: 'camera-state',
+    order: 4,
+    type: 'Scenario',
+    prompt: 'A user says the camera is not working. What should be determined first?',
+    options: [
+      { id: 'a', text: 'Determine whether video is off or the camera is failing to show an image.' },
+      { id: 'b', text: 'Check meeting audio.' },
+    ],
+    locationLabel: 'Training & Resources → Scenario Scripts → Camera',
+    resourceTarget: { view: 'training', section: 'scripts', mode: 'scenarios', scenario: 'camera-not-working' },
+    source: 'Scripts & Communication · Camera',
+  },
+  {
+    id: 'screen-share-control',
+    order: 5,
+    type: 'Scenario',
+    prompt: 'A user cannot share their screen. What is the safest first judgment?',
+    options: [
+      { id: 'a', text: 'Reinstall Zoom immediately.' },
+      { id: 'b', text: 'Check what happens when they try and whether host controls are involved.' },
+    ],
+    locationLabel: 'Training & Resources → Scenario Scripts → Screen Share',
+    resourceTarget: { view: 'training', section: 'scripts', mode: 'scenarios', scenario: 'cant-share' },
+    source: 'Scripts & Communication · Screen Share',
+  },
+]
+
+function answer(questionId, isCorrect = true, selectedOptionId = 'b') {
+  return {
+    questionId,
+    selectedOptionId,
+    isCorrect,
+    correctOptionId: isCorrect ? selectedOptionId : 'a',
+    explanation: isCorrect ? 'Correct explanation.' : 'Review explanation.',
+    checkedAt: '2026-09-19T00:00:00Z',
+  }
+}
+
+function activeState({ attemptNumber = 1, answers = [], attempts } = {}) {
+  const activeAttempt = {
+    id: `attempt-${attemptNumber}`,
+    attemptNumber,
+    status: 'active',
+    score: null,
+    totalQuestions: 5,
+    startedAt: '2026-09-19T00:00:00Z',
+    submittedAt: null,
+    answers,
+  }
+  return {
+    questionSetVersion: 'zoom_general_scenarios_v1',
+    maxAttempts: 3,
+    questions: QUESTIONS,
+    attempts: attempts || [{
+      id: activeAttempt.id,
+      attemptNumber,
+      status: 'active',
+      score: null,
+      totalQuestions: 5,
+      checkedCount: answers.length,
+      startedAt: activeAttempt.startedAt,
+      submittedAt: null,
+    }],
+    activeAttempt,
+  }
+}
+
+function submittedState(attemptNumber = 1, score = 4) {
+  return {
+    questionSetVersion: 'zoom_general_scenarios_v1',
+    maxAttempts: 3,
+    questions: QUESTIONS,
+    attempts: Array.from({ length: attemptNumber }, (_, index) => ({
+      id: `attempt-${index + 1}`,
+      attemptNumber: index + 1,
+      status: 'submitted',
+      score: index + 1 === attemptNumber ? score : 3,
+      totalQuestions: 5,
+      checkedCount: 5,
+      startedAt: '2026-09-19T00:00:00Z',
+      submittedAt: '2026-09-19T00:10:00Z',
+    })),
+    activeAttempt: null,
+  }
+}
+
+beforeEach(() => {
+  readinessMocks.getReadinessState.mockReset()
+  readinessMocks.startOrResumeReadiness.mockReset()
+  readinessMocks.checkReadinessAnswer.mockReset()
+  readinessMocks.submitReadinessAttempt.mockReset()
+})
+
+it('shows five readiness parts and the five-question general Zoom scenario set', async () => {
+  readinessMocks.getReadinessState.mockResolvedValue(activeState())
   render(<ReadinessLab open />)
 
   expect(READINESS_PARTS).toHaveLength(5)
-  expect(screen.getByRole('heading', { name: 'Readiness Lab' })).toBeInTheDocument()
-  expect(screen.getByText(/Open-book by design/i)).toBeInTheDocument()
+  expect(await screen.findByRole('heading', { name: 'Readiness Lab' })).toBeInTheDocument()
+  expect(screen.getByText(/Five general Zoom scenarios/i)).toBeInTheDocument()
 
   const tabs = screen.getAllByRole('tab')
   expect(tabs).toHaveLength(5)
-  expect(screen.getByRole('tab', { name: /Call Flow Available now/i })).toHaveAttribute('aria-selected', 'true')
-  expect(screen.getByRole('tab', { name: /Devices Coming next/i })).toBeDisabled()
-  expect(screen.getByRole('tab', { name: /Troubleshooting Coming next/i })).toBeDisabled()
-  expect(screen.getByRole('tab', { name: /Scope Coming next/i })).toBeDisabled()
-  expect(screen.getByRole('tab', { name: /Live Call Coming next/i })).toBeDisabled()
+  expect(screen.getByRole('tab', { name: /Scenarios Available now/i })).toHaveAttribute('aria-selected', 'true')
+  expect(screen.getByText('Question 1 of 5')).toBeInTheDocument()
+  expect(screen.getByText(QUESTIONS[0].prompt)).toBeInTheDocument()
 })
 
-it('scores the first checked answer and preserves it when moving between questions', async () => {
-  const user = userEvent.setup()
+it('resumes the same incomplete attempt after the lab is closed and reopened', async () => {
+  const persisted = activeState({ answers: [answer('join-exact-state')] })
+  readinessMocks.getReadinessState.mockResolvedValue(persisted)
+
+  const { rerender } = render(<ReadinessLab open />)
+  expect(await screen.findByText('Question 2 of 5')).toBeInTheDocument()
+  expect(screen.getByText('1/5 checked')).toBeInTheDocument()
+
+  rerender(<ReadinessLab open={false} />)
+  expect(screen.queryByRole('heading', { name: 'Readiness Lab' })).not.toBeInTheDocument()
+
+  rerender(<ReadinessLab open />)
+  expect(await screen.findByText('Question 2 of 5')).toBeInTheDocument()
+  expect(readinessMocks.getReadinessState).toHaveBeenCalledTimes(2)
+})
+
+it('keeps reset locked while the current attempt is incomplete', async () => {
+  readinessMocks.getReadinessState.mockResolvedValue(activeState())
   render(<ReadinessLab open />)
 
-  expect(screen.getByText('Question 1 of 4')).toBeInTheDocument()
-  const correct = screen.getByRole('radio', { name: /Let the caller explain the concern/i })
-  await user.click(correct)
-  await user.click(screen.getByRole('button', { name: 'Check answer' }))
-
-  expect(screen.getByText('Correct')).toBeInTheDocument()
-  expect(screen.getByText(/Good judgment/i)).toBeInTheDocument()
-  expect(correct).toBeDisabled()
-  expect(screen.getByText('1/4 checked')).toBeInTheDocument()
-
-  await user.click(screen.getByRole('button', { name: 'Next' }))
-  expect(screen.getByText('Question 2 of 4')).toBeInTheDocument()
-  await user.click(screen.getByRole('button', { name: 'Previous' }))
-
-  expect(correct).toHaveAttribute('aria-checked', 'true')
-  expect(screen.getByText('Correct')).toBeInTheDocument()
+  const reset = await screen.findByRole('button', { name: 'Reset for next attempt' })
+  expect(reset).toBeDisabled()
+  expect(screen.getByText(/Reset is locked while Attempt 1 is unfinished/i)).toBeInTheDocument()
 })
 
-it('keeps Find in Workspace separate from answering and opens the exact source location', async () => {
+it('persists a checked answer, locks it, and prevents skipping ahead before checking', async () => {
+  const user = userEvent.setup()
+  readinessMocks.getReadinessState
+    .mockResolvedValueOnce(activeState())
+    .mockResolvedValueOnce(activeState({ answers: [answer('join-exact-state', true, 'b')] }))
+  readinessMocks.checkReadinessAnswer.mockResolvedValue({
+    questionId: 'join-exact-state',
+    selectedOptionId: 'b',
+    isCorrect: true,
+    locked: true,
+  })
+
+  render(<ReadinessLab open />)
+
+  const next = await screen.findByRole('button', { name: 'Next' })
+  expect(next).toBeDisabled()
+
+  const choice = screen.getByRole('radio', { name: /Ask what exact Zoom screen/i })
+  await user.click(choice)
+  await user.click(screen.getByRole('button', { name: 'Check answer' }))
+
+  expect(readinessMocks.checkReadinessAnswer).toHaveBeenCalledWith({
+    attemptId: 'attempt-1',
+    questionId: 'join-exact-state',
+    selectedOptionId: 'b',
+  })
+  expect(await screen.findByText('Correct')).toBeInTheDocument()
+  expect(choice).toBeDisabled()
+  expect(next).toBeEnabled()
+})
+
+it('keeps Find in Workspace separate from the saved attempt', async () => {
   const user = userEvent.setup()
   const onOpenResource = vi.fn()
-  render(<ReadinessLab open onOpenResource={onOpenResource} />)
+  readinessMocks.getReadinessState.mockResolvedValue(activeState())
 
+  render(<ReadinessLab open onOpenResource={onOpenResource} />)
+  await screen.findByText('Question 1 of 5')
   await user.click(screen.getByRole('button', { name: 'Find in Workspace' }))
 
   expect(onOpenResource).toHaveBeenCalledWith({
     view: 'training',
     section: 'scripts',
-    mode: 'language',
-    subsection: 'listen',
+    mode: 'scenarios',
+    scenario: 'cant-join',
   })
-  expect(screen.getByText('Question 1 of 4')).toBeInTheDocument()
-  expect(screen.getByRole('button', { name: 'Check answer' })).toBeDisabled()
+  expect(readinessMocks.checkReadinessAnswer).not.toHaveBeenCalled()
 })
 
-it('shows a Part 1 result after all four first attempts are checked', async () => {
+it('requires all five checked answers before submission and only then enables the next attempt', async () => {
   const user = userEvent.setup()
+  const allAnswers = QUESTIONS.map(question => answer(question.id))
+  readinessMocks.getReadinessState
+    .mockResolvedValueOnce(activeState({ answers: allAnswers }))
+    .mockResolvedValueOnce(submittedState(1, 5))
+  readinessMocks.submitReadinessAttempt.mockResolvedValue({
+    id: 'attempt-1',
+    attemptNumber: 1,
+    status: 'submitted',
+    score: 5,
+    totalQuestions: 5,
+  })
+  readinessMocks.startOrResumeReadiness.mockResolvedValue(activeState({
+    attemptNumber: 2,
+    answers: [],
+    attempts: [
+      submittedState(1, 5).attempts[0],
+      {
+        id: 'attempt-2',
+        attemptNumber: 2,
+        status: 'active',
+        score: null,
+        totalQuestions: 5,
+        checkedCount: 0,
+        startedAt: '2026-09-19T00:20:00Z',
+        submittedAt: null,
+      },
+    ],
+  }))
+
   render(<ReadinessLab open />)
 
-  for (let index = 0; index < FOUNDATION_QUESTIONS.length; index += 1) {
-    const question = FOUNDATION_QUESTIONS[index]
-    const correctOption = question.options.find(option => option.id === question.correctOptionId)
-    await user.click(screen.getByRole('radio', { name: new RegExp(correctOption.text.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i') }))
-    await user.click(screen.getByRole('button', { name: 'Check answer' }))
-    if (index < FOUNDATION_QUESTIONS.length - 1) {
-      await user.click(screen.getByRole('button', { name: 'Next' }))
-    }
-  }
+  expect(await screen.findByRole('button', { name: 'Submit attempt' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Reset for next attempt' })).toBeDisabled()
 
-  const result = screen.getByText('Part 1 complete').closest('section')
-  expect(within(result).getByRole('heading', { name: '4/4 first-attempt answers correct' })).toBeInTheDocument()
-  expect(within(result).getByRole('button', { name: 'Restart Part 1' })).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Submit attempt' }))
+  expect(readinessMocks.submitReadinessAttempt).toHaveBeenCalledWith('attempt-1')
+
+  const reset = await screen.findByRole('button', { name: 'Reset for next attempt' })
+  expect(reset).toBeEnabled()
+  expect(screen.getByText('5/5 correct')).toBeInTheDocument()
+
+  await user.click(reset)
+  expect(readinessMocks.startOrResumeReadiness).toHaveBeenCalled()
+  expect(await screen.findByText('Attempt 2 of 3')).toBeInTheDocument()
 })
 
-it('renders a compact minimized state without losing completed progress', async () => {
-  const user = userEvent.setup()
-  const onMinimize = vi.fn()
-  const { rerender } = render(<ReadinessLab open onMinimize={onMinimize} />)
+it('blocks a fourth attempt after three submitted attempts', async () => {
+  readinessMocks.getReadinessState.mockResolvedValue(submittedState(3, 4))
+  render(<ReadinessLab open />)
 
-  await user.click(screen.getByRole('radio', { name: /Let the caller explain the concern/i }))
-  await user.click(screen.getByRole('button', { name: 'Check answer' }))
-  await user.click(screen.getByRole('button', { name: 'Minimize Readiness Lab' }))
-  expect(onMinimize).toHaveBeenCalled()
-
-  rerender(<ReadinessLab open minimized onMinimize={onMinimize} />)
-  expect(screen.getByLabelText('Readiness Lab minimized')).toHaveTextContent('Part 1 · 1/4 checked')
+  const reset = await screen.findByRole('button', { name: '3 of 3 attempts used' })
+  expect(reset).toBeDisabled()
+  expect(screen.getByText(/All 3 attempts are recorded/i)).toBeInTheDocument()
 })
