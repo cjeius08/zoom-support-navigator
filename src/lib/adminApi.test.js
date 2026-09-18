@@ -34,3 +34,19 @@ describe('feedback administration', () => {
     })
   })
 })
+
+
+describe('readiness administration', () => {
+  it('loads the JA-only Readiness Lab report through the secured RPC', async () => {
+    rpc.mockResolvedValue({ data: { questionSetVersion: 'zoom_general_scenarios_v1', users: [] }, error: null })
+    const api = await import('./adminApi')
+
+    await expect(api.loadReadinessReport()).resolves.toEqual({
+      questionSetVersion: 'zoom_general_scenarios_v1',
+      users: [],
+    })
+    expect(rpc).toHaveBeenCalledWith('zoom_readiness_admin_report', {
+      p_question_set_version: 'zoom_general_scenarios_v1',
+    })
+  })
+})
