@@ -10,6 +10,19 @@
   },
   "updates": [
     {
+      "id": "readiness-resource-discovery",
+      "date": "2026-09-19",
+      "area": "Training / Readiness Validation",
+      "title": "Readiness Lab now makes agents find the supporting resource themselves",
+      "changed": "Refined the open-book Readiness Lab so it still encourages agents to verify answers in Training & Resources without revealing the exact breadcrumb or answer location. The resource card now opens the Training & Resources home only, while the current question, selection, and attempt progress remain preserved. This keeps the lab open-book but turns resource lookup into part of the readiness exercise.",
+      "checks": [
+        "Open any Readiness Lab question and confirm the card no longer shows an exact path such as Device Walkthroughs → Windows → In-meeting map.",
+        "Confirm the resource button says Open Training & Resources rather than Find in Workspace.",
+        "Use the button and confirm Training & Resources opens at its general home instead of jumping directly to the answer.",
+        "Return to Readiness Lab and confirm the same question, selection, and attempt progress are still preserved."
+      ]
+    },
+    {
       "id": "phase6-readiness-lab-part2-device-navigation",
       "date": "2026-09-19",
       "area": "Training / Readiness Validation",

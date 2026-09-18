@@ -171,7 +171,7 @@ it('opens Scope Check as a global live tool and preserves the Documentation draf
   expect(screen.getByLabelText('Caller name')).toHaveValue('Persistent Caller')
 })
 
-it('opens Readiness Lab as a global live tool and keeps it open while locating an answer', async () => {
+it('opens Readiness Lab as a global live tool and keeps it open while the agent searches resources', async () => {
   const user = userEvent.setup()
   const onNavigate = vi.fn()
   const onOpenReadinessResource = vi.fn()
@@ -190,14 +190,9 @@ it('opens Readiness Lab as a global live tool and keeps it open while locating a
 
   const choice = await screen.findByRole('radio', { name: /Ask what exact Zoom screen/i })
   await user.click(choice)
-  await user.click(screen.getByRole('button', { name: 'Find in Workspace' }))
+  await user.click(screen.getByRole('button', { name: 'Open Training & Resources' }))
 
-  expect(onOpenReadinessResource).toHaveBeenCalledWith({
-    view: 'training',
-    section: 'scripts',
-    mode: 'scenarios',
-    scenario: 'cant-join',
-  })
+  expect(onOpenReadinessResource).toHaveBeenCalledWith({ view: 'training' })
   expect(screen.getByRole('heading', { name: 'Readiness Lab' })).toBeInTheDocument()
   expect(screen.getByRole('radio', { name: /Ask what exact Zoom screen/i })).toHaveAttribute('aria-checked', 'true')
 

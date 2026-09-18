@@ -257,21 +257,16 @@ it('persists a checked answer, locks it, and prevents skipping ahead before chec
   expect(next).toBeEnabled()
 })
 
-it('keeps Find in Workspace separate from the saved attempt', async () => {
+it('keeps resource discovery separate from the saved attempt', async () => {
   const user = userEvent.setup()
   const onOpenResource = vi.fn()
   readinessMocks.getReadinessState.mockResolvedValue(activeState())
 
   render(<ReadinessLab open onOpenResource={onOpenResource} />)
   await screen.findByText('Question 1 of 5')
-  await user.click(screen.getByRole('button', { name: 'Find in Workspace' }))
+  await user.click(screen.getByRole('button', { name: 'Open Training & Resources' }))
 
-  expect(onOpenResource).toHaveBeenCalledWith({
-    view: 'training',
-    section: 'scripts',
-    mode: 'scenarios',
-    scenario: 'cant-join',
-  })
+  expect(onOpenResource).toHaveBeenCalledWith({ view: 'training' })
   expect(readinessMocks.checkReadinessAnswer).not.toHaveBeenCalled()
 })
 
@@ -333,7 +328,7 @@ it('blocks a fourth attempt after three submitted attempts', async () => {
 })
 
 
-it('loads Part 2 as its own persistent device-navigation attempt and deep-links the exact device walkthrough', async () => {
+it('loads Part 2 as its own persistent device-navigation attempt without revealing the exact answer location', async () => {
   const user = userEvent.setup()
   const onOpenResource = vi.fn()
   readinessMocks.getReadinessState.mockImplementation((questionSetVersion) => {
@@ -356,10 +351,8 @@ it('loads Part 2 as its own persistent device-navigation attempt and deep-links 
   expect(screen.getByText(DEVICE_QUESTIONS[0].prompt)).toBeInTheDocument()
   expect(readinessMocks.getReadinessState).toHaveBeenCalledWith(DEVICE_QUESTION_SET)
 
-  await user.click(screen.getByRole('button', { name: 'Find in Workspace' }))
-  expect(onOpenResource).toHaveBeenCalledWith({
-    view: 'training',
-    section: 'devices',
-    device: 'windows',
-  })
+  expect(screen.queryByText(/Device Walkthroughs → Windows → In-meeting map/i)).not.toBeInTheDocument()
+  expect(screen.getByText(/exact answer location is intentionally not shown/i)).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Open Training & Resources' }))
+  expect(onOpenResource).toHaveBeenCalledWith({ view: 'training' })
 })
