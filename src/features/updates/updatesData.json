@@ -10,6 +10,20 @@
   },
   "updates": [
     {
+      "id": "phase6-readiness-lab-part4-scope-referral",
+      "date": "2026-09-19",
+      "area": "Training / Readiness Validation",
+      "title": "Readiness Lab Part 4 adds scope and referral judgment",
+      "changed": "Added Readiness Lab Part 4 as a separate five-question persistent validation set focused on deciding whether support should continue, stop, or hand off to the correct owner. The questions cover continuing approved basic troubleshooting when the next step stays in scope, Waiting Room admission owned by the host or organizer, account/license/admin access owned by organization IT or the Zoom administrator, hardware not detected by the device owned by IT/device support, and privacy/recording/proceeding-policy decisions owned by the meeting organizer or designated arbitration/client contact. Part 4 keeps its own up-to-three-attempt history, retains discovery-based Training & Resources lookup, and is reported separately in JA Usage Analytics. Part 5 remains locked.",
+      "checks": [
+        "Open Readiness Lab and confirm Scenarios, Devices, Troubleshooting, and Scope show Available now while Live Call remains Coming next.",
+        "Open Scope and confirm Part 4 of 5, Attempt 1 of 3, and Question 1 of 5.",
+        "Confirm the first scenario does not over-refer an in-scope basic issue when approved troubleshooting steps still remain.",
+        "Confirm the remaining scenarios test the correct next owner for host, account/admin, hardware/device, and privacy/proceeding boundaries.",
+        "As JA, open Usage Analytics → Readiness Lab Report and confirm Scope & Referral Judgment appears as a separate Part 4 report section."
+      ]
+    },
+    {
       "id": "phase6-readiness-lab-part3-troubleshooting",
       "date": "2026-09-19",
       "area": "Training / Readiness Validation",
