@@ -10,6 +10,21 @@
   },
   "updates": [
     {
+      "id": "phase6-readiness-lab-part5-live-call",
+      "date": "2026-09-19",
+      "area": "Training / Readiness Validation",
+      "title": "Readiness Lab Part 5 completes live-call readiness validation",
+      "changed": "Completed the five-part Readiness Lab with Part 5, a separate five-question persistent validation set that combines call flow, discovery, troubleshooting discipline, resolution confirmation, scope/referral judgment, and evidence-based documentation. The scenarios test listening and identifying context before technical action, stopping and reassessing when the caller’s screen differs, properly confirming and closing a resolved call, handling an unresolved managed-permission boundary without promising a direct Zoom escalation, and documenting only the issue, steps, results, next step/contact, and outcome that actually occurred. Part 5 keeps its own up-to-three-attempt history, uses discovery-based Training & Resources lookup, and appears as a separate JA Usage Analytics report section. The Training Roadmap now marks all five Readiness Lab parts available.",
+      "checks": [
+        "Open Readiness Lab and confirm all five tabs—Scenarios, Devices, Troubleshooting, Scope, and Live Call—show Available now.",
+        "Open Live Call and confirm Part 5 of 5, Attempt 1 of 3, and Question 1 of 5.",
+        "Confirm the five questions combine call-flow, troubleshooting, confirmation, referral, and documentation judgment instead of repeating simple control-location questions.",
+        "Use Open Training & Resources and confirm the exact answer location is still not revealed.",
+        "Open Training Roadmap and confirm Readiness Lab shows All 5 parts available.",
+        "As JA, open Usage Analytics → Readiness Lab Report and confirm Live Call Readiness appears as a separate Part 5 report section."
+      ]
+    },
+    {
       "id": "phase6-readiness-lab-part4-scope-referral",
       "date": "2026-09-19",
       "area": "Training / Readiness Validation",
