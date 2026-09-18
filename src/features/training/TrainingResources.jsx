@@ -20,7 +20,7 @@ function VideoViewer({ videos, index, onClose }) {
   </div>
 }
 
-export function TrainingResources({ initialVideoId = null }) {
+export function TrainingResources({ initialVideoId = null, onReportContextChange = () => {} }) {
   const initialIndex = initialVideoId ? TRAINING_VIDEOS.findIndex(video => video.id === initialVideoId) : -1
   const [section, setSection] = useState(initialVideoId ? 'videos' : 'devices')
   const [query, setQuery] = useState('')
@@ -43,6 +43,25 @@ export function TrainingResources({ initialVideoId = null }) {
     return haystack.includes(query.trim().toLowerCase()) && (category === 'All' || video.relatedCategories.includes(category))
   }), [query, category])
   const viewerVideos = Object.assign(filteredVideos, { onChange: setActiveIndex })
+
+  useEffect(() => {
+    const sectionLabels = {
+      devices: 'Device Walkthroughs',
+      scripts: 'Scripts & Communication',
+      videos: 'Video Library',
+    }
+    onReportContextChange({
+      selected_tab: sectionLabels[section] || section,
+      current_section: section === 'videos'
+        ? (activeIndex !== null ? filteredVideos[activeIndex]?.title || 'Video Library' : category !== 'All' ? category : null)
+        : null,
+      active_device: null,
+      active_caller_role: null,
+      active_common_issue: null,
+      process_id: null,
+      category_id: null,
+    })
+  }, [section, activeIndex, category, filteredVideos, onReportContextChange])
 
   function changeSection(nextSection) {
     setSection(nextSection)
