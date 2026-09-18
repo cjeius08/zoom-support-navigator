@@ -174,7 +174,7 @@ export function evaluateScope({ category, troubleshooting, authority }) {
     label: 'MORE INFORMATION NEEDED',
     title: 'Complete the scope check',
     text: 'Select the issue type, troubleshooting status, and whether the next step stays within approved authority.',
-    reason: 'OGCon will only recommend continue / stop once the information that changes the route is selected.',
+    reason: 'The workspace will only recommend continue / stop once the information that changes the route is selected.',
   }
 }
 
