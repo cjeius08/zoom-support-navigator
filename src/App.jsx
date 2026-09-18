@@ -34,6 +34,7 @@ export default function App() {
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState('navigator')
   const [trainingVideoId, setTrainingVideoId] = useState(null)
+  const [trainingTarget, setTrainingTarget] = useState(null)
   const [navigatorProcessId, setNavigatorProcessId] = useState(null)
   const [navigatorCommonIssueId, setNavigatorCommonIssueId] = useState(null)
   const [reportContext, setReportContext] = useState(EMPTY_REPORT_CONTEXT)
@@ -47,7 +48,10 @@ export default function App() {
 
   function navigate(nextView) {
     trackEvent({ eventType: 'navigation', routeId: nextView, toolId: 'navigation' })
-    if (nextView === 'training') setTrainingVideoId(null)
+    if (nextView === 'training') {
+      setTrainingVideoId(null)
+      setTrainingTarget(null)
+    }
     if (nextView === 'navigator') {
       setNavigatorProcessId(null)
       setNavigatorCommonIssueId(null)
@@ -65,6 +69,36 @@ export default function App() {
       current_section: typeof videoId === 'string' ? videoId : null,
     })
     setView('training')
+  }
+
+  function openReadinessResource(target = {}) {
+    if (target.view === 'training') {
+      setTrainingVideoId(null)
+      setTrainingTarget({ ...target })
+      setReportContext({
+        ...EMPTY_REPORT_CONTEXT,
+        selected_tab: target.section === 'scripts'
+          ? 'Scripts & Communication'
+          : target.section === 'lessons'
+            ? 'Guided Visual Lessons'
+            : 'Training & Resources',
+        current_section: target.subsection || target.section || null,
+      })
+      setView('training')
+      return
+    }
+
+    if (target.view === 'navigator') {
+      setTrainingTarget(null)
+      setNavigatorProcessId(target.processId || null)
+      setNavigatorCommonIssueId(target.commonIssueId || null)
+      setReportContext({
+        ...EMPTY_REPORT_CONTEXT,
+        process_id: target.processId || null,
+        active_common_issue: target.commonIssueId || null,
+      })
+      setView('navigator')
+    }
   }
 
   function openFeedbackTarget(item) {
@@ -129,8 +163,8 @@ export default function App() {
   if (loading) return <main className="access-shell"><p>Loading secure session…</p></main>
   if (profile?.must_change_password) return <ForcePasswordChange onChange={async password => { await changeOwnPassword(password); setProfile(await getCurrentProfile()) }} onLogout={async () => { await signOut(); setProfile(null) }} />
   if (profile) {
-    const content = view==='navigator'?<Navigator onOpenTraining={openTraining} onTrackEvent={trackEvent} initialProcessId={navigatorProcessId} initialCommonIssueId={navigatorCommonIssueId} onReportContextChange={updateReportContext}/>:view==='training'?<TrainingResources initialVideoId={trainingVideoId} onReportContextChange={updateReportContext}/>:view==='updates'?<UpdatesView/>:view==='feedback'?<FeedbackPage onSubmit={submitFeedback} onCancel={()=>navigate('navigator')}/>:view==='admin'?<AdminHome onNavigate={navigate}/>:view==='team'?<TeamManagement/>:view==='usage'?<UsageAnalytics/>:<FeedbackQueue onOpenPage={openFeedbackTarget}/>
-    return <AppShell profile={profile} currentView={view} onNavigate={navigate} onFeedback={submitFeedback} reportContext={reportContext} onPasswordChange={changeOwnPassword} onAvatarChange={async avatarId=>{await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}} onLogout={async()=>{await signOut();setProfile(null)}}>{content}</AppShell>
+    const content = view==='navigator'?<Navigator onOpenTraining={openTraining} onTrackEvent={trackEvent} initialProcessId={navigatorProcessId} initialCommonIssueId={navigatorCommonIssueId} onReportContextChange={updateReportContext}/>:view==='training'?<TrainingResources initialVideoId={trainingVideoId} initialTarget={trainingTarget} onReportContextChange={updateReportContext}/>:view==='updates'?<UpdatesView/>:view==='feedback'?<FeedbackPage onSubmit={submitFeedback} onCancel={()=>navigate('navigator')}/>:view==='admin'?<AdminHome onNavigate={navigate}/>:view==='team'?<TeamManagement/>:view==='usage'?<UsageAnalytics/>:<FeedbackQueue onOpenPage={openFeedbackTarget}/>
+    return <AppShell profile={profile} currentView={view} onNavigate={navigate} onOpenReadinessResource={openReadinessResource} onFeedback={submitFeedback} reportContext={reportContext} onPasswordChange={changeOwnPassword} onAvatarChange={async avatarId=>{await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}} onLogout={async()=>{await signOut();setProfile(null)}}>{content}</AppShell>
   }
 
   if (activationOpen) return <main className="access-shell" style={accessStyle}><section className="access-card"><ActivateAccountForm onActivate={activateAccount} onCancel={()=>setActivationOpen(false)}/></section></main>
