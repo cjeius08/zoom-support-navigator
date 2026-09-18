@@ -634,6 +634,287 @@ export const COMMON_ISSUE_ROUTES = [
     ],
     visuals: [],
   },
+
+  {
+    id: 'secure-connection',
+    group: 'JOIN & ACCESS',
+    categoryId: 'join',
+    title: 'Zoom says “Unable to establish secure connection”',
+    subtitle: 'Known macOS connection error with a specific approved recovery path',
+    classification: 'Specific macOS secure-connection error',
+    classificationNote: 'Use this route only when the caller reports the exact “Unable to establish secure connection to Zoom” message on a Mac. Do not treat every connection problem as this known macOS error.',
+    searchPhrases: [
+      'unable to establish secure connection', 'secure connection error', 'zoom secure connection error',
+      'cant establish secure connection', 'cannot establish secure connection', 'secure connection to zoom',
+      'mac secure connection zoom', 'zoom wont connect on mac', 'known mac zoom error',
+    ],
+    confirm: [
+      'Does the caller see the exact message “Unable to establish secure connection to Zoom”?',
+      'Are they using the Zoom desktop app on macOS?',
+      'Can the Zoom app still open far enough to check for an update?',
+    ],
+    checks: [
+      {
+        title: 'Confirm the exact error and platform',
+        instruction: 'Use this route only for the exact secure-connection message on macOS. If the caller is on another platform or describes a different connection symptom, return to the general Can’t Join route instead.',
+        expected: 'The agent confirms this is the documented macOS secure-connection error rather than a generic join failure.',
+      },
+      {
+        title: 'Update Zoom first when the app can still open',
+        instruction: 'Follow the approved internal process: if the Zoom app opens normally enough to update, install the available Zoom update before moving to removal and reinstall steps.',
+        expected: 'Zoom is current, or the caller confirms that updating is not available or does not resolve the error.',
+      },
+      {
+        title: 'Use the approved complete uninstall and reinstall path',
+        instruction: 'If the error continues, follow the approved Uninstalling and Reinstalling the Zoom Application process for macOS. Restart the Mac and reinstall Zoom from Zoom’s official download source.',
+        expected: 'A fresh Zoom installation opens without the secure-connection error, or the error remains after the approved reinstall path.',
+      },
+      {
+        title: 'Check calendar/contact integration only within the support boundary',
+        instruction: 'Zoom’s current guidance includes deleting and reconfiguring an existing Calendar and Contact Integration. Only guide this when the caller is authorized to manage that integration. Otherwise refer to their Zoom administrator or IT team.',
+        expected: 'The integration is either safely reconfigured by an authorized caller or correctly referred without changing managed settings.',
+      },
+      {
+        title: 'Finish with macOS updates and restart',
+        instruction: 'If the error remains, check for available macOS system updates and restart the device. Stop and refer when organization-managed settings, security software, network controls, or admin access are required.',
+        expected: 'The Mac is restarted and current, or the remaining blocker is clearly outside basic Zoom support.',
+      },
+    ],
+    success: 'Zoom opens and connects without the secure-connection error.',
+    unresolved: 'If the error remains after the approved update/reinstall/system-update path, or the fix requires managed calendar integration, security, network, or administrator access, refer to the caller’s IT/Zoom administrator.',
+    script: '“That exact message has a specific Mac troubleshooting path. I’ll keep us to the approved steps, and I won’t change any managed settings without the right access.”',
+    processIds: [
+      'zoom-error-unable-to-establish-secure-connection-to-zoom',
+      'uninstalling-and-reinstalling-the-zoom-application',
+      'zoom-basic-support-boundaries-decision-path-referral-process',
+    ],
+    primarySource: {
+      title: 'Zoom error message “Unable to establish secure connection to Zoom”',
+      url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0067093',
+    },
+    supportingSources: [
+      { title: 'Changing settings in the Zoom Workplace desktop and mobile app', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060612' },
+    ],
+    discrepancy: 'The approved internal process starts with updating Zoom when the app can still open, while Zoom’s current public article presents complete uninstall/reinstall earlier in its troubleshooting sequence. OGCon keeps the approved internal order and surfaces this sequence difference instead of silently rewriting it.',
+    visuals: [],
+  },
+  {
+    id: 'bluetooth-headset',
+    group: 'AUDIO',
+    categoryId: 'audio',
+    title: 'My Bluetooth headset isn’t working',
+    subtitle: 'Headphones are connected but Zoom is using the wrong speaker or microphone',
+    classification: 'Bluetooth audio-device selection or connection symptom',
+    classificationNote: 'First separate device pairing from Zoom device selection. A headset can be paired to the computer or phone but still not be selected as Zoom’s active speaker and microphone.',
+    searchPhrases: [
+      'bluetooth headset not working', 'bluetooth headphones not working', 'airpods not working zoom',
+      'zoom not using bluetooth', 'cant hear through bluetooth', 'they cant hear me bluetooth',
+      'wrong bluetooth mic', 'wrong bluetooth speaker', 'headset connected but zoom not using it',
+      'bluetooth audio zoom', 'zoom headset problem',
+    ],
+    confirm: [
+      'Are the headphones already paired and connected to the same device running Zoom?',
+      'Is the problem hearing others, being heard, or both?',
+      'Are they using desktop, Android, or iPhone/iPad?',
+    ],
+    checks: [
+      {
+        title: 'Confirm the headset is connected to the device first',
+        instruction: 'Before changing Zoom settings, confirm the Bluetooth headphones are paired and connected to the computer or mobile device. If they are connected to multiple devices, disconnect them from the other devices while testing.',
+        expected: 'The operating system shows the headset as connected to the device being used for Zoom.',
+      },
+      {
+        title: 'Select the headset as both speaker and microphone',
+        instruction: 'Desktop: next to Mute/Unmute, open the audio-device choices and select the Bluetooth headset under both Microphone and Speaker. If it is not listed, reconnect the headset before continuing.',
+        expected: 'Zoom shows the Bluetooth headset as the selected microphone and speaker.',
+      },
+      {
+        title: 'Use the mobile Bluetooth audio path',
+        instruction: 'Android/iOS: join meeting audio using the internet-audio option shown on the device, then use the Bluetooth indicator when available to confirm the headset is selected. If the Bluetooth indicator is missing, reconnect the headset while in the meeting.',
+        expected: 'Meeting audio routes through the Bluetooth headset on the mobile device.',
+      },
+      {
+        title: 'Test before escalating',
+        instruction: 'Use Zoom’s audio test or a Zoom test meeting when available. Close other apps that are actively using audio and retry. Do not jump straight to reinstall or driver changes.',
+        expected: 'The caller can hear and be heard through the intended Bluetooth headset, or the remaining problem is isolated to the device/headset.',
+      },
+    ],
+    success: 'Zoom uses the Bluetooth headset for the intended speaker and microphone path.',
+    unresolved: 'If the headset cannot stay connected, requires managed driver/device changes, or still fails outside Zoom, refer to device or IT support. Use reinstall only when the approved process specifically calls for it.',
+    script: '“Let’s confirm the headset is connected to this device first, then we’ll make sure Zoom is using it for both the speaker and microphone.”',
+    processIds: [
+      'using-bluetooth-headphones-with-zoom-on-android-ios',
+      'testing-your-audio-settings-for-zoom-meetings',
+      'zoom-basic-support-boundaries-decision-path-referral-process',
+    ],
+    primarySource: {
+      title: 'Using Bluetooth headphones with Zoom',
+      url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0058146',
+    },
+    supportingSources: [
+      { title: 'Changing settings in the Zoom Workplace desktop and mobile app', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060612' },
+    ],
+    visuals: [],
+  },
+  {
+    id: 'transfer-device',
+    group: 'DEVICES & APP',
+    categoryId: 'devices',
+    title: 'I need to switch this meeting to another device',
+    subtitle: 'Transfer an active meeting or webinar without manually leaving and rejoining',
+    classification: 'Active meeting/device transfer request',
+    classificationNote: 'The standard device-transfer path requires the user to be signed in to the same Zoom account on both devices and the transfer feature to be available for the account. Some meeting data does not carry over.',
+    searchPhrases: [
+      'switch meeting to another device', 'transfer meeting to phone', 'transfer zoom to laptop',
+      'move zoom meeting to phone', 'move meeting to another device', 'switch devices zoom',
+      'continue meeting on another device', 'transfer active meeting', 'switch zoom from phone to computer',
+      'take meeting on another device',
+    ],
+    confirm: [
+      'Are they already inside an active meeting or webinar on one device?',
+      'Are both devices signed in to the same Zoom account?',
+      'Are they switching to another personal device or to a Zoom Room?',
+    ],
+    checks: [
+      {
+        title: 'Confirm transfer requirements before looking for Switch',
+        instruction: 'For the standard device-to-device path, confirm the caller is signed in to the same Zoom account on both devices and that meeting transfer is available for the account.',
+        expected: 'The caller is signed in correctly on both devices and is eligible to use the transfer feature.',
+      },
+      {
+        title: 'Open the in-progress meeting on the second device',
+        instruction: 'On the second signed-in device, locate the meeting or webinar that is already in progress. When transfer is available, Zoom shows Switch in place of the normal Start/Join action.',
+        expected: 'The second device shows the in-progress session with a Switch action.',
+      },
+      {
+        title: 'Switch and confirm the first device disconnects',
+        instruction: 'Choose Switch. After the second device joins successfully, confirm the original device disconnects from the meeting automatically.',
+        expected: 'The meeting continues on the second device and the original device is no longer connected.',
+      },
+      {
+        title: 'Set expectations about what does not transfer',
+        instruction: 'Explain that items such as previously sent chat messages, raised-hand state, active local recording, captions, submitted Q&A, or full-transcription view may not transfer with the session.',
+        expected: 'The caller understands the transfer is successful even if some session-local state does not carry over.',
+      },
+    ],
+    success: 'The active meeting or webinar continues on the second signed-in device and the original device disconnects.',
+    unresolved: 'If Switch is unavailable because the account setting is disabled or managed, refer to the account owner/admin. For Zoom Room transfer or pairing, open the full approved Process Guide rather than improvising.',
+    script: '“We’ll first make sure both devices are signed in to the same Zoom account. If transfer is available, the second device should show Switch for the meeting that’s already in progress.”',
+    processIds: [
+      'transferring-meetings-and-webinars-between-devices',
+      'zoom-basic-support-boundaries-decision-path-referral-process',
+    ],
+    primarySource: {
+      title: 'Transferring meetings and webinars between devices',
+      url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062024',
+    },
+    supportingSources: [],
+    visuals: [],
+  },
+  {
+    id: 'join-muted',
+    group: 'AUDIO',
+    categoryId: 'audio',
+    title: 'I want to join with my microphone muted',
+    subtitle: 'Set mute-on-join or choose not to connect audio for one meeting',
+    classification: 'Pre-join microphone/audio preference',
+    classificationNote: 'Keep “join muted” separate from “don’t connect to audio.” Joining muted still connects the caller to meeting audio; Don’t connect to audio prevents the Zoom audio connection for that join.',
+    searchPhrases: [
+      'join muted', 'always join muted', 'mute microphone when joining', 'mic muted on join',
+      'keep my microphone muted', 'always mute my mic', 'dont connect to audio', 'join without audio',
+      'enter zoom muted', 'start zoom muted', 'mute before joining',
+    ],
+    confirm: [
+      'Do they want to stay connected to meeting audio but enter muted, or do they want no Zoom audio connection at all?',
+      'Do they want this behavior for every meeting or only the next meeting?',
+      'Are they using desktop or mobile?',
+    ],
+    checks: [
+      {
+        title: 'For every desktop meeting, enable Keep my microphone muted',
+        instruction: 'Desktop: sign in to Zoom, open Settings, choose Meetings & webinars, then under the join settings enable Keep my microphone muted.',
+        expected: 'Future meetings start with the caller connected to audio but muted.',
+      },
+      {
+        title: 'For mobile, use the platform mute-on-join setting',
+        instruction: 'Android/iOS: open Zoom Settings → Meetings and enable the mute-on-join option shown on that device, such as Always Mute My Microphone or Mute My Microphone.',
+        expected: 'Future mobile meetings start with the microphone muted.',
+      },
+      {
+        title: 'For one meeting with no Zoom audio, use Don’t connect to audio',
+        instruction: 'If the caller does not want Zoom audio connected for one meeting, use the Don’t connect to audio option before joining. Explain that this is different from simply entering muted.',
+        expected: 'The caller joins with the intended audio behavior instead of confusing mute state with audio connection state.',
+      },
+    ],
+    success: 'The caller’s next meeting uses the intended mute or audio-connection behavior.',
+    unresolved: 'If the setting is unavailable or locked by organization policy, refer to the Zoom administrator. Do not change managed policy to force the option.',
+    script: '“Do you want to join connected to audio but muted, or do you want Zoom not to connect to audio at all? Those are two different settings.”',
+    processIds: [
+      'muting-your-microphone-when-joining-a-zoom-meeting',
+      'zoom-basic-support-boundaries-decision-path-referral-process',
+    ],
+    primarySource: {
+      title: 'Muting your microphone when joining a meeting',
+      url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062614',
+    },
+    supportingSources: [
+      { title: 'Changing settings in the Zoom Workplace desktop and mobile app', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060612' },
+    ],
+    visuals: [],
+  },
+  {
+    id: 'join-video-preference',
+    group: 'VIDEO',
+    categoryId: 'video',
+    title: 'I want my camera on/off when I join',
+    subtitle: 'Set the default camera state or change video for one meeting before joining',
+    classification: 'Pre-join camera preference',
+    classificationNote: 'First determine whether the caller wants a default for future meetings or only wants to change the next join. The desktop and mobile setting labels differ.',
+    searchPhrases: [
+      'camera off when joining', 'camera on when joining', 'video off when joining', 'video on when joining',
+      'always join camera off', 'always join video off', 'keep my camera off', 'turn off my video join',
+      'start meeting camera off', 'join with video', 'join without video', 'camera default zoom',
+    ],
+    confirm: [
+      'Do they want the camera preference to apply to every meeting or only the next meeting?',
+      'Do they want the camera on or off when they enter?',
+      'Are they using desktop or mobile?',
+    ],
+    checks: [
+      {
+        title: 'Set the desktop default with Keep my camera off',
+        instruction: 'Desktop: sign in to Zoom, open Settings → Meetings & webinars, then use Keep my camera off under the join experience. Enable it to join with camera off by default; disable it to allow camera-on joining.',
+        expected: 'The desktop default reflects the caller’s preferred camera state for future joins.',
+      },
+      {
+        title: 'Set the mobile default with Turn off my video',
+        instruction: 'Android/iOS: open Zoom Settings → Meetings and use Turn off my video. Enable it to join with video off by default; disable it when the caller wants video available on join.',
+        expected: 'The mobile default reflects the caller’s intended video behavior.',
+      },
+      {
+        title: 'Change only the next meeting in the Join options',
+        instruction: 'For a one-time choice, open Join and use Turn off my video before entering. Selected means the camera joins off; cleared means the camera can join on. If a video preview appears, use Join with Video or Join without Video as appropriate.',
+        expected: 'Only the current join uses the selected camera state without unnecessarily changing the caller’s default.',
+      },
+    ],
+    success: 'The caller joins with the intended camera state and understands whether the change is one-time or the new default.',
+    unresolved: 'If the camera option is unavailable because of organization policy or another permission boundary, refer to the appropriate Zoom administrator rather than bypassing it.',
+    script: '“Is this how you want every meeting to start, or only this next meeting? I’ll take you to the right option so we don’t change more than you intended.”',
+    processIds: [
+      'setting-your-video-to-stay-on-or-off-when-joining-meetings-and-webinars',
+      'showing-and-hiding-your-video-in-a-zoom-meeting',
+      'zoom-basic-support-boundaries-decision-path-referral-process',
+    ],
+    primarySource: {
+      title: 'Setting your video to stay on or off when joining meetings and webinars',
+      url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062043',
+    },
+    supportingSources: [
+      { title: 'Previewing your video before joining', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0061118' },
+      { title: 'Changing settings in the Zoom Workplace desktop and mobile app', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060612' },
+    ],
+    visuals: [],
+  },
 ]
 
 const routeSearchDocs = COMMON_ISSUE_ROUTES.map(route => ({
