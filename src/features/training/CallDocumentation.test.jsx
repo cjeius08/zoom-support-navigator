@@ -106,7 +106,7 @@ it('clears the temporary draft only after confirmation', async () => {
 it('shows privacy and referral framing without claiming an internal escalation', () => {
   render(<CallDocumentation open />)
 
-  expect(screen.getByText('Not saved by OGCon')).toBeInTheDocument()
+  expect(screen.getByText('Not saved by the workspace')).toBeInTheDocument()
   expect(screen.getByText(/Copy to the approved case system/i)).toBeInTheDocument()
   expect(screen.getByText(/Zoom Basic Support Boundaries, Decision Path & Referral Process/i)).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Referred for Additional Assistance' })).toBeInTheDocument()
