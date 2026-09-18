@@ -147,7 +147,7 @@ export function LiveCallFlowDetails({ onClose }) {
         <h2>Detailed Call Workflow</h2>
         <p>Use these stages as a conversation guide. Keep the call natural and move one step at a time.</p>
       </div>
-      {onClose && <button type="button" className="live-call-panel-close" onClick={onClose}>Hide full call flow</button>}
+      {onClose && <button type="button" className="live-call-panel-close" onClick={onClose}>Close detailed flow</button>}
     </div>
 
     <div className="live-call-table-wrap">
