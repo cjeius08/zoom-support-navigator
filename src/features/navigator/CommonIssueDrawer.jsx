@@ -12,6 +12,11 @@ const TABS = [
 
 const STATUS_OPTIONS = ['Resolved', 'Unresolved', 'Escalation Needed']
 
+function visualSource(src) {
+  if (/^https?:\/\//i.test(src)) return src
+  return `${import.meta.env.BASE_URL}${String(src).replace(/^\/+/, '')}`
+}
+
 export function CommonIssueDrawer({
   route,
   callContext,
@@ -206,19 +211,23 @@ export function CommonIssueDrawer({
         {tab === 'visual' && <section aria-label="Visual Guide">
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Official Zoom references</p>
+              <p className="eyebrow">Source-verified visual references</p>
               <h3>Visual Guide</h3>
             </div>
           </div>
           {route.visuals.length > 0
             ? <div className="common-issue-visual-grid">{route.visuals.map(visual => <figure key={visual.src}>
                 <div className="common-issue-visual-frame">
-                  <img src={visual.src} alt={visual.alt} loading="lazy" />
+                  <img src={visualSource(visual.src)} alt={visual.alt} loading="lazy" />
                 </div>
-                <figcaption><strong>{visual.title}</strong><span>{visual.note}</span></figcaption>
+                <figcaption>
+                  <strong>{visual.title}</strong>
+                  <span>{visual.note}</span>
+                  {visual.sourceUrl && <a href={visual.sourceUrl} target="_blank" rel="noreferrer">{visual.sourceLabel || 'Open visual source'} ↗</a>}
+                </figcaption>
               </figure>)}</div>
             : <div className="common-issue-empty">
-                <strong>No embedded Zoom visual for this route yet.</strong>
+                <strong>No reviewed visual yet for this route.</strong>
                 <p>Use the official Zoom Support source below rather than relying on an unsourced or recreated interface image.</p>
                 <a href={route.primarySource.url} target="_blank" rel="noreferrer">Open current Zoom Support article ↗</a>
               </div>}
