@@ -151,53 +151,74 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
   }
 
   return <section className="navigator" id="navigator" aria-label="Support Navigator">
-    <LiveCallFlow value={callContext} onChange={setCallContext} />
-    <section className="hero">
-      <div className="hero-kicker"><span className="status-dot" /> Support process workspace</div>
-      <h1>Find the next step <em>without opening documents.</em></h1>
-      <p>Search by caller symptom or approved process name, then follow the right support route.</p>
-      <div className="search-combobox" onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) { setSuggestionsOpen(false); setActiveSuggestion(-1) } }}>
-        <input
-          role="combobox"
-          aria-label="Search support processes"
-          aria-autocomplete="list"
-          aria-controls="support-search-suggestions"
-          aria-expanded={showSuggestions}
-          aria-activedescendant={showSuggestions && activeSuggestion >= 0 ? `support-search-option-${activeSuggestion}` : undefined}
-          value={query}
-          onFocus={() => { if (query.trim()) setSuggestionsOpen(true) }}
-          onKeyDown={handleSearchKeyDown}
-          onChange={event => {
-            const nextQuery = event.target.value
-            setQuery(nextQuery)
-            setCategory(null)
-            setSuggestionsOpen(Boolean(nextQuery.trim()))
-            setActiveSuggestion(-1)
-          }}
-          placeholder="Search by issue, symptom, or process name"
-        />
-        {showSuggestions && <div className="search-suggestions" id="support-search-suggestions" role="listbox" aria-label="Search suggestions">
-          {suggestions.map((suggestion, index) => {
-            const isRoute = suggestion.kind === 'route'
-            const item = isRoute ? suggestion.route : suggestion.process
-            return <button
-              type="button"
-              role="option"
-              id={`support-search-option-${index}`}
-              className={`search-suggestion${isRoute ? ' search-suggestion-route' : ''}`}
-              aria-selected={activeSuggestion === index}
-              tabIndex={-1}
-              key={`${suggestion.kind}-${item.id}`}
-              onMouseMove={() => setActiveSuggestion(index)}
-              onClick={() => selectSuggestion(suggestion)}
-            >
-              <span className="search-suggestion-copy"><strong>{item.title}</strong><small>{isRoute ? item.subtitle : item.purpose}</small></span>
-              <span className="search-suggestion-category">{isRoute ? 'Common Issue' : 'Process Guide'}</span>
-            </button>
-          })}
-        </div>}
-      </div>
-      <span className="sr-only" role="status" aria-live="polite">{query.trim() ? `${routeMatches.length} common issue ${routeMatches.length === 1 ? 'route' : 'routes'} and ${processMatches.length} related ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.` : ''}</span>
+    <section className="navigator-top-workspace" aria-label="Live support workspace">
+      <section className="smart-search-card" aria-labelledby="smart-search-title">
+        <div className="smart-search-heading">
+          <p className="eyebrow">Support search</p>
+          <h1 id="smart-search-title">Find the next step</h1>
+          <p>Search by caller symptom or approved process name.</p>
+        </div>
+
+        <div className="search-combobox" onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) { setSuggestionsOpen(false); setActiveSuggestion(-1) } }}>
+          <input
+            role="combobox"
+            aria-label="Search support processes"
+            aria-autocomplete="list"
+            aria-controls="support-search-suggestions"
+            aria-expanded={showSuggestions}
+            aria-activedescendant={showSuggestions && activeSuggestion >= 0 ? `support-search-option-${activeSuggestion}` : undefined}
+            value={query}
+            onFocus={() => { if (query.trim()) setSuggestionsOpen(true) }}
+            onKeyDown={handleSearchKeyDown}
+            onChange={event => {
+              const nextQuery = event.target.value
+              setQuery(nextQuery)
+              setCategory(null)
+              setSuggestionsOpen(Boolean(nextQuery.trim()))
+              setActiveSuggestion(-1)
+            }}
+            placeholder="Try: can’t share, can’t find chat, waiting for host…"
+          />
+          {showSuggestions && <div className="search-suggestions" id="support-search-suggestions" role="listbox" aria-label="Search suggestions">
+            {suggestions.map((suggestion, index) => {
+              const isRoute = suggestion.kind === 'route'
+              const item = isRoute ? suggestion.route : suggestion.process
+              return <button
+                type="button"
+                role="option"
+                id={`support-search-option-${index}`}
+                className={`search-suggestion${isRoute ? ' search-suggestion-route' : ''}`}
+                aria-selected={activeSuggestion === index}
+                tabIndex={-1}
+                key={`${suggestion.kind}-${item.id}`}
+                onMouseMove={() => setActiveSuggestion(index)}
+                onClick={() => selectSuggestion(suggestion)}
+              >
+                <span className="search-suggestion-copy"><strong>{item.title}</strong><small>{isRoute ? item.subtitle : item.purpose}</small></span>
+                <span className="search-suggestion-category">{isRoute ? 'Common Issue' : 'Process Guide'}</span>
+              </button>
+            })}
+          </div>}
+        </div>
+
+        <div className="smart-search-examples" aria-label="Example searches">
+          <span>Try</span>
+          {['cant share', 'cant find chat', 'waiting for host'].map(example => <button
+            type="button"
+            key={example}
+            onClick={() => {
+              setQuery(example)
+              setCategory(null)
+              setSuggestionsOpen(true)
+              setActiveSuggestion(-1)
+            }}
+          >{example}</button>)}
+        </div>
+
+        <span className="sr-only" role="status" aria-live="polite">{query.trim() ? `${routeMatches.length} common issue ${routeMatches.length === 1 ? 'route' : 'routes'} and ${processMatches.length} related ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.` : ''}</span>
+      </section>
+
+      <LiveCallFlow value={callContext} onChange={setCallContext} />
     </section>
     <section className="navigator-library" aria-label="Navigator library">
       <div className="navigator-library-tabs" role="tablist" aria-label="Navigator views">
