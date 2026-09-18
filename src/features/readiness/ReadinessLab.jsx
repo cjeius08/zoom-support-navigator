@@ -115,7 +115,10 @@ export function ReadinessLab({
   const activeAttempt = state?.activeAttempt || null
   const attempts = state?.attempts || []
   const maxAttempts = state?.maxAttempts || 3
-  const checkedAnswers = activeAttempt?.answers || []
+  const checkedAnswers = useMemo(
+    () => activeAttempt?.answers || [],
+    [activeAttempt?.answers],
+  )
   const answerByQuestion = useMemo(
     () => new Map(checkedAnswers.map(answer => [answer.questionId, answer])),
     [checkedAnswers],
