@@ -74,7 +74,7 @@ it('keeps JA reporting wired to all five readiness parts', () => {
 
 it('keeps all five readiness question migrations recorded in the repository', () => {
   const migrationFiles = [
-    '20260918203339_zoom_readiness_lab_persistence.sql',
+    '20260918223800_zoom_readiness_part1_general_scenarios_baseline.sql',
     '20260918211600_zoom_readiness_part2_device_navigation.sql',
     '20260918215700_zoom_readiness_part3_troubleshooting_judgment.sql',
     '20260918220700_zoom_readiness_part4_scope_referral_judgment.sql',
