@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { TRAINING_VIDEOS } from '../../data/trainingVideos'
 import { TrainingResources } from './TrainingResources'
 
@@ -63,6 +63,22 @@ describe('Training & Resources', () => {
 
     await user.click(screen.getByRole('tab', { name: 'Device Walkthroughs' }))
     expect(screen.getByRole('heading', { name: /Choose the caller’s device/i })).toBeInTheDocument()
+  })
+
+
+  it('publishes the most specific Training tab and scenario for global reports', async () => {
+    const user = userEvent.setup()
+    const onReportContextChange = vi.fn()
+    render(<TrainingResources onReportContextChange={onReportContextChange} />)
+
+    await user.click(screen.getByRole('tab', { name: 'Scripts & Communication' }))
+    await user.click(screen.getByRole('tab', { name: 'Scenario Scripts' }))
+    await user.click(screen.getByRole('tab', { name: 'Screen Share' }))
+
+    expect(onReportContextChange).toHaveBeenLastCalledWith(expect.objectContaining({
+      selected_tab: 'Scenario Scripts',
+      current_section: 'Screen Share',
+    }))
   })
 
 })
