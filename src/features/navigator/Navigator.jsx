@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
-import { FeedbackForm } from '../feedback/FeedbackForm'
 import { ProcessDrawer } from './ProcessDrawer'
 import { searchProcesses } from './smartSearch'
-import { useDialogFocus } from '../../lib/useDialogFocus'
 import { LiveCallFlow, LiveCallFlowDetails } from './LiveCallFlow'
 import { CommonIssueDrawer } from './CommonIssueDrawer'
 import { COMMON_ISSUE_ROUTES, routeById, searchCommonIssueRoutes } from './commonIssueRoutes'
@@ -35,24 +33,23 @@ function CategoryIcon({ type }) {
   return <span className={`category-icon category-icon-${type}`} data-testid="category-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d={categoryIconPaths[type]} /></svg></span>
 }
 
-export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialProcessId = null }) {
+export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = null, initialCommonIssueId = null, onReportContextChange = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
   const [selectedRoute, setSelectedRoute] = useState(null)
   const [callContext, setCallContext] = useState({ device: null, role: null, status: null })
-  const [feedbackOpen, setFeedbackOpen] = useState(false)
+  const [commonIssueTab, setCommonIssueTab] = useState('Quick Guide')
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
   const [activeSuggestion, setActiveSuggestion] = useState(-1)
   const [libraryTab, setLibraryTab] = useState('fastest')
   const [callFlowExpanded, setCallFlowExpanded] = useState(false)
-  const feedbackDialogRef = useRef(null)
-  useDialogFocus(feedbackDialogRef, feedbackOpen, () => setFeedbackOpen(false))
 
   useEffect(() => {
     if (!initialProcessId) return
     const process = PROCESSES.find(item => item.id === initialProcessId)
     if (!process) return
+    setSelectedRoute(null)
     setSelected(process)
     onTrackEvent?.({
       eventType: 'process_open',
@@ -62,6 +59,28 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
       toolId: 'feedback_queue',
     })
   }, [initialProcessId, onTrackEvent])
+
+  useEffect(() => {
+    if (!initialCommonIssueId) return
+    const route = routeById(initialCommonIssueId)
+    if (!route) return
+    setSelected(null)
+    setSelectedRoute(route)
+    setCommonIssueTab('Quick Guide')
+  }, [initialCommonIssueId])
+
+  useEffect(() => {
+    const libraryTabLabels = { fastest: 'Fastest Routes', common: 'Common Issues', processes: 'Process Guides' }
+    onReportContextChange({
+      selected_tab: selectedRoute ? commonIssueTab : libraryTabLabels[libraryTab] || libraryTab,
+      current_section: selectedRoute ? 'Common Issue drawer' : selected ? 'Process Guide drawer' : category || null,
+      active_device: callContext.device,
+      active_caller_role: callContext.role,
+      active_common_issue: selectedRoute?.id ?? null,
+      process_id: selected?.id ?? null,
+      category_id: selectedRoute?.categoryId ?? selected?.category ?? category ?? null,
+    })
+  }, [libraryTab, commonIssueTab, callContext.device, callContext.role, selectedRoute, selected, category, onReportContextChange])
 
   const searchMatches = useMemo(() => query.trim() ? searchProcesses(PROCESSES, query) : [], [query])
   const routeMatches = useMemo(() => query.trim() ? searchCommonIssueRoutes(query) : [], [query])
@@ -101,6 +120,7 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
   function openProcess(process, toolId = 'process_card') {
     if (!process) return
     setSelectedRoute(null)
+    setCommonIssueTab('Quick Guide')
     setSelected(process)
     onTrackEvent?.({
       eventType: 'process_open',
@@ -114,6 +134,7 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
   function openRoute(route, toolId = 'common_issue') {
     if (!route) return
     setSelected(null)
+    setCommonIssueTab('Quick Guide')
     setSelectedRoute(route)
     onTrackEvent?.({
       eventType: 'tool_open',
@@ -323,7 +344,6 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
         </>}
       </div>
     </section>
-    <button type="button" className="feedback-fab" onClick={()=>setFeedbackOpen(true)}>Report an issue</button>
     {selected&&<ProcessDrawer process={selected} onClose={()=>setSelected(null)} onOpenTraining={onOpenTraining} onTrackEvent={onTrackEvent}/>}
     {selectedRoute&&<CommonIssueDrawer
       route={selectedRoute}
@@ -332,8 +352,8 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
       onOpenRoute={routeId=>setSelectedRoute(routeById(routeId))}
       onOpenProcess={processId=>openProcess(PROCESSES.find(process=>process.id===processId),'common_issue_full_process')}
       onStatusChange={status=>setCallContext(current=>({...current,status}))}
+      onTabChange={setCommonIssueTab}
       onTrackEvent={onTrackEvent}
     />}
-    {feedbackOpen&&<div className="modal-backdrop" role="presentation" onMouseDown={event=>event.target===event.currentTarget&&setFeedbackOpen(false)}><div ref={feedbackDialogRef} tabIndex={-1} className="profile-panel" role="dialog" aria-modal="true" aria-label="Report an issue"><FeedbackForm context={{route_id:'navigator',page_label:'Navigator',process_id:selected?.id??null,category_id:selected?.category??null}} onCancel={()=>setFeedbackOpen(false)} onSubmit={async payload=>{await onFeedback?.(payload);setFeedbackOpen(false)}}/></div></div>}
   </section>
 }
