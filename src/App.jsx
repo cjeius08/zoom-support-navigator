@@ -62,6 +62,7 @@ export default function App() {
 
   function openTraining(videoId) {
     trackEvent({ eventType: 'training_open', routeId: 'training', toolId: typeof videoId === 'string' ? videoId : 'library' })
+    setTrainingTarget(null)
     setTrainingVideoId(typeof videoId === 'string' ? videoId : null)
     setReportContext({
       ...EMPTY_REPORT_CONTEXT,
