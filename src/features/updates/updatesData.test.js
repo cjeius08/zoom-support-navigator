@@ -18,7 +18,8 @@ it('keeps console metadata and update history complete and newest-first', () => 
   expect(data.metadata.updatePolicy).toMatch(/Every shipped user-facing feature/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
   expect(data.updates[0].date).toBe('2026-09-19')
-  expect(data.updates.slice(0, 5).map(entry => entry.id)).toEqual([
+  expect(data.updates.slice(0, 6).map(entry => entry.id)).toEqual([
+    'global-documentation-dock',
     'phase5-documentation-workspace',
     'interactive-guided-discovery',
     'phase4-scenario-expansion',

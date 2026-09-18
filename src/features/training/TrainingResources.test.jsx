@@ -82,17 +82,13 @@ describe('Training & Resources', () => {
   })
 
 
-  it('opens the Phase 5 Documentation workspace as a separate training tab', async () => {
-    const user = userEvent.setup()
+  it('keeps Training & Resources reference-only and does not expose Documentation as a training tab', () => {
     render(<TrainingResources />)
 
-    const documentationTab = screen.getByRole('tab', { name: 'Documentation' })
-    await user.click(documentationTab)
-
-    expect(documentationTab).toHaveAttribute('aria-selected', 'true')
-    expect(screen.getByRole('heading', { name: /Document the call while the details are fresh/i })).toBeInTheDocument()
-    expect(screen.getByText(/Temporary local draft/i)).toBeInTheDocument()
-    expect(screen.queryByRole('searchbox', { name: 'Search training videos' })).not.toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Device Walkthroughs' })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Scripts & Communication' })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Video Library' })).toBeInTheDocument()
+    expect(screen.queryByRole('tab', { name: 'Documentation' })).not.toBeInTheDocument()
   })
 
 })

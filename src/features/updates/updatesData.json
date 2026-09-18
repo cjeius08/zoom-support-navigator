@@ -9,17 +9,29 @@
   },
   "updates": [
     {
+      "id": "global-documentation-dock",
+      "date": "2026-09-19",
+      "area": "Live Tools / Documentation",
+      "title": "Call Documentation moved to a global docked live tool",
+      "changed": "Moved Call Documentation out of Training & Resources and into the authenticated sidebar as a global live tool. Opening Call Documentation no longer navigates away from the agent’s current page. The compact right-side dock stays available while the agent browses Navigator, Common Issues, process guides, Device Walkthroughs, Scripts & Communication, Updates, Feedback, or admin pages. Agents can minimize the dock to a small bar or close it without losing the current local draft; only Clear removes the call information.",
+      "checks": [
+        "From Navigator, select Call Documentation in the sidebar and confirm the current page does not change while the right-side dock opens.",
+        "Enter a caller name and exact issue, navigate to another page, and confirm the same documentation draft remains visible.",
+        "Select Minimize and confirm the dock collapses to a small bar; restore it and confirm the entered draft is still present.",
+        "Close Call Documentation, reopen it from the sidebar, and confirm the draft is still present until Clear is used.",
+        "Open Training & Resources and confirm Documentation is no longer a training tab; Device Walkthroughs, Scripts & Communication, and Video Library remain available."
+      ]
+    },
+    {
       "id": "phase5-documentation-workspace",
       "date": "2026-09-19",
       "area": "Training / Documentation",
       "title": "Phase 5 call documentation workspace added",
-      "changed": "Added a dedicated Documentation tab inside Training & Resources for live-call note capture. Agents can record caller details, date/time, caller reference, device/platform, device/access context, exact issue, completed troubleshooting and observed result, resolution/next steps, recommended contact when referred, and the final call outcome. The workspace generates a copy-ready summary, keeps the draft local to the browser session, does not send caller-entered text to OGCon analytics or report context, and includes a clear-draft action for the next call.",
+      "changed": "Introduced the Phase 5 call documentation fields and copy-ready summary. The workspace is now accessed globally from the sidebar as a docked live tool rather than as a Training & Resources tab; see the newer global documentation dock update for the current workflow.",
       "checks": [
-        "Open Training & Resources → Documentation and confirm the Phase 5 call documentation form appears.",
-        "Enter sample caller details, device, exact issue, troubleshooting/result, next steps, and a call outcome; confirm the Documentation preview updates immediately.",
-        "Select Copy documentation and confirm the complete labeled summary is copied for use in the approved case system.",
-        "Select Clear documentation, confirm the prompt, and verify the caller-entered fields and outcome reset for the next call.",
-        "Use Report an issue from the Documentation tab and confirm only screen context such as Documentation, device, and outcome is captured—not caller name, phone number, issue text, or notes."
+        "Use the newer Call Documentation sidebar tool for the current workflow.",
+        "Confirm the same approved fields and copy-ready summary remain available in the global dock.",
+        "Confirm caller-entered text remains local to the active browser session and is not included in OGCon analytics or feedback context."
       ]
     },
     {
