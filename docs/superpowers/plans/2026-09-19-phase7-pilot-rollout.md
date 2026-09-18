@@ -1,0 +1,83 @@
+# Phase 7 — Pilot & Rollout Plan
+
+**Goal:** Move the completed Ogletree Support Workspace from implementation/QA into a controlled team pilot and production rollout without changing approved support content or weakening privacy/security boundaries.
+
+**Source:** Continuation of the approved master plan and QA/rollout plan:
+- Controlled team test
+- Production rollout
+- Final security/privacy verification
+
+## Global guardrails
+
+- Production Supabase project remains `eefpsujuvwfkpuiejtft` (Wagmi Support).
+- Never point browser code or deployment workflows to a Medify project.
+- Browser code may use only `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`.
+- Service-role/secret keys remain server-side only.
+- No real agent is deleted or destructively modified during automated pilot gates.
+- Usage/presence remain metadata-only.
+- Readiness Lab stays at 5 parts, 5 questions per part, max 3 attempts per part.
+- Existing Navigator/process content remains frozen unless a separately approved content change is requested.
+
+## Batch 1 — Pilot Readiness Gate
+
+Purpose: Prove the environment is safe to enter a controlled pilot before mutating any test account.
+
+Checks:
+- Production project is active and the deploy workflow points only to Wagmi Support.
+- No Medify project reference appears in browser source.
+- No service-role/secret credential appears in browser source.
+- All public app tables retain RLS.
+- Normal agent RLS resolves to self-only profile/usage/session/presence/feedback access.
+- Creator-admin retains team-level reporting access.
+- Required auth/admin Edge Functions are active.
+- Security Advisor has no unresolved Zoom-specific database findings.
+- Full `npm test -- --run`, lint, and build pass.
+
+No user-facing feature ships in this batch.
+
+## Batch 2 — Disposable Agent Lifecycle Pilot
+
+Use a clearly disposable pilot account/slot only.
+
+Flow:
+1. JA creates a pending agent slot and invite.
+2. Disposable agent activates with initials + invite.
+3. Agent signs in with username/password.
+4. Agent selects an approved built-in avatar.
+5. Agent opens Navigator, Training & Resources, and Readiness Lab.
+6. Agent changes own password.
+7. JA resets password and forced-change flow is verified.
+8. JA deactivates and reactivates the disposable account.
+9. JA permanently deletes only the disposable pilot account with confirmation.
+10. Confirm linked disposable history is removed as specified.
+
+This batch may mutate only the disposable pilot identity created for the test.
+
+## Batch 3 — Controlled Team Pilot
+
+Run with JA plus one designated non-disposable sample agent.
+
+Flow:
+- Agent uses representative Navigator processes.
+- Agent completes a partial Readiness attempt and resumes it.
+- Agent submits one feedback report.
+- Presence transitions are observed.
+- Usage metadata appears in JA reports.
+- JA reviews feedback and updates status.
+- JA confirms Readiness reporting by part/attempt.
+- Defects are recorded and fixed in small reviewable batches.
+
+No destructive account testing on the real sample agent.
+
+## Batch 4 — Production Rollout & Monitoring
+
+- Run final full test/lint/build.
+- Run Supabase Security and Performance Advisors.
+- Confirm production project isolation.
+- Confirm schema/function migrations are committed.
+- Deploy main.
+- Smoke-test JA and agent login after deployment.
+- Confirm feedback, presence, usage, and Readiness reports populate.
+- Record rollout defects only; new feature ideas become a separate future phase.
+
+**Done means:** the workspace is not only code-complete, but has passed a controlled disposable lifecycle test, a real team pilot, and post-deploy smoke checks.
