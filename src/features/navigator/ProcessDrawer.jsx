@@ -12,6 +12,8 @@ const TABS = [
 ];
 
 const STEP_PREVIEW_LIMIT = 6;
+const SCRIPT_PREVIEW_LIMIT = 3;
+const CALLOUT_PREVIEW_LIMIT = 6;
 
 const trainingCategoryByProcessCategory = {
   join: "Joining Meetings",
@@ -25,12 +27,18 @@ const trainingCategoryByProcessCategory = {
 export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent }) {
   const [tab, setTab] = useState("quick");
   const [stepsExpanded, setStepsExpanded] = useState(false);
+  const [scriptsExpanded, setScriptsExpanded] = useState(false);
+  const [expandedCallouts, setExpandedCallouts] = useState({});
   const dialogRef = useRef(null);
   const copyResetRef = useRef(null);
   const [copyState, setCopyState] = useState({ id: "", status: "" });
   const guide = useMemo(() => buildCallGuide(process), [process]);
   const visibleSteps = stepsExpanded ? guide.steps : guide.steps.slice(0, STEP_PREVIEW_LIMIT);
   const hiddenStepCount = Math.max(0, guide.steps.length - visibleSteps.length);
+  const visibleGlobalScripts = scriptsExpanded
+    ? guide.globalScripts
+    : guide.globalScripts.slice(0, SCRIPT_PREVIEW_LIMIT);
+  const hiddenScriptCount = Math.max(0, guide.globalScripts.length - visibleGlobalScripts.length);
   useDialogFocus(dialogRef, true, onClose);
   useEffect(() => () => window.clearTimeout(copyResetRef.current), []);
 
@@ -204,7 +212,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent }
                   </small>
                 </section>
               )}
-              {guide.globalScripts.map((script, index) => (
+              {visibleGlobalScripts.map((script, index) => (
                 <section className="suggested-script" key={`global-${index}`}>
                   <p className="eyebrow">Additional Source Script</p>
                   <blockquote>{script}</blockquote>
@@ -213,6 +221,15 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent }
                   </button>
                 </section>
               ))}
+              {hiddenScriptCount > 0 && (
+                <button
+                  type="button"
+                  className="show-more-scripts"
+                  onClick={() => setScriptsExpanded(true)}
+                >
+                  Show remaining scripts ({hiddenScriptCount})
+                </button>
+              )}
               <div className="call-step-list">
                 {visibleSteps.map((step, index) => (
                   <article
@@ -298,22 +315,42 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent }
                   className="show-more-steps"
                   onClick={() => setStepsExpanded(true)}
                 >
-                  Show remaining {hiddenStepCount} steps
+                  Show remaining steps ({hiddenStepCount})
                 </button>
               )}
               {guide.callouts.length > 0 && (
                 <section className="guide-callouts">
-                  {guide.callouts.map((callout, index) => (
-                    <article
-                      className={`guide-callout ${callout.kind}`}
-                      key={index}
-                    >
-                      <p className="eyebrow">{callout.label}</p>
-                      {callout.lines.map((line, lineIndex) => (
-                        <p key={lineIndex}>{line}</p>
-                      ))}
-                    </article>
-                  ))}
+                  {guide.callouts.map((callout, index) => {
+                    const expanded = Boolean(expandedCallouts[index]);
+                    const visibleLines = expanded
+                      ? callout.lines
+                      : callout.lines.slice(0, CALLOUT_PREVIEW_LIMIT);
+                    const hiddenCount = Math.max(0, callout.lines.length - visibleLines.length);
+                    const detailLabel = callout.kind === "referral"
+                      ? "referral details"
+                      : `${callout.label.toLowerCase()} details`;
+
+                    return (
+                      <article
+                        className={`guide-callout ${callout.kind}`}
+                        key={index}
+                      >
+                        <p className="eyebrow">{callout.label}</p>
+                        {visibleLines.map((line, lineIndex) => (
+                          <p className="callout-line" key={lineIndex}>{line}</p>
+                        ))}
+                        {hiddenCount > 0 && (
+                          <button
+                            type="button"
+                            className="show-more-callout"
+                            onClick={() => setExpandedCallouts(current => ({ ...current, [index]: true }))}
+                          >
+                            Show remaining {detailLabel} ({hiddenCount})
+                          </button>
+                        )}
+                      </article>
+                    );
+                  })}
                 </section>
               )}
               <div className="refer-card">
