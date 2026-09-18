@@ -150,10 +150,16 @@ it('emits only identifier-based analytics events for support interactions', asyn
 })
 
 
-it('shows the Core Live Call Flow before the process library', () => {
+it('places Smart Search and Live Call Flow together in the compact top workspace', () => {
   render(<Navigator />)
   const liveFlow = screen.getByRole('region', { name: 'Core Live Call Flow' })
   const search = screen.getByRole('combobox', { name: 'Search support processes' })
-  expect(liveFlow).toBeInTheDocument()
-  expect(liveFlow.compareDocumentPosition(search) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  const searchCard = search.closest('.smart-search-card')
+  const workspace = search.closest('.navigator-top-workspace')
+
+  expect(searchCard).toBeInTheDocument()
+  expect(workspace).toBeInTheDocument()
+  expect(workspace).toContainElement(liveFlow)
+  expect(searchCard?.parentElement).toBe(liveFlow.parentElement)
+  expect(screen.getByRole('button', { name: /View full call flow/i })).toHaveAttribute('aria-expanded', 'false')
 })
