@@ -14,13 +14,13 @@
       "date": "2026-09-19",
       "area": "Workspace / Product Identity",
       "title": "Product identity updated to Ogletree Support Workspace",
-      "changed": "Rebranded the application from its internal OGCon / generic console naming to Ogletree Support Workspace. The sign-in page now uses the full product name with Tier 1 Zoom Support as the supporting context, authenticated headers use the same product identity without repeating it in the sidebar, version labels now say Workspace, and legacy OGCon references were removed from current guidance. The GitHub Pages build path now follows the repository name automatically so the project URL can be renamed safely.",
+      "changed": "Rebranded the application from its internal OGCon / generic console naming to Ogletree Support Workspace. The sign-in page now uses the full product name with Tier 1 Zoom Support as the supporting context, authenticated headers use the same product identity without repeating it in the sidebar, version labels now say Workspace, and legacy OGCon references were removed from current guidance. Repository name, GitHub Pages URL, Vite base path, package identity, and deployment configuration remain unchanged.",
       "checks": [
         "Open the sign-in page and confirm the title is Ogletree Support Workspace with Tier 1 Zoom Support shown once as supporting context.",
         "Sign in and confirm the header says Ogletree Support Workspace while the sidebar label says Tier 1 Zoom Support instead of repeating the full product name.",
         "Confirm the version chip and What’s New metadata use Workspace v1.0 / Workspace Version instead of Console wording.",
         "Open Scope Check, Live Call Flow, Call Documentation, Common Issue guidance, and Scripts & Communication and confirm no current guidance refers to OGCon.",
-        "Confirm the current GitHub Pages site still loads before the repository is renamed; the deployment base is now derived from the repository name."
+        "Confirm the existing GitHub Pages URL and repository name are unchanged."
       ]
     },
     {
