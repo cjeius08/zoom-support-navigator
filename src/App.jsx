@@ -11,6 +11,7 @@ import { TrainingResources } from './features/training/TrainingResources'
 import { FeedbackPage } from './features/feedback/FeedbackPage'
 import { UpdatesView } from './features/updates/UpdatesView'
 import { assetUrl } from './lib/assetUrl'
+import { BrandMark } from './components/BrandMark'
 import { useUsageTracking } from './features/analytics/usePresence'
 import './styles.css'
 import './accessibility-ui.css'
@@ -85,7 +86,7 @@ export default function App() {
   if (activationOpen) return <main className="access-shell" style={accessStyle}><section className="access-card"><ActivateAccountForm onActivate={activateAccount} onCancel={()=>setActivationOpen(false)}/></section></main>
   return <main className="access-shell" style={accessStyle}>
     <section className="access-card" aria-labelledby="app-title">
-      <div className="access-brand"><p>Zoom</p><span>Internal Support Workspace</span></div>
+      <div className="access-brand"><BrandMark variant="login" /><span>Support Console</span></div>
       <h1 id="app-title">Support Console</h1>
       <p>Sign in to access the support-process workspace.</p>
       <form onSubmit={submit} noValidate>

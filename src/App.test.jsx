@@ -3,6 +3,13 @@ import { describe, expect, it } from 'vitest'
 import App from './App'
 
 describe('application access gate', () => {
+  it('shows OGCon branding on the sign-in page', async () => {
+    render(<App />)
+    await waitFor(() => expect(screen.getByRole('img', { name: 'OGCon' })).toBeInTheDocument())
+    expect(document.title).toBe('OGCon Support Console')
+    expect(screen.getByRole('heading', { name: 'Support Console' })).toBeInTheDocument()
+  })
+
   it('shows username-only sign in with activation instead of public registration', async () => {
     render(<App />)
     await waitFor(() => expect(screen.getByLabelText('Username')).toBeInTheDocument())

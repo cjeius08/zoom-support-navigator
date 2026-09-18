@@ -5,15 +5,12 @@ import { AvatarPicker } from '../profile/AvatarPicker'
 import { CONSOLE_METADATA, LAST_UPDATED, formatShortConsoleDate } from '../updates/updatesData'
 import '../updates/updates.css'
 import { useDialogFocus } from '../../lib/useDialogFocus'
+import { BrandMark } from '../../components/BrandMark'
 
 const agentLinks = [['navigator', 'Navigator'], ['training', 'Training & Resources'], ['updates', 'What’s New / Updates'], ['feedback', 'Feedback']]
 const adminLinks = [['admin', 'Admin Home'], ['team', 'Team Management'], ['usage', 'Usage Analytics'], ['feedback_queue', 'Feedback Queue']]
 
 function Icon({ type }) { const paths = { navigator: 'M4 11.5 12 4l8 7.5v8.5H4z', training: 'M4 5h6a3 3 0 0 1 2 3v12a3 3 0 0 0-2-1H4zM20 5h-6a3 3 0 0 0-2 3v12a3 3 0 0 1 2-1h6z', updates: 'M12 4v8l4 2M4 12a8 8 0 1 0 2.3-5.7L4 8M4 4v4h4', feedback: 'M5 5h14v10H9l-4 4z', admin: 'M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7z', team: 'M16 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M17 11a3 3 0 0 0-1-5.8M21 20v-2a4 4 0 0 0-2.7-3.8', usage: 'M5 20V10M12 20V4M19 20v-7', feedback_queue: 'M5 4h14v16H5zM8 9h8M8 13h6' }; return <svg data-testid="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d={paths[type] || paths.feedback} /></svg> }
-
-function ConsoleBrandIcon() {
-  return <span className="console-brand-mark" data-testid="console-brand-icon" aria-hidden="true"><svg viewBox="0 0 32 32" focusable="false"><rect x="5" y="7" width="16" height="13" rx="3"/><path d="m21 11 6-3v11l-6-3M9 24h10M14 20v4"/><circle cx="25" cy="23" r="4"/><path d="m23.7 23 1 1 2-2"/></svg></span>
-}
 
 export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, currentView = 'navigator', onNavigate = () => {} }) {
   const [open, setOpen] = useState(false)
@@ -99,7 +96,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
       >
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
       </button>
-      <div className="console-brand"><ConsoleBrandIcon /><span className="console-brand-copy"><strong>zoom</strong><span>Support Console</span></span></div>
+      <div className="console-brand"><BrandMark variant="header" /><span className="console-brand-copy"><span>Support Console</span></span></div>
       <button className="console-version-chip" type="button" onClick={() => onNavigate('updates')}>
         <span className="version-console-label">Console </span>v{CONSOLE_METADATA.version}<span className="version-updated-label"> · Updated {formatShortConsoleDate(LAST_UPDATED)}</span>
       </button>

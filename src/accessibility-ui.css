@@ -213,3 +213,65 @@
     transition-duration: .01ms !important;
   }
 }
+
+
+/* OGCon product branding */
+.brand-mark {
+  display: block;
+  flex: 0 0 auto;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.brand-mark-header {
+  width: clamp(7.1rem, 8vw, 8.4rem);
+  height: 2.45rem;
+}
+
+.brand-mark-login {
+  width: min(19rem, 72vw);
+  height: auto;
+  max-height: 8rem;
+}
+
+.console-brand-copy {
+  display: grid;
+  align-items: center;
+}
+
+.console-brand-copy > span {
+  color: #d9cec0;
+  font-size: .72rem;
+  letter-spacing: .035em;
+  white-space: nowrap;
+}
+
+.access-brand {
+  display: grid;
+  justify-items: start;
+  gap: .45rem;
+}
+
+.access-brand > span {
+  display: block;
+  color: rgba(224, 236, 246, .74);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .brand-mark-header {
+    width: 6.7rem;
+    height: 2.15rem;
+  }
+
+  .brand-mark-login {
+    width: min(16rem, 78vw);
+  }
+
+  .console-brand-copy > span {
+    display: none;
+  }
+}
