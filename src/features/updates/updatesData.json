@@ -10,6 +10,20 @@
   },
   "updates": [
     {
+      "id": "phase6-readiness-lab-part3-troubleshooting",
+      "date": "2026-09-19",
+      "area": "Training / Readiness Validation",
+      "title": "Readiness Lab Part 3 adds troubleshooting judgment",
+      "changed": "Added Readiness Lab Part 3 as a separate five-question persistent validation set focused on what the agent should do after a troubleshooting result changes the situation. The questions cover a failed-join call that becomes a Waiting Room state, joining meeting audio before deeper output checks, recognizing when the operating system itself cannot see a microphone, stopping deeper camera recovery once the expected preview returns, and moving to the device/browser capture-permission path when screen sharing reaches that layer. Part 3 keeps its own up-to-three-attempt history, uses the discovery-based Training & Resources lookup, and is reported separately in JA Usage Analytics. Parts 4–5 remain locked.",
+      "checks": [
+        "Open Readiness Lab and confirm Scenarios, Devices, and Troubleshooting show Available now while Scope and Live Call remain Coming next.",
+        "Open Troubleshooting and confirm Part 3 of 5, Attempt 1 of 3, and Question 1 of 5.",
+        "Confirm the five questions ask what to do after an observed result rather than only asking where a Zoom control is located.",
+        "Use Open Training & Resources and confirm the exact answer location is still not revealed.",
+        "As JA, open Usage Analytics → Readiness Lab Report and confirm Troubleshooting Judgment appears as a separate Part 3 report section."
+      ]
+    },
+    {
       "id": "readiness-resource-discovery",
       "date": "2026-09-19",
       "area": "Training / Readiness Validation",

@@ -134,6 +134,7 @@ it('shows Readiness Lab attempt history separately with scores and incorrect ans
   loadReadinessReport.mockResolvedValue({
     parts: [{
       id: 'foundation-call-flow',
+      number: 1,
       title: 'General Zoom Scenarios',
       questionSetVersion: 'zoom_general_scenarios_v1',
       maxAttempts: 3,
@@ -178,8 +179,23 @@ it('shows Readiness Lab attempt history separately with scores and incorrect ans
       }],
     }, {
       id: 'device-navigation',
+      number: 2,
       title: 'Device & Navigation Awareness',
       questionSetVersion: 'zoom_device_navigation_v1',
+      maxAttempts: 3,
+      users: [{
+        id: 'u1',
+        username: 'agent_one',
+        initials: 'AO',
+        role: 'agent',
+        status: 'active',
+        attempts: [],
+      }],
+    }, {
+      id: 'troubleshooting-judgment',
+      number: 3,
+      title: 'Troubleshooting Judgment',
+      questionSetVersion: 'zoom_troubleshooting_judgment_v1',
       maxAttempts: 3,
       users: [{
         id: 'u1',
@@ -198,6 +214,7 @@ it('shows Readiness Lab attempt history separately with scores and incorrect ans
   expect(await screen.findByRole('heading', { name: 'Readiness Lab Report' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'General Zoom Scenarios' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Device & Navigation Awareness' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Troubleshooting Judgment' })).toBeInTheDocument()
   expect(screen.getByText('Attempt 1')).toBeInTheDocument()
   expect(screen.getByText('Score 3/5')).toBeInTheDocument()
   expect(screen.getByText('Attempt 2')).toBeInTheDocument()

@@ -117,12 +117,14 @@ export async function loadReadinessReport() {
   const parts = await Promise.all([
     loadReadinessAdminReport(READINESS_QUESTION_SETS.generalScenarios),
     loadReadinessAdminReport(READINESS_QUESTION_SETS.deviceNavigation),
+    loadReadinessAdminReport(READINESS_QUESTION_SETS.troubleshootingJudgment),
   ])
 
   return {
     parts: [
       { id: 'foundation-call-flow', number: 1, title: 'General Zoom Scenarios', ...parts[0] },
       { id: 'device-navigation', number: 2, title: 'Device & Navigation Awareness', ...parts[1] },
+      { id: 'troubleshooting-judgment', number: 3, title: 'Troubleshooting Judgment', ...parts[2] },
     ],
   }
 }
