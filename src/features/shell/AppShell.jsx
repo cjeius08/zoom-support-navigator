@@ -6,11 +6,12 @@ import { CONSOLE_METADATA, LAST_UPDATED, formatShortConsoleDate } from '../updat
 import '../updates/updates.css'
 import { useDialogFocus } from '../../lib/useDialogFocus'
 import { GlobalFeedbackButton } from '../feedback/GlobalFeedbackButton'
+import { CallDocumentation } from '../training/CallDocumentation'
 
-const agentLinks = [['navigator', 'Navigator'], ['training', 'Training & Resources'], ['updates', 'What’s New / Updates'], ['feedback', 'Feedback']]
-const adminLinks = [['admin', 'Admin Home'], ['team', 'Team Management'], ['usage', 'Usage Analytics'], ['feedback_queue', 'Feedback Queue']]
+const agentLinks = [['navigator', 'Navigator', 'page'], ['documentation', 'Call Documentation', 'tool'], ['training', 'Training & Resources', 'page'], ['updates', 'What’s New / Updates', 'page'], ['feedback', 'Feedback', 'page']]
+const adminLinks = [['admin', 'Admin Home', 'page'], ['team', 'Team Management', 'page'], ['usage', 'Usage Analytics', 'page'], ['feedback_queue', 'Feedback Queue', 'page']]
 
-function Icon({ type }) { const paths = { navigator: 'M4 11.5 12 4l8 7.5v8.5H4z', training: 'M4 5h6a3 3 0 0 1 2 3v12a3 3 0 0 0-2-1H4zM20 5h-6a3 3 0 0 0-2 3v12a3 3 0 0 1 2-1h6z', updates: 'M12 4v8l4 2M4 12a8 8 0 1 0 2.3-5.7L4 8M4 4v4h4', feedback: 'M5 5h14v10H9l-4 4z', admin: 'M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7z', team: 'M16 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M17 11a3 3 0 0 0-1-5.8M21 20v-2a4 4 0 0 0-2.7-3.8', usage: 'M5 20V10M12 20V4M19 20v-7', feedback_queue: 'M5 4h14v16H5zM8 9h8M8 13h6' }; return <svg data-testid="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d={paths[type] || paths.feedback} /></svg> }
+function Icon({ type }) { const paths = { navigator: 'M4 11.5 12 4l8 7.5v8.5H4z', training: 'M4 5h6a3 3 0 0 1 2 3v12a3 3 0 0 0-2-1H4zM20 5h-6a3 3 0 0 0-2 3v12a3 3 0 0 1 2-1h6z', updates: 'M12 4v8l4 2M4 12a8 8 0 1 0 2.3-5.7L4 8M4 4v4h4', feedback: 'M5 5h14v10H9l-4 4z', admin: 'M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7z', team: 'M16 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M17 11a3 3 0 0 0-1-5.8M21 20v-2a4 4 0 0 0-2.7-3.8', usage: 'M5 20V10M12 20V4M19 20v-7', feedback_queue: 'M5 4h14v16H5zM8 9h8M8 13h6', documentation: 'M6 3h9l3 3v15H6zM9 10h6M9 14h6M9 18h4M15 3v4h4' }; return <svg data-testid="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d={paths[type] || paths.feedback} /></svg> }
 
 export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, currentView = 'navigator', onNavigate = () => {}, onFeedback, reportContext = {} }) {
   const [open, setOpen] = useState(false)
@@ -21,6 +22,8 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   const [profileError, setProfileError] = useState('')
   const [profileErrorField, setProfileErrorField] = useState('')
   const [passwordSaving, setPasswordSaving] = useState(false)
+  const [documentationOpen, setDocumentationOpen] = useState(false)
+  const [documentationMinimized, setDocumentationMinimized] = useState(false)
   const [compactNav, setCompactNav] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 800)
   const profileDialogRef = useRef(null)
   const menuToggleRef = useRef(null)
@@ -119,7 +122,19 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     >
       <div>
         <p className="sidebar-label">Support workspace</p>
-        <nav aria-label="Primary navigation">{visibleLinks.map(([id, label]) => <button key={id} aria-current={currentView === id ? 'page' : undefined} className={currentView === id ? 'active' : ''} onClick={() => { onNavigate(id); closeNavigation() }}><Icon type={id} /><span>{label}</span></button>)}</nav>
+        <nav aria-label="Primary navigation">{visibleLinks.map(([id, label, kind]) => kind === 'tool'
+          ? <button
+              key={id}
+              type="button"
+              aria-pressed={documentationOpen}
+              className={documentationOpen ? 'tool-open' : ''}
+              onClick={() => {
+                setDocumentationOpen(true)
+                setDocumentationMinimized(false)
+                closeNavigation()
+              }}
+            ><Icon type={id} /><span>{label}</span></button>
+          : <button key={id} aria-current={currentView === id ? 'page' : undefined} className={currentView === id ? 'active' : ''} onClick={() => { onNavigate(id); closeNavigation() }}><Icon type={id} /><span>{label}</span></button>)}</nav>
       </div>
       <div className="sidebar-footer">
         <div className="console-meta-mini" aria-label="Console metadata">
@@ -133,6 +148,16 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     </aside>
 
     <main className="app-main">{children}</main>
+
+    <CallDocumentation
+      open={documentationOpen}
+      minimized={documentationMinimized}
+      onMinimize={() => setDocumentationMinimized(value => !value)}
+      onClose={() => {
+        setDocumentationOpen(false)
+        setDocumentationMinimized(false)
+      }}
+    />
 
     <GlobalFeedbackButton currentView={currentView} reportContext={reportContext} onSubmit={onFeedback} />
 
