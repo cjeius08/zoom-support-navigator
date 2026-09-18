@@ -118,6 +118,7 @@ export async function loadReadinessReport() {
     loadReadinessAdminReport(READINESS_QUESTION_SETS.generalScenarios),
     loadReadinessAdminReport(READINESS_QUESTION_SETS.deviceNavigation),
     loadReadinessAdminReport(READINESS_QUESTION_SETS.troubleshootingJudgment),
+    loadReadinessAdminReport(READINESS_QUESTION_SETS.scopeReferralJudgment),
   ])
 
   return {
@@ -125,6 +126,7 @@ export async function loadReadinessReport() {
       { id: 'foundation-call-flow', number: 1, title: 'General Zoom Scenarios', ...parts[0] },
       { id: 'device-navigation', number: 2, title: 'Device & Navigation Awareness', ...parts[1] },
       { id: 'troubleshooting-judgment', number: 3, title: 'Troubleshooting Judgment', ...parts[2] },
+      { id: 'scope-referral', number: 4, title: 'Scope & Referral Judgment', ...parts[3] },
     ],
   }
 }
