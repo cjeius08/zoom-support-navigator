@@ -652,7 +652,7 @@ export const COMMON_ISSUE_ROUTES = [
     classification: 'Active-meeting invitation request',
     classificationNote: 'Use the actual invitation/link shown by Zoom or supplied by the organizer. Technical support can explain where the control is, but cannot decide who is authorized to join the proceeding.',
     searchPhrases: [
-      'invite someone', 'invite participant', 'copy invite link', 'copy invitation', 'send zoom link',
+      'invite someone', 'invite person', 'invite participant', 'copy invite link', 'copy invitation', 'send zoom link',
       'how do i invite someone', 'bring someone into meeting', 'meeting invitation', 'invite another participant',
     ],
     confirm: [
