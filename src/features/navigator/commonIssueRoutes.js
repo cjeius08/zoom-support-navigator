@@ -1145,7 +1145,16 @@ export const COMMON_ISSUE_ROUTES = [
       url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0057961',
     },
     supportingSources: [],
-    visuals: [],
+    visuals: [
+      {
+        title: 'Choose and save specific audio input channels',
+        src: 'assets/visual-references/multiple-audio-input-channels.svg',
+        alt: 'Source-verified Zoom visual guide showing Audio settings, Use specific audio input channels, Audio input channels, channel checkboxes, and Save',
+        note: 'The channel controls appear only when Zoom detects an eligible input device with 3 or more channels. Select one or more channels, then Save before testing.',
+        sourceLabel: 'Guide verified against current Zoom Support — Managing multiple audio channels',
+        sourceUrl: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0057961',
+      },
+    ],
   },
   {
     id: 'participants-before-join',
@@ -1195,7 +1204,16 @@ export const COMMON_ISSUE_ROUTES = [
       url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0083311',
     },
     supportingSources: [],
-    visuals: [],
+    visuals: [
+      {
+        title: 'See who has already joined before you enter',
+        src: 'assets/visual-references/participants-before-join.svg',
+        alt: 'Source-verified Zoom visual guide showing joined participants under Host on Home and under Invitees in Zoom Calendar before joining',
+        note: 'Use Home or Calendar only after confirming the account, Zoom Calendar, and calendar-integration requirements. A missing participant preview does not prove the meeting is empty.',
+        sourceLabel: 'Guide verified against current Zoom Support — Viewing participants already in a meeting before joining',
+        sourceUrl: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0083311',
+      },
+    ],
   },
 ]
 
