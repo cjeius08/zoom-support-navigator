@@ -16,6 +16,7 @@ vi.mock('../../lib/readinessApi', () => readinessMocks)
 const DEVICE_QUESTION_SET = 'zoom_device_navigation_v1'
 const TROUBLESHOOTING_QUESTION_SET = 'zoom_troubleshooting_judgment_v1'
 const SCOPE_QUESTION_SET = 'zoom_scope_referral_judgment_v1'
+const LIVE_CALL_QUESTION_SET = 'zoom_live_call_readiness_v1'
 
 const QUESTIONS = [
   {
@@ -172,6 +173,35 @@ const SCOPE_QUESTIONS = [
   })),
 ]
 
+const LIVE_CALL_QUESTIONS = [
+  {
+    id: 'listen-before-action',
+    order: 1,
+    type: 'Scenario',
+    prompt: 'A caller opens with a camera problem. What should happen before technical steps?',
+    options: [
+      { id: 'a', text: 'Start changing settings.' },
+      { id: 'b', text: 'Listen, acknowledge, identify context, and probe the visible symptom.' },
+    ],
+    locationLabel: 'Training & Resources',
+    resourceTarget: { view: 'training' },
+    source: 'Live Call Flow · Listen → Identify → Probe',
+  },
+  ...['reassess','resolved-close','managed-permission','documentation'].map((topic, index) => ({
+    id: `${topic}-live-call`,
+    order: index + 2,
+    type: 'Scenario',
+    prompt: `${topic} live-call readiness`,
+    options: [
+      { id: 'a', text: 'Incomplete live-call handling.' },
+      { id: 'b', text: 'Complete live-call handling.' },
+    ],
+    locationLabel: 'Training & Resources',
+    resourceTarget: { view: 'training' },
+    source: `Live Call Readiness · ${topic}`,
+  })),
+]
+
 function answer(questionId, isCorrect = true, selectedOptionId = 'b') {
   return {
     questionId,
@@ -258,7 +288,7 @@ it('shows five readiness parts and the five-question general Zoom scenario set',
   expect(screen.getByRole('tab', { name: /Devices Available now/i })).toBeEnabled()
   expect(screen.getByRole('tab', { name: /Troubleshooting Available now/i })).toBeEnabled()
   expect(screen.getByRole('tab', { name: /Scope Available now/i })).toBeEnabled()
-  expect(screen.getByRole('tab', { name: /Live Call Coming next/i })).toBeDisabled()
+  expect(screen.getByRole('tab', { name: /Live Call Available now/i })).toBeEnabled()
   expect(screen.getByText('Question 1 of 5')).toBeInTheDocument()
   expect(screen.getByText(QUESTIONS[0].prompt)).toBeInTheDocument()
 })
@@ -489,6 +519,53 @@ it('loads Part 4 as a separate persistent scope-and-referral judgment attempt', 
   expect(screen.getByText('Question 1 of 5')).toBeInTheDocument()
   expect(screen.getByText(SCOPE_QUESTIONS[0].prompt)).toBeInTheDocument()
   expect(readinessMocks.getReadinessState).toHaveBeenCalledWith(SCOPE_QUESTION_SET)
+
+  expect(screen.getByText(/exact answer location is intentionally not shown/i)).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Open Training & Resources' }))
+  expect(onOpenResource).toHaveBeenCalledWith({ view: 'training' })
+})
+
+
+it('loads Part 5 as a separate persistent integrated live-call readiness attempt', async () => {
+  const user = userEvent.setup()
+  const onOpenResource = vi.fn()
+  readinessMocks.getReadinessState.mockImplementation((questionSetVersion) => {
+    if (questionSetVersion === LIVE_CALL_QUESTION_SET) {
+      return Promise.resolve(activeState({
+        questionSetVersion: LIVE_CALL_QUESTION_SET,
+        questions: LIVE_CALL_QUESTIONS,
+      }))
+    }
+    if (questionSetVersion === SCOPE_QUESTION_SET) {
+      return Promise.resolve(activeState({
+        questionSetVersion: SCOPE_QUESTION_SET,
+        questions: SCOPE_QUESTIONS,
+      }))
+    }
+    if (questionSetVersion === TROUBLESHOOTING_QUESTION_SET) {
+      return Promise.resolve(activeState({
+        questionSetVersion: TROUBLESHOOTING_QUESTION_SET,
+        questions: TROUBLESHOOTING_QUESTIONS,
+      }))
+    }
+    if (questionSetVersion === DEVICE_QUESTION_SET) {
+      return Promise.resolve(activeState({
+        questionSetVersion: DEVICE_QUESTION_SET,
+        questions: DEVICE_QUESTIONS,
+      }))
+    }
+    return Promise.resolve(activeState())
+  })
+
+  render(<ReadinessLab open onOpenResource={onOpenResource} />)
+  await screen.findByText(QUESTIONS[0].prompt)
+
+  await user.click(screen.getByRole('tab', { name: /Live Call Available now/i }))
+
+  expect(await screen.findByRole('heading', { name: 'Live Call Readiness' })).toBeInTheDocument()
+  expect(screen.getByText('Question 1 of 5')).toBeInTheDocument()
+  expect(screen.getByText(LIVE_CALL_QUESTIONS[0].prompt)).toBeInTheDocument()
+  expect(readinessMocks.getReadinessState).toHaveBeenCalledWith(LIVE_CALL_QUESTION_SET)
 
   expect(screen.getByText(/exact answer location is intentionally not shown/i)).toBeInTheDocument()
   await user.click(screen.getByRole('button', { name: 'Open Training & Resources' }))
