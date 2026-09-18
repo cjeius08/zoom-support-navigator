@@ -175,7 +175,7 @@ describe('post-QA remediation gate', () => {
   })
 
   it('contains a migration that revokes client execution of rls_auto_enable and adds foreign-key indexes', () => {
-    const migration = read('supabase/migrations/202609182100_post_qa_security_performance_hardening.sql')
+    const migration = read('supabase/migrations/20260918004151_post_qa_security_performance_hardening.sql')
     expect(migration).toMatch(/revoke\s+execute\s+on\s+function\s+public\.rls_auto_enable\(\)/i)
     expect(migration).toMatch(/zoom_agent_slots_claimed_by_idx/i)
     expect(migration).toMatch(/zoom_feedback_status_history_changed_by_idx/i)
