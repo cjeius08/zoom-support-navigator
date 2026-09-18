@@ -25,6 +25,7 @@ export function CommonIssueDrawer({
   onOpenProcess,
   onOpenRoute,
   onStatusChange,
+  onTabChange,
   onTrackEvent,
 }) {
   const [tab, setTab] = useState('quick')
@@ -76,6 +77,8 @@ export function CommonIssueDrawer({
 
   function selectTab(id, { focus = false } = {}) {
     setTab(id)
+    const label = TABS.find(([tabId]) => tabId === id)?.[1] || id
+    onTabChange?.(label)
     onTrackEvent?.({
       eventType: 'tool_open',
       routeId: 'navigator',
