@@ -1,93 +1,288 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { expect, it, vi } from 'vitest'
+import { beforeEach, expect, it, vi } from 'vitest'
 import { ReadinessLab } from './ReadinessLab'
-import { FOUNDATION_QUESTIONS, READINESS_PARTS } from './readinessLabData'
+import { READINESS_PARTS } from './readinessLabData'
 
-it('shows the five-part readiness path while keeping only Part 1 interactive in Batch 3A', () => {
-  render(<ReadinessLab open />)
+const loadReadinessState = vi.fn()
+const startOrResumeReadinessAttempt = vi.fn()
+const checkReadinessAnswer = vi.fn()
+const submitReadinessAttempt = vi.fn()
 
-  expect(READINESS_PARTS).toHaveLength(5)
-  expect(screen.getByRole('heading', { name: 'Readiness Lab' })).toBeInTheDocument()
-  expect(screen.getByText(/Open-book by design/i)).toBeInTheDocument()
+vi.mock('../../lib/readinessApi', () => ({
+  loadReadinessState,
+  startOrResumeReadinessAttempt,
+  checkReadinessAnswer,
+  submitReadinessAttempt,
+}))
 
-  const tabs = screen.getAllByRole('tab')
-  expect(tabs).toHaveLength(5)
-  expect(screen.getByRole('tab', { name: /Call Flow Available now/i })).toHaveAttribute('aria-selected', 'true')
-  expect(screen.getByRole('tab', { name: /Devices Coming next/i })).toBeDisabled()
-  expect(screen.getByRole('tab', { name: /Troubleshooting Coming next/i })).toBeDisabled()
-  expect(screen.getByRole('tab', { name: /Scope Coming next/i })).toBeDisabled()
-  expect(screen.getByRole('tab', { name: /Live Call Coming next/i })).toBeDisabled()
+const questions = [
+  {
+    id: 'join-exact-state',
+    order: 1,
+    type: 'Scenario',
+    prompt: 'A Zoom user says, “I can’t get into the meeting.” What is the best first move?',
+    options: [
+      { id: 'a', text: 'Restart immediately.' },
+      { id: 'b', text: 'Ask what exact Zoom screen or message appears before choosing the route.' },
+      { id: 'c', text: 'Check the microphone.' },
+      { id: 'd', text: 'Contact the host immediately.' },
+    ],
+    locationLabel: 'Scenario Scripts → Can’t Join',
+    resourceTarget: { view: 'training', section: 'scripts', mode: 'scenarios', scenario: 'cant-join' },
+    source: 'Scripts & Communication · Can’t Join',
+  },
+  {
+    id: 'cant-hear-output',
+    order: 2,
+    type: 'Scenario',
+    prompt: 'A user is already inside a Zoom meeting but cannot hear anyone.',
+    options: [{ id: 'a', text: 'Check speaker/output.' }, { id: 'b', text: 'Check microphone.' }],
+    locationLabel: 'Scenario Scripts → Can’t Hear',
+    resourceTarget: { view: 'training', section: 'scripts', mode: 'scenarios', scenario: 'cant-hear' },
+    source: 'Scripts & Communication · Can’t Hear',
+  },
+  {
+    id: 'cant-be-heard-input',
+    order: 3,
+    type: 'Scenario',
+    prompt: 'Other participants cannot hear the Zoom user.',
+    options: [{ id: 'a', text: 'Check speaker.' }, { id: 'b', text: 'Check microphone/input.' }],
+    locationLabel: 'Scenario Scripts → They Can’t Hear Me',
+    resourceTarget: { view: 'training', section: 'scripts', mode: 'scenarios', scenario: 'cant-be-heard' },
+    source: 'Scripts & Communication · They Can’t Hear Me',
+  },
+  {
+    id: 'camera-state',
+    order: 4,
+    type: 'Scenario',
+    prompt: 'A Zoom user says their camera is not working.',
+    options: [{ id: 'a', text: 'Determine whether video is off or the camera has no image.' }, { id: 'b', text: 'Check audio.' }],
+    locationLabel: 'Scenario Scripts → Camera',
+    resourceTarget: { view: 'training', section: 'scripts', mode: 'scenarios', scenario: 'camera-not-working' },
+    source: 'Scripts & Communication · Camera',
+  },
+  {
+    id: 'screen-share-control',
+    order: 5,
+    type: 'Scenario',
+    prompt: 'A Zoom user cannot share their screen.',
+    options: [{ id: 'a', text: 'Reinstall Zoom.' }, { id: 'b', text: 'Determine what happens and whether sharing is host-controlled.' }],
+    locationLabel: 'Scenario Scripts → Screen Share',
+    resourceTarget: { view: 'training', section: 'scripts', mode: 'scenarios', scenario: 'cant-share' },
+    source: 'Scripts & Communication · Screen Share',
+  },
+]
+
+function activeState(answers = [], attemptNumber = 1, attempts = null) {
+  return {
+    questionSetVersion: 'zoom_general_scenarios_v1',
+    maxAttempts: 3,
+    questions,
+    attempts: attempts || [{
+      id: `attempt-${attemptNumber}`,
+      attemptNumber,
+      status: 'active',
+      score: null,
+      totalQuestions: 5,
+      checkedCount: answers.length,
+      startedAt: '2026-09-19T00:00:00Z',
+      submittedAt: null,
+    }],
+    activeAttempt: {
+      id: `attempt-${attemptNumber}`,
+      attemptNumber,
+      status: 'active',
+      score: null,
+      totalQuestions: 5,
+      answers,
+    },
+  }
+}
+
+const checkedAnswer = {
+  questionId: 'join-exact-state',
+  selectedOptionId: 'a',
+  isCorrect: false,
+  correctOptionId: 'b',
+  explanation: 'Use the exact Zoom state before choosing the route.',
+  checkedAt: '2026-09-19T00:01:00Z',
+}
+
+beforeEach(() => {
+  loadReadinessState.mockReset()
+  startOrResumeReadinessAttempt.mockReset()
+  checkReadinessAnswer.mockReset()
+  submitReadinessAttempt.mockReset()
+  loadReadinessState.mockResolvedValue(activeState())
 })
 
-it('scores the first checked answer and preserves it when moving between questions', async () => {
-  const user = userEvent.setup()
+it('uses five general Zoom scenarios without hearing or proceeding assumptions', async () => {
   render(<ReadinessLab open />)
 
-  expect(screen.getByText('Question 1 of 4')).toBeInTheDocument()
-  const correct = screen.getByRole('radio', { name: /Let the caller explain the concern/i })
-  await user.click(correct)
+  expect(await screen.findByRole('heading', { name: 'General Zoom Scenarios' })).toBeInTheDocument()
+  expect(READINESS_PARTS).toHaveLength(5)
+  expect(screen.getByText('Question 1 of 5')).toBeInTheDocument()
+  expect(screen.getByText(/can’t get into the meeting/i)).toBeInTheDocument()
+  expect(screen.queryByText(/hearing/i)).not.toBeInTheDocument()
+  expect(screen.queryByText(/arbitration/i)).not.toBeInTheDocument()
+  expect(screen.queryByText(/proceeding/i)).not.toBeInTheDocument()
+})
+
+it('creates Attempt 1 only when there is no saved attempt and then resumes server state', async () => {
+  loadReadinessState.mockResolvedValueOnce({
+    questionSetVersion: 'zoom_general_scenarios_v1',
+    maxAttempts: 3,
+    questions,
+    attempts: [],
+    activeAttempt: null,
+  })
+  startOrResumeReadinessAttempt.mockResolvedValueOnce(activeState())
+
+  render(<ReadinessLab open />)
+
+  expect(await screen.findByText('Attempt 1 progress')).toBeInTheDocument()
+  expect(startOrResumeReadinessAttempt).toHaveBeenCalledTimes(1)
+  expect(screen.getByText('0/5 checked')).toBeInTheDocument()
+})
+
+it('server-locks a checked wrong answer and restores it after close and reopen', async () => {
+  const user = userEvent.setup()
+  loadReadinessState
+    .mockResolvedValueOnce(activeState())
+    .mockResolvedValueOnce(activeState([checkedAnswer]))
+    .mockResolvedValueOnce(activeState([checkedAnswer]))
+  checkReadinessAnswer.mockResolvedValueOnce({ ...checkedAnswer, checkedCount: 1, locked: true })
+
+  const { rerender } = render(<ReadinessLab open />)
+  const wrong = await screen.findByRole('radio', { name: /Restart immediately/i })
+  await user.click(wrong)
   await user.click(screen.getByRole('button', { name: 'Check answer' }))
 
-  expect(screen.getByText('Correct')).toBeInTheDocument()
-  expect(screen.getByText(/Good judgment/i)).toBeInTheDocument()
-  expect(correct).toBeDisabled()
-  expect(screen.getByText('1/4 checked')).toBeInTheDocument()
+  expect(checkReadinessAnswer).toHaveBeenCalledWith({
+    attemptId: 'attempt-1',
+    questionId: 'join-exact-state',
+    selectedOptionId: 'a',
+  })
+  expect(await screen.findByText('Review this')).toBeInTheDocument()
+  expect(screen.getByText('1/5 checked')).toBeInTheDocument()
+  expect(screen.getByRole('radio', { name: /Restart immediately/i })).toBeDisabled()
 
-  await user.click(screen.getByRole('button', { name: 'Next' }))
-  expect(screen.getByText('Question 2 of 4')).toBeInTheDocument()
-  await user.click(screen.getByRole('button', { name: 'Previous' }))
+  rerender(<ReadinessLab open={false} />)
+  rerender(<ReadinessLab open />)
 
-  expect(correct).toHaveAttribute('aria-checked', 'true')
-  expect(screen.getByText('Correct')).toBeInTheDocument()
+  expect(await screen.findByText('Review this')).toBeInTheDocument()
+  expect(screen.getByRole('radio', { name: /Restart immediately/i })).toHaveAttribute('aria-checked', 'true')
+  expect(screen.getByRole('radio', { name: /Restart immediately/i })).toBeDisabled()
+  expect(screen.getByText('1/5 checked')).toBeInTheDocument()
 })
 
-it('keeps Find in Workspace separate from answering and opens the exact source location', async () => {
+it('greys out Reset / New Attempt until the current attempt is submitted', async () => {
+  render(<ReadinessLab open />)
+
+  const reset = await screen.findByRole('button', { name: 'Reset / New Attempt' })
+  expect(reset).toBeDisabled()
+  expect(screen.getByText(/Finish all 5 questions and submit first/i)).toBeInTheDocument()
+})
+
+it('keeps Find in Workspace open-book while preserving the active attempt', async () => {
   const user = userEvent.setup()
   const onOpenResource = vi.fn()
   render(<ReadinessLab open onOpenResource={onOpenResource} />)
 
+  await screen.findByText('Question 1 of 5')
   await user.click(screen.getByRole('button', { name: 'Find in Workspace' }))
 
   expect(onOpenResource).toHaveBeenCalledWith({
     view: 'training',
     section: 'scripts',
-    mode: 'language',
-    subsection: 'listen',
+    mode: 'scenarios',
+    scenario: 'cant-join',
   })
-  expect(screen.getByText('Question 1 of 4')).toBeInTheDocument()
-  expect(screen.getByRole('button', { name: 'Check answer' })).toBeDisabled()
+  expect(screen.getByText('Attempt 1 progress')).toBeInTheDocument()
 })
 
-it('shows a Part 1 result after all four first attempts are checked', async () => {
-  const user = userEvent.setup()
+it('requires all five locked answers before Submit Attempt becomes available', async () => {
+  loadReadinessState.mockResolvedValueOnce(activeState([
+    checkedAnswer,
+    { questionId: 'cant-hear-output', selectedOptionId: 'a', isCorrect: true, correctOptionId: 'a', explanation: 'Output.', checkedAt: 'x' },
+    { questionId: 'cant-be-heard-input', selectedOptionId: 'b', isCorrect: true, correctOptionId: 'b', explanation: 'Input.', checkedAt: 'x' },
+    { questionId: 'camera-state', selectedOptionId: 'a', isCorrect: true, correctOptionId: 'a', explanation: 'Camera state.', checkedAt: 'x' },
+    { questionId: 'screen-share-control', selectedOptionId: 'b', isCorrect: true, correctOptionId: 'b', explanation: 'Share state.', checkedAt: 'x' },
+  ]))
+
   render(<ReadinessLab open />)
 
-  for (let index = 0; index < FOUNDATION_QUESTIONS.length; index += 1) {
-    const question = FOUNDATION_QUESTIONS[index]
-    const correctOption = question.options.find(option => option.id === question.correctOptionId)
-    await user.click(screen.getByRole('radio', { name: new RegExp(correctOption.text.replace(/[.*+?^$()|[\]\\]/g, '\\$&'), 'i') }))
-    await user.click(screen.getByRole('button', { name: 'Check answer' }))
-    if (index < FOUNDATION_QUESTIONS.length - 1) {
-      await user.click(screen.getByRole('button', { name: 'Next' }))
-    }
-  }
-
-  const result = screen.getByText('Part 1 complete').closest('section')
-  expect(within(result).getByRole('heading', { name: '4/4 first-attempt answers correct' })).toBeInTheDocument()
-  expect(within(result).getByRole('button', { name: 'Restart Part 1' })).toBeInTheDocument()
+  expect(await screen.findByText('5/5 checked')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Submit Attempt 1' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Reset / New Attempt' })).toBeDisabled()
 })
 
-it('renders a compact minimized state without losing completed progress', async () => {
+it('records the submitted score permanently before offering Attempt 2', async () => {
   const user = userEvent.setup()
+  const allAnswers = [
+    checkedAnswer,
+    { questionId: 'cant-hear-output', selectedOptionId: 'a', isCorrect: true, correctOptionId: 'a', explanation: 'Output.', checkedAt: 'x' },
+    { questionId: 'cant-be-heard-input', selectedOptionId: 'b', isCorrect: true, correctOptionId: 'b', explanation: 'Input.', checkedAt: 'x' },
+    { questionId: 'camera-state', selectedOptionId: 'a', isCorrect: true, correctOptionId: 'a', explanation: 'Camera state.', checkedAt: 'x' },
+    { questionId: 'screen-share-control', selectedOptionId: 'b', isCorrect: true, correctOptionId: 'b', explanation: 'Share state.', checkedAt: 'x' },
+  ]
+  loadReadinessState
+    .mockResolvedValueOnce(activeState(allAnswers))
+    .mockResolvedValueOnce({
+      questionSetVersion: 'zoom_general_scenarios_v1',
+      maxAttempts: 3,
+      questions,
+      attempts: [{
+        id: 'attempt-1',
+        attemptNumber: 1,
+        status: 'submitted',
+        score: 4,
+        totalQuestions: 5,
+        checkedCount: 5,
+        submittedAt: '2026-09-19T00:05:00Z',
+      }],
+      activeAttempt: null,
+    })
+  submitReadinessAttempt.mockResolvedValueOnce({ id: 'attempt-1', attemptNumber: 1, status: 'submitted', score: 4, totalQuestions: 5 })
+
+  render(<ReadinessLab open />)
+  await user.click(await screen.findByRole('button', { name: 'Submit Attempt 1' }))
+
+  expect(submitReadinessAttempt).toHaveBeenCalledWith('attempt-1')
+  expect(await screen.findByRole('heading', { name: '4/5 final score' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Start Attempt 2' })).toBeInTheDocument()
+  expect(screen.getByText(/will not overwrite it/i)).toBeInTheDocument()
+})
+
+it('locks new attempts after all three attempts are recorded', async () => {
+  loadReadinessState.mockResolvedValueOnce({
+    questionSetVersion: 'zoom_general_scenarios_v1',
+    maxAttempts: 3,
+    questions,
+    attempts: [1, 2, 3].map(number => ({
+      id: `attempt-${number}`,
+      attemptNumber: number,
+      status: 'submitted',
+      score: number + 1,
+      totalQuestions: 5,
+      checkedCount: 5,
+      submittedAt: '2026-09-19T00:05:00Z',
+    })),
+    activeAttempt: null,
+  })
+
+  render(<ReadinessLab open />)
+
+  expect(await screen.findByText('3 attempts completed')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: '3 attempts used' })).toBeDisabled()
+  expect(screen.getByText('3/3 attempts started')).toBeInTheDocument()
+})
+
+it('renders minimized saved progress from the server-backed attempt', async () => {
   const onMinimize = vi.fn()
-  const { rerender } = render(<ReadinessLab open onMinimize={onMinimize} />)
+  loadReadinessState.mockResolvedValueOnce(activeState([checkedAnswer]))
+  render(<ReadinessLab open minimized onMinimize={onMinimize} />)
 
-  await user.click(screen.getByRole('radio', { name: /Let the caller explain the concern/i }))
-  await user.click(screen.getByRole('button', { name: 'Check answer' }))
-  await user.click(screen.getByRole('button', { name: 'Minimize Readiness Lab' }))
-  expect(onMinimize).toHaveBeenCalled()
-
-  rerender(<ReadinessLab open minimized onMinimize={onMinimize} />)
-  expect(screen.getByLabelText('Readiness Lab minimized')).toHaveTextContent('Part 1 · 1/4 checked')
+  expect(await screen.findByLabelText('Readiness Lab minimized')).toHaveTextContent('Attempt 1 · 1/5 checked')
 })
