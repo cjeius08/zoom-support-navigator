@@ -118,3 +118,12 @@ it('emits only identifier-based analytics events for support interactions', asyn
   expect(copyEvent).not.toHaveProperty('searchQuery')
   expect(copyEvent).not.toHaveProperty('clipboard')
 })
+
+
+it('shows the Core Live Call Flow before the process library', () => {
+  render(<Navigator />)
+  const liveFlow = screen.getByRole('region', { name: 'Core Live Call Flow' })
+  const search = screen.getByRole('combobox', { name: 'Search support processes' })
+  expect(liveFlow).toBeInTheDocument()
+  expect(liveFlow.compareDocumentPosition(search) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+})
