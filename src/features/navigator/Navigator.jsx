@@ -35,10 +35,6 @@ function CategoryIcon({ type }) {
   return <span className={`category-icon category-icon-${type}`} data-testid="category-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d={categoryIconPaths[type]} /></svg></span>
 }
 
-function categoryLabel(id) {
-  return categories.find(([categoryId]) => categoryId === id)?.[1] ?? id
-}
-
 export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialProcessId = null }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
