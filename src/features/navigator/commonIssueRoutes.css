@@ -280,6 +280,10 @@
   background: rgba(255,255,255,.025);
 }
 
+.common-issue-visual-grid figure:only-child {
+  grid-column: 1 / -1;
+}
+
 .common-issue-visual-frame {
   display: grid;
   place-items: center;
@@ -289,8 +293,9 @@
 }
 
 .common-issue-visual-frame img {
-  max-width: min(12rem, 80%);
-  max-height: 6rem;
+  display: block;
+  max-width: 100%;
+  max-height: 30rem;
   object-fit: contain;
 }
 
@@ -304,6 +309,14 @@
   color: #9eb1bf;
   font-size: .78rem;
   line-height: 1.4;
+}
+
+.common-issue-visual-grid figcaption a {
+  width: fit-content;
+  margin-top: .15rem;
+  color: #91ceff;
+  font-size: .74rem;
+  line-height: 1.35;
 }
 
 .common-issue-empty a,
