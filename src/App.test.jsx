@@ -11,6 +11,16 @@ describe('application access gate', () => {
     expect(screen.queryByLabelText('Email')).not.toBeInTheDocument()
   })
 
+  it('associates sign-in validation errors with the first invalid field', async () => {
+    const user = (await import('@testing-library/user-event')).default.setup()
+    render(<App />)
+    await waitFor(() => expect(screen.getByLabelText('Username')).toBeInTheDocument())
+    await user.click(screen.getByRole('button', { name: /Sign In/i }))
+    const username = screen.getByLabelText('Username')
+    expect(username).toHaveAttribute('aria-invalid', 'true')
+    expect(username.getAttribute('aria-describedby')).toBeTruthy()
+  })
+
   it('provides icon inputs and a password visibility control', async () => {
     render(<App />)
     await waitFor(() => expect(screen.getByLabelText('Username')).toBeInTheDocument())
