@@ -102,7 +102,7 @@ it('routes meeting-control language to the reviewed Common Issue first', async (
 
 it.each([
   ['cant share', 'Can’t share my screen', /Sharing Your Screen, Desktop, or Content in Zoom/i],
-  ['cant find chat', 'Can’t find chat \/ can’t send a message', /Chatting in a Zoom Meeting/i],
+  ['cant find chat', 'Can’t find chat / can’t send a message', /Chatting in a Zoom Meeting/i],
   ['find a meeting control', 'Can’t find a meeting control', /Using Participant Controls in a Zoom Meeting|Zoom Meeting Controls & Icons/i],
 ])('shows Common Issues before Process Guides for %s', async (query, routeTitle, processTitle) => {
   const user = userEvent.setup()
