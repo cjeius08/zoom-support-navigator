@@ -4,6 +4,7 @@ import { FeedbackForm } from '../feedback/FeedbackForm'
 import { ProcessDrawer } from './ProcessDrawer'
 import { searchProcesses } from './smartSearch'
 import { useDialogFocus } from '../../lib/useDialogFocus'
+import { LiveCallFlow } from './LiveCallFlow'
 
 const categories = [
   ['join', 'Joining Meetings', 'Links, waiting rooms, access errors'],
@@ -116,6 +117,7 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
   }
 
   return <section className="navigator" id="navigator" aria-label="Support Navigator">
+    <LiveCallFlow />
     <section className="hero">
       <div className="hero-kicker"><span className="status-dot" /> Support process workspace</div>
       <h1>Find the next step <em>without opening documents.</em></h1>
@@ -159,7 +161,6 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
       </div>
       <span className="sr-only" role="status" aria-live="polite">{query.trim() ? `${searchMatches.length} matching support ${searchMatches.length === 1 ? 'process' : 'processes'}.` : ''}</span>
     </section>
-    <section className="agent-workflow" aria-labelledby="workflow-title"><div><p className="eyebrow">Support workflow</p><h2 id="workflow-title">Locate → Describe → Guide → Confirm</h2></div><ol>{[['Locate','Find the exact issue'],['Describe','Explain the control'],['Guide','Give one step at a time'],['Confirm','Verify the result']].map(([title,text],index)=><li key={title}><span>{index+1}</span><div><strong>{title}</strong><small>{text}</small></div></li>)}</ol></section>
     <div className="navigator-entry-grid"><section><p className="eyebrow">Start here</p><h2>What does the customer need?</h2><div className="category-grid">{categories.map(([id,name,description])=><button key={id} onClick={()=>{setCategory(id);setQuery('');setSuggestionsOpen(false);setActiveSuggestion(-1);onTrackEvent?.({eventType:'category_open',routeId:'navigator',categoryId:id})}}><CategoryIcon type={id} /><strong>{name}</strong><span>{description}</span></button>)}</div></section><section className="common-issues"><p className="eyebrow">Fastest routes</p><h2>Common Issues</h2><div>{commonIssues.map(([label,id])=><button key={id} onClick={()=>openProcess(PROCESSES.find(process=>process.id===id),'common_issue')}>{label}<span>→</span></button>)}</div></section></div>
     {visible.length>0&&<section id="search-results" aria-live="polite"><h2>{query?`Results for “${query}”`:categories.find(c=>c[0]===category)?.[1]}</h2><div className="process-grid">{visible.map(process=><button className="process-card" key={process.id} onClick={()=>openProcess(process,'process_card')}><small>{process.category}</small><strong>{process.title}</strong><span>{process.purpose}</span><div className="process-meta">{process.images?.length>0&&<span>{process.images.length} source {process.images.length===1?'page':'pages'}</span>}{process.visualReferences?.length>0&&<span>{process.visualReferences.length} Zoom {process.visualReferences.length===1?'visual':'visuals'}</span>}</div><b>Open process →</b></button>)}</div></section>}
     <button type="button" className="feedback-fab" onClick={()=>setFeedbackOpen(true)}>Report an issue</button>
