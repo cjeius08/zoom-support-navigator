@@ -24,6 +24,97 @@ export const AUTHORITY_STATUS = [
   { id: 'unsure', label: 'Not sure whether the caller is authorized' },
 ]
 
+export const REFERRAL_ROADBLOCKS = [
+  {
+    id: 'waiting-room',
+    label: 'Waiting Room admission',
+    categories: ['host'],
+    contact: 'Meeting host, meeting organizer, or contact listed in the meeting invitation',
+    boundary: 'Confirm the meeting information and explain the Waiting Room. The agent cannot admit the participant.',
+    language: 'You appear to be in the Waiting Room. Admission is controlled by the meeting host. Please remain in the Waiting Room or contact the meeting organizer if you need additional assistance.',
+  },
+  {
+    id: 'host-permission',
+    label: 'Host-controlled feature or permission',
+    categories: ['host'],
+    contact: 'Meeting host or organizer',
+    boundary: 'Complete basic checks. Do not attempt to bypass host restrictions.',
+    language: 'Your Zoom application appears to be working, but this feature may be controlled by the meeting host. Please contact the host or meeting organizer for assistance with that permission.',
+  },
+  {
+    id: 'meeting-details',
+    label: 'Incorrect or uncertain meeting link, ID, passcode, date, or time',
+    categories: ['host', 'proceeding'],
+    contact: 'Person or organization that sent the invitation / designated arbitration contact',
+    boundary: 'Review only the information the caller received. Do not create, modify, or independently validate proceeding details.',
+    language: 'We’re unable to change or confirm the meeting details provided by the organizer. Please contact the person or organization that sent your invitation to verify the meeting information.',
+  },
+  {
+    id: 'join-unresolved',
+    label: 'Unable to join after approved basic joining troubleshooting',
+    categories: ['basic', 'host', 'device'],
+    contact: 'Meeting organizer / invitation contact; IT or help desk if the issue is device- or network-related',
+    boundary: 'Complete approved joining checks, then stop when the remaining action requires meeting, account, device, or network support.',
+    language: 'We’ve completed the basic joining checks available to us. Please contact the meeting organizer to confirm access, or your IT support team if the issue appears to be related to your device or network.',
+  },
+  {
+    id: 'account-admin',
+    label: 'Zoom account, sign-in, license, role, or administrative permission',
+    categories: ['admin'],
+    contact: 'Organization IT / help desk or Zoom administrator',
+    boundary: 'Do not make administrative or account-level changes.',
+    language: 'This appears to involve your Zoom account or organization-level access. Please contact your organization’s IT help desk or Zoom administrator for additional assistance.',
+  },
+  {
+    id: 'hardware-not-detected',
+    label: 'Microphone, speaker, or camera not recognized by the device itself',
+    categories: ['hardware', 'device'],
+    contact: 'Organization IT / help desk, device support, or hardware provider',
+    boundary: 'Complete basic connection and Zoom device-selection checks. Stop when the device or operating system does not detect the hardware.',
+    language: 'We’ve confirmed that this is no longer limited to a Zoom setting. Please contact your IT or device support team so they can check the hardware or system-level settings.',
+  },
+  {
+    id: 'managed-permission',
+    label: 'Organization-controlled device permission',
+    categories: ['device', 'admin'],
+    contact: 'Organization IT / help desk',
+    boundary: 'Do not bypass managed security, administrator controls, or organization-controlled permissions.',
+    language: 'The setting appears to be controlled by your organization or device administrator. Please contact your IT help desk for assistance changing that permission.',
+  },
+  {
+    id: 'network-security',
+    label: 'Network, firewall, VPN, or managed security restriction',
+    categories: ['device'],
+    contact: 'Organization IT / network support',
+    boundary: 'Perform only approved basic connectivity checks. Do not change organization-managed network or security controls.',
+    language: 'The issue may involve your organization’s network or security settings, which we’re unable to change. Please contact your IT or network support team.',
+  },
+  {
+    id: 'possible-zoom-product',
+    label: 'Possible Zoom product issue after approved basic troubleshooting',
+    categories: ['basic', 'admin'],
+    contact: 'Organization IT / Zoom administrator; they determine whether Zoom Support is needed',
+    boundary: 'Document what was tested. Do not promise or imply a direct Zoom escalation.',
+    language: 'We’ve completed the basic Zoom troubleshooting available to us. Please contact your organization’s IT or Zoom administrator for further assistance. They can determine whether Zoom Support needs to be contacted.',
+  },
+  {
+    id: 'proceeding-decision',
+    label: 'Proceeding continuation, pause, postponement, or rescheduling',
+    categories: ['proceeding'],
+    contact: 'Meeting organizer or designated arbitration contact',
+    boundary: 'Do not make decisions about whether the proceeding should continue, pause, be postponed, or be rescheduled.',
+    language: 'We can assist with the technical Zoom steps, but we’re unable to make decisions regarding the proceeding. Please contact the designated arbitration contact or meeting organizer for guidance.',
+  },
+  {
+    id: 'privacy-policy',
+    label: 'Privacy, recording, confidentiality, AI, or proceeding-policy question',
+    categories: ['proceeding'],
+    contact: 'Meeting organizer or designated arbitration / client contact',
+    boundary: 'Explain where the Zoom control is located, but do not interpret, authorize, or decide whether its use is permitted.',
+    language: 'We can explain where the Zoom control is located, but we’re unable to determine whether its use is permitted for your proceeding. Please contact the designated arbitration contact or meeting organizer for guidance.',
+  },
+]
+
 export function evaluateScope({ category, troubleshooting, authority }) {
   if (troubleshooting === 'resolved') {
     return {
@@ -87,21 +178,61 @@ export function evaluateScope({ category, troubleshooting, authority }) {
   }
 }
 
+export function getReferralRoadblocks({ category, troubleshooting }) {
+  const recommendedIds = new Set()
+
+  for (const roadblock of REFERRAL_ROADBLOCKS) {
+    if (roadblock.categories.includes(category)) recommendedIds.add(roadblock.id)
+  }
+
+  if (troubleshooting === 'exhausted') {
+    recommendedIds.add('join-unresolved')
+    recommendedIds.add('possible-zoom-product')
+  }
+
+  const recommended = REFERRAL_ROADBLOCKS.filter(item => recommendedIds.has(item.id))
+  const other = REFERRAL_ROADBLOCKS.filter(item => !recommendedIds.has(item.id))
+  return { recommended, other }
+}
+
+export function getReferralGuidance(roadblockId) {
+  return REFERRAL_ROADBLOCKS.find(item => item.id === roadblockId) || null
+}
+
 export function ScopeCheck({ open = false, minimized = false, onMinimize = () => {}, onClose = () => {} }) {
   const [answers, setAnswers] = useState({
     category: '',
     troubleshooting: '',
     authority: '',
   })
+  const [roadblockId, setRoadblockId] = useState('')
+  const [copyState, setCopyState] = useState('idle')
 
   const result = useMemo(() => evaluateScope(answers), [answers])
+  const roadblocks = useMemo(() => getReferralRoadblocks(answers), [answers])
+  const referral = useMemo(() => getReferralGuidance(roadblockId), [roadblockId])
 
   function update(key, value) {
     setAnswers(current => ({ ...current, [key]: value }))
+    setRoadblockId('')
+    setCopyState('idle')
   }
 
   function reset() {
     setAnswers({ category: '', troubleshooting: '', authority: '' })
+    setRoadblockId('')
+    setCopyState('idle')
+  }
+
+  async function copyHandoff() {
+    if (!referral) return
+    try {
+      await navigator.clipboard.writeText(referral.language)
+      setCopyState('copied')
+      window.setTimeout(() => setCopyState(current => current === 'copied' ? 'idle' : current), 1600)
+    } catch {
+      setCopyState('failed')
+    }
   }
 
   if (!open) return null
@@ -111,7 +242,7 @@ export function ScopeCheck({ open = false, minimized = false, onMinimize = () =>
       <button type="button" className="documentation-dock-restore" aria-label="Restore Scope Check" onClick={onMinimize}>
         <span>
           <strong>Scope Check</strong>
-          <small>{result.state === 'pending' ? 'Decision not complete' : result.label}</small>
+          <small>{referral ? referral.contact : result.state === 'pending' ? 'Decision not complete' : result.label}</small>
         </span>
         <span aria-hidden="true">▣</span>
       </button>
@@ -122,7 +253,7 @@ export function ScopeCheck({ open = false, minimized = false, onMinimize = () =>
   return <aside className="documentation-dock scope-check-dock" aria-labelledby="scope-check-title">
     <header className="documentation-dock-header">
       <div>
-        <span className="documentation-dock-kicker">Phase 5 · Batch 2 · Live tool</span>
+        <span className="documentation-dock-kicker">Phase 5 · Referral decision + handoff</span>
         <h2 id="scope-check-title">Scope Check</h2>
       </div>
       <div className="documentation-dock-window-actions">
@@ -134,7 +265,7 @@ export function ScopeCheck({ open = false, minimized = false, onMinimize = () =>
     <div className="documentation-dock-body scope-check-body">
       <aside className="scope-key-principle">
         <strong>Key principle</strong>
-        <span>We do not need to fix every issue. Resolve what is within approved scope and recognize when the issue has moved outside that scope.</span>
+        <span>Resolve what is within approved scope. When the remaining action requires outside access or authority, stop and direct the caller to the correct contact.</span>
       </aside>
 
       <section className="scope-question">
@@ -180,9 +311,76 @@ export function ScopeCheck({ open = false, minimized = false, onMinimize = () =>
         <small>{result.reason}</small>
       </section>
 
-      {result.state === 'refer' && <aside className="scope-referral-next">
-        <strong>Next in Batch 3</strong>
-        <span>OGCon will identify the appropriate referral contact and give approved handoff wording. For now, stop the basic troubleshooting and do not invent a contact or promise an escalation.</span>
+      {result.state === 'refer' && <section className="scope-referral-picker" aria-labelledby="scope-roadblock-title">
+        <div className="scope-referral-picker-heading">
+          <span>4</span>
+          <div>
+            <h3 id="scope-roadblock-title">What exact roadblock did you identify?</h3>
+            <p>Choose the closest approved matrix item. This determines who owns the next step and the handoff wording.</p>
+          </div>
+        </div>
+
+        {roadblocks.recommended.length > 0 && <div className="scope-roadblock-group">
+          <strong>Likely matches</strong>
+          <div className="scope-options scope-roadblock-options">
+            {roadblocks.recommended.map(option => <button
+              key={option.id}
+              type="button"
+              aria-pressed={roadblockId === option.id}
+              onClick={() => {
+                setRoadblockId(option.id)
+                setCopyState('idle')
+              }}
+            >{option.label}</button>)}
+          </div>
+        </div>}
+
+        <details className="scope-other-roadblocks">
+          <summary>Show other approved roadblocks</summary>
+          <div className="scope-options scope-roadblock-options">
+            {roadblocks.other.map(option => <button
+              key={option.id}
+              type="button"
+              aria-pressed={roadblockId === option.id}
+              onClick={() => {
+                setRoadblockId(option.id)
+                setCopyState('idle')
+              }}
+            >{option.label}</button>)}
+          </div>
+        </details>
+      </section>}
+
+      {result.state === 'refer' && referral && <section className="scope-handoff-card" aria-live="polite">
+        <div className="scope-handoff-contact">
+          <span>WHO OWNS THE NEXT STEP</span>
+          <strong>{referral.contact}</strong>
+        </div>
+
+        <div className="scope-handoff-boundary">
+          <span>AGENT BOUNDARY</span>
+          <p>{referral.boundary}</p>
+        </div>
+
+        <div className="scope-handoff-language">
+          <span>APPROVED HANDOFF WORDING</span>
+          <blockquote>“{referral.language}”</blockquote>
+          <button type="button" onClick={copyHandoff}>
+            {copyState === 'copied' ? 'Copied handoff wording' : 'Copy handoff wording'}
+          </button>
+          {copyState === 'failed' && <small role="status">Copy failed. Select the wording manually.</small>}
+        </div>
+
+        <div className="scope-handoff-documentation">
+          <span>DOCUMENTATION CONTACT</span>
+          <p>{referral.contact}</p>
+          <small>Enter this contact type in Call Documentation. Do not invent a person’s name, phone number, email address, or support channel.</small>
+        </div>
+      </section>}
+
+      {result.state === 'refer' && !referral && <aside className="scope-referral-next">
+        <strong>Select the exact roadblock before ending the call</strong>
+        <span>Do not guess who should be contacted. Choose the closest approved referral-matrix item above, then use the displayed contact and wording.</span>
       </aside>}
 
       <footer className="scope-check-footer">
