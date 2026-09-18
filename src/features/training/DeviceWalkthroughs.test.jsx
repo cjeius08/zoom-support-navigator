@@ -7,8 +7,8 @@ import { expect, it } from 'vitest'
 import { DeviceWalkthroughs } from './DeviceWalkthroughs'
 import { DEVICE_WALKTHROUGHS, DEVICE_WALKTHROUGH_VERIFIED_AT } from './deviceWalkthroughs'
 
-it('starts Phase 3 with Windows and Mac only', () => {
-  expect(DEVICE_WALKTHROUGHS.map(device => device.id)).toEqual(['windows', 'mac'])
+it('covers Windows, Mac, iPhone, and Android in Phase 3 Batch 2', () => {
+  expect(DEVICE_WALKTHROUGHS.map(device => device.id)).toEqual(['windows', 'mac', 'iphone', 'android'])
   expect(DEVICE_WALKTHROUGH_VERIFIED_AT).toBe('September 18, 2026')
 })
 
@@ -68,4 +68,52 @@ it('shows the visual before each set of optional source links', () => {
   expect(images.length).toBeGreaterThanOrEqual(4)
   expect(links.length).toBeGreaterThanOrEqual(4)
   expect(images[0].compareDocumentPosition(links[0]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+
+it('uses dedicated iPhone visuals and iOS-specific labels', async () => {
+  const user = userEvent.setup()
+  render(<DeviceWalkthroughs />)
+
+  await user.click(screen.getByRole('tab', { name: /iPhone Zoom Workplace mobile app on iOS/i }))
+
+  const panel = screen.getByRole('tabpanel', { name: 'iPhone mobile walkthrough' })
+  expect(within(panel).getByText(/Mute My Microphone/i)).toBeInTheDocument()
+  expect(within(panel).getByRole('heading', { name: /iPhone screen sharing uses Screen Broadcast/i })).toBeInTheDocument()
+  expect(within(panel).getByText(/Start Broadcast/i)).toBeInTheDocument()
+
+  const images = within(panel).getAllByRole('img')
+  expect(images.length).toBeGreaterThanOrEqual(4)
+  for (const image of images) {
+    expect(image.getAttribute('src')).toMatch(/iphone-mobile-(controls|settings)\.svg$/)
+  }
+})
+
+it('uses dedicated Android visuals and Android-specific labels', async () => {
+  const user = userEvent.setup()
+  render(<DeviceWalkthroughs />)
+
+  await user.click(screen.getByRole('tab', { name: /Android Zoom Workplace mobile app on Android/i }))
+
+  const panel = screen.getByRole('tabpanel', { name: 'Android mobile walkthrough' })
+  expect(within(panel).getByText(/Always Mute My Microphone/i)).toBeInTheDocument()
+  expect(within(panel).getByRole('heading', { name: /Android shows a system sharing indicator/i })).toBeInTheDocument()
+  expect(within(panel).getByText(/Permission Manager/i)).toBeInTheDocument()
+
+  const images = within(panel).getAllByRole('img')
+  expect(images.length).toBeGreaterThanOrEqual(4)
+  for (const image of images) {
+    expect(image.getAttribute('src')).toMatch(/android-mobile-(controls|settings)\.svg$/)
+  }
+})
+
+it('keeps iPhone and Android visual assets distinct', () => {
+  const iphone = DEVICE_WALKTHROUGHS.find(device => device.id === 'iphone')
+  const android = DEVICE_WALKTHROUGHS.find(device => device.id === 'android')
+  const iphoneAssets = new Set(iphone.sections.map(section => section.image))
+  const androidAssets = new Set(android.sections.map(section => section.image))
+
+  expect([...iphoneAssets].every(asset => asset.includes('iphone-mobile-'))).toBe(true)
+  expect([...androidAssets].every(asset => asset.includes('android-mobile-'))).toBe(true)
+  expect([...iphoneAssets].some(asset => androidAssets.has(asset))).toBe(false)
+})
+
 })
