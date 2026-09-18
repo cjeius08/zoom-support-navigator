@@ -65,10 +65,12 @@ describe('post-QA remediation gate', () => {
     const process = PROCESSES.find(item => item.id === 'sharing-your-screen-desktop-or-content-in-zoom')
     render(<ProcessDrawer process={process} onClose={() => {}} />)
 
-    expect(screen.getAllByText(/^Step \d+/).length).toBeLessThan(process.text.split('\n').length)
+    const totalSteps = buildCallGuide(process).steps.length
+    expect(document.querySelectorAll('.call-step-card').length).toBeLessThan(totalSteps)
     const showMore = screen.getByRole('button', { name: /Show remaining steps/i })
     expect(showMore).toBeInTheDocument()
     await user.click(showMore)
+    expect(document.querySelectorAll('.call-step-card')).toHaveLength(totalSteps)
     expect(screen.queryByRole('button', { name: /Show remaining steps/i })).not.toBeInTheDocument()
   })
 
