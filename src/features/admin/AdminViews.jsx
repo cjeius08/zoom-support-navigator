@@ -624,7 +624,7 @@ export function UsageAnalytics() {
               {(report?.parts || []).map((part) => (
                 <section className="readiness-report-part" key={part.id} aria-labelledby={`readiness-report-${part.id}`}>
                   <div className="readiness-report-part-heading">
-                    <span>Part {part.id === "foundation-call-flow" ? "1" : "2"}</span>
+                    <span>Part {part.number}</span>
                     <h3 id={`readiness-report-${part.id}`}>{part.title}</h3>
                   </div>
                   <div className="usage-user-list" aria-label={`${part.title} attempts by user`}>
