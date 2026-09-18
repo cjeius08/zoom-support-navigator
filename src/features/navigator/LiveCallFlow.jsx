@@ -60,15 +60,31 @@ function ChoiceGroup({ label, options, value, onChange, className = '' }) {
   </div>
 }
 
-export function LiveCallFlow() {
-  const [device, setDevice] = useState(null)
-  const [role, setRole] = useState(null)
-  const [status, setStatus] = useState(null)
+export function LiveCallFlow({ value, onChange }) {
+  const [internalDevice, setInternalDevice] = useState(null)
+  const [internalRole, setInternalRole] = useState(null)
+  const [internalStatus, setInternalStatus] = useState(null)
+  const controlled = value !== undefined
+  const device = controlled ? value.device : internalDevice
+  const role = controlled ? value.role : internalRole
+  const status = controlled ? value.status : internalStatus
+
+  function updateContext(field, nextValue) {
+    if (!controlled) {
+      if (field === 'device') setInternalDevice(nextValue)
+      if (field === 'role') setInternalRole(nextValue)
+      if (field === 'status') setInternalStatus(nextValue)
+    }
+    onChange?.({ device, role, status, [field]: nextValue })
+  }
 
   function resetCall() {
-    setDevice(null)
-    setRole(null)
-    setStatus(null)
+    if (!controlled) {
+      setInternalDevice(null)
+      setInternalRole(null)
+      setInternalStatus(null)
+    }
+    onChange?.({ device: null, role: null, status: null })
   }
 
   return <section className="live-call-flow" aria-label="Core Live Call Flow">
@@ -82,8 +98,8 @@ export function LiveCallFlow() {
     </div>
 
     <div className="live-call-context" aria-label="Call context">
-      <ChoiceGroup label="Device" options={DEVICES} value={device} onChange={setDevice} />
-      <ChoiceGroup label="Caller role" options={ROLES} value={role} onChange={setRole} />
+      <ChoiceGroup label="Device" options={DEVICES} value={device} onChange={next => updateContext('device', next)} />
+      <ChoiceGroup label="Caller role" options={ROLES} value={role} onChange={next => updateContext('role', next)} />
     </div>
 
     <div className="live-call-table-wrap">
@@ -119,7 +135,7 @@ export function LiveCallFlow() {
         label="Resolution status"
         options={STATUSES}
         value={status}
-        onChange={setStatus}
+        onChange={next => updateContext('status', next)}
         className="live-call-status"
       />
     </div>
