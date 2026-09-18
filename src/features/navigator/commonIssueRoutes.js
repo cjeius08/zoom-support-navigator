@@ -173,6 +173,8 @@ export const COMMON_ISSUE_ROUTES = [
     classificationNote: 'Do not treat this as a speaker problem or a connection problem unless the meeting itself is unstable. First confirm mute state, selected microphone, and microphone access.',
     searchPhrases: [
       'they cant hear me',
+      'they dont hear me',
+      'they do not hear me',
       'nobody can hear me',
       'people cant hear me',
       'mic not working',
