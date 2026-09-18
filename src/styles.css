@@ -1026,6 +1026,172 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   }
 }
 
+/* Phase 5 · Scope Check live tool */
+.scope-check-body {
+  align-content: start;
+}
+.scope-key-principle,
+.scope-referral-next {
+  display: grid;
+  gap: .16rem;
+  padding: .58rem .64rem;
+  border-radius: .62rem;
+}
+.scope-key-principle {
+  border: 1px solid rgba(92, 169, 226, .16);
+  background: rgba(35, 99, 145, .08);
+}
+.scope-key-principle strong,
+.scope-referral-next strong {
+  font-size: .66rem;
+}
+.scope-key-principle strong {
+  color: #9bd5ff;
+}
+.scope-key-principle span,
+.scope-referral-next span {
+  color: #96aab8;
+  font-size: .62rem;
+  line-height: 1.4;
+}
+.scope-question {
+  display: grid;
+  gap: .48rem;
+  padding: .64rem;
+  border: 1px solid rgba(123, 174, 211, .13);
+  border-radius: .7rem;
+  background: rgba(255, 255, 255, .018);
+}
+.scope-question > p {
+  display: flex;
+  align-items: flex-start;
+  gap: .42rem;
+  margin: 0;
+  color: #dceaf2;
+  font-size: .7rem;
+  font-weight: 750;
+  line-height: 1.4;
+}
+.scope-question > p > span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 1.22rem;
+  height: 1.22rem;
+  border-radius: 50%;
+  background: rgba(38, 127, 194, .18);
+  color: #99d4ff;
+  font-size: .6rem;
+}
+.scope-options {
+  display: grid;
+  gap: .38rem;
+}
+.scope-options button {
+  width: 100%;
+  padding: .48rem .55rem;
+  border: 1px solid rgba(112, 164, 202, .15);
+  border-radius: .55rem;
+  background: rgba(5, 13, 19, .48);
+  color: #9fb4c3;
+  font-size: .62rem;
+  line-height: 1.35;
+  text-align: left;
+}
+.scope-options button:hover {
+  border-color: rgba(84, 175, 247, .4);
+  color: #e8f5fd;
+}
+.scope-options button[aria-pressed="true"] {
+  border-color: rgba(83, 169, 239, .56);
+  background: rgba(31, 112, 176, .16);
+  color: #f2f9fd;
+}
+.scope-options button:focus-visible,
+.scope-reset:focus-visible {
+  outline: 2px solid #63b8ff;
+  outline-offset: 2px;
+}
+.scope-decision {
+  display: grid;
+  gap: .25rem;
+  padding: .72rem;
+  border-left: 3px solid rgba(114, 151, 178, .42);
+  border-radius: .32rem .65rem .65rem .32rem;
+  background: rgba(18, 43, 61, .11);
+}
+.scope-decision > span {
+  color: #92aec2;
+  font-size: .58rem;
+  font-weight: 850;
+  letter-spacing: .065em;
+}
+.scope-decision h3 {
+  margin: 0;
+  color: #ecf6fb;
+  font-size: .8rem;
+}
+.scope-decision p,
+.scope-decision small {
+  margin: 0;
+  font-size: .64rem;
+  line-height: 1.42;
+}
+.scope-decision p {
+  color: #afc0ca;
+}
+.scope-decision small {
+  color: #7f96a7;
+}
+.scope-decision-assist {
+  border-left-color: rgba(69, 179, 128, .72);
+  background: rgba(39, 119, 82, .1);
+}
+.scope-decision-assist > span {
+  color: #8dddb0;
+}
+.scope-decision-refer {
+  border-left-color: rgba(225, 152, 76, .78);
+  background: rgba(129, 76, 27, .1);
+}
+.scope-decision-refer > span {
+  color: #efbc7d;
+}
+.scope-decision-resolved {
+  border-left-color: rgba(81, 171, 225, .7);
+  background: rgba(33, 104, 148, .1);
+}
+.scope-decision-resolved > span {
+  color: #9ed7fb;
+}
+.scope-referral-next {
+  border: 1px solid rgba(222, 157, 86, .16);
+  background: rgba(119, 73, 28, .07);
+}
+.scope-referral-next strong {
+  color: #e8b77d;
+}
+.scope-check-footer {
+  display: grid;
+  gap: .42rem;
+  padding: .65rem;
+  border-top: 1px solid rgba(123, 177, 217, .13);
+}
+.scope-reset {
+  width: fit-content;
+  padding: .44rem .58rem;
+  border: 1px solid rgba(117, 165, 201, .18);
+  border-radius: .52rem;
+  background: rgba(255, 255, 255, .025);
+  color: #aac0ce;
+  font-size: .64rem;
+}
+.scope-check-footer small {
+  color: #657d8c;
+  font-size: .56rem;
+  line-height: 1.35;
+}
+
 /* Phase 4 · Scripts & Communication */
 .scripts-communication {
   display: grid;

@@ -3,7 +3,7 @@ import './liveCallFlow.css'
 
 const DEVICES = ['Windows', 'Mac', 'iPhone', 'Android', 'Browser']
 const ROLES = ['Host', 'Participant']
-const STATUSES = ['Resolved', 'Unresolved', 'Escalation Needed']
+const STATUSES = ['Resolved', 'Unresolved', 'Referral Needed']
 
 
 const GUIDANCE_METHOD = [
