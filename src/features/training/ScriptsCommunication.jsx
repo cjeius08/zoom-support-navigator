@@ -263,6 +263,10 @@ export function ScriptsCommunication({ onReportContextChange = () => {}, initial
         </>
       : mode === 'scenarios'
         ? <section className="scenario-scripts-panel" role="tabpanel" aria-label="Scenario scripts">
+            <aside className="scenario-call-flow-note">
+              <strong>Use after the call-flow setup</strong>
+              <p>Complete the opening, listening, empathy, assurance, caller/hearing identification, and initial probing before using a symptom-specific scenario script.</p>
+            </aside>
             <div className="scenario-script-picker" role="tablist" aria-label="Common support scenarios">
               {SCENARIO_SCRIPTS.map(scenario => <button
                 key={scenario.id}
