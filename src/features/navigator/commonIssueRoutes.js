@@ -1,5 +1,7 @@
 import { normalizeSearchText, searchProcesses } from './smartSearch'
 
+export const COMMON_ISSUE_VERIFIED_AT = 'September 18, 2026'
+
 export const COMMON_ISSUE_ROUTES = [
   {
     id: 'cant-join',
@@ -302,10 +304,6 @@ export const COMMON_ISSUE_ROUTES = [
       {
         title: 'Testing your video',
         url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0061836',
-      },
-      {
-        title: 'Zoom frequently asked questions',
-        url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0063407',
       },
     ],
     visuals: [
@@ -656,7 +654,7 @@ export const COMMON_ISSUE_ROUTES = [
     checks: [
       {
         title: 'Open the active-meeting invite controls',
-        instruction: 'Open Participants. Use Invite or the available add/invite control when the caller’s role and meeting allow it.',
+        instruction: 'Open Participants. On mobile, reveal the meeting controls and use Participants wherever it appears; if it is not visible, check More. Then use Invite or the available add-participant control when the caller’s role and meeting allow it.',
         expected: 'Zoom opens the current meeting’s invitation options.',
       },
       {
@@ -686,6 +684,7 @@ export const COMMON_ISSUE_ROUTES = [
       { title: 'Participant controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062674' },
       { title: 'Using host and co-host controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065164' },
     ],
+    discrepancy: 'Current official Zoom Support articles differ on mobile placement of Participants during a meeting: the invitation article shows Participants in the meeting controls toolbar, while the participant-controls article places Participants under More. OGCon therefore tells agents to reveal the mobile controls, use Participants wherever it appears, and check More when it is not visible.',
     visuals: [
       {
         title: 'Start from Participants to invite someone',
