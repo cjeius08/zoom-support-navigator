@@ -1,5 +1,11 @@
-import { useMemo, useState } from 'react'
-import { FOUNDATION_QUESTIONS, READINESS_PARTS } from './readinessLabData'
+import { useEffect, useMemo, useState } from 'react'
+import { READINESS_PARTS } from './readinessLabData'
+import {
+  checkReadinessAnswer,
+  getReadinessState,
+  startOrResumeReadiness,
+  submitReadinessAttempt,
+} from '../../lib/readinessApi'
 
 const ACTIVE_PART_ID = 'foundation-call-flow'
 
@@ -25,11 +31,17 @@ function PartRail({ activePartId, onSelect }) {
   </div>
 }
 
-function ResultBadge({ attempt }) {
-  if (!attempt?.checked) return null
-  return <span className={attempt.correct ? 'readiness-result readiness-result-correct' : 'readiness-result readiness-result-review'}>
-    {attempt.correct ? 'Correct' : 'Review this'}
+function ResultBadge({ answer }) {
+  if (!answer) return null
+  return <span className={answer.isCorrect ? 'readiness-result readiness-result-correct' : 'readiness-result readiness-result-review'}>
+    {answer.isCorrect ? 'Correct' : 'Review this'}
   </span>
+}
+
+function findResumeIndex(questions, answers = []) {
+  const checked = new Set(answers.map(answer => answer.questionId))
+  const firstOpen = questions.findIndex(question => !checked.has(question.id))
+  return firstOpen >= 0 ? firstOpen : Math.max(0, questions.length - 1)
 }
 
 export function ReadinessLab({
@@ -41,65 +53,137 @@ export function ReadinessLab({
 }) {
   const [activePartId, setActivePartId] = useState(ACTIVE_PART_ID)
   const [questionIndex, setQuestionIndex] = useState(0)
-  const [attempts, setAttempts] = useState({})
+  const [state, setState] = useState(null)
+  const [selections, setSelections] = useState({})
+  const [loading, setLoading] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
 
   const activePart = READINESS_PARTS.find(part => part.id === activePartId) ?? READINESS_PARTS[0]
-  const questions = activePartId === ACTIVE_PART_ID ? FOUNDATION_QUESTIONS : []
+  const questions = state?.questions || []
+  const activeAttempt = state?.activeAttempt || null
+  const attempts = state?.attempts || []
+  const maxAttempts = state?.maxAttempts || 3
+  const lastAttempt = attempts.length ? attempts[attempts.length - 1] : null
   const question = questions[questionIndex] ?? questions[0]
+  const answers = activeAttempt?.answers || []
+  const answersByQuestion = useMemo(
+    () => new Map(answers.map(answer => [answer.questionId, answer])),
+    [answers],
+  )
+  const answer = question ? answersByQuestion.get(question.id) : null
+  const selectedOptionId = answer?.selectedOptionId || (question ? selections[question.id] : null)
+  const completedCount = activeAttempt?.answers?.length || 0
+  const attemptComplete = Boolean(activeAttempt && questions.length > 0 && completedCount === questions.length)
+  const submittedCount = attempts.filter(item => item.status === 'submitted').length
+  const exhausted = submittedCount >= maxAttempts && !activeAttempt
 
-  const completedCount = useMemo(
-    () => FOUNDATION_QUESTIONS.filter(item => attempts[item.id]?.checked).length,
-    [attempts],
-  )
-  const score = useMemo(
-    () => FOUNDATION_QUESTIONS.filter(item => attempts[item.id]?.checked && attempts[item.id]?.correct).length,
-    [attempts],
-  )
-  const partComplete = completedCount === FOUNDATION_QUESTIONS.length
+  useEffect(() => {
+    if (!open) return undefined
+    let live = true
+
+    async function load() {
+      setLoading(true)
+      setError('')
+      try {
+        let next = await getReadinessState()
+        if (!next?.activeAttempt && (next?.attempts?.length || 0) === 0) {
+          next = await startOrResumeReadiness()
+        }
+        if (!live) return
+        setState(next)
+        setSelections({})
+        if (next?.activeAttempt) {
+          setQuestionIndex(findResumeIndex(next.questions || [], next.activeAttempt.answers || []))
+        } else {
+          setQuestionIndex(0)
+        }
+      } catch (loadError) {
+        if (live) setError(loadError?.message || 'Could not load Readiness Lab.')
+      } finally {
+        if (live) setLoading(false)
+      }
+    }
+
+    load()
+    return () => { live = false }
+  }, [open])
 
   function selectAnswer(optionId) {
-    if (!question || attempts[question.id]?.checked) return
-    setAttempts(current => ({
-      ...current,
-      [question.id]: { selected: optionId, checked: false, correct: false },
-    }))
+    if (!question || answer || busy) return
+    setSelections(current => ({ ...current, [question.id]: optionId }))
   }
 
-  function checkAnswer() {
-    if (!question) return
-    const attempt = attempts[question.id]
-    if (!attempt?.selected || attempt.checked) return
-    setAttempts(current => ({
-      ...current,
-      [question.id]: {
-        ...attempt,
-        checked: true,
-        correct: attempt.selected === question.correctOptionId,
-      },
-    }))
+  async function checkAnswer() {
+    if (!question || !activeAttempt || !selectedOptionId || answer || busy) return
+    setBusy(true)
+    setError('')
+    try {
+      await checkReadinessAnswer({
+        attemptId: activeAttempt.id,
+        questionId: question.id,
+        selectedOptionId,
+      })
+      const next = await getReadinessState()
+      setState(next)
+    } catch (checkError) {
+      setError(checkError?.message || 'Could not save this answer.')
+    } finally {
+      setBusy(false)
+    }
   }
 
-  function restartPart() {
-    setAttempts({})
-    setQuestionIndex(0)
+  async function submitAttempt() {
+    if (!activeAttempt || !attemptComplete || busy) return
+    setBusy(true)
+    setError('')
+    try {
+      await submitReadinessAttempt(activeAttempt.id)
+      const next = await getReadinessState()
+      setState(next)
+      setSelections({})
+    } catch (submitError) {
+      setError(submitError?.message || 'Could not submit this attempt.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function startNextAttempt() {
+    if (activeAttempt || exhausted || busy) return
+    setBusy(true)
+    setError('')
+    try {
+      const next = await startOrResumeReadiness()
+      setState(next)
+      setSelections({})
+      setQuestionIndex(findResumeIndex(next?.questions || [], next?.activeAttempt?.answers || []))
+    } catch (startError) {
+      setError(startError?.message || 'Could not start the next attempt.')
+    } finally {
+      setBusy(false)
+    }
   }
 
   if (!open) return null
 
   if (minimized) {
+    const miniStatus = activeAttempt
+      ? `Attempt ${activeAttempt.attemptNumber} · ${completedCount}/${questions.length || 5} checked`
+      : lastAttempt?.status === 'submitted'
+        ? `Attempt ${lastAttempt.attemptNumber} complete · ${lastAttempt.score}/${lastAttempt.totalQuestions}`
+        : 'Ready'
     return <aside className="documentation-dock documentation-dock-minimized readiness-lab-minimized" aria-label="Readiness Lab minimized">
       <button type="button" className="documentation-dock-restore" aria-label="Restore Readiness Lab" onClick={onMinimize}>
         <span>
           <strong>Readiness Lab</strong>
-          <small>Part 1 · {completedCount}/{FOUNDATION_QUESTIONS.length} checked</small>
+          <small>{miniStatus}</small>
         </span>
         <span aria-hidden="true">▣</span>
       </button>
       <button type="button" className="documentation-dock-close" aria-label="Close Readiness Lab" onClick={onClose}>×</button>
     </aside>
   }
-
-  const attempt = question ? attempts[question.id] : null
 
   return <aside className="documentation-dock readiness-lab-dock" aria-labelledby="readiness-lab-title">
     <header className="documentation-dock-header">
@@ -116,115 +200,138 @@ export function ReadinessLab({
     <div className="documentation-dock-body readiness-lab-body">
       <aside className="readiness-open-book">
         <strong>Open-book by design</strong>
-        <span>This measures whether you can find and apply the right workspace guidance—not whether you memorized every line. Use Find in Workspace whenever you need it.</span>
+        <span>Five general Zoom scenarios. Every attempt is saved, up to three total attempts. Closing the lab does not erase an unfinished attempt.</span>
       </aside>
 
-      <div className="readiness-progress" aria-label="Readiness Lab progress">
-        <div>
-          <span>Part 1 progress</span>
-          <strong>{completedCount}/{FOUNDATION_QUESTIONS.length} checked</strong>
-        </div>
-        <div className="readiness-progress-track" aria-hidden="true">
-          <i style={{ width: `${(completedCount / FOUNDATION_QUESTIONS.length) * 100}%` }} />
-        </div>
-      </div>
+      {error && <p role="alert">{error}</p>}
+      {loading && <p role="status">Loading saved readiness progress…</p>}
 
-      <PartRail activePartId={activePartId} onSelect={(partId) => {
-        setActivePartId(partId)
-        setQuestionIndex(0)
-      }} />
-
-      <section className="readiness-part-summary" aria-labelledby="readiness-part-title">
-        <div>
-          <span>Part {activePart.number} of {READINESS_PARTS.length}</span>
-          <h3 id="readiness-part-title">{activePart.title}</h3>
-        </div>
-        <p>{activePart.purpose}</p>
-      </section>
-
-      {question && <section className="readiness-question" aria-labelledby="readiness-question-title">
-        <header>
+      {!loading && state && <>
+        <div className="readiness-progress" aria-label="Readiness Lab progress">
           <div>
-            <span>{question.type}</span>
-            <small>Question {questionIndex + 1} of {questions.length}</small>
+            <span>{activeAttempt ? `Attempt ${activeAttempt.attemptNumber} of ${maxAttempts}` : `${submittedCount} of ${maxAttempts} attempts submitted`}</span>
+            <strong>{activeAttempt ? `${completedCount}/${questions.length} checked` : lastAttempt?.status === 'submitted' ? `Latest score ${lastAttempt.score}/${lastAttempt.totalQuestions}` : 'Ready'}</strong>
           </div>
-          <ResultBadge attempt={attempt} />
-        </header>
-
-        <h3 id="readiness-question-title">{question.prompt}</h3>
-
-        <div className="readiness-answer-options" role="radiogroup" aria-label="Answer choices">
-          {question.options.map(option => <button
-            key={option.id}
-            type="button"
-            role="radio"
-            aria-checked={attempt?.selected === option.id}
-            disabled={attempt?.checked}
-            onClick={() => selectAnswer(option.id)}
-          >
-            <span>{option.id.toUpperCase()}</span>
-            <p>{option.text}</p>
-          </button>)}
+          <div className="readiness-progress-track" aria-hidden="true">
+            <i style={{ width: `${activeAttempt && questions.length ? (completedCount / questions.length) * 100 : lastAttempt?.status === 'submitted' ? 100 : 0}%` }} />
+          </div>
         </div>
 
-        <div className="readiness-find-card">
+        <PartRail activePartId={activePartId} onSelect={(partId) => {
+          setActivePartId(partId)
+          setQuestionIndex(0)
+        }} />
+
+        <section className="readiness-part-summary" aria-labelledby="readiness-part-title">
           <div>
-            <span>Find it in the workspace</span>
-            <strong>{question.locationLabel}</strong>
-            <small>Your current question and progress will stay open while you look.</small>
+            <span>Part {activePart.number} of {READINESS_PARTS.length}</span>
+            <h3 id="readiness-part-title">{activePart.title}</h3>
           </div>
-          <button type="button" onClick={() => onOpenResource(question.resourceTarget)}>Find in Workspace</button>
-        </div>
+          <p>{activePart.purpose}</p>
+        </section>
 
-        {!attempt?.checked
-          ? <button
-              type="button"
-              className="readiness-check-answer"
-              disabled={!attempt?.selected}
-              onClick={checkAnswer}
-            >Check answer</button>
-          : <section className={attempt.correct ? 'readiness-feedback readiness-feedback-correct' : 'readiness-feedback readiness-feedback-review'} aria-live="polite">
-              <strong>{attempt.correct ? 'Good judgment.' : 'Review this before moving on.'}</strong>
-              <p>{question.explanation}</p>
-              <small>Source: {question.source}</small>
-            </section>}
-
-        <footer className="readiness-question-nav">
-          <button
-            type="button"
-            disabled={questionIndex === 0}
-            onClick={() => setQuestionIndex(index => Math.max(0, index - 1))}
-          >Previous</button>
-          <span>{questionIndex + 1} / {questions.length}</span>
-          <button
-            type="button"
-            disabled={questionIndex === questions.length - 1}
-            onClick={() => setQuestionIndex(index => Math.min(questions.length - 1, index + 1))}
-          >Next</button>
-        </footer>
-      </section>}
-
-      {partComplete && <section className="readiness-part-result" aria-live="polite">
-        <span>Part 1 complete</span>
-        <h3>{score}/{FOUNDATION_QUESTIONS.length} first-attempt answers correct</h3>
-        <p>{score === FOUNDATION_QUESTIONS.length
-          ? 'Strong foundation. Parts 2–5 will test device awareness, troubleshooting judgment, scope/referral decisions, and complete live-call readiness.'
-          : 'Use the review feedback and Find in Workspace links to strengthen the missed areas before the remaining readiness parts are added.'}</p>
-        <button type="button" onClick={restartPart}>Restart Part 1</button>
-      </section>}
-
-      <aside className="readiness-next-parts">
-        <strong>Five-part readiness path</strong>
-        <ol>
-          {READINESS_PARTS.map(part => <li key={part.id}>
-            <span>{part.number}</span>
+        {activeAttempt && question && <section className="readiness-question" aria-labelledby="readiness-question-title">
+          <header>
             <div>
-              <strong>{part.title}</strong>
-              <small>{part.status === 'available' ? 'Part 1 available now' : part.purpose}</small>
+              <span>{question.type || 'Scenario'}</span>
+              <small>Question {questionIndex + 1} of {questions.length}</small>
             </div>
-          </li>)}
-        </ol>
-      </aside>
+            <ResultBadge answer={answer} />
+          </header>
+
+          <h3 id="readiness-question-title">{question.prompt}</h3>
+
+          <div className="readiness-answer-options" role="radiogroup" aria-label="Answer choices">
+            {(question.options || []).map(option => <button
+              key={option.id}
+              type="button"
+              role="radio"
+              aria-checked={selectedOptionId === option.id}
+              disabled={Boolean(answer) || busy}
+              onClick={() => selectAnswer(option.id)}
+            >
+              <span>{option.id.toUpperCase()}</span>
+              <p>{option.text}</p>
+            </button>)}
+          </div>
+
+          <div className="readiness-find-card">
+            <div>
+              <span>Find it in the workspace</span>
+              <strong>{question.locationLabel}</strong>
+              <small>Your saved attempt stays active while you look.</small>
+            </div>
+            <button type="button" disabled={busy} onClick={() => onOpenResource(question.resourceTarget)}>Find in Workspace</button>
+          </div>
+
+          {!answer
+            ? <button
+                type="button"
+                className="readiness-check-answer"
+                disabled={!selectedOptionId || busy}
+                onClick={checkAnswer}
+              >{busy ? 'Saving…' : 'Check answer'}</button>
+            : <section className={answer.isCorrect ? 'readiness-feedback readiness-feedback-correct' : 'readiness-feedback readiness-feedback-review'} aria-live="polite">
+                <strong>{answer.isCorrect ? 'Good judgment.' : 'Review this before moving on.'}</strong>
+                <p>{answer.explanation}</p>
+                <small>Source: {question.source}</small>
+              </section>}
+
+          <footer className="readiness-question-nav">
+            <button
+              type="button"
+              disabled={questionIndex === 0 || busy}
+              onClick={() => setQuestionIndex(index => Math.max(0, index - 1))}
+            >Previous</button>
+            <span>{questionIndex + 1} / {questions.length}</span>
+            <button
+              type="button"
+              disabled={questionIndex === questions.length - 1 || !answer || busy}
+              onClick={() => setQuestionIndex(index => Math.min(questions.length - 1, index + 1))}
+            >Next</button>
+          </footer>
+        </section>}
+
+        {activeAttempt && attemptComplete && <section className="readiness-part-result" aria-live="polite">
+          <span>All 5 questions checked</span>
+          <h3>Submit Attempt {activeAttempt.attemptNumber}</h3>
+          <p>Your score and incorrect answers are recorded only when this attempt is submitted. Reset stays locked until submission is complete.</p>
+          <button type="button" disabled={busy} onClick={submitAttempt}>{busy ? 'Submitting…' : 'Submit attempt'}</button>
+        </section>}
+
+        {!activeAttempt && lastAttempt?.status === 'submitted' && <section className="readiness-part-result" aria-live="polite">
+          <span>Attempt {lastAttempt.attemptNumber} submitted</span>
+          <h3>{lastAttempt.score}/{lastAttempt.totalQuestions} correct</h3>
+          <p>{exhausted
+            ? 'All 3 attempts are recorded. No additional attempts can be started.'
+            : 'This score is locked in the attempt history. You can start the next attempt when you are ready.'}</p>
+        </section>}
+
+        <button
+          type="button"
+          className="readiness-check-answer"
+          disabled={Boolean(activeAttempt) || exhausted || busy}
+          title={activeAttempt ? 'Finish and submit the current attempt before resetting.' : exhausted ? 'Maximum of 3 attempts reached.' : undefined}
+          onClick={startNextAttempt}
+        >
+          {exhausted ? '3 of 3 attempts used' : busy ? 'Starting…' : 'Reset for next attempt'}
+        </button>
+
+        {activeAttempt && <small>Reset is locked while Attempt {activeAttempt.attemptNumber} is unfinished or not yet submitted.</small>}
+
+        <aside className="readiness-next-parts">
+          <strong>Five-part readiness path</strong>
+          <ol>
+            {READINESS_PARTS.map(part => <li key={part.id}>
+              <span>{part.number}</span>
+              <div>
+                <strong>{part.title}</strong>
+                <small>{part.status === 'available' ? 'Part 1 available now' : part.purpose}</small>
+              </div>
+            </li>)}
+          </ol>
+        </aside>
+      </>}
     </div>
   </aside>
 }
