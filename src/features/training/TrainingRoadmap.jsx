@@ -60,15 +60,15 @@ export const TRAINING_ROADMAP_MODULES = [
     skills: ['See the concept', 'Follow the visual sequence', 'Connect the lesson to live support'],
   },
   {
-    id: 'practice-lab',
+    id: 'readiness-lab',
     number: 6,
-    phase: 'Practice',
-    title: 'Practice Lab',
-    objective: 'Mock caller situations and choose-the-next-step exercises will test whether the agent can apply the route without memorizing a script.',
-    resource: 'Phase 6 · Batch 3',
-    status: 'coming',
-    statusLabel: 'Coming in Batch 3',
-    skills: ['Choose the next action', 'Explain why', 'Learn from answer feedback'],
+    phase: 'Validate',
+    title: 'Readiness Lab',
+    objective: 'Use open-book scenario checks to prove you can find and apply the right workspace guidance instead of memorizing scripts.',
+    resource: 'Global live tool · 5-part readiness path',
+    status: 'partial',
+    statusLabel: 'Part 1 available',
+    skills: ['Find the answer in the workspace', 'Apply the guidance', 'Identify review areas'],
   },
 ]
 
@@ -78,14 +78,14 @@ export function TrainingRoadmap({ onOpenResource = () => {} }) {
       <div>
         <p className="eyebrow">Phase 6 · Training environment</p>
         <h2 id="training-roadmap-title">Follow one learning path instead of opening everything at once</h2>
-        <p>Move from the official call flow, to device orientation, to applied support, then reinforce the patterns with guided visual lessons. Practice exercises will be added in the next Phase 6 batch.</p>
+        <p>Move from the official call flow, to device orientation, to applied support, then reinforce the patterns with guided visual lessons. Readiness Lab Part 1 is now available from the sidebar; the remaining four readiness parts will be added after this checkpoint is approved.</p>
       </div>
       <span className="device-verified">6-step learning path</span>
     </div>
 
     <div className="training-roadmap-key" aria-label="Training roadmap legend">
       <span><i className="roadmap-dot roadmap-dot-ready" />Available now</span>
-      <span><i className="roadmap-dot roadmap-dot-next" />Next Phase 6 module</span>
+      <span><i className="roadmap-dot roadmap-dot-next" />In progress / next readiness parts</span>
     </div>
 
     <ol className="training-roadmap-flow">
@@ -122,7 +122,7 @@ export function TrainingRoadmap({ onOpenResource = () => {} }) {
             </div>
             {module.status === 'available'
               ? <button type="button" onClick={() => onOpenResource(module.target)}>{module.actionLabel}</button>
-              : <span className="roadmap-coming-note">Planned · not yet interactive</span>}
+              : <span className="roadmap-coming-note">{module.status === 'partial' ? 'Open Readiness Lab from the sidebar' : 'Planned · not yet interactive'}</span>}
           </footer>
         </article>
       </li>)}
