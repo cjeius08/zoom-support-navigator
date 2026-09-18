@@ -20,35 +20,7 @@ it('keeps the seven-stage workflow collapsed until the agent asks to view it', a
   expect(within(table).getByRole('columnheader', { name: 'Suggested Script' })).toBeInTheDocument()
 
   for (const label of ['Opening', 'Acknowledgment', 'Identify', 'Resolution', 'Recap', 'Adjacent Issues', 'Closing']) {
-    expect(within(table).getByRole('rowheader', { name: new RegExp('\\b' + label + '
-
-it('captures device, caller role, and resolution status with clear pressed states', async () => {
-  const user = userEvent.setup()
-  render(<LiveCallFlow />)
-
-  await user.click(screen.getByRole('button', { name: 'Windows' }))
-  await user.click(screen.getByRole('button', { name: 'Participant' }))
-  await user.click(screen.getByRole('button', { name: 'Resolved' }))
-
-  expect(screen.getByRole('button', { name: 'Windows' })).toHaveAttribute('aria-pressed', 'true')
-  expect(screen.getByRole('button', { name: 'Participant' })).toHaveAttribute('aria-pressed', 'true')
-  expect(screen.getByRole('button', { name: 'Resolved' })).toHaveAttribute('aria-pressed', 'true')
-})
-
-it('resets the live call context for the next caller', async () => {
-  const user = userEvent.setup()
-  render(<LiveCallFlow />)
-
-  await user.click(screen.getByRole('button', { name: 'Mac' }))
-  await user.click(screen.getByRole('button', { name: 'Host' }))
-  await user.click(screen.getByRole('button', { name: 'Escalation Needed' }))
-  await user.click(screen.getByRole('button', { name: 'Reset call' }))
-
-  expect(screen.getByRole('button', { name: 'Mac' })).toHaveAttribute('aria-pressed', 'false')
-  expect(screen.getByRole('button', { name: 'Host' })).toHaveAttribute('aria-pressed', 'false')
-  expect(screen.getByRole('button', { name: 'Escalation Needed' })).toHaveAttribute('aria-pressed', 'false')
-})
-, 'i') })).toBeInTheDocument()
+    expect(within(table).getByRole('rowheader', { name: new RegExp('\\b' + label + '$', 'i') })).toBeInTheDocument()
   }
 })
 
