@@ -1,6 +1,6 @@
 import { supabase } from './supabaseClient'
 import { derivePresenceState } from '../features/analytics/usageSummary'
-import { loadReadinessAdminReport } from './readinessApi'
+import { loadReadinessAdminReport, READINESS_QUESTION_SETS } from './readinessApi'
 
 const PAGE_SIZE = 1000
 
@@ -113,5 +113,15 @@ export async function updateFeedbackStatus(feedbackId, status) {
 }
 
 export async function loadReadinessReport() {
-  return loadReadinessAdminReport()
+  const parts = await Promise.all([
+    loadReadinessAdminReport(READINESS_QUESTION_SETS.generalScenarios),
+    loadReadinessAdminReport(READINESS_QUESTION_SETS.deviceNavigation),
+  ])
+
+  return {
+    parts: [
+      { id: 'foundation-call-flow', title: 'General Zoom Scenarios', ...parts[0] },
+      { id: 'device-navigation', title: 'Device & Navigation Awareness', ...parts[1] },
+    ],
+  }
 }
