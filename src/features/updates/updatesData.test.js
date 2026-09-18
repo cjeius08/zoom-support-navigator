@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { cwd } from 'node:process'
 import { expect, it } from 'vitest'
 
-it('keeps console metadata and update history complete and newest-first', () => {
+it('keeps workspace metadata and update history complete and newest-first', () => {
   const path = join(cwd(), 'src/features/updates/updatesData.json')
   expect(existsSync(path)).toBe(true)
 
@@ -18,7 +18,8 @@ it('keeps console metadata and update history complete and newest-first', () => 
   expect(data.metadata.updatePolicy).toMatch(/Every shipped user-facing feature/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
   expect(data.updates[0].date).toBe('2026-09-19')
-  expect(data.updates.slice(0, 10).map(entry => entry.id)).toEqual([
+  expect(data.updates.slice(0, 11).map(entry => entry.id)).toEqual([
+    'ogletree-support-workspace-rebrand',
     'phase6-guided-visual-lessons',
     'phase6-training-roadmap',
     'phase5-referral-handoff',
