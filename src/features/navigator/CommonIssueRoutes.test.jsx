@@ -85,6 +85,26 @@ it.each([
   expect(searchCommonIssueRoutes(query)[0]?.id).toBe(routeId)
 })
 
+
+it.each([
+  ['bluetooth headset not working', 'My Bluetooth headset isn’t working'],
+  ['join muted', 'I want to join with my microphone muted'],
+  ['switch meeting to another device', 'I need to switch this meeting to another device'],
+  ['camera off when joining', 'I want my camera on/off when I join'],
+  ['unable to establish secure connection', 'Zoom says “Unable to establish secure connection”'],
+])('shows the intended Batch 3 Common Issue first in autocomplete for %s', async (query, title) => {
+  const user = userEvent.setup()
+  render(<Navigator />)
+  const search = screen.getByRole('combobox', { name: 'Search support processes' })
+
+  await user.type(search, query)
+
+  const listbox = screen.getByRole('listbox', { name: 'Search suggestions' })
+  const firstOption = within(listbox).getAllByRole('option')[0]
+  expect(firstOption).toHaveTextContent(title)
+  expect(firstOption).toHaveTextContent('Common Issue')
+})
+
 it('keeps the secure-connection route Mac-specific and exposes the internal-vs-Zoom sequence discrepancy', () => {
   const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'secure-connection')
   expect(route.classificationNote).toMatch(/exact.*Unable to establish secure connection/i)
