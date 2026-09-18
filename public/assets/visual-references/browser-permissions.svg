@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="t d">
+<title id="t">Browser permissions guide for Zoom Web App</title>
+<desc id="d">Source-verified browser guide showing microphone, camera, and screen-share browser permissions for the Zoom Web App.</desc>
+<rect width="1200" height="720" rx="28" fill="#0b1218"/>
+<text x="48" y="58" fill="#8bd5ff" font-family="Arial" font-size="18" font-weight="700">SOURCE-VERIFIED BROWSER GUIDE</text>
+<text x="48" y="92" fill="#eef8ff" font-family="Arial" font-size="28" font-weight="700">Browser permissions are a separate layer</text>
+<rect x="80" y="140" width="480" height="470" rx="24" fill="#111921" stroke="#405a6d"/>
+<text x="110" y="182" fill="#eef8ff" font-family="Arial" font-size="22" font-weight="700">Browser permission prompt</text>
+<text x="110" y="235" fill="#c3d2dc" font-family="Arial" font-size="17">zoom.us wants to use your</text>
+<rect x="110" y="265" width="390" height="64" rx="12" fill="#0d151b" stroke="#344b5b"/>
+<text x="136" y="304" fill="#dce8ef" font-family="Arial" font-size="16">🎤 Microphone</text>
+<rect x="110" y="345" width="390" height="64" rx="12" fill="#0d151b" stroke="#344b5b"/>
+<text x="136" y="384" fill="#dce8ef" font-family="Arial" font-size="16">📷 Camera</text>
+<rect x="110" y="435" width="150" height="52" rx="10" fill="#1678df"/>
+<text x="185" y="468" fill="#fff" text-anchor="middle" font-family="Arial" font-size="17" font-weight="700">Allow</text>
+<rect x="640" y="140" width="480" height="470" rx="24" fill="#111921" stroke="#405a6d"/>
+<text x="670" y="182" fill="#eef8ff" font-family="Arial" font-size="22" font-weight="700">If it was blocked earlier</text>
+<text x="670" y="228" fill="#c3d2dc" font-family="Arial" font-size="16">Open the browser’s site permissions.</text>
+<rect x="670" y="260" width="390" height="58" rx="12" fill="#0d151b" stroke="#344b5b"/>
+<text x="696" y="296" fill="#dce8ef" font-family="Arial" font-size="16">Microphone · Allow</text>
+<rect x="670" y="334" width="390" height="58" rx="12" fill="#0d151b" stroke="#344b5b"/>
+<text x="696" y="370" fill="#dce8ef" font-family="Arial" font-size="16">Camera · Allow</text>
+<rect x="670" y="408" width="390" height="58" rx="12" fill="#0d151b" stroke="#344b5b"/>
+<text x="696" y="444" fill="#dce8ef" font-family="Arial" font-size="16">Screen sharing · Allow when prompted</text>
+<text x="670" y="520" fill="#8197a7" font-family="Arial" font-size="14">System privacy settings may still block</text>
+<text x="670" y="544" fill="#8197a7" font-family="Arial" font-size="14">the browser itself on Windows/macOS/ChromeOS.</text>
+<text x="48" y="690" fill="#8197a7" font-family="Arial" font-size="13">Guide based on current Zoom Support permission guidance; not a pixel-for-pixel browser reproduction.</text>
+</svg>
