@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
+import { COMMON_ISSUE_ROUTES } from '../navigator/commonIssueRoutes'
+import { SCENARIO_SCRIPTS } from './scenarioScripts'
 import {
   COMMUNICATION_AVOID_PAIRS,
   COMMUNICATION_SECTIONS,
@@ -71,9 +73,12 @@ function FrameworkCard({ item, sectionId, index, copiedId, onCopy }) {
 export function ScriptsCommunication() {
   const [mode, setMode] = useState('language')
   const [activeSectionId, setActiveSectionId] = useState(COMMUNICATION_SECTIONS[0].id)
+  const [activeScenarioId, setActiveScenarioId] = useState(SCENARIO_SCRIPTS[0].id)
   const [copiedId, setCopiedId] = useState(null)
   const [copyError, setCopyError] = useState('')
   const activeSection = COMMUNICATION_SECTIONS.find(section => section.id === activeSectionId) ?? COMMUNICATION_SECTIONS[0]
+  const activeScenario = SCENARIO_SCRIPTS.find(scenario => scenario.id === activeScenarioId) ?? SCENARIO_SCRIPTS[0]
+  const activeRoute = COMMON_ISSUE_ROUTES.find(route => route.id === activeScenario.routeId)
 
   async function copyPhrase(text, id) {
     setCopyError('')
@@ -104,6 +109,12 @@ export function ScriptsCommunication() {
         aria-selected={mode === 'language'}
         onClick={() => setMode('language')}
       >Call Language</button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected={mode === 'scenarios'}
+        onClick={() => setMode('scenarios')}
+      >Scenario Scripts</button>
       <button
         type="button"
         role="tab"
@@ -170,7 +181,108 @@ export function ScriptsCommunication() {
             </div>
           </section>
         </>
-      : <section className="communication-avoid-panel" role="tabpanel" aria-label="Avoid and use instead">
+      : mode === 'scenarios'
+        ? <section className="scenario-scripts-panel" role="tabpanel" aria-label="Scenario scripts">
+            <div className="scenario-script-picker" role="tablist" aria-label="Common support scenarios">
+              {SCENARIO_SCRIPTS.map(scenario => <button
+                key={scenario.id}
+                type="button"
+                role="tab"
+                aria-selected={activeScenario.id === scenario.id}
+                onClick={() => setActiveScenarioId(scenario.id)}
+              >{scenario.label}</button>)}
+            </div>
+
+            <section className="scenario-script-detail" aria-label={activeScenario.label + ' scenario'}>
+              <header>
+                <div>
+                  <p className="eyebrow">Common Issue linked script</p>
+                  <h3>{activeScenario.label}</h3>
+                  <p>{activeRoute?.classificationNote}</p>
+                </div>
+                {activeRoute && <SourceChips ids={activeRoute.processIds} />}
+              </header>
+
+              <div className="scenario-script-grid">
+                <article className="scenario-script-card scenario-script-opening">
+                  <p className="eyebrow">Start here</p>
+                  <h4>Opening line</h4>
+                  <p>“{activeScenario.opening}”</p>
+                  <CopyPhraseButton
+                    text={activeScenario.opening}
+                    id={activeScenario.id + '-opening'}
+                    copiedId={copiedId}
+                    onCopy={copyPhrase}
+                  />
+                </article>
+
+                <article className="scenario-script-card scenario-script-discovery">
+                  <p className="eyebrow">Ask only what changes the route</p>
+                  <h4>Discovery questions</h4>
+                  <ol>
+                    {(activeRoute?.confirm ?? []).map(question => <li key={question}>{question}</li>)}
+                  </ol>
+                </article>
+
+                <article className="scenario-script-card">
+                  <p className="eyebrow">Guide</p>
+                  <h4>Next-step phrasing</h4>
+                  <p>“{activeScenario.guidePhrase}”</p>
+                  <CopyPhraseButton
+                    text={activeScenario.guidePhrase}
+                    id={activeScenario.id + '-guide'}
+                    copiedId={copiedId}
+                    onCopy={copyPhrase}
+                  />
+                  {activeRoute?.checks?.[0] && <div className="scenario-route-anchor">
+                    <strong>Approved first action</strong>
+                    <p>{activeRoute.checks[0].instruction}</p>
+                    <span>Expected: {activeRoute.checks[0].expected}</span>
+                  </div>}
+                </article>
+
+                <article className="scenario-script-card">
+                  <p className="eyebrow">Confirm</p>
+                  <h4>Verify the result</h4>
+                  <p>“{activeScenario.confirmPhrase}”</p>
+                  <CopyPhraseButton
+                    text={activeScenario.confirmPhrase}
+                    id={activeScenario.id + '-confirm'}
+                    copiedId={copiedId}
+                    onCopy={copyPhrase}
+                  />
+                  {activeRoute?.success && <div className="scenario-route-anchor">
+                    <strong>Resolved when</strong>
+                    <p>{activeRoute.success}</p>
+                  </div>}
+                </article>
+
+                <article className="scenario-script-card scenario-script-boundary">
+                  <p className="eyebrow">Boundary / referral</p>
+                  <h4>When basic support stops</h4>
+                  <p>“{activeScenario.boundaryPhrase}”</p>
+                  <CopyPhraseButton
+                    text={activeScenario.boundaryPhrase}
+                    id={activeScenario.id + '-boundary'}
+                    copiedId={copiedId}
+                    onCopy={copyPhrase}
+                  />
+                  {activeRoute?.unresolved && <div className="scenario-route-anchor">
+                    <strong>Route boundary</strong>
+                    <p>{activeRoute.unresolved}</p>
+                  </div>}
+                </article>
+
+                <article className="scenario-script-card scenario-linked-route">
+                  <p className="eyebrow">Use with</p>
+                  <h4>{activeRoute?.title}</h4>
+                  <p>{activeRoute?.subtitle}</p>
+                  <span className="scenario-route-id">Common Issue · {activeRoute?.id}</span>
+                </article>
+              </div>
+            </section>
+          </section>
+        : <section className="communication-avoid-panel" role="tabpanel" aria-label="Avoid and use instead">
           <header>
             <div>
               <p className="eyebrow">Wording guardrails</p>
