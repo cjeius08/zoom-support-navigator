@@ -5,6 +5,7 @@ import { SCENARIO_SCRIPTS } from './scenarioScripts'
 import { getScenarioDiscovery } from './scenarioDiscovery'
 import {
   COMMUNICATION_AVOID_PAIRS,
+  COMMUNICATION_CALL_FLOW_SOURCE,
   COMMUNICATION_SECTIONS,
   COMMUNICATION_SELF_CHECK,
   COMMUNICATION_VERIFIED_AT,
@@ -173,9 +174,12 @@ export function ScriptsCommunication({ onReportContextChange = () => {}, initial
       <div>
         <p className="eyebrow">Phase 4 · Scripts &amp; communication</p>
         <h2 id="scripts-title">Live-call language that stays inside scope</h2>
-        <p>Use these as natural starting points—not as a rigid script. Keep the approved meaning, support boundary, and one-step-at-a-time method intact.</p>
+        <p>Use these as natural starting points—not as a rigid script. The stage order follows the current Ogletree Tier 1 call flow; troubleshooting still uses the approved one-step-at-a-time method and support boundaries.</p>
       </div>
-      <span className="device-verified">Verified {COMMUNICATION_VERIFIED_AT}</span>
+      <div className="communication-source-stamp">
+        <span className="device-verified">Verified {COMMUNICATION_VERIFIED_AT}</span>
+        <small>{COMMUNICATION_CALL_FLOW_SOURCE}</small>
+      </div>
     </div>
 
     <div className="communication-mode-tabs" role="tablist" aria-label="Communication tools">
