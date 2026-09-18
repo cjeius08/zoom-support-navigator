@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { validateCredentials } from './features/auth/credentials'
 import { ForcePasswordChange } from './features/auth/ForcePasswordChange'
 import { activateAccount, changeOwnPassword, getCurrentProfile, loginWithUsername, signOut, updateOwnAvatar } from './lib/authApi'
@@ -41,9 +41,9 @@ export default function App() {
   const { trackEvent } = useUsageTracking(profile?.id ?? null, profile ? view : null)
   const accessStyle = { '--login-workspace-image': `url(${assetUrl('assets/login-workspace-background.png')})` }
 
-  function updateReportContext(nextContext) {
+  const updateReportContext = useCallback((nextContext) => {
     setReportContext(current => ({ ...current, ...nextContext }))
-  }
+  }, [])
 
   function navigate(nextView) {
     trackEvent({ eventType: 'navigation', routeId: nextView, toolId: 'navigation' })
