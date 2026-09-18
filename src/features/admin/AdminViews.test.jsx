@@ -145,7 +145,7 @@ it('shows a separate Readiness Lab report with first score, attempts, and incorr
   expect(await screen.findByRole('heading', { name: 'Scores, attempts, and incorrect answers' })).toBeInTheDocument()
   expect(screen.getByText('agent_one')).toBeInTheDocument()
   expect(screen.getByText('2/3 attempts used')).toBeInTheDocument()
-  expect(screen.getByText('3/5')).toBeInTheDocument()
+  expect(screen.getAllByText('3/5')).toHaveLength(2)
   expect(screen.getByText('Attempt 2 · 2/5')).toBeInTheDocument()
 
   await user.click(screen.getByText('Attempt 1'))
