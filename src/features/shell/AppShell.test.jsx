@@ -6,6 +6,55 @@ import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
 import { AppShell } from './AppShell'
 
+const readinessApiMocks = vi.hoisted(() => ({
+  getReadinessState: vi.fn(),
+  startOrResumeReadiness: vi.fn(),
+  checkReadinessAnswer: vi.fn(),
+  submitReadinessAttempt: vi.fn(),
+}))
+
+vi.mock('../../lib/readinessApi', () => readinessApiMocks)
+
+const shellReadinessState = {
+  questionSetVersion: 'zoom_general_scenarios_v1',
+  maxAttempts: 3,
+  questions: [{
+    id: 'join-exact-state',
+    order: 1,
+    type: 'Scenario',
+    prompt: 'A Zoom user says they cannot get into the meeting. What is the best first move?',
+    options: [
+      { id: 'a', text: 'Restart the computer immediately.' },
+      { id: 'b', text: 'Ask what exact Zoom screen or message appears and confirm the meeting details.' },
+    ],
+    locationLabel: 'Training & Resources → Scenario Scripts → Can’t Join',
+    resourceTarget: { view: 'training', section: 'scripts', mode: 'scenarios', scenario: 'cant-join' },
+    source: 'Scripts & Communication · Can’t Join',
+  }],
+  attempts: [{
+    id: 'attempt-1',
+    attemptNumber: 1,
+    status: 'active',
+    score: null,
+    totalQuestions: 1,
+    checkedCount: 0,
+    startedAt: '2026-09-19T00:00:00Z',
+    submittedAt: null,
+  }],
+  activeAttempt: {
+    id: 'attempt-1',
+    attemptNumber: 1,
+    status: 'active',
+    score: null,
+    totalQuestions: 1,
+    startedAt: '2026-09-19T00:00:00Z',
+    submittedAt: null,
+    answers: [],
+  },
+}
+
+readinessApiMocks.getReadinessState.mockResolvedValue(shellReadinessState)
+
 const agentProfile = { username: 'agent_1', initials: 'AG', role: 'agent' }
 
 it('shows role-aware navigation and account controls', () => {
@@ -139,17 +188,18 @@ it('opens Readiness Lab as a global live tool and keeps it open while locating a
   expect(onNavigate).not.toHaveBeenCalled()
   expect(screen.getByRole('heading', { name: 'Readiness Lab' })).toBeInTheDocument()
 
-  await user.click(screen.getByRole('radio', { name: /Let the caller explain the concern/i }))
+  const choice = await screen.findByRole('radio', { name: /Ask what exact Zoom screen/i })
+  await user.click(choice)
   await user.click(screen.getByRole('button', { name: 'Find in Workspace' }))
 
   expect(onOpenReadinessResource).toHaveBeenCalledWith({
     view: 'training',
     section: 'scripts',
-    mode: 'language',
-    subsection: 'listen',
+    mode: 'scenarios',
+    scenario: 'cant-join',
   })
   expect(screen.getByRole('heading', { name: 'Readiness Lab' })).toBeInTheDocument()
-  expect(screen.getByRole('radio', { name: /Let the caller explain the concern/i })).toHaveAttribute('aria-checked', 'true')
+  expect(screen.getByRole('radio', { name: /Ask what exact Zoom screen/i })).toHaveAttribute('aria-checked', 'true')
 
   await user.click(screen.getByRole('button', { name: 'Minimize Readiness Lab' }))
   expect(screen.getByLabelText('Readiness Lab minimized')).toBeInTheDocument()

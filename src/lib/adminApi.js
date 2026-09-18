@@ -1,5 +1,6 @@
 import { supabase } from './supabaseClient'
 import { derivePresenceState } from '../features/analytics/usageSummary'
+import { loadReadinessAdminReport } from './readinessApi'
 
 const PAGE_SIZE = 1000
 
@@ -109,4 +110,8 @@ export async function updateFeedbackStatus(feedbackId, status) {
   })
   if (error) throw error
   return data
+}
+
+export async function loadReadinessReport() {
+  return loadReadinessAdminReport()
 }

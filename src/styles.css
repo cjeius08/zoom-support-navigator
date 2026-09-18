@@ -3224,3 +3224,85 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     padding-bottom: .5rem;
   }
 }
+
+
+/* Readiness Lab · JA attempt reporting */
+.readiness-admin-report {
+  display: grid;
+  gap: .9rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255,255,255,.09);
+}
+.readiness-admin-report .view-heading {
+  margin-bottom: 0;
+}
+.readiness-report-user {
+  grid-template-columns: minmax(10rem, 1fr) minmax(0, 3fr);
+  align-items: start;
+}
+.readiness-report-attempts {
+  display: grid;
+  gap: .55rem;
+  min-width: 0;
+}
+.readiness-report-attempts details {
+  overflow: hidden;
+  border: 1px solid rgba(159,190,214,.16);
+  border-radius: .68rem;
+  background: rgba(7,14,21,.28);
+}
+.readiness-report-attempts summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+  padding: .65rem .75rem;
+  cursor: pointer;
+}
+.readiness-report-attempts summary span {
+  color: #9fb3c1;
+  font-size: .76rem;
+}
+.readiness-report-attempts details > dl {
+  padding: 0 .75rem .65rem;
+}
+.readiness-report-misses {
+  display: grid;
+  gap: .4rem;
+  margin: 0 .75rem .75rem;
+  padding-top: .65rem;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.readiness-report-misses > strong {
+  font-size: .78rem;
+}
+.readiness-report-misses ol {
+  display: grid;
+  gap: .55rem;
+  margin: 0;
+  padding-left: 1.15rem;
+}
+.readiness-report-misses li {
+  color: #c7d6e0;
+}
+.readiness-report-misses p {
+  margin: 0 0 .2rem;
+  font-size: .78rem;
+  line-height: 1.4;
+}
+.readiness-report-misses small {
+  display: block;
+  color: #96aaba;
+  line-height: 1.4;
+}
+@media (max-width: 800px) {
+  .readiness-report-user {
+    grid-template-columns: 1fr;
+  }
+  .readiness-report-attempts summary {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: .2rem;
+  }
+}
