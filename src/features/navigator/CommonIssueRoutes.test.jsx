@@ -101,3 +101,12 @@ it('routes the caller phrase "I cant hear you" to audio output rather than guess
   expect(matches[0]?.id).toBe('cant-hear')
   expect(matches[0]?.classification).toBe('Audio-output symptom')
 })
+
+
+it('keeps the microphone route from skipping the meeting-audio connection check', () => {
+  const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'cant-be-heard')
+  expect(route.confirm.some(question => /Join Audio|connected to meeting audio/i.test(question))).toBe(true)
+  expect(route.checks.some(check => /meeting audio/i.test(check.title + ' ' + check.instruction))).toBe(true)
+  expect(route.discrepancy).toMatch(/Call Over Internet/i)
+  expect(route.discrepancy).toMatch(/Wifi or Cellular Data/i)
+})
