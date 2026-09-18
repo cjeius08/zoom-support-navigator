@@ -33,7 +33,7 @@ it('shows a progressive visual path without pretending unfinished modules are av
   expect(screen.getByRole('button', { name: 'Open guided lessons' })).toBeInTheDocument()
 
   expect(screen.queryByText('Coming in Batch 2')).not.toBeInTheDocument()
-  expect(screen.getByText('Parts 1–2 available')).toBeInTheDocument()
+  expect(screen.getByText('Parts 1–3 available')).toBeInTheDocument()
   expect(screen.getByText('Open Readiness Lab from the sidebar')).toBeInTheDocument()
   expect(screen.queryByRole('button', { name: /readiness lab/i })).not.toBeInTheDocument()
 })
