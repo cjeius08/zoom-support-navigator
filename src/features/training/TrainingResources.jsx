@@ -48,6 +48,8 @@ export function TrainingResources({ initialVideoId = null, onReportContextChange
   const viewerVideos = Object.assign(filteredVideos, { onChange: setActiveIndex })
 
   useEffect(() => {
+    if (section === 'lessons') return
+
     const sectionLabels = {
       roadmap: 'Training Roadmap',
       lessons: 'Guided Visual Lessons',
