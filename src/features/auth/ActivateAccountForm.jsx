@@ -2,8 +2,63 @@ import { useState } from 'react'
 import { validateActivation } from './credentials'
 
 export function ActivateAccountForm({ onActivate, onCancel }) {
-  const [error,setError]=useState(''); const [saving,setSaving]=useState(false); const [complete,setComplete]=useState(false)
-  async function submit(event){event.preventDefault(); const form=new FormData(event.currentTarget); const values={initials:String(form.get('initials')).trim().toUpperCase(),inviteCode:String(form.get('inviteCode')).trim(),username:String(form.get('username')).trim().toLowerCase(),password:String(form.get('password')),confirmPassword:String(form.get('confirmPassword'))}; const result=validateActivation(values); const message=Object.values(result.errors)[0]; if(message)return setError(message); setSaving(true);setError('');try{await onActivate(values);setComplete(true)}catch(e){setError(e.message)}finally{setSaving(false)}}
-  if(complete)return <section><h2>Account activated</h2><p>You can now sign in with your username and password.</p><button onClick={onCancel}>Return to sign in</button></section>
-  return <form onSubmit={submit} className="activation-form"><h2>Activate Account</h2><p>Use the initials and one-time invite code provided by JA.</p><label>Initials<input name="initials" autoComplete="off" maxLength={3} required/></label><label>Invite code<input name="inviteCode" autoComplete="one-time-code" required/></label><label>Choose username<input name="username" autoComplete="username" required/></label><label>Password<input name="password" type="password" autoComplete="new-password" required/></label><label>Confirm password<input name="confirmPassword" type="password" autoComplete="new-password" required/></label>{error&&<p role="alert">{error}</p>}<div className="dialog-actions"><button type="button" onClick={onCancel}>Cancel</button><button disabled={saving}>{saving?'Activating…':'Activate'}</button></div></form>
+  const [error, setError] = useState('')
+  const [errorField, setErrorField] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [complete, setComplete] = useState(false)
+
+  async function submit(event) {
+    event.preventDefault()
+    const form = new FormData(event.currentTarget)
+    const values = {
+      initials: String(form.get('initials')).trim().toUpperCase(),
+      inviteCode: String(form.get('inviteCode')).trim(),
+      username: String(form.get('username')).trim().toLowerCase(),
+      password: String(form.get('password')),
+      confirmPassword: String(form.get('confirmPassword')),
+    }
+    const result = validateActivation(values)
+    if (!values.inviteCode) result.errors.inviteCode = 'Enter the invite code provided by JA.'
+    const firstErrorField = Object.keys(result.errors)[0]
+    if (firstErrorField) {
+      setErrorField(firstErrorField)
+      setError(result.errors[firstErrorField])
+      return
+    }
+
+    setSaving(true)
+    setError('')
+    setErrorField('')
+    try {
+      await onActivate(values)
+      setComplete(true)
+    } catch (activationError) {
+      setErrorField('inviteCode')
+      setError(activationError.message)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (complete) return <section><h2>Account activated</h2><p>You can now sign in with your username and password.</p><button onClick={onCancel}>Return to sign in</button></section>
+
+  const fieldErrorProps = field => ({
+    'aria-invalid': errorField === field ? 'true' : undefined,
+    'aria-describedby': errorField === field ? 'activation-error' : undefined,
+  })
+
+  return <form onSubmit={submit} className="activation-form" noValidate>
+    <h2>Activate Account</h2>
+    <p>Use the initials and one-time invite code provided by JA.</p>
+    <label>Initials<input name="initials" autoComplete="off" maxLength={3} required {...fieldErrorProps('initials')} /></label>
+    <label>Invite code<input name="inviteCode" autoComplete="one-time-code" required {...fieldErrorProps('inviteCode')} /></label>
+    <label>Choose username<input name="username" autoComplete="username" required {...fieldErrorProps('username')} /></label>
+    <label>Password<input name="password" type="password" autoComplete="new-password" required {...fieldErrorProps('password')} /></label>
+    <label>Confirm password<input name="confirmPassword" type="password" autoComplete="new-password" required {...fieldErrorProps('confirmPassword')} /></label>
+    {error && <p id="activation-error" role="alert">{error}</p>}
+    <div className="dialog-actions">
+      <button type="button" onClick={onCancel}>Cancel</button>
+      <button disabled={saving}>{saving ? 'Activating…' : 'Activate'}</button>
+    </div>
+  </form>
 }
