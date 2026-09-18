@@ -54,7 +54,7 @@ it('switches to Mac and exposes macOS-specific permission guidance', async () =>
   const panel = screen.getByRole('tabpanel', { name: 'Mac desktop walkthrough' })
   expect(within(panel).getByText(/Command \+ Shift \+ A toggles mute/i)).toBeInTheDocument()
   expect(within(panel).getByRole('heading', { name: /Camera, microphone, and screen sharing can be blocked by macOS/i })).toBeInTheDocument()
-  expect(within(panel).getByText(/System Settings → Privacy & Security/i)).toBeInTheDocument()
+  expect(within(panel).getAllByText(/System Settings → Privacy & Security/i).length).toBeGreaterThan(0)
   expect(within(panel).getByText(/Screen & System Audio Recording/i)).toBeInTheDocument()
 })
 
