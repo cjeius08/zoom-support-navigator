@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { TRAINING_CATEGORIES, TRAINING_VIDEOS, trainingEmbedUrl } from '../../data/trainingVideos'
 import { useDialogFocus } from '../../lib/useDialogFocus'
 import { DeviceWalkthroughs } from './DeviceWalkthroughs'
+import { ScriptsCommunication } from './ScriptsCommunication'
 
 function VideoViewer({ videos, index, onClose }) {
   const dialogRef = useRef(null)
@@ -55,7 +56,7 @@ export function TrainingResources({ initialVideoId = null }) {
         <h1>Training &amp; Resources</h1>
         <p>Use visual device walkthroughs for live guidance, or open the training video library for deeper learning.</p>
       </div>
-      <span className="playlist-label">{section === 'devices' ? 'Phase 3 · Windows + Mac + iPhone + Android + Browser' : 'Getting Started with Zoom · ' + TRAINING_VIDEOS.length + ' videos'}</span>
+      <span className="playlist-label">{section === 'devices' ? 'Phase 3 · Windows + Mac + iPhone + Android + Browser' : section === 'scripts' ? 'Phase 4 · Call language foundation' : 'Getting Started with Zoom · ' + TRAINING_VIDEOS.length + ' videos'}</span>
     </div>
 
     <div className="training-section-tabs" role="tablist" aria-label="Training resource sections">
@@ -68,6 +69,12 @@ export function TrainingResources({ initialVideoId = null }) {
       <button
         type="button"
         role="tab"
+        aria-selected={section === 'scripts'}
+        onClick={() => changeSection('scripts')}
+      >Scripts &amp; Communication</button>
+      <button
+        type="button"
+        role="tab"
         aria-selected={section === 'videos'}
         onClick={() => changeSection('videos')}
       >Video Library</button>
@@ -75,7 +82,9 @@ export function TrainingResources({ initialVideoId = null }) {
 
     {section === 'devices'
       ? <DeviceWalkthroughs />
-      : <>
+      : section === 'scripts'
+        ? <ScriptsCommunication />
+        : <>
           <div className="training-controls"><label>Search training videos<input type="search" aria-label="Search training videos" value={query} onChange={(event) => { setQuery(event.target.value); setActiveIndex(null) }} placeholder="Search topics and support categories" /></label><label>Filter by category<select aria-label="Filter training by category" value={category} onChange={(event) => { setCategory(event.target.value); setActiveIndex(null) }}>{TRAINING_CATEGORIES.map((name) => <option key={name}>{name}</option>)}</select></label></div>
           <p className="library-count">{filteredVideos.length} {filteredVideos.length === 1 ? 'video' : 'videos'} available</p>
           <div className="training-grid">{filteredVideos.map((video, index) => <article key={video.id} className="training-card"><img loading="lazy" src={video.thumbnailUrl} alt="" /><div className="training-card-body"><h2>{video.title}</h2><p><strong>Useful for:</strong> {video.usefulFor}</p>{video.relatedCategories.length > 0 && <div className="training-tags">{video.relatedCategories.map((tag) => <span key={tag}>{tag}</span>)}</div>}<button type="button" onClick={() => setActiveIndex(index)}>Watch Video</button></div></article>)}</div>
