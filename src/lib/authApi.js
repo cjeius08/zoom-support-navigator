@@ -7,7 +7,8 @@ export async function loginWithUsername(username, password) {
   if (data.error) throw new Error(data.error)
   const { error: sessionError } = await supabase.auth.setSession({ access_token: data.access_token, refresh_token: data.refresh_token })
   if (sessionError) throw sessionError
-  return data.user
+  const profile = await getCurrentProfile()
+  return profile ?? data.user
 }
 
 export async function changeOwnPassword(password) {
