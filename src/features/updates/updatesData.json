@@ -9,6 +9,21 @@
   },
   "updates": [
     {
+      "id": "phase5-referral-handoff",
+      "date": "2026-09-19",
+      "area": "Live Tools / Referral Guidance",
+      "title": "Scope Check now completes the referral handoff",
+      "changed": "Extended Scope Check with the approved referral / roadblock matrix. When a case reaches Stop + Refer, agents now choose the exact roadblock and OGCon identifies who owns the next step, shows the agent boundary, provides source-backed handoff wording, and lets the agent copy that wording. The tool covers Waiting Room admission, host-controlled permissions, incorrect meeting details, unresolved joining issues, account/admin access, device-level hardware detection, organization-managed permissions, network/security restrictions, possible Zoom product issues after basic troubleshooting, proceeding decisions, and privacy/recording/confidentiality/AI-policy questions. OGCon does not invent a person, phone number, email address, or promise an internal escalation.",
+      "checks": [
+        "Open Scope Check and create a Stop + Refer decision using Host action or meeting-owner permission.",
+        "Choose Waiting Room admission and confirm Who owns the next step shows the meeting host / organizer / invitation contact and the approved Waiting Room handoff wording appears.",
+        "Choose Zoom account, sign-in, license, role, or administrative permission and confirm the contact changes to organization IT / help desk or Zoom administrator.",
+        "Choose Network, firewall, VPN, or managed security restriction and confirm the contact changes to organization IT / network support.",
+        "Use Copy handoff wording and confirm only the approved caller-facing referral sentence is copied.",
+        "Change any earlier Scope Check answer and confirm the previously selected referral roadblock and handoff guidance reset instead of carrying into the new decision."
+      ]
+    },
+    {
       "id": "phase5-scope-check",
       "date": "2026-09-19",
       "area": "Live Tools / Support Boundaries",

@@ -1192,6 +1192,147 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   line-height: 1.35;
 }
 
+.scope-referral-picker {
+  display: grid;
+  gap: .6rem;
+  padding: .66rem;
+  border: 1px solid rgba(222, 157, 86, .16);
+  border-radius: .7rem;
+  background: rgba(119, 73, 28, .055);
+}
+.scope-referral-picker-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: .48rem;
+}
+.scope-referral-picker-heading > span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 1.22rem;
+  height: 1.22rem;
+  border-radius: 50%;
+  background: rgba(181, 111, 41, .2);
+  color: #f2c084;
+  font-size: .6rem;
+  font-weight: 800;
+}
+.scope-referral-picker-heading h3 {
+  margin: 0;
+  color: #f0e8df;
+  font-size: .76rem;
+}
+.scope-referral-picker-heading p {
+  margin: .18rem 0 0;
+  color: #9b8d80;
+  font-size: .61rem;
+  line-height: 1.4;
+}
+.scope-roadblock-group {
+  display: grid;
+  gap: .38rem;
+}
+.scope-roadblock-group > strong {
+  color: #d8b58c;
+  font-size: .6rem;
+  letter-spacing: .045em;
+  text-transform: uppercase;
+}
+.scope-roadblock-options button[aria-pressed="true"] {
+  border-color: rgba(222, 157, 86, .56);
+  background: rgba(139, 82, 30, .15);
+  color: #fff5e9;
+}
+.scope-other-roadblocks {
+  border-top: 1px solid rgba(222, 157, 86, .09);
+  padding-top: .45rem;
+}
+.scope-other-roadblocks summary {
+  cursor: pointer;
+  color: #a99075;
+  font-size: .61rem;
+  font-weight: 700;
+}
+.scope-other-roadblocks .scope-roadblock-options {
+  margin-top: .45rem;
+}
+.scope-handoff-card {
+  display: grid;
+  gap: .58rem;
+  padding: .68rem;
+  border: 1px solid rgba(73, 176, 126, .2);
+  border-radius: .72rem;
+  background: rgba(32, 103, 70, .07);
+}
+.scope-handoff-contact,
+.scope-handoff-boundary,
+.scope-handoff-language,
+.scope-handoff-documentation {
+  display: grid;
+  gap: .2rem;
+}
+.scope-handoff-card span {
+  color: #79b99b;
+  font-size: .56rem;
+  font-weight: 850;
+  letter-spacing: .065em;
+}
+.scope-handoff-contact strong {
+  color: #e8fff3;
+  font-size: .74rem;
+  line-height: 1.38;
+}
+.scope-handoff-boundary p,
+.scope-handoff-documentation p,
+.scope-handoff-documentation small {
+  margin: 0;
+  color: #a9bcb2;
+  font-size: .62rem;
+  line-height: 1.42;
+}
+.scope-handoff-language {
+  padding: .58rem;
+  border-left: 2px solid rgba(73, 176, 126, .55);
+  border-radius: .25rem .55rem .55rem .25rem;
+  background: rgba(26, 87, 59, .08);
+}
+.scope-handoff-language blockquote {
+  margin: .08rem 0 .15rem;
+  color: #e6f1eb;
+  font-size: .67rem;
+  line-height: 1.48;
+}
+.scope-handoff-language button {
+  width: fit-content;
+  padding: .42rem .54rem;
+  border: 1px solid rgba(73, 176, 126, .3);
+  border-radius: .5rem;
+  background: rgba(39, 124, 83, .14);
+  color: #9fe0bd;
+  font-size: .61rem;
+  font-weight: 750;
+}
+.scope-handoff-language button:focus-visible {
+  outline: 2px solid #63b8ff;
+  outline-offset: 2px;
+}
+.scope-handoff-language small {
+  color: #efb0a7;
+  font-size: .58rem;
+}
+.scope-handoff-documentation {
+  padding-top: .48rem;
+  border-top: 1px solid rgba(73, 176, 126, .1);
+}
+.scope-handoff-documentation p {
+  color: #d2e7dc;
+  font-weight: 700;
+}
+.scope-handoff-documentation small {
+  color: #748a7d;
+  font-size: .57rem;
+}
+
 /* Phase 4 · Scripts & Communication */
 .scripts-communication {
   display: grid;
