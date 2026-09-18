@@ -11,6 +11,7 @@ async function openRouteWithContext({ device, role, routeName }) {
   render(<Navigator />)
   if (device) await user.click(screen.getByRole('button', { name: device }))
   if (role) await user.click(screen.getByRole('button', { name: role }))
+  await user.click(screen.getByRole('tab', { name: 'Common Issues' }))
   await user.click(screen.getByRole('button', { name: routeName }))
   return { user, dialog: screen.getByRole('dialog') }
 }
