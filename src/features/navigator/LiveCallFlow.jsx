@@ -88,7 +88,7 @@ export function LiveCallFlow({ value, onChange }) {
     onChange?.({ device: null, role: null, status: null })
   }
 
-  return <section className="live-call-flow" aria-label="Core Live Call Flow">
+  return <section className={`live-call-flow${expanded ? ' live-call-flow-expanded' : ''}`} aria-label="Core Live Call Flow">
     <div className="live-call-flow-heading">
       <div>
         <p className="eyebrow">Live call context</p>
