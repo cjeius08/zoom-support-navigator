@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { assetUrl } from '../../lib/assetUrl'
 import { DEVICE_WALKTHROUGHS, DEVICE_WALKTHROUGH_VERIFIED_AT } from './deviceWalkthroughs'
 
@@ -21,9 +21,16 @@ function WalkthroughSection({ section }) {
   </article>
 }
 
-export function DeviceWalkthroughs() {
+export function DeviceWalkthroughs({ onReportContextChange = () => {} }) {
   const [activeId, setActiveId] = useState(DEVICE_WALKTHROUGHS[0].id)
   const active = DEVICE_WALKTHROUGHS.find(device => device.id === activeId) ?? DEVICE_WALKTHROUGHS[0]
+
+  useEffect(() => {
+    onReportContextChange({
+      selected_tab: 'Device Walkthroughs',
+      current_section: active.title,
+    })
+  }, [active.title, onReportContextChange])
 
   return <section className="device-walkthroughs" aria-labelledby="device-walkthrough-title">
     <div className="device-walkthrough-intro">
