@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">Zoom pre-join participant view visual guide</title>
+<desc id="desc">Source-verified guide showing where joined participants can appear under Host on Home and under Invitees in Zoom Calendar before joining.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0c1218"/><stop offset="1" stop-color="#17232d"/></linearGradient>
+  <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#17232d"/><stop offset="1" stop-color="#10181f"/></linearGradient>
+</defs>
+<rect width="1200" height="720" rx="28" fill="url(#bg)"/>
+<rect x="28" y="24" width="1144" height="54" rx="14" fill="#12202a" stroke="#31546d"/>
+<text x="52" y="57" fill="#8fd1ff" font-family="Arial, sans-serif" font-size="18" font-weight="700">SOURCE-VERIFIED VISUAL GUIDE</text>
+<text x="366" y="57" fill="#eaf5fc" font-family="Arial, sans-serif" font-size="22" font-weight="700">Who is already in the meeting?</text>
+
+<rect x="28" y="98" width="1144" height="586" rx="20" fill="url(#panel)" stroke="#294658"/>
+<rect x="52" y="122" width="1096" height="68" rx="14" fill="#0e171e" stroke="#253e4e"/>
+<text x="76" y="148" fill="#ffcf7c" font-family="Arial, sans-serif" font-size="14" font-weight="700">CHECK REQUIREMENTS FIRST</text>
+<text x="76" y="174" fill="#d3e0e8" font-family="Arial, sans-serif" font-size="14">Eligible paid account • Zoom desktop app • Zoom Calendar enabled • supported calendar service integrated</text>
+
+<rect x="52" y="216" width="518" height="398" rx="18" fill="#111a21" stroke="#4a687c"/>
+<text x="78" y="252" fill="#74c2ff" font-family="Arial, sans-serif" font-size="15" font-weight="700">OPTION 1 · HOME</text>
+<text x="78" y="283" fill="#ffffff" font-family="Arial, sans-serif" font-size="22" font-weight="700">Scheduled meeting card</text>
+<text x="78" y="320" fill="#9eb2c0" font-family="Arial, sans-serif" font-size="14">3:00 – 4:00 PM</text>
+<text x="78" y="357" fill="#dce8ef" font-family="Arial, sans-serif" font-size="16">Host</text>
+<circle cx="105" cy="399" r="22" fill="#d748c7"/><text x="92" y="406" fill="#fff" font-family="Arial, sans-serif" font-size="13" font-weight="700">ML</text>
+<circle cx="151" cy="399" r="22" fill="#da6a7e"/><text x="142" y="406" fill="#fff" font-family="Arial, sans-serif" font-size="13" font-weight="700">ER</text>
+<circle cx="197" cy="399" r="22" fill="#8164c8"/><text x="191" y="406" fill="#fff" font-family="Arial, sans-serif" font-size="13" font-weight="700">S</text>
+<circle cx="243" cy="399" r="22" fill="#346f91"/><text x="235" y="406" fill="#fff" font-family="Arial, sans-serif" font-size="13" font-weight="700">JA</text>
+<rect x="278" y="377" width="48" height="44" rx="14" fill="#eef3f6"/><text x="289" y="405" fill="#1f2b33" font-family="Arial, sans-serif" font-size="14" font-weight="700">+5</text>
+<text x="78" y="452" fill="#8da6b7" font-family="Arial, sans-serif" font-size="13">Joined participants can appear as initials/profile pictures under Host.</text>
+<rect x="78" y="492" width="96" height="44" rx="10" fill="#1686ee"/><text x="107" y="520" fill="#fff" font-family="Arial, sans-serif" font-size="16" font-weight="700">Join</text>
+<text x="78" y="574" fill="#c9d8e1" font-family="Arial, sans-serif" font-size="14">Do not assume “nobody is there” if this display is unavailable.</text>
+
+<rect x="594" y="216" width="554" height="398" rx="18" fill="#111a21" stroke="#4a687c"/>
+<text x="620" y="252" fill="#74c2ff" font-family="Arial, sans-serif" font-size="15" font-weight="700">OPTION 2 · CALENDAR</text>
+<text x="620" y="283" fill="#ffffff" font-family="Arial, sans-serif" font-size="22" font-weight="700">Calendar event → Invitees</text>
+<rect x="620" y="316" width="502" height="198" rx="14" fill="#0c141a" stroke="#2d4657"/>
+<text x="644" y="350" fill="#a7bbc9" font-family="Arial, sans-serif" font-size="14">Wednesday · Scheduled Meeting</text>
+<line x1="644" y1="370" x2="1098" y2="370" stroke="#263b49"/>
+<text x="644" y="409" fill="#eef6fb" font-family="Arial, sans-serif" font-size="18" font-weight="700">Invitees</text>
+<text x="735" y="409" fill="#91a8b8" font-family="Arial, sans-serif" font-size="16">26 invitees</text>
+<text x="845" y="409" fill="#73c7ff" font-family="Arial, sans-serif" font-size="16" font-weight="700">17 joined</text>
+<circle cx="672" cy="456" r="18" fill="#d748c7"/><circle cx="710" cy="456" r="18" fill="#da6a7e"/><circle cx="748" cy="456" r="18" fill="#8164c8"/><circle cx="786" cy="456" r="18" fill="#346f91"/>
+<path d="M1060 442l14 14-14 14" fill="none" stroke="#8fd1ff" stroke-width="3"/>
+<text x="620" y="552" fill="#c9d8e1" font-family="Arial, sans-serif" font-size="14">Use the Invitees arrow to view the list Zoom reports as already joined.</text>
+
+<text x="52" y="653" fill="#8da4b4" font-family="Arial, sans-serif" font-size="13">Guide based on current Zoom Support requirements and navigation; not a pixel-for-pixel UI reproduction.</text>
+</svg>
