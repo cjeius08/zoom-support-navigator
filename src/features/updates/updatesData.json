@@ -5,9 +5,24 @@
     "owner": "Cjei A.",
     "collaborator": "Nina F.",
     "nextReview": "2026-10-18",
-    "updatePolicy": "Every shipped user-facing feature, support-content change, or bug fix gets an entry here. Test-only, CI-only, and internal refactors are not listed."
+    "updatePolicy": "Every shipped user-facing feature, support-content change, or bug fix gets an entry here. Test-only, CI-only, and internal refactors are not listed.",
+    "productName": "Ogletree Support Workspace"
   },
   "updates": [
+    {
+      "id": "ogletree-support-workspace-rebrand",
+      "date": "2026-09-19",
+      "area": "Workspace / Product Identity",
+      "title": "Product identity updated to Ogletree Support Workspace",
+      "changed": "Rebranded the application from its internal OGCon / generic console naming to Ogletree Support Workspace. The sign-in page now uses the full product name with Tier 1 Zoom Support as the supporting context, authenticated headers use the same product identity without repeating it in the sidebar, version labels now say Workspace, and legacy OGCon references were removed from current guidance. Repository name, GitHub Pages URL, Vite base path, package identity, and deployment configuration remain unchanged.",
+      "checks": [
+        "Open the sign-in page and confirm the title is Ogletree Support Workspace with Tier 1 Zoom Support shown once as supporting context.",
+        "Sign in and confirm the header says Ogletree Support Workspace while the sidebar label says Tier 1 Zoom Support instead of repeating the full product name.",
+        "Confirm the version chip and What’s New metadata use Workspace v1.0 / Workspace Version instead of Console wording.",
+        "Open Scope Check, Live Call Flow, Call Documentation, Common Issue guidance, and Scripts & Communication and confirm no current guidance refers to OGCon.",
+        "Confirm the existing GitHub Pages URL and repository name are unchanged."
+      ]
+    },
     {
       "id": "phase6-guided-visual-lessons",
       "date": "2026-09-19",
@@ -27,7 +42,7 @@
       "id": "phase6-training-roadmap",
       "date": "2026-09-19",
       "area": "Training / Learning Path",
-      "title": "Training Roadmap now organizes how agents learn OGCon",
+      "title": "Training Roadmap now organizes how agents learn the workspace",
       "changed": "Added a visual Training Roadmap as the default home inside Training & Resources. The roadmap gives agents one progressive learning path instead of presenting every resource at once: live-call method, device orientation, communication guardrails, common-issue scenario routing, then the upcoming guided visual lessons and Practice Lab. Available modules open the exact existing resource without duplicating content, while unfinished Phase 6 modules are clearly marked as coming in later batches.",
       "checks": [
         "Open Training & Resources and confirm Training Roadmap is the default selected tab.",
@@ -43,7 +58,7 @@
       "date": "2026-09-19",
       "area": "Live Tools / Referral Guidance",
       "title": "Scope Check now completes the referral handoff",
-      "changed": "Extended Scope Check with the approved referral / roadblock matrix. When a case reaches Stop + Refer, agents now choose the exact roadblock and OGCon identifies who owns the next step, shows the agent boundary, provides source-backed handoff wording, and lets the agent copy that wording. The tool covers Waiting Room admission, host-controlled permissions, incorrect meeting details, unresolved joining issues, account/admin access, device-level hardware detection, organization-managed permissions, network/security restrictions, possible Zoom product issues after basic troubleshooting, proceeding decisions, and privacy/recording/confidentiality/AI-policy questions. OGCon does not invent a person, phone number, email address, or promise an internal escalation.",
+      "changed": "Extended Scope Check with the approved referral / roadblock matrix. When a case reaches Stop + Refer, agents now choose the exact roadblock and the workspace identifies who owns the next step, shows the agent boundary, provides source-backed handoff wording, and lets the agent copy that wording. The tool covers Waiting Room admission, host-controlled permissions, incorrect meeting details, unresolved joining issues, account/admin access, device-level hardware detection, organization-managed permissions, network/security restrictions, possible Zoom product issues after basic troubleshooting, proceeding decisions, and privacy/recording/confidentiality/AI-policy questions. the workspace does not invent a person, phone number, email address, or promise an internal escalation.",
       "checks": [
         "Open Scope Check and create a Stop + Refer decision using Host action or meeting-owner permission.",
         "Choose Waiting Room admission and confirm Who owns the next step shows the meeting host / organizer / invitation contact and the approved Waiting Room handoff wording appears.",
@@ -58,11 +73,11 @@
       "date": "2026-09-19",
       "area": "Live Tools / Support Boundaries",
       "title": "Scope Check now tells agents when to continue or stop",
-      "changed": "Added a global Scope Check live tool beside Call Documentation. Agents can classify the remaining action, indicate how far approved troubleshooting has progressed, and confirm whether the next step stays within approved authority. OGCon then returns Continue Approved Troubleshooting, Stop + Refer, Resolved — Document & Close, or More Information Needed. The decision path follows the approved Zoom Basic Support Boundaries resource and does not invent referral contacts or promise internal escalation. The Navigator resolution status was also renamed from Escalation Needed to Referral Needed to match the approved handoff model.",
+      "changed": "Added a global Scope Check live tool beside Call Documentation. Agents can classify the remaining action, indicate how far approved troubleshooting has progressed, and confirm whether the next step stays within approved authority. the workspace then returns Continue Approved Troubleshooting, Stop + Refer, Resolved — Document & Close, or More Information Needed. The decision path follows the approved Zoom Basic Support Boundaries resource and does not invent referral contacts or promise internal escalation. The Navigator resolution status was also renamed from Escalation Needed to Referral Needed to match the approved handoff model.",
       "checks": [
         "From Navigator, open Scope Check from the sidebar and confirm the current troubleshooting page does not change.",
-        "Select Basic Zoom setup → Approved troubleshooting steps still remain → No, next step stays inside approved scope; confirm OGCon returns Continue Approved Troubleshooting.",
-        "Change the issue type to Host action or meeting-owner permission and confirm OGCon switches to Stop + Refer.",
+        "Select Basic Zoom setup → Approved troubleshooting steps still remain → No, next step stays inside approved scope; confirm the workspace returns Continue Approved Troubleshooting.",
+        "Change the issue type to Host action or meeting-owner permission and confirm the workspace switches to Stop + Refer.",
         "Select All approved troubleshooting completed; issue remains and confirm Stop + Refer appears even when the issue began as a basic Zoom concern.",
         "Switch from Scope Check back to Call Documentation and confirm the existing documentation draft is still present.",
         "In Live Call Flow, confirm the resolution-status choice now says Referral Needed instead of Escalation Needed."
@@ -91,7 +106,7 @@
       "checks": [
         "Use the newer Call Documentation sidebar tool for the current workflow.",
         "Confirm the same approved fields and copy-ready summary remain available in the global dock.",
-        "Confirm caller-entered text remains local to the active browser session and is not included in OGCon analytics or feedback context."
+        "Confirm caller-entered text remains local to the active browser session and is not included in the workspace analytics or feedback context."
       ]
     },
     {
@@ -99,11 +114,11 @@
       "date": "2026-09-19",
       "area": "Training / Live Call Support",
       "title": "Scenario discovery now guides the next approved step",
-      "changed": "Replaced the static Discovery Questions block in Scenario Scripts with interactive answer choices. Agents can select what the caller reports and OGCon immediately narrows the next approved action or suggests the correct linked route. All 19 Scenario Scripts now have guided discovery, including device-, role-, state-, and permission-specific branching where it changes the support path.",
+      "changed": "Replaced the static Discovery Questions block in Scenario Scripts with interactive answer choices. Agents can select what the caller reports and the workspace immediately narrows the next approved action or suggests the correct linked route. All 19 Scenario Scripts now have guided discovery, including device-, role-, state-, and permission-specific branching where it changes the support path.",
       "checks": [
         "Open Training & Resources → Scripts & Communication → Scenario Scripts → Bluetooth Headset.",
         "Select Connected to this device → They can’t hear me → Windows and confirm the recommendation changes to Select the headset as Zoom Microphone.",
-        "Switch to Can’t Join, choose Waiting Room, and confirm OGCon recommends the Waiting to Get In route instead of continuing failed-join troubleshooting.",
+        "Switch to Can’t Join, choose Waiting Room, and confirm the workspace recommends the Waiting to Get In route instead of continuing failed-join troubleshooting.",
         "Switch between scenarios and confirm discovery answers reset rather than leaking into the next caller scenario."
       ]
     },
@@ -135,9 +150,9 @@
     {
       "id": "updates-release-policy",
       "date": "2026-09-19",
-      "area": "Support Console / Change Log",
+      "area": "Support Workspace / Change Log",
       "title": "What’s New now follows a clear release-entry rule",
-      "changed": "Defined the What’s New page as the user-facing release log for OGCon. Every shipped user-facing feature, support-content change, or bug fix must receive an update entry. Test-only changes, CI maintenance, and invisible internal refactors stay out of the user-facing log so the page remains useful instead of becoming raw commit history.",
+      "changed": "Defined the What’s New page as the user-facing release log for the workspace. Every shipped user-facing feature, support-content change, or bug fix must receive an update entry. Test-only changes, CI maintenance, and invisible internal refactors stay out of the user-facing log so the page remains useful instead of becoming raw commit history.",
       "checks": [
         "Open What’s New / Updates and confirm September 19 entries appear above the September 18 history.",
         "Confirm the Update policy note explains which shipped changes are listed.",
@@ -203,7 +218,7 @@
       "date": "2026-09-18",
       "area": "Admin / Analytics",
       "title": "Privacy-safe usage, presence, and feedback administration",
-      "changed": "Connected the existing analytics tables to the Support Console. Authenticated sessions now heartbeat roughly once per minute, active time stops after five minutes without interaction, stale presence is treated as offline, Usage Analytics includes zero-usage users with Daily/Weekly/Monthly/Custom views, and the Feedback Queue now supports audited status changes plus Open Page routing. Production CI also moved to Node 24 for compatibility with the current Supabase packages.",
+      "changed": "Connected the existing analytics tables to the Support Workspace. Authenticated sessions now heartbeat roughly once per minute, active time stops after five minutes without interaction, stale presence is treated as offline, Usage Analytics includes zero-usage users with Daily/Weekly/Monthly/Custom views, and the Feedback Queue now supports audited status changes plus Open Page routing. Production CI also moved to Node 24 for compatibility with the current Supabase packages.",
       "checks": [
         "Sign in, use the Navigator, and confirm Admin Usage Analytics begins showing privacy-safe activity without storing search text, notes, clipboard content, or customer form values.",
         "Leave the Console untouched for more than five minutes and confirm the account becomes Idle rather than continuing to accumulate active time; stale heartbeat records should display Offline.",
@@ -218,7 +233,7 @@
       "title": "Dialogs, copy actions, training links, and admin actions stabilized",
       "changed": "Repaired Feedback Cancel navigation, exact Related Training deep-links, per-button copy success/failure states, dialog Escape/focus trapping/focus restoration, profile save error recovery, and duplicate-submit protection for admin actions.",
       "checks": [
-        "Cancel from the Feedback page and confirm you remain inside the Support Console.",
+        "Cancel from the Feedback page and confirm you remain inside the Support Workspace.",
         "Open a Related Training item from a process and confirm the exact selected video opens.",
         "Use multiple Copy controls and confirm only the clicked control shows Copied ✓ or Copy failed.",
         "Open process, report, profile, and admin dialogs with the keyboard and confirm Escape closes them and focus returns to the opener."
@@ -232,7 +247,7 @@
       "changed": "Extended the sidebar vertical-space protection to every browser width. When the window is wide but vertically short, the navigation list now owns the scrolling space while the console metadata and Logout remain anchored and readable instead of being pushed below the viewport.",
       "checks": [
         "Keep the browser fairly wide, then reduce only its height and confirm the sidebar does not clip the bottom metadata.",
-        "Confirm the navigation list scrolls when needed while Console v1.0, Owner Cjei A., Collaborator Nina F., and Logout remain visible.",
+        "Confirm the navigation list scrolls when needed while Workspace v1.0, Owner Cjei A., Collaborator Nina F., and Logout remain visible.",
         "Repeat with the admin account, where the navigation list is longest, and confirm the footer remains readable."
       ]
     },
@@ -241,11 +256,11 @@
       "date": "2026-09-18",
       "area": "Responsive Navigation",
       "title": "Mobile admin drawer keeps console metadata visible",
-      "changed": "Adjusted the short-window mobile and tablet drawer so the navigation list scrolls inside its own area instead of pushing the console metadata off-screen. Console version, update and review dates, Owner Cjei A., Collaborator Nina F., and Logout remain readable at the bottom, and the drawer width adapts to the available screen width.",
+      "changed": "Adjusted the short-window mobile and tablet drawer so the navigation list scrolls inside its own area instead of pushing the console metadata off-screen. Workspace version, update and review dates, Owner Cjei A., Collaborator Nina F., and Logout remain readable at the bottom, and the drawer width adapts to the available screen width.",
       "checks": [
         "Open the hamburger menu while the browser is narrow and vertically short, especially while signed in as an admin.",
-        "Confirm the navigation list can scroll without pushing the console metadata below the screen.",
-        "Confirm Console v1.0, Owner Cjei A., Collaborator Nina F., and Logout remain fully visible and readable at the bottom of the open drawer."
+        "Confirm the navigation list can scroll without pushing the workspace metadata below the screen.",
+        "Confirm Workspace v1.0, Owner Cjei A., Collaborator Nina F., and Logout remain fully visible and readable at the bottom of the open drawer."
       ]
     },
     {
@@ -264,12 +279,12 @@
     {
       "id": "updates-console-metadata",
       "date": "2026-09-18",
-      "area": "Support Console",
+      "area": "Support Workspace",
       "title": "What’s New / Updates and console metadata",
-      "changed": "Added a shared update history for user-facing changes, plus visible console version, effective date, last updated date, owner, collaborator, and next review information.",
+      "changed": "Added a shared update history for user-facing changes, plus visible workspace version, effective date, last updated date, owner, collaborator, and next review information.",
       "checks": [
         "Open What’s New / Updates from the sidebar or the version chip in the header.",
-        "Confirm Console Version 1.0, Owner Cjei A., Collaborator Nina F., and the review dates are visible.",
+        "Confirm Workspace Version 1.0, Owner Cjei A., Collaborator Nina F., and the review dates are visible.",
         "Confirm update entries show both What changed and What to check."
       ]
     },
@@ -300,9 +315,9 @@
     {
       "id": "responsive-console-shell",
       "date": "2026-09-18",
-      "area": "Console Navigation",
+      "area": "Workspace Navigation",
       "title": "Responsive sidebar and compact header stabilized",
-      "changed": "Unified the authenticated console at the 800px breakpoint, fixed tablet overlap and hidden-sidebar slivers, added click-outside closing, closed the drawer after navigation, exposed menu state for accessibility, and corrected the compact Zoom Support Console brand alignment.",
+      "changed": "Unified the authenticated console at the 800px breakpoint, fixed tablet overlap and hidden-sidebar slivers, added click-outside closing, closed the drawer after navigation, exposed menu state for accessibility, and corrected the compact Zoom Support Workspace brand alignment.",
       "checks": [
         "At desktop width, confirm the sidebar remains normally visible.",
         "At 768px or mobile width, confirm the hamburger opens the drawer and the backdrop closes it.",

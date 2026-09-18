@@ -6,11 +6,10 @@ import { describe, expect, it } from 'vitest'
 import App from './App'
 
 describe('application access gate', () => {
-  it('uses the neutral Support Workspace identity on the sign-in page', async () => {
+  it('uses the Ogletree Support Workspace identity on the sign-in page', async () => {
     render(<App />)
-    await waitFor(() => expect(screen.getByRole('heading', { name: 'Support Workspace' })).toBeInTheDocument())
-    expect(screen.queryByRole('img', { name: 'OGCon' })).not.toBeInTheDocument()
-    expect(readFileSync(join(cwd(), 'index.html'), 'utf8')).toContain('<title>Support Workspace</title>')
+    await waitFor(() => expect(screen.getByRole('heading', { name: 'Ogletree Support Workspace' })).toBeInTheDocument())
+        expect(readFileSync(join(cwd(), 'index.html'), 'utf8')).toContain('<title>Ogletree Support Workspace</title>')
   })
 
   it('shows username-only sign in with activation instead of public registration', async () => {

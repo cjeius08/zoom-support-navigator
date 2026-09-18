@@ -144,7 +144,7 @@
 .category-icon-devices { color: #ffd77f; }
 .category-icon-support { color: #a9c9ff; }
 
-/* Give the Support Console its own recognizable product mark instead of a generic/plain symbol. */
+/* Give the Ogletree Support Workspace a consistent accessible product mark. */
 .console-brand {
   display: flex;
   flex-direction: row;
@@ -215,23 +215,32 @@
 }
 
 
-/* OGCon product branding */
+/* Ogletree Support Workspace product branding */
 .brand-mark {
-  display: block;
+  display: inline-grid;
+  gap: .08rem;
   flex: 0 0 auto;
-  object-fit: contain;
-  object-position: left center;
+  color: #f5f8fb;
+  line-height: 1.05;
 }
 
-.brand-mark-header {
-  width: clamp(7.1rem, 8vw, 8.4rem);
-  height: 2.45rem;
+.brand-mark-client {
+  color: #8fb3cc;
+  font-size: .62rem;
+  font-weight: 750;
+  letter-spacing: .1em;
+  text-transform: uppercase;
 }
 
-.brand-mark-login {
-  width: min(19rem, 72vw);
-  height: auto;
-  max-height: 8rem;
+.brand-mark strong {
+  color: #f5f8fb;
+  font-size: .9rem;
+  font-weight: 780;
+  letter-spacing: -.02em;
+}
+
+.brand-mark-login strong {
+  font-size: 1.35rem;
 }
 
 .console-brand-copy {
@@ -262,15 +271,6 @@
 }
 
 @media (max-width: 640px) {
-  .brand-mark-header {
-    width: 6.7rem;
-    height: 2.15rem;
-  }
-
-  .brand-mark-login {
-    width: min(16rem, 78vw);
-  }
-
   .console-brand-copy > span {
     display: none;
   }

@@ -73,7 +73,7 @@ export const COMMON_ISSUE_ROUTES = [
         url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0059553',
       },
     ],
-    discrepancy: 'The approved “Can’t Join” Process Document lists reinstall early in its sequence. The training instructions separately state that uninstall/reinstall is not the first solution. OGCon therefore keeps reinstall out of this fast route and leaves it in the full approved process pending document review.',
+    discrepancy: 'The approved “Can’t Join” Process Document lists reinstall early in its sequence. The training instructions separately state that uninstall/reinstall is not the first solution. The workspace therefore keeps reinstall out of this fast route and leaves it in the full approved process pending document review.',
     visuals: [
       {
         title: 'Join from Zoom Workplace without signing in',
@@ -151,7 +151,7 @@ export const COMMON_ISSUE_ROUTES = [
         url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0066222',
       },
     ],
-    discrepancy: 'Current official Zoom Support articles use different labels for the mobile internet-audio choice: the mobile troubleshooting article says “Call Over Internet,” while the audio-testing article says “Wifi or Cellular Data.” OGCon therefore tells agents to use the internet-audio option actually shown on the caller’s device instead of treating either label as universal.',
+    discrepancy: 'Current official Zoom Support articles use different labels for the mobile internet-audio choice: the mobile troubleshooting article says “Call Over Internet,” while the audio-testing article says “Wifi or Cellular Data.” The workspace therefore tells agents to use the internet-audio option actually shown on the caller’s device instead of treating either label as universal.',
     visuals: [
       {
         title: 'Select and test the correct speaker',
@@ -233,7 +233,7 @@ export const COMMON_ISSUE_ROUTES = [
         url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062765',
       },
     ],
-    discrepancy: 'The approved mobile microphone Process Document says “Call Over Internet.” Current official Zoom Support articles are themselves inconsistent: the mobile troubleshooting article also says “Call Over Internet,” while the audio-testing article says “Wifi or Cellular Data.” OGCon keeps the approved process unchanged and tells agents to use the internet-audio option actually shown on the caller’s device.',
+    discrepancy: 'The approved mobile microphone Process Document says “Call Over Internet.” Current official Zoom Support articles are themselves inconsistent: the mobile troubleshooting article also says “Call Over Internet,” while the audio-testing article says “Wifi or Cellular Data.” The workspace keeps the approved process unchanged and tells agents to use the internet-audio option actually shown on the caller’s device.',
     visuals: [
       {
         title: 'Select and test the correct microphone',
@@ -452,7 +452,7 @@ export const COMMON_ISSUE_ROUTES = [
       { title: 'Participant controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062674' },
       { title: 'Using host and co-host controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065164' },
     ],
-    discrepancy: 'Current Zoom documentation can place Start share under More on mobile while the dedicated screen-sharing article refers to Share in the meeting controls. OGCon therefore guides by the visible Share / Start share label and checks More before calling the control missing.',
+    discrepancy: 'Current Zoom documentation can place Start share under More on mobile while the dedicated screen-sharing article refers to Share in the meeting controls. The workspace therefore guides by the visible Share / Start share label and checks More before calling the control missing.',
     visuals: [
       {
         title: 'Choose what to share',
@@ -695,7 +695,7 @@ export const COMMON_ISSUE_ROUTES = [
       { title: 'Participant controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062674' },
       { title: 'Using host and co-host controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065164' },
     ],
-    discrepancy: 'Current official Zoom Support articles differ on mobile placement of Participants during a meeting: the invitation article shows Participants in the meeting controls toolbar, while the participant-controls article places Participants under More. OGCon therefore tells agents to reveal the mobile controls, use Participants wherever it appears, and check More when it is not visible.',
+    discrepancy: 'Current official Zoom Support articles differ on mobile placement of Participants during a meeting: the invitation article shows Participants in the meeting controls toolbar, while the participant-controls article places Participants under More. The workspace therefore tells agents to reveal the mobile controls, use Participants wherever it appears, and check More when it is not visible.',
     visuals: [
       {
         title: 'Start from Participants to invite someone',
@@ -770,7 +770,7 @@ export const COMMON_ISSUE_ROUTES = [
     supportingSources: [
       { title: 'Changing settings in the Zoom Workplace desktop and mobile app', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060612' },
     ],
-    discrepancy: 'The approved internal process starts with updating Zoom when the app can still open, while Zoom’s current public article presents complete uninstall/reinstall earlier in its troubleshooting sequence. OGCon keeps the approved internal order and surfaces this sequence difference instead of silently rewriting it.',
+    discrepancy: 'The approved internal process starts with updating Zoom when the app can still open, while Zoom’s current public article presents complete uninstall/reinstall earlier in its troubleshooting sequence. The workspace keeps the approved internal order and surfaces this sequence difference instead of silently rewriting it.',
     visuals: [
       {
         title: 'Recognize the exact secure-connection error',

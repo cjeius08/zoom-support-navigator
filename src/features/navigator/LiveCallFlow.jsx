@@ -121,7 +121,7 @@ export function LiveCallFlow({ value, onChange, expanded: controlledExpanded, on
       <div>
         <p className="eyebrow">Live call context</p>
         <h2>Live Call Flow</h2>
-        <p>Set the caller context once. OGCon carries it into the troubleshooting route.</p>
+        <p>Set the caller context once. The workspace carries it into the troubleshooting route.</p>
       </div>
       <button type="button" className="live-call-reset" onClick={resetCall}>Reset call</button>
     </div>

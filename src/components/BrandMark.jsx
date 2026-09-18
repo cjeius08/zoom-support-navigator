@@ -1,6 +1,7 @@
-import { assetUrl } from '../lib/assetUrl'
-
 export function BrandMark({ variant = 'header', className = '' }) {
   const classes = ['brand-mark', `brand-mark-${variant}`, className].filter(Boolean).join(' ')
-  return <img className={classes} src={assetUrl('assets/ogcon-logo.png')} alt="OGCon" />
+  return <span className={classes} aria-label="Ogletree Support Workspace">
+    <span className="brand-mark-client">Ogletree</span>
+    <strong>Support Workspace</strong>
+  </span>
 }

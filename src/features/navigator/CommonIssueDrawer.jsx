@@ -188,7 +188,7 @@ export function CommonIssueDrawer({
             <h3>Select the caller’s device in Live Call Flow</h3>
             <p>{routeHasDeviceBoundary
               ? `This route has platform-specific guidance. Supported in this approved path: ${route.supportedDevices.join(', ')}.`
-              : 'OGCon is hiding device-specific app steps until the caller’s device is selected, so the agent does not give desktop-only instructions to a mobile or browser caller.'}</p>
+              : 'The workspace is hiding device-specific app steps until the caller’s device is selected, so the agent does not give desktop-only instructions to a mobile or browser caller.'}</p>
           </section>}
 
           {routeDeviceMismatch && <section className="common-issue-section common-issue-device-prompt">
@@ -200,7 +200,7 @@ export function CommonIssueDrawer({
           {hasRoleScopedChecks && !selectedRole && !routeDeviceMismatch && !routeNeedsDeviceSelection && <section className="common-issue-section common-issue-device-prompt">
             <p className="eyebrow">Caller role needed</p>
             <h3>Select Host or Participant in Live Call Flow</h3>
-            <p>OGCon is hiding role-specific steps until the caller’s role is selected, so participant-only permissions are not shown to a host.</p>
+            <p>The workspace is hiding role-specific steps until the caller’s role is selected, so participant-only permissions are not shown to a host.</p>
           </section>}
 
           {visibleChecks.length > 0 && <section className="common-issue-section">
