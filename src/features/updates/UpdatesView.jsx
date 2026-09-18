@@ -2,7 +2,7 @@ import { CONSOLE_METADATA, LAST_UPDATED, UPDATES, formatConsoleDate } from './up
 import './updates.css'
 
 const metadataRows = [
-  ['Console Version', CONSOLE_METADATA.version],
+  ['Workspace Version', CONSOLE_METADATA.version],
   ['Effective Date', formatConsoleDate(CONSOLE_METADATA.effectiveDate)],
   ['Last Updated', formatConsoleDate(LAST_UPDATED)],
   ['Owner', CONSOLE_METADATA.owner],
@@ -15,14 +15,14 @@ export function UpdatesView() {
     <section className="console-view updates-view" aria-labelledby="updates-title">
       <header className="view-heading updates-heading">
         <div>
-          <p className="eyebrow">Console change log</p>
+          <p className="eyebrow">Workspace change log</p>
           <h1 id="updates-title">What’s New / Updates</h1>
           <p>Recent user-facing changes and the exact items to check after an update.</p>
         </div>
-        <span className="updates-version-pill">Console v{CONSOLE_METADATA.version}</span>
+        <span className="updates-version-pill">Workspace v{CONSOLE_METADATA.version}</span>
       </header>
 
-      <dl className="console-metadata" aria-label="Console information">
+      <dl className="console-metadata" aria-label="Workspace information">
         {metadataRows.map(([label, value]) => (
           <div key={label}>
             <dt>{label}</dt>
