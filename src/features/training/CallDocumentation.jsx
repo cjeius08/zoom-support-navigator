@@ -130,7 +130,7 @@ export function CallDocumentation({ open = false, minimized = false, onMinimize 
 
     <div className="documentation-dock-body">
       <aside className="documentation-dock-privacy">
-        <strong>Not saved by OGCon</strong>
+        <strong>Not saved by the workspace</strong>
         <span>Copy to the approved case system, then clear the draft for the next call.</span>
       </aside>
 
