@@ -31,7 +31,7 @@ export const COMMON_ISSUE_ROUTES = [
     checks: [
       {
         title: 'Try the approved meeting details directly',
-        instruction: 'If the invite link is not working, open Zoom Workplace or join.zoom.us and enter the Meeting ID exactly as provided by the host/organizer. Enter the passcode if prompted.',
+        instruction: 'If the invite link is not working, open Zoom Workplace or zoom.us/join and enter the Meeting ID exactly as provided by the host/organizer. Enter the passcode if prompted.',
         expected: 'Zoom accepts the meeting details and moves the participant into the meeting or an expected waiting state.',
       },
       {
