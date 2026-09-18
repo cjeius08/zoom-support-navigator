@@ -9,6 +9,21 @@
   },
   "updates": [
     {
+      "id": "phase6-training-roadmap",
+      "date": "2026-09-19",
+      "area": "Training / Learning Path",
+      "title": "Training Roadmap now organizes how agents learn OGCon",
+      "changed": "Added a visual Training Roadmap as the default home inside Training & Resources. The roadmap gives agents one progressive learning path instead of presenting every resource at once: live-call method, device orientation, communication guardrails, common-issue scenario routing, then the upcoming guided visual lessons and Practice Lab. Available modules open the exact existing resource without duplicating content, while unfinished Phase 6 modules are clearly marked as coming in later batches.",
+      "checks": [
+        "Open Training & Resources and confirm Training Roadmap is the default selected tab.",
+        "Select Open call method and confirm Scripts & Communication opens directly to Call Language → Locate → Describe → Guide → Confirm.",
+        "Return to Training Roadmap and select Open scenario scripts; confirm Scenario Scripts opens directly.",
+        "Select Open device walkthroughs and confirm the existing Device Walkthroughs resource opens without duplicated roadmap content.",
+        "Confirm Guided visual lessons and Practice Lab are visible as future steps but do not have active launch buttons yet.",
+        "Select Open Video Library under Reinforce anytime and confirm the existing video library opens."
+      ]
+    },
+    {
       "id": "phase5-referral-handoff",
       "date": "2026-09-19",
       "area": "Live Tools / Referral Guidance",
