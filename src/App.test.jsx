@@ -6,11 +6,11 @@ import { describe, expect, it } from 'vitest'
 import App from './App'
 
 describe('application access gate', () => {
-  it('shows OGCon branding on the sign-in page', async () => {
+  it('uses the neutral Support Workspace identity on the sign-in page', async () => {
     render(<App />)
-    await waitFor(() => expect(screen.getByRole('img', { name: 'OGCon' })).toBeInTheDocument())
-    expect(readFileSync(join(cwd(), 'index.html'), 'utf8')).toContain('<title>OGCon Support Console</title>')
-    expect(screen.getByRole('heading', { name: 'Support Console' })).toBeInTheDocument()
+    await waitFor(() => expect(screen.getByRole('heading', { name: 'Support Workspace' })).toBeInTheDocument())
+    expect(screen.queryByRole('img', { name: 'OGCon' })).not.toBeInTheDocument()
+    expect(readFileSync(join(cwd(), 'index.html'), 'utf8')).toContain('<title>Support Workspace</title>')
   })
 
   it('shows username-only sign in with activation instead of public registration', async () => {
