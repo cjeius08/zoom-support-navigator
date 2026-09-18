@@ -38,12 +38,12 @@ it('lets an agent document a call and copy the generated summary', async () => {
 
   await user.type(screen.getByLabelText('Caller name'), 'Sample Caller')
   await user.type(screen.getByLabelText('Phone number'), '555-0100')
-  await user.type(screen.getByLabelText('Caller ref'), 'REF-123')
+  await user.type(screen.getByLabelText(/Caller ref/i), 'REF-123')
   await user.selectOptions(screen.getByLabelText('Device / platform'), 'Windows')
-  await user.type(screen.getByLabelText('Device and access'), 'Zoom desktop app')
-  await user.type(screen.getByLabelText('Exact issue'), 'Cannot hear the meeting.')
-  await user.type(screen.getByLabelText('Steps attempted + result'), 'Selected the correct speaker; test tone worked.')
-  await user.type(screen.getByLabelText('Resolution / next steps'), 'Meeting audio restored.')
+  await user.type(screen.getByLabelText(/Device and access/i), 'Zoom desktop app')
+  await user.type(screen.getByLabelText(/Exact issue/i), 'Cannot hear the meeting.')
+  await user.type(screen.getByLabelText(/Steps attempted \+ result/i), 'Selected the correct speaker; test tone worked.')
+  await user.type(screen.getByLabelText(/Resolution \/ next steps/i), 'Meeting audio restored.')
   await user.click(screen.getByRole('button', { name: 'Resolved' }))
 
   const preview = screen.getByRole('heading', { name: 'Documentation preview' }).closest('section')
@@ -63,7 +63,7 @@ it('publishes only non-customer screen context to the global report context', as
   render(<CallDocumentation onReportContextChange={onReportContextChange} />)
 
   await user.type(screen.getByLabelText('Caller name'), 'Private Caller Name')
-  await user.type(screen.getByLabelText('Exact issue'), 'Private case detail')
+  await user.type(screen.getByLabelText(/Exact issue/i), 'Private case detail')
   await user.selectOptions(screen.getByLabelText('Device / platform'), 'Mac')
   await user.click(screen.getByRole('button', { name: 'Referred for Additional Assistance' }))
 
@@ -84,13 +84,13 @@ it('clears the temporary draft only after confirmation', async () => {
   render(<CallDocumentation />)
 
   await user.type(screen.getByLabelText('Caller name'), 'Sample Caller')
-  await user.type(screen.getByLabelText('Exact issue'), 'Test issue')
+  await user.type(screen.getByLabelText(/Exact issue/i), 'Test issue')
   await user.click(screen.getByRole('button', { name: 'Resolved' }))
   await user.click(screen.getByRole('button', { name: 'Clear documentation' }))
 
   expect(confirm).toHaveBeenCalled()
   expect(screen.getByLabelText('Caller name')).toHaveValue('')
-  expect(screen.getByLabelText('Exact issue')).toHaveValue('')
+  expect(screen.getByLabelText(/Exact issue/i)).toHaveValue('')
   expect(screen.getByRole('button', { name: 'Resolved' })).toHaveAttribute('aria-pressed', 'false')
 
   confirm.mockRestore()
