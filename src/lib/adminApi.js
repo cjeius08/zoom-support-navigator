@@ -119,6 +119,7 @@ export async function loadReadinessReport() {
     loadReadinessAdminReport(READINESS_QUESTION_SETS.deviceNavigation),
     loadReadinessAdminReport(READINESS_QUESTION_SETS.troubleshootingJudgment),
     loadReadinessAdminReport(READINESS_QUESTION_SETS.scopeReferralJudgment),
+    loadReadinessAdminReport(READINESS_QUESTION_SETS.liveCallReadiness),
   ])
 
   return {
@@ -127,6 +128,7 @@ export async function loadReadinessReport() {
       { id: 'device-navigation', number: 2, title: 'Device & Navigation Awareness', ...parts[1] },
       { id: 'troubleshooting-judgment', number: 3, title: 'Troubleshooting Judgment', ...parts[2] },
       { id: 'scope-referral', number: 4, title: 'Scope & Referral Judgment', ...parts[3] },
+      { id: 'live-call-readiness', number: 5, title: 'Live Call Readiness', ...parts[4] },
     ],
   }
 }
