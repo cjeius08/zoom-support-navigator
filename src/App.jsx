@@ -16,6 +16,16 @@ import './styles.css'
 import './accessibility-ui.css'
 import './features/shell/responsiveShell.css'
 
+const EMPTY_REPORT_CONTEXT = {
+  selected_tab: null,
+  current_section: null,
+  active_device: null,
+  active_caller_role: null,
+  active_common_issue: null,
+  process_id: null,
+  category_id: null,
+}
+
 export default function App() {
   const [activationOpen, setActivationOpen] = useState(false)
   const [error, setError] = useState('')
@@ -25,31 +35,72 @@ export default function App() {
   const [view, setView] = useState('navigator')
   const [trainingVideoId, setTrainingVideoId] = useState(null)
   const [navigatorProcessId, setNavigatorProcessId] = useState(null)
+  const [navigatorCommonIssueId, setNavigatorCommonIssueId] = useState(null)
+  const [reportContext, setReportContext] = useState(EMPTY_REPORT_CONTEXT)
   const [showPassword, setShowPassword] = useState(false)
   const { trackEvent } = useUsageTracking(profile?.id ?? null, profile ? view : null)
   const accessStyle = { '--login-workspace-image': `url(${assetUrl('assets/login-workspace-background.png')})` }
 
+  function updateReportContext(nextContext) {
+    setReportContext(current => ({ ...current, ...nextContext }))
+  }
+
   function navigate(nextView) {
     trackEvent({ eventType: 'navigation', routeId: nextView, toolId: 'navigation' })
     if (nextView === 'training') setTrainingVideoId(null)
-    if (nextView === 'navigator') setNavigatorProcessId(null)
+    if (nextView === 'navigator') {
+      setNavigatorProcessId(null)
+      setNavigatorCommonIssueId(null)
+    }
+    setReportContext(EMPTY_REPORT_CONTEXT)
     setView(nextView)
   }
 
   function openTraining(videoId) {
     trackEvent({ eventType: 'training_open', routeId: 'training', toolId: typeof videoId === 'string' ? videoId : 'library' })
     setTrainingVideoId(typeof videoId === 'string' ? videoId : null)
+    setReportContext({
+      ...EMPTY_REPORT_CONTEXT,
+      selected_tab: 'Video Library',
+      current_section: typeof videoId === 'string' ? videoId : null,
+    })
     setView('training')
   }
 
   function openFeedbackTarget(item) {
     const safeRoutes = new Set(['navigator', 'training', 'updates', 'feedback'])
+    if (item?.active_common_issue) {
+      setNavigatorProcessId(null)
+      setNavigatorCommonIssueId(item.active_common_issue)
+      setReportContext({
+        ...EMPTY_REPORT_CONTEXT,
+        active_common_issue: item.active_common_issue,
+        selected_tab: item.selected_tab || null,
+        active_device: item.active_device || null,
+        active_caller_role: item.active_caller_role || null,
+      })
+      setView('navigator')
+      return
+    }
     if (item?.process_id) {
+      setNavigatorCommonIssueId(null)
       setNavigatorProcessId(item.process_id)
+      setReportContext({
+        ...EMPTY_REPORT_CONTEXT,
+        process_id: item.process_id,
+        category_id: item.category_id || null,
+        selected_tab: item.selected_tab || null,
+      })
       setView('navigator')
       return
     }
     setNavigatorProcessId(null)
+    setNavigatorCommonIssueId(null)
+    setReportContext({
+      ...EMPTY_REPORT_CONTEXT,
+      selected_tab: item?.selected_tab || null,
+      current_section: item?.current_section || null,
+    })
     setView(safeRoutes.has(item?.route_id) ? item.route_id : 'navigator')
   }
 
@@ -78,8 +129,8 @@ export default function App() {
   if (loading) return <main className="access-shell"><p>Loading secure session…</p></main>
   if (profile?.must_change_password) return <ForcePasswordChange onChange={async password => { await changeOwnPassword(password); setProfile(await getCurrentProfile()) }} onLogout={async () => { await signOut(); setProfile(null) }} />
   if (profile) {
-    const content = view==='navigator'?<Navigator onFeedback={submitFeedback} onOpenTraining={openTraining} onTrackEvent={trackEvent} initialProcessId={navigatorProcessId}/>:view==='training'?<TrainingResources initialVideoId={trainingVideoId}/>:view==='updates'?<UpdatesView/>:view==='feedback'?<FeedbackPage onSubmit={submitFeedback} onCancel={()=>navigate('navigator')}/>:view==='admin'?<AdminHome onNavigate={navigate}/>:view==='team'?<TeamManagement/>:view==='usage'?<UsageAnalytics/>:<FeedbackQueue onOpenPage={openFeedbackTarget}/>
-    return <AppShell profile={profile} currentView={view} onNavigate={navigate} onPasswordChange={changeOwnPassword} onAvatarChange={async avatarId=>{await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}} onLogout={async()=>{await signOut();setProfile(null)}}>{content}</AppShell>
+    const content = view==='navigator'?<Navigator onOpenTraining={openTraining} onTrackEvent={trackEvent} initialProcessId={navigatorProcessId} initialCommonIssueId={navigatorCommonIssueId} onReportContextChange={updateReportContext}/>:view==='training'?<TrainingResources initialVideoId={trainingVideoId} onReportContextChange={updateReportContext}/>:view==='updates'?<UpdatesView/>:view==='feedback'?<FeedbackPage onSubmit={submitFeedback} onCancel={()=>navigate('navigator')}/>:view==='admin'?<AdminHome onNavigate={navigate}/>:view==='team'?<TeamManagement/>:view==='usage'?<UsageAnalytics/>:<FeedbackQueue onOpenPage={openFeedbackTarget}/>
+    return <AppShell profile={profile} currentView={view} onNavigate={navigate} onFeedback={submitFeedback} reportContext={reportContext} onPasswordChange={changeOwnPassword} onAvatarChange={async avatarId=>{await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}} onLogout={async()=>{await signOut();setProfile(null)}}>{content}</AppShell>
   }
 
   if (activationOpen) return <main className="access-shell" style={accessStyle}><section className="access-card"><ActivateAccountForm onActivate={activateAccount} onCancel={()=>setActivationOpen(false)}/></section></main>
