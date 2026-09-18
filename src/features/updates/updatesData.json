@@ -8,6 +8,19 @@
   },
   "updates": [
     {
+      "id": "final-qa-accessibility-gate",
+      "date": "2026-09-18",
+      "area": "Accessibility / Release QA",
+      "title": "Final QA gate and landmark accessibility cleanup",
+      "changed": "Completed the pre-revamp release QA gate. Removed the nested main landmark from the Navigator, expanded the permanent Smart Search acceptance matrix, and added regression checks for visible keyboard focus, narrow and zoomed layouts, reduced motion, responsive navigation, and search-suggestion clipping.",
+      "checks": [
+        "Use keyboard-only navigation and confirm interactive controls show a visible focus ring.",
+        "Resize the browser through compact desktop, tablet, and narrow mobile widths and confirm navigation, cards, process drawers, feedback actions, and admin usage controls remain reachable without horizontal clipping.",
+        "Enable reduced motion in the operating system and confirm transitions/animations are minimized.",
+        "Search CAN'T HEAR, microphone issue, camra not working, cant jion, bluetooh, screen share, and share screen and confirm the intended approved processes remain discoverable."
+      ]
+    },
+    {
       "id": "admin-analytics-accuracy",
       "date": "2026-09-18",
       "area": "Admin / Analytics",
