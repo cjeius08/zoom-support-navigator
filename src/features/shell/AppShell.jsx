@@ -5,7 +5,6 @@ import { AvatarPicker } from '../profile/AvatarPicker'
 import { CONSOLE_METADATA, LAST_UPDATED, formatShortConsoleDate } from '../updates/updatesData'
 import '../updates/updates.css'
 import { useDialogFocus } from '../../lib/useDialogFocus'
-import { BrandMark } from '../../components/BrandMark'
 
 const agentLinks = [['navigator', 'Navigator'], ['training', 'Training & Resources'], ['updates', 'What’s New / Updates'], ['feedback', 'Feedback']]
 const adminLinks = [['admin', 'Admin Home'], ['team', 'Team Management'], ['usage', 'Usage Analytics'], ['feedback_queue', 'Feedback Queue']]
@@ -96,7 +95,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
       >
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
       </button>
-      <div className="console-brand"><BrandMark variant="header" /><span className="console-brand-copy"><span>Support Console</span></span></div>
+      <div className="console-brand console-brand-neutral" aria-label="Support Workspace"><span className="console-brand-title">Support Workspace</span></div>
       <button className="console-version-chip" type="button" onClick={() => onNavigate('updates')}>
         <span className="version-console-label">Console </span>v{CONSOLE_METADATA.version}<span className="version-updated-label"> · Updated {formatShortConsoleDate(LAST_UPDATED)}</span>
       </button>
