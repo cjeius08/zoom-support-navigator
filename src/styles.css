@@ -1994,6 +1994,18 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   color: #aabcc9;
   line-height: 1.5;
 }
+.communication-source-stamp {
+  display: grid;
+  justify-items: end;
+  gap: .3rem;
+  max-width: 24rem;
+}
+.communication-source-stamp small {
+  color: #7891a2;
+  font-size: .6rem;
+  line-height: 1.35;
+  text-align: right;
+}
 .communication-mode-tabs {
   display: inline-flex;
   gap: .4rem;
