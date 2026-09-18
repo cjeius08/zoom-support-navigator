@@ -16,10 +16,10 @@ function ruleBody(selector) {
 
 describe('search suggestion presentation', () => {
   it('allows the suggestion list to escape the hero and layer above following content', () => {
-    const heroRule = ruleBody('.hero')
-    expect(heroRule).toMatch(/overflow\s*:\s*visible/)
-    expect(heroRule).toMatch(/position\s*:\s*relative/)
-    expect(heroRule).toMatch(/z-index\s*:\s*[1-9]\d*/)
+    const searchCardRule = ruleBody('.smart-search-card')
+    expect(searchCardRule).toMatch(/overflow\s*:\s*visible/)
+    expect(searchCardRule).toMatch(/position\s*:\s*relative/)
+    expect(searchCardRule).toMatch(/z-index\s*:\s*[1-9]\d*/)
   })
 
   it('keeps the suggestion list positioned as an overlay below the search field', () => {
