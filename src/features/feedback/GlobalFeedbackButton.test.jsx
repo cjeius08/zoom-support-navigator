@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { cwd } from 'node:process'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
@@ -81,4 +84,16 @@ it('keeps the global report button independent of the current page', () => {
 
   rerender(<GlobalFeedbackButton currentView="usage" reportContext={{}} onSubmit={vi.fn()} />)
   expect(screen.getByRole('button', { name: /Report an issue from Usage Analytics/i })).toBeInTheDocument()
+})
+
+
+it('uses viewport-fixed portal styling so resize and page containers cannot cover the report button', () => {
+  const css = readFileSync(join(cwd(), 'src/styles.css'), 'utf8')
+
+  expect(css).toMatch(/\.global-feedback-fab\s*\{[^}]*position:\s*fixed/)
+  expect(css).toMatch(/\.global-feedback-fab\s*\{[^}]*right:\s*max\(12px,\s*env\(safe-area-inset-right\)\)/)
+  expect(css).toMatch(/\.global-feedback-fab\s*\{[^}]*bottom:\s*max\(12px,\s*env\(safe-area-inset-bottom\)\)/)
+  expect(css).toMatch(/\.global-feedback-fab\s*\{[^}]*z-index:\s*30000/)
+  expect(css).toMatch(/\.global-feedback-fab\s*\{[^}]*max-width:\s*calc\(100vw - 24px\)/)
+  expect(css).toMatch(/\.global-feedback-backdrop\s*\{[^}]*position:\s*fixed[^}]*inset:\s*0[^}]*z-index:\s*31000/)
 })
