@@ -65,6 +65,39 @@ it('exposes mobile navigation state and closes it after navigation', async () =>
   }
 })
 
+
+it('opens Call Documentation as a global dock without navigating away and preserves the draft', async () => {
+  const user = userEvent.setup()
+  const onNavigate = vi.fn()
+  render(<AppShell profile={agentProfile} onNavigate={onNavigate}><div>Current page content</div></AppShell>)
+
+  const toolButton = screen.getByRole('button', { name: 'Call Documentation' })
+  expect(toolButton).toHaveAttribute('aria-pressed', 'false')
+
+  await user.click(toolButton)
+  expect(onNavigate).not.toHaveBeenCalled()
+  expect(toolButton).toHaveAttribute('aria-pressed', 'true')
+  expect(screen.getByRole('complementary', { name: /Call Documentation/i })).toBeInTheDocument()
+
+  await user.type(screen.getByLabelText('Caller name'), 'Persistent Caller')
+  await user.click(screen.getByRole('button', { name: 'Minimize Call Documentation' }))
+  expect(screen.getByLabelText('Call Documentation minimized')).toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: /Call Documentation/i }))
+  expect(screen.getByLabelText('Caller name')).toHaveValue('Persistent Caller')
+
+  await user.click(screen.getByRole('button', { name: 'Close Call Documentation' }))
+  expect(screen.queryByLabelText('Caller name')).not.toBeInTheDocument()
+  expect(toolButton).toHaveAttribute('aria-pressed', 'false')
+
+  await user.click(toolButton)
+  expect(screen.getByLabelText('Caller name')).toHaveValue('Persistent Caller')
+
+  await user.click(screen.getByRole('button', { name: 'Training & Resources' }))
+  expect(onNavigate).toHaveBeenCalledWith('training')
+  expect(screen.getByLabelText('Caller name')).toHaveValue('Persistent Caller')
+})
+
 it('uses the tablet breakpoint for the authenticated sidebar without leaving a closed-sidebar sliver', () => {
   const baseCss = readFileSync(join(cwd(), 'src/styles.css'), 'utf8')
   const responsiveCss = readFileSync(join(cwd(), 'src/features/shell/responsiveShell.css'), 'utf8')
