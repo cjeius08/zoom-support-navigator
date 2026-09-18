@@ -31,6 +31,14 @@ export function UpdatesView() {
         ))}
       </dl>
 
+      {CONSOLE_METADATA.updatePolicy && <aside className="updates-policy" aria-label="Update policy">
+        <div>
+          <span>Update policy</span>
+          <strong>What gets listed here?</strong>
+        </div>
+        <p>{CONSOLE_METADATA.updatePolicy}</p>
+      </aside>}
+
       <div className="updates-list" aria-label="Update history">
         {UPDATES.map((entry) => (
           <article className="update-card" key={entry.id}>
