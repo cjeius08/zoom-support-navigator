@@ -143,7 +143,7 @@ export function buildCallGuide(process) {
     globalScripts,
     quickGuide,
     callouts,
-    referralDetails: [process?.referral, ...callouts.filter((callout) => callout.kind === 'referral').flatMap((callout) => callout.lines)].filter(Boolean),
+    referralDetails: [process?.referral].filter(Boolean),
     whatToAsk: questionLines.map((text) => ({ text, origin: 'source' })).concat(derivedQuestion ? [{ text: derivedQuestion, origin: 'derived' }] : []),
     suggestedScript: allScripts.length ? { label: 'Suggested Script', origin: 'source', text: allScripts.join('\n\n') } : { label: 'Console Suggested Script', origin: 'derived', text: derivedScript(process) },
   }
