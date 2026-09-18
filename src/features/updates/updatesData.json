@@ -8,6 +8,19 @@
   },
   "updates": [
     {
+      "id": "uiux-phase1-core-live-call-flow",
+      "date": "2026-09-18",
+      "area": "Live Support / UI UX Phase 1",
+      "title": "Core Live Call Flow added to Navigator",
+      "changed": "Added the Phase 1 live-call foundation at the top of Navigator: Opening → Acknowledgment → Identify → Resolution → Recap → Adjacent Issues → Closing. The flow uses Step / Agent Action / Suggested Script columns, includes device selection for Windows, Mac, iPhone, Android, and Browser, identifies Host vs Participant, and records Resolved / Unresolved / Escalation Needed status. The previous four-step workflow banner was removed so agents see one clear call journey. Existing search and process tools remain available below the flow.",
+      "checks": [
+        "Open Navigator and confirm Live Call Flow is the first primary work block before Search and the process library.",
+        "Select a device, Host or Participant, and a resolution status; each selected option should remain visibly pressed.",
+        "Use Reset call and confirm all call-context selections clear for the next caller.",
+        "Resize to mobile width and confirm each call-flow row remains readable as Step, Agent Action, and Suggested Script without horizontal clipping."
+      ]
+    },
+    {
       "id": "strict-qa-remediation",
       "date": "2026-09-18",
       "area": "Accessibility / Usability / Security",
