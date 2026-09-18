@@ -110,7 +110,7 @@ export const COMMON_ISSUE_ROUTES = [
     checks: [
       {
         title: 'Confirm they joined meeting audio',
-        instruction: 'If Zoom is showing Join Audio, connect to meeting audio first. On mobile, Zoom may offer WiFi or Cellular Data for internet audio.',
+        instruction: 'If Zoom is showing Join Audio, connect to meeting audio first. On mobile, choose the internet-audio option shown on the device before continuing.',
         expected: 'The meeting shows the normal microphone/audio control instead of an unjoined-audio state.',
       },
       {
@@ -147,6 +147,7 @@ export const COMMON_ISSUE_ROUTES = [
         url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0066222',
       },
     ],
+    discrepancy: 'Current official Zoom Support articles use different labels for the mobile internet-audio choice: the mobile troubleshooting article says “Call Over Internet,” while the audio-testing article says “Wifi or Cellular Data.” OGCon therefore tells agents to use the internet-audio option actually shown on the caller’s device instead of treating either label as universal.',
     visuals: [
       {
         title: 'Audio-device menu indicator',
@@ -187,7 +188,7 @@ export const COMMON_ISSUE_ROUTES = [
       },
       {
         title: 'Confirm the participant joined meeting audio',
-        instruction: 'If Zoom is showing Join Audio, connect to meeting audio before testing the microphone. On current Zoom mobile guidance, internet audio is shown as Wifi or Cellular Data.',
+        instruction: 'If Zoom is showing Join Audio, connect to meeting audio before testing the microphone. On mobile, choose the internet-audio option shown on the device before continuing.',
         expected: 'The meeting shows the normal microphone/audio control and Zoom is connected to meeting audio.',
       },
       {
@@ -224,7 +225,7 @@ export const COMMON_ISSUE_ROUTES = [
         url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062765',
       },
     ],
-    discrepancy: 'The approved mobile microphone Process Document uses the older wording “Call Over Internet.” Current official Zoom Support uses “Wifi or Cellular Data” for internet audio on mobile. OGCon shows the current Zoom wording while keeping the approved source unchanged and flags this difference for document review.',
+    discrepancy: 'The approved mobile microphone Process Document says “Call Over Internet.” Current official Zoom Support is itself inconsistent: the mobile troubleshooting article also says “Call Over Internet,” while the audio-testing article says “Wifi or Cellular Data.” OGCon keeps the approved process unchanged and tells agents to use the internet-audio option actually shown on the caller’s device.',
     visuals: [
       {
         title: 'Muted microphone control',
