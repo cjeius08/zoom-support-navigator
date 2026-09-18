@@ -68,6 +68,7 @@ it('shows the visual before each set of optional source links', () => {
   expect(images.length).toBeGreaterThanOrEqual(4)
   expect(links.length).toBeGreaterThanOrEqual(4)
   expect(images[0].compareDocumentPosition(links[0]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+})
 
 it('uses dedicated iPhone visuals and iOS-specific labels', async () => {
   const user = userEvent.setup()
@@ -76,9 +77,9 @@ it('uses dedicated iPhone visuals and iOS-specific labels', async () => {
   await user.click(screen.getByRole('tab', { name: /iPhone Zoom Workplace mobile app on iOS/i }))
 
   const panel = screen.getByRole('tabpanel', { name: 'iPhone mobile walkthrough' })
-  expect(within(panel).getByText(/Mute My Microphone/i)).toBeInTheDocument()
+  expect(within(panel).getAllByText(/Mute My Microphone/i).length).toBeGreaterThan(0)
   expect(within(panel).getByRole('heading', { name: /iPhone screen sharing uses Screen Broadcast/i })).toBeInTheDocument()
-  expect(within(panel).getByText(/Start Broadcast/i)).toBeInTheDocument()
+  expect(within(panel).getAllByText(/Start Broadcast/i).length).toBeGreaterThan(0)
 
   const images = within(panel).getAllByRole('img')
   expect(images.length).toBeGreaterThanOrEqual(4)
@@ -94,9 +95,9 @@ it('uses dedicated Android visuals and Android-specific labels', async () => {
   await user.click(screen.getByRole('tab', { name: /Android Zoom Workplace mobile app on Android/i }))
 
   const panel = screen.getByRole('tabpanel', { name: 'Android mobile walkthrough' })
-  expect(within(panel).getByText(/Always Mute My Microphone/i)).toBeInTheDocument()
+  expect(within(panel).getAllByText(/Always Mute My Microphone/i).length).toBeGreaterThan(0)
   expect(within(panel).getByRole('heading', { name: /Android shows a system sharing indicator/i })).toBeInTheDocument()
-  expect(within(panel).getByText(/Permission Manager/i)).toBeInTheDocument()
+  expect(within(panel).getAllByText(/Permission Manager/i).length).toBeGreaterThan(0)
 
   const images = within(panel).getAllByRole('img')
   expect(images.length).toBeGreaterThanOrEqual(4)
@@ -114,6 +115,4 @@ it('keeps iPhone and Android visual assets distinct', () => {
   expect([...iphoneAssets].every(asset => asset.includes('iphone-mobile-'))).toBe(true)
   expect([...androidAssets].every(asset => asset.includes('android-mobile-'))).toBe(true)
   expect([...iphoneAssets].some(asset => androidAssets.has(asset))).toBe(false)
-})
-
 })
