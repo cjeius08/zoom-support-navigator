@@ -197,7 +197,7 @@ export const DEVICE_WALKTHROUGHS = [
         url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0064868',
       },
     ],
-  },,
+  },
   {
     id: 'iphone',
     label: 'iPhone',
