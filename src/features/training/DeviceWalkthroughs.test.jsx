@@ -7,8 +7,8 @@ import { expect, it } from 'vitest'
 import { DeviceWalkthroughs } from './DeviceWalkthroughs'
 import { DEVICE_WALKTHROUGHS, DEVICE_WALKTHROUGH_VERIFIED_AT } from './deviceWalkthroughs'
 
-it('covers Windows, Mac, iPhone, and Android in Phase 3 Batch 2', () => {
-  expect(DEVICE_WALKTHROUGHS.map(device => device.id)).toEqual(['windows', 'mac', 'iphone', 'android'])
+it('covers the final five-device Phase 3 baseline', () => {
+  expect(DEVICE_WALKTHROUGHS.map(device => device.id)).toEqual(['windows', 'mac', 'iphone', 'android', 'browser'])
   expect(DEVICE_WALKTHROUGH_VERIFIED_AT).toBe('September 18, 2026')
 })
 
@@ -115,4 +115,38 @@ it('keeps iPhone and Android visual assets distinct', () => {
   expect([...iphoneAssets].every(asset => asset.includes('iphone-mobile-'))).toBe(true)
   expect([...androidAssets].every(asset => asset.includes('android-mobile-'))).toBe(true)
   expect([...iphoneAssets].some(asset => androidAssets.has(asset))).toBe(false)
+})
+
+
+it('uses dedicated Browser visuals and Web App-specific guidance', async () => {
+  const user = userEvent.setup()
+  render(<DeviceWalkthroughs />)
+
+  await user.click(screen.getByRole('tab', { name: /Browser Zoom Web App in a desktop browser/i }))
+
+  const panel = screen.getByRole('tabpanel', { name: 'Browser / Zoom Web App walkthrough' })
+  expect(within(panel).getByRole('heading', { name: /Stay in the browser instead of launching the app/i })).toBeInTheDocument()
+  expect(within(panel).getAllByText(/Join from your browser/i).length).toBeGreaterThan(0)
+  expect(within(panel).getByRole('heading', { name: /Use the Web App meeting toolbar/i })).toBeInTheDocument()
+  expect(within(panel).getByRole('heading', { name: /Web App settings stay inside the meeting/i })).toBeInTheDocument()
+  expect(within(panel).getByRole('heading', { name: /Allow the browser to use microphone, camera, and screen share/i })).toBeInTheDocument()
+  expect(within(panel).getAllByText(/profile picture/i).length).toBeGreaterThan(0)
+
+  const images = within(panel).getAllByRole('img')
+  expect(images.length).toBeGreaterThanOrEqual(4)
+  for (const image of images) {
+    expect(image.getAttribute('src')).toMatch(/browser-(webapp-(join|controls)|permissions)\.svg$/)
+  }
+})
+
+it('keeps Browser visuals separate from installed-app walkthrough assets', () => {
+  const browser = DEVICE_WALKTHROUGHS.find(device => device.id === 'browser')
+  const installedAppAssets = new Set(
+    DEVICE_WALKTHROUGHS
+      .filter(device => device.id !== 'browser')
+      .flatMap(device => device.sections.map(section => section.image)),
+  )
+
+  expect(browser.sections.every(section => section.image.includes('browser-'))).toBe(true)
+  expect(browser.sections.some(section => installedAppAssets.has(section.image))).toBe(false)
 })
