@@ -34,14 +34,20 @@ it('locks the production browser configuration to Wagmi Support', () => {
 })
 
 it('keeps Medify project references out of browser source', () => {
-  const browserFiles = walkFiles('src').filter(path => /\.(js|jsx|ts|tsx|css)$/.test(path))
+  const browserFiles = walkFiles('src').filter(path =>
+    /\.(js|jsx|ts|tsx|css)$/.test(path)
+    && !/\.(test|spec)\.(js|jsx|ts|tsx)$/.test(path)
+  )
   const offenders = browserFiles.filter(path => /medify/i.test(read(path)))
 
   expect(offenders).toEqual([])
 })
 
 it('keeps privileged Supabase credentials out of browser source', () => {
-  const browserFiles = walkFiles('src').filter(path => /\.(js|jsx|ts|tsx)$/.test(path))
+  const browserFiles = walkFiles('src').filter(path =>
+    /\.(js|jsx|ts|tsx)$/.test(path)
+    && !/\.(test|spec)\.(js|jsx|ts|tsx)$/.test(path)
+  )
   const forbidden = [
     /SUPABASE_SERVICE_ROLE_KEY/i,
     /service[_-]?role[_-]?key/i,
