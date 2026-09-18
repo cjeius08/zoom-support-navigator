@@ -125,3 +125,38 @@ it('uses Zoom’s documented manual join address instead of an alternate hostnam
   expect(routeText).toContain('zoom.us/join')
   expect(routeText).not.toContain('join.zoom.us')
 })
+
+
+it('does not show desktop-only audio settings to an iPhone caller', async () => {
+  const user = userEvent.setup()
+  render(<Navigator />)
+
+  await user.click(screen.getByRole('button', { name: 'iPhone' }))
+  await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
+
+  const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
+  expect(within(dialog).queryByRole('heading', { name: 'Test and select the Zoom speaker' })).not.toBeInTheDocument()
+  expect(within(dialog).getByRole('heading', { name: 'Confirm they joined meeting audio' })).toBeInTheDocument()
+})
+
+it('shows desktop-only audio settings when Windows is the selected device', async () => {
+  const user = userEvent.setup()
+  render(<Navigator />)
+
+  await user.click(screen.getByRole('button', { name: 'Windows' }))
+  await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
+
+  const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
+  expect(within(dialog).getByRole('heading', { name: 'Test and select the Zoom speaker' })).toBeInTheDocument()
+})
+
+it('prompts for device context before exposing device-specific checks', async () => {
+  const user = userEvent.setup()
+  render(<Navigator />)
+
+  await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
+  const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
+
+  expect(within(dialog).getByText(/Select the caller’s device in Live Call Flow/i)).toBeInTheDocument()
+  expect(within(dialog).queryByRole('heading', { name: 'Test and select the Zoom speaker' })).not.toBeInTheDocument()
+})
