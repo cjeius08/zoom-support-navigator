@@ -5,6 +5,8 @@ import { ProcessDrawer } from './ProcessDrawer'
 import { searchProcesses } from './smartSearch'
 import { useDialogFocus } from '../../lib/useDialogFocus'
 import { LiveCallFlow } from './LiveCallFlow'
+import { CommonIssueDrawer } from './CommonIssueDrawer'
+import { COMMON_ISSUE_ROUTES, routeById, searchCommonIssueRoutes } from './commonIssueRoutes'
 
 const categories = [
   ['join', 'Joining Meetings', 'Links, waiting rooms, access errors'],
@@ -26,14 +28,6 @@ const categoryIconPaths = {
   support: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z M6 6l3 3 M15 15l3 3 M18 6l-3 3 M9 15l-3 3',
 }
 
-const commonIssues = [
-  ['Customer cannot hear anyone', 'zoom-audio-troubleshooting'],
-  ['Microphone is not working', 'troubleshooting-speaker-or-microphone-issues-in-the-zoom-desktop-app'],
-  ['Camera is not showing', 'zoom-camera-troubleshooting-during-a-meeting'],
-  ['Customer cannot join', 'troubleshooting-when-you-cant-join-a-zoom-meeting'],
-  ['Waiting for the host', 'waiting-for-the-host-to-start-a-meeting-or-webinar'],
-  ['Bluetooth headset issue', 'using-bluetooth-headphones-with-zoom-on-android-ios'],
-]
 
 function CategoryIcon({ type }) {
   return <span className={`category-icon category-icon-${type}`} data-testid="category-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d={categoryIconPaths[type]} /></svg></span>
@@ -47,6 +41,8 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
+  const [selectedRoute, setSelectedRoute] = useState(null)
+  const [callContext, setCallContext] = useState({ device: null, role: null, status: null })
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
   const [activeSuggestion, setActiveSuggestion] = useState(-1)
@@ -68,17 +64,24 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
   }, [initialProcessId, onTrackEvent])
 
   const searchMatches = useMemo(() => query.trim() ? searchProcesses(PROCESSES, query) : [], [query])
+  const routeMatches = useMemo(() => query.trim() ? searchCommonIssueRoutes(query) : [], [query])
 
   const visible = useMemo(() => {
     if (query.trim()) return searchMatches
     return category ? PROCESSES.filter(process => process.category === category) : []
   }, [category, query, searchMatches])
 
-  const suggestions = query.trim() ? searchMatches.slice(0, 6) : []
+  const suggestions = query.trim()
+    ? [
+        ...routeMatches.map(route => ({ kind: 'route', route })),
+        ...searchMatches.map(process => ({ kind: 'process', process })),
+      ].slice(0, 6)
+    : []
   const showSuggestions = suggestionsOpen && suggestions.length > 0
 
   function openProcess(process, toolId = 'process_card') {
     if (!process) return
+    setSelectedRoute(null)
     setSelected(process)
     onTrackEvent?.({
       eventType: 'process_open',
@@ -89,8 +92,21 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
     })
   }
 
-  function selectSuggestion(process) {
-    openProcess(process, 'search_suggestion')
+  function openRoute(route, toolId = 'common_issue') {
+    if (!route) return
+    setSelected(null)
+    setSelectedRoute(route)
+    onTrackEvent?.({
+      eventType: 'tool_open',
+      routeId: 'navigator',
+      categoryId: route.categoryId,
+      toolId: `common_issue_${route.id}_${toolId}`,
+    })
+  }
+
+  function selectSuggestion(suggestion) {
+    if (suggestion.kind === 'route') openRoute(suggestion.route, 'search_suggestion')
+    else openProcess(suggestion.process, 'search_suggestion')
     setSuggestionsOpen(false)
     setActiveSuggestion(-1)
   }
@@ -117,7 +133,7 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
   }
 
   return <section className="navigator" id="navigator" aria-label="Support Navigator">
-    <LiveCallFlow />
+    <LiveCallFlow value={callContext} onChange={setCallContext} />
     <section className="hero">
       <div className="hero-kicker"><span className="status-dot" /> Support process workspace</div>
       <h1>Find the next step <em>without opening documents.</em></h1>
@@ -143,28 +159,62 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
           placeholder="Search by issue, symptom, or process name"
         />
         {showSuggestions && <div className="search-suggestions" id="support-search-suggestions" role="listbox" aria-label="Search suggestions">
-          {suggestions.map((process, index) => <button
-            type="button"
-            role="option"
-            id={`support-search-option-${index}`}
-            className="search-suggestion"
-            aria-selected={activeSuggestion === index}
-            tabIndex={-1}
-            key={process.id}
-            onMouseMove={() => setActiveSuggestion(index)}
-            onClick={() => selectSuggestion(process)}
-          >
-            <span className="search-suggestion-copy"><strong>{process.title}</strong><small>{process.purpose}</small></span>
-            <span className="search-suggestion-category">{categoryLabel(process.category)}</span>
-          </button>)}
+          {suggestions.map((suggestion, index) => {
+            const isRoute = suggestion.kind === 'route'
+            const item = isRoute ? suggestion.route : suggestion.process
+            return <button
+              type="button"
+              role="option"
+              id={`support-search-option-${index}`}
+              className={`search-suggestion${isRoute ? ' search-suggestion-route' : ''}`}
+              aria-selected={activeSuggestion === index}
+              tabIndex={-1}
+              key={`${suggestion.kind}-${item.id}`}
+              onMouseMove={() => setActiveSuggestion(index)}
+              onClick={() => selectSuggestion(suggestion)}
+            >
+              <span className="search-suggestion-copy"><strong>{item.title}</strong><small>{isRoute ? item.subtitle : item.purpose}</small></span>
+              <span className="search-suggestion-category">{isRoute ? 'Common Issue Route' : categoryLabel(item.category)}</span>
+            </button>
+          })}
         </div>}
       </div>
-      <span className="sr-only" role="status" aria-live="polite">{query.trim() ? `${searchMatches.length} matching support ${searchMatches.length === 1 ? 'process' : 'processes'}.` : ''}</span>
+      <span className="sr-only" role="status" aria-live="polite">{query.trim() ? `${routeMatches.length} common issue ${routeMatches.length === 1 ? 'route' : 'routes'} and ${searchMatches.length} matching support ${searchMatches.length === 1 ? 'process' : 'processes'}.` : ''}</span>
     </section>
-    <div className="navigator-entry-grid"><section><p className="eyebrow">Start here</p><h2>What does the customer need?</h2><div className="category-grid">{categories.map(([id,name,description])=><button key={id} onClick={()=>{setCategory(id);setQuery('');setSuggestionsOpen(false);setActiveSuggestion(-1);onTrackEvent?.({eventType:'category_open',routeId:'navigator',categoryId:id})}}><CategoryIcon type={id} /><strong>{name}</strong><span>{description}</span></button>)}</div></section><section className="common-issues"><p className="eyebrow">Fastest routes</p><h2>Common Issues</h2><div>{commonIssues.map(([label,id])=><button key={id} onClick={()=>openProcess(PROCESSES.find(process=>process.id===id),'common_issue')}>{label}<span>→</span></button>)}</div></section></div>
+    <div className="navigator-entry-grid">
+      <section>
+        <p className="eyebrow">Start here</p>
+        <h2>What does the customer need?</h2>
+        <div className="category-grid">{categories.map(([id,name,description])=><button key={id} onClick={()=>{setCategory(id);setQuery('');setSuggestionsOpen(false);setActiveSuggestion(-1);onTrackEvent?.({eventType:'category_open',routeId:'navigator',categoryId:id})}}><CategoryIcon type={id} /><strong>{name}</strong><span>{description}</span></button>)}</div>
+      </section>
+      <section className="common-issues">
+        <p className="eyebrow">Fastest routes · Phase 2</p>
+        <h2>Common Issues</h2>
+        <p className="common-issues-intro">Start with what the caller is experiencing. Confirm the symptom before choosing the cause.</p>
+        <div className="phase-two-routes">
+          {[...new Set(COMMON_ISSUE_ROUTES.map(route => route.group))].map(group => <div className="phase-two-route-group" key={group}>
+            <span>{group}</span>
+            {COMMON_ISSUE_ROUTES.filter(route => route.group === group).map(route => <button type="button" key={route.id} onClick={() => openRoute(route)}>
+              <strong>{route.title}</strong>
+              <small>{route.subtitle}</small>
+              <span>→</span>
+            </button>)}
+          </div>)}
+        </div>
+      </section>
+    </div>
     {visible.length>0&&<section id="search-results" aria-live="polite"><h2>{query?`Results for “${query}”`:categories.find(c=>c[0]===category)?.[1]}</h2><div className="process-grid">{visible.map(process=><button className="process-card" key={process.id} onClick={()=>openProcess(process,'process_card')}><small>{process.category}</small><strong>{process.title}</strong><span>{process.purpose}</span><div className="process-meta">{process.images?.length>0&&<span>{process.images.length} source {process.images.length===1?'page':'pages'}</span>}{process.visualReferences?.length>0&&<span>{process.visualReferences.length} Zoom {process.visualReferences.length===1?'visual':'visuals'}</span>}</div><b>Open process →</b></button>)}</div></section>}
     <button type="button" className="feedback-fab" onClick={()=>setFeedbackOpen(true)}>Report an issue</button>
     {selected&&<ProcessDrawer process={selected} onClose={()=>setSelected(null)} onOpenTraining={onOpenTraining} onTrackEvent={onTrackEvent}/>}
+    {selectedRoute&&<CommonIssueDrawer
+      route={selectedRoute}
+      callContext={callContext}
+      onClose={()=>setSelectedRoute(null)}
+      onOpenRoute={routeId=>setSelectedRoute(routeById(routeId))}
+      onOpenProcess={processId=>openProcess(PROCESSES.find(process=>process.id===processId),'common_issue_full_process')}
+      onStatusChange={status=>setCallContext(current=>({...current,status}))}
+      onTrackEvent={onTrackEvent}
+    />}
     {feedbackOpen&&<div className="modal-backdrop" role="presentation" onMouseDown={event=>event.target===event.currentTarget&&setFeedbackOpen(false)}><div ref={feedbackDialogRef} tabIndex={-1} className="profile-panel" role="dialog" aria-modal="true" aria-label="Report an issue"><FeedbackForm context={{route_id:'navigator',page_label:'Navigator',process_id:selected?.id??null,category_id:selected?.category??null}} onCancel={()=>setFeedbackOpen(false)} onSubmit={async payload=>{await onFeedback?.(payload);setFeedbackOpen(false)}}/></div></div>}
   </section>
 }
