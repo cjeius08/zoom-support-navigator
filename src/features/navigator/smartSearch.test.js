@@ -20,13 +20,16 @@ describe('smart support search', () => {
 
   it.each([
     ['cant hear', 'zoom-audio-troubleshooting'],
+    ["CAN'T HEAR", 'zoom-audio-troubleshooting'],
     ['CAN’T HEAR', 'zoom-audio-troubleshooting'],
     ['cant hrar', 'zoom-audio-troubleshooting'],
     ['mic not working', 'troubleshooting-speaker-or-microphone-issues-in-the-zoom-desktop-app'],
+    ['microphone issue', 'troubleshooting-speaker-or-microphone-issues-in-the-zoom-desktop-app'],
     ['camra not working', 'zoom-camera-troubleshooting-during-a-meeting'],
     ['cant jion', 'troubleshooting-when-you-cant-join-a-zoom-meeting'],
     ['bluetooh', 'using-bluetooth-headphones-with-zoom-on-android-ios'],
     ['screen share', 'sharing-your-screen-desktop-or-content-in-zoom'],
+    ['share screen', 'sharing-your-screen-desktop-or-content-in-zoom'],
   ])('finds a useful process for %s', (query, expectedId) => {
     expect(idsFor(query)).toContain(expectedId)
   })
