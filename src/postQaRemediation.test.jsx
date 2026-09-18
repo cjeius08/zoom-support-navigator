@@ -9,6 +9,8 @@ import { Navigator } from './features/navigator/Navigator'
 import { AvatarPicker } from './features/profile/AvatarPicker'
 import { ProcessDrawer } from './features/navigator/ProcessDrawer'
 import { FeedbackForm } from './features/feedback/FeedbackForm'
+import { ActivateAccountForm } from './features/auth/ActivateAccountForm'
+import { ForcePasswordChange } from './features/auth/ForcePasswordChange'
 import { searchProcesses } from './features/navigator/smartSearch'
 import { buildCallGuide } from './features/navigator/processText'
 import { PROCESSES } from './data/processes'
@@ -21,6 +23,9 @@ function read(path) {
 
 describe('post-QA remediation gate', () => {
   it('removes closed mobile navigation from the accessibility tree and restores it when opened', async () => {
+    const originalWidth = window.innerWidth
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390 })
+    window.dispatchEvent(new Event('resize'))
     const user = userEvent.setup()
     render(<AppShell profile={profile}><div>Content</div></AppShell>)
 
@@ -31,6 +36,9 @@ describe('post-QA remediation gate', () => {
     await user.click(screen.getByRole('button', { name: 'Toggle navigation' }))
     expect(sidebar).not.toHaveAttribute('inert')
     expect(sidebar).toHaveAttribute('aria-hidden', 'false')
+
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: originalWidth })
+    window.dispatchEvent(new Event('resize'))
   })
 
   it.each([
@@ -95,6 +103,36 @@ describe('post-QA remediation gate', () => {
     const field = screen.getByLabelText(/What did you notice/i)
     expect(field).toHaveAttribute('aria-invalid', 'true')
     expect(field.getAttribute('aria-describedby')).toBeTruthy()
+  })
+
+
+  it('associates activation validation with the first invalid field', async () => {
+    const user = userEvent.setup()
+    render(<ActivateAccountForm onActivate={vi.fn()} onCancel={() => {}} />)
+    await user.click(screen.getByRole('button', { name: /^Activate$/i }))
+    const username = screen.getByLabelText(/Choose username/i)
+    expect(username).toHaveAttribute('aria-invalid', 'true')
+    expect(username.getAttribute('aria-describedby')).toBeTruthy()
+  })
+
+  it('associates forced password errors with the relevant field', async () => {
+    const user = userEvent.setup()
+    render(<ForcePasswordChange onChange={vi.fn()} onLogout={() => {}} />)
+    await user.click(screen.getByRole('button', { name: /Change Password/i }))
+    const password = screen.getByLabelText('New Password')
+    expect(password).toHaveAttribute('aria-invalid', 'true')
+    expect(password.getAttribute('aria-describedby')).toBeTruthy()
+  })
+
+  it('associates profile password errors with the relevant field', async () => {
+    const user = userEvent.setup()
+    render(<AppShell profile={profile} onPasswordChange={vi.fn()}><div>Content</div></AppShell>)
+    await user.click(screen.getByRole('button', { name: /agent_one account/i }))
+    await user.click(screen.getByRole('button', { name: 'Change Password' }))
+    await user.click(screen.getByRole('button', { name: 'Save Password' }))
+    const password = screen.getByLabelText(/New password/i)
+    expect(password).toHaveAttribute('aria-invalid', 'true')
+    expect(password.getAttribute('aria-describedby')).toBeTruthy()
   })
 
   it('locks page scrolling while a dialog is open', () => {
