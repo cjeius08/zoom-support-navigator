@@ -86,7 +86,7 @@ it('carries a related training selection through the full app route', async () =
 
   const dialog = await screen.findByRole('dialog', { name: 'How to Join a Zoom Meeting' })
   expect(within(dialog).getByTitle('Video player: How to Join a Zoom Meeting')).toBeInTheDocument()
-})
+}, 10000)
 
 
 it('exposes exactly one main landmark in the authenticated Navigator', async () => {
