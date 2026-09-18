@@ -258,11 +258,11 @@ export function ReadinessLab({
 
           <div className="readiness-find-card">
             <div>
-              <span>Find it in the workspace</span>
-              <strong>{question.locationLabel}</strong>
-              <small>Your saved attempt stays active while you look.</small>
+              <span>Need a refresher?</span>
+              <strong>Find the supporting guidance in Training &amp; Resources.</strong>
+              <small>Your saved attempt stays active while you look. The exact answer location is intentionally not shown so you can practice finding it yourself.</small>
             </div>
-            <button type="button" disabled={busy} onClick={() => onOpenResource(question.resourceTarget)}>Find in Workspace</button>
+            <button type="button" disabled={busy} onClick={() => onOpenResource({ view: 'training' })}>Open Training &amp; Resources</button>
           </div>
 
           {!answer
