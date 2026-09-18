@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
+import { COMMON_ISSUE_VERIFIED_AT } from './commonIssueRoutes'
 import { useDialogFocus } from '../../lib/useDialogFocus'
 import './commonIssueRoutes.css'
 
@@ -287,7 +288,7 @@ export function CommonIssueDrawer({
             <p>{route.discrepancy}</p>
           </div>}
 
-          <p className="common-issue-verified">Verified against official Zoom Support: September 18, 2026</p>
+          <p className="common-issue-verified">Verified against official Zoom Support: {COMMON_ISSUE_VERIFIED_AT}</p>
         </section>}
       </div>
     </aside>
