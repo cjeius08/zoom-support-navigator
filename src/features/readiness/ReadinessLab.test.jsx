@@ -14,6 +14,7 @@ const readinessMocks = vi.hoisted(() => ({
 vi.mock('../../lib/readinessApi', () => readinessMocks)
 
 const DEVICE_QUESTION_SET = 'zoom_device_navigation_v1'
+const TROUBLESHOOTING_QUESTION_SET = 'zoom_troubleshooting_judgment_v1'
 
 const QUESTIONS = [
   {
@@ -112,6 +113,35 @@ const DEVICE_QUESTIONS = [
   })),
 ]
 
+const TROUBLESHOOTING_QUESTIONS = [
+  {
+    id: 'join-becomes-waiting-room',
+    order: 1,
+    type: 'Scenario',
+    prompt: 'A failed-join call now shows Waiting Room. What is the best next judgment?',
+    options: [
+      { id: 'a', text: 'Keep troubleshooting failed join.' },
+      { id: 'b', text: 'Switch to the Waiting Room state.' },
+    ],
+    locationLabel: 'Training & Resources',
+    resourceTarget: { view: 'training' },
+    source: 'Common Issue Route · Can’t join the meeting / Waiting to get in',
+  },
+  ...['audio','microphone','camera','screen-share'].map((topic, index) => ({
+    id: `${topic}-judgment`,
+    order: index + 2,
+    type: 'Scenario',
+    prompt: `${topic} troubleshooting judgment`,
+    options: [
+      { id: 'a', text: 'Wrong next action.' },
+      { id: 'b', text: 'Correct next action.' },
+    ],
+    locationLabel: 'Training & Resources',
+    resourceTarget: { view: 'training' },
+    source: `Common Issue Route · ${topic}`,
+  })),
+]
+
 function answer(questionId, isCorrect = true, selectedOptionId = 'b') {
   return {
     questionId,
@@ -196,7 +226,8 @@ it('shows five readiness parts and the five-question general Zoom scenario set',
   expect(tabs).toHaveLength(5)
   expect(screen.getByRole('tab', { name: /Scenarios Available now/i })).toHaveAttribute('aria-selected', 'true')
   expect(screen.getByRole('tab', { name: /Devices Available now/i })).toBeEnabled()
-  expect(screen.getByRole('tab', { name: /Troubleshooting Coming next/i })).toBeDisabled()
+  expect(screen.getByRole('tab', { name: /Troubleshooting Available now/i })).toBeEnabled()
+  expect(screen.getByRole('tab', { name: /Scope Coming next/i })).toBeDisabled()
   expect(screen.getByText('Question 1 of 5')).toBeInTheDocument()
   expect(screen.getByText(QUESTIONS[0].prompt)).toBeInTheDocument()
 })
@@ -352,6 +383,41 @@ it('loads Part 2 as its own persistent device-navigation attempt without reveali
   expect(readinessMocks.getReadinessState).toHaveBeenCalledWith(DEVICE_QUESTION_SET)
 
   expect(screen.queryByText(/Device Walkthroughs → Windows → In-meeting map/i)).not.toBeInTheDocument()
+  expect(screen.getByText(/exact answer location is intentionally not shown/i)).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Open Training & Resources' }))
+  expect(onOpenResource).toHaveBeenCalledWith({ view: 'training' })
+})
+
+
+it('loads Part 3 as a separate persistent troubleshooting-judgment attempt', async () => {
+  const user = userEvent.setup()
+  const onOpenResource = vi.fn()
+  readinessMocks.getReadinessState.mockImplementation((questionSetVersion) => {
+    if (questionSetVersion === TROUBLESHOOTING_QUESTION_SET) {
+      return Promise.resolve(activeState({
+        questionSetVersion: TROUBLESHOOTING_QUESTION_SET,
+        questions: TROUBLESHOOTING_QUESTIONS,
+      }))
+    }
+    if (questionSetVersion === DEVICE_QUESTION_SET) {
+      return Promise.resolve(activeState({
+        questionSetVersion: DEVICE_QUESTION_SET,
+        questions: DEVICE_QUESTIONS,
+      }))
+    }
+    return Promise.resolve(activeState())
+  })
+
+  render(<ReadinessLab open onOpenResource={onOpenResource} />)
+  await screen.findByText(QUESTIONS[0].prompt)
+
+  await user.click(screen.getByRole('tab', { name: /Troubleshooting Available now/i }))
+
+  expect(await screen.findByRole('heading', { name: 'Troubleshooting Judgment' })).toBeInTheDocument()
+  expect(screen.getByText('Question 1 of 5')).toBeInTheDocument()
+  expect(screen.getByText(TROUBLESHOOTING_QUESTIONS[0].prompt)).toBeInTheDocument()
+  expect(readinessMocks.getReadinessState).toHaveBeenCalledWith(TROUBLESHOOTING_QUESTION_SET)
+
   expect(screen.getByText(/exact answer location is intentionally not shown/i)).toBeInTheDocument()
   await user.click(screen.getByRole('button', { name: 'Open Training & Resources' }))
   expect(onOpenResource).toHaveBeenCalledWith({ view: 'training' })
