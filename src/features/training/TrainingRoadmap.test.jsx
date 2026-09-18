@@ -13,8 +13,8 @@ it('locks the Phase 6 Batch 1 roadmap to six ordered learning modules', () => {
     'guided-lessons',
     'practice-lab',
   ])
-  expect(TRAINING_ROADMAP_MODULES.filter(module => module.status === 'available')).toHaveLength(4)
-  expect(TRAINING_ROADMAP_MODULES.filter(module => module.status === 'coming')).toHaveLength(2)
+  expect(TRAINING_ROADMAP_MODULES.filter(module => module.status === 'available')).toHaveLength(5)
+  expect(TRAINING_ROADMAP_MODULES.filter(module => module.status === 'coming')).toHaveLength(1)
 })
 
 it('shows a progressive visual path without pretending unfinished modules are available', () => {
@@ -30,10 +30,10 @@ it('shows a progressive visual path without pretending unfinished modules are av
   expect(screen.getByRole('button', { name: 'Open device walkthroughs' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Open wording guardrails' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Open scenario scripts' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Open guided lessons' })).toBeInTheDocument()
 
-  expect(screen.getByText('Coming in Batch 2')).toBeInTheDocument()
+  expect(screen.queryByText('Coming in Batch 2')).not.toBeInTheDocument()
   expect(screen.getByText('Coming in Batch 3')).toBeInTheDocument()
-  expect(screen.queryByRole('button', { name: /guided visual lessons/i })).not.toBeInTheDocument()
   expect(screen.queryByRole('button', { name: /practice lab/i })).not.toBeInTheDocument()
 })
 
@@ -54,6 +54,9 @@ it('routes existing roadmap modules to the exact current training resource', asy
     section: 'scripts',
     mode: 'scenarios',
   })
+
+  await user.click(screen.getByRole('button', { name: 'Open guided lessons' }))
+  expect(onOpenResource).toHaveBeenLastCalledWith({ section: 'lessons' })
 
   await user.click(screen.getByRole('button', { name: 'Open Video Library' }))
   expect(onOpenResource).toHaveBeenLastCalledWith({ section: 'videos' })
