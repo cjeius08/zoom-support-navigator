@@ -5,13 +5,16 @@ import { beforeEach, expect, it, vi } from 'vitest'
 const loadTeam = vi.fn()
 const loadUsage = vi.fn()
 const loadFeedback = vi.fn()
+const loadReadinessReport = vi.fn()
 const updateFeedbackStatus = vi.fn()
 const runAdminAction = vi.fn()
-vi.mock('../../lib/adminApi', () => ({ loadFeedback, loadTeam, loadUsage, updateFeedbackStatus, runAdminAction }))
+vi.mock('../../lib/adminApi', () => ({ loadFeedback, loadTeam, loadUsage, loadReadinessReport, updateFeedbackStatus, runAdminAction }))
 
 beforeEach(() => {
   loadUsage.mockReset()
   loadFeedback.mockReset()
+  loadReadinessReport.mockReset()
+  loadReadinessReport.mockResolvedValue({ questionSetVersion: 'zoom_general_scenarios_v1', maxAttempts: 3, users: [] })
   updateFeedbackStatus.mockReset()
   loadTeam.mockResolvedValue([{ id: 'agent-1', username: 'agent_one', initials: 'AO', role: 'agent', status: 'active', avatar_id: null, presence: 'active' }])
   runAdminAction.mockReset()
@@ -117,4 +120,69 @@ it('lets JA update feedback status, see history, and open the stored page', asyn
     route_id: 'navigator',
     process_id: 'zoom-audio-troubleshooting',
   }))
+})
+
+
+it('shows Readiness Lab attempt history separately with scores and incorrect answers', async () => {
+  const now = new Date().toISOString()
+  loadUsage.mockResolvedValue({
+    profiles: [{ id: 'u1', username: 'agent_one', initials: 'AO', role: 'agent', status: 'active' }],
+    events: [],
+    sessions: [],
+    presence: [],
+  })
+  loadReadinessReport.mockResolvedValue({
+    questionSetVersion: 'zoom_general_scenarios_v1',
+    maxAttempts: 3,
+    users: [{
+      id: 'u1',
+      username: 'agent_one',
+      initials: 'AO',
+      role: 'agent',
+      status: 'active',
+      attempts: [
+        {
+          id: 'attempt-1',
+          attemptNumber: 1,
+          status: 'submitted',
+          score: 3,
+          totalQuestions: 5,
+          checkedCount: 5,
+          startedAt: now,
+          submittedAt: now,
+          incorrectAnswers: [{
+            questionId: 'cant-hear-output',
+            prompt: 'A user cannot hear anyone. What should the agent investigate first?',
+            selectedOptionId: 'b',
+            selectedAnswer: 'Check microphone input.',
+            correctOptionId: 'a',
+            correctAnswer: 'Check speaker output.',
+            checkedAt: now,
+          }],
+        },
+        {
+          id: 'attempt-2',
+          attemptNumber: 2,
+          status: 'active',
+          score: null,
+          totalQuestions: 5,
+          checkedCount: 2,
+          startedAt: now,
+          submittedAt: null,
+          incorrectAnswers: [],
+        },
+      ],
+    }],
+  })
+
+  const { UsageAnalytics } = await import('./AdminViews')
+  render(<UsageAnalytics />)
+
+  expect(await screen.findByRole('heading', { name: 'Readiness Lab Report' })).toBeInTheDocument()
+  expect(screen.getByText('Attempt 1')).toBeInTheDocument()
+  expect(screen.getByText('Score 3/5')).toBeInTheDocument()
+  expect(screen.getByText('Attempt 2')).toBeInTheDocument()
+  expect(screen.getByText('2/5 checked · In progress')).toBeInTheDocument()
+  expect(screen.getByText(/Check microphone input/i)).toBeInTheDocument()
+  expect(screen.getByText(/Check speaker output/i)).toBeInTheDocument()
 })
