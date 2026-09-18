@@ -349,7 +349,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
       route={selectedRoute}
       callContext={callContext}
       onClose={()=>setSelectedRoute(null)}
-      onOpenRoute={routeId=>setSelectedRoute(routeById(routeId))}
+      onOpenRoute={routeId=>openRoute(routeById(routeId),'redirect')}
       onOpenProcess={processId=>openProcess(PROCESSES.find(process=>process.id===processId),'common_issue_full_process')}
       onStatusChange={status=>setCallContext(current=>({...current,status}))}
       onTabChange={setCommonIssueTab}
