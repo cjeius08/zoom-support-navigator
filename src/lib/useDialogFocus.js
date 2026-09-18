@@ -1,5 +1,24 @@
 import { useEffect, useRef } from 'react'
 
+let pageScrollLockCount = 0
+let previousRootOverflow = ''
+
+function lockPageScroll() {
+  if (pageScrollLockCount === 0) {
+    previousRootOverflow = document.documentElement.style.overflow
+    document.documentElement.style.overflow = 'hidden'
+  }
+  pageScrollLockCount += 1
+}
+
+function unlockPageScroll() {
+  pageScrollLockCount = Math.max(0, pageScrollLockCount - 1)
+  if (pageScrollLockCount === 0) {
+    document.documentElement.style.overflow = previousRootOverflow
+    previousRootOverflow = ''
+  }
+}
+
 const FOCUSABLE_SELECTOR = [
   'a[href]',
   'button:not([disabled])',
@@ -25,6 +44,7 @@ export function useDialogFocus(dialogRef, open, onClose) {
     if (!dialog) return undefined
 
     const previousFocus = document.activeElement
+    lockPageScroll()
     const first = getFocusableElements(dialog)[0]
     ;(first ?? dialog).focus()
 
@@ -60,6 +80,7 @@ export function useDialogFocus(dialogRef, open, onClose) {
     document.addEventListener('keydown', handleKeyDown)
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
+      unlockPageScroll()
       if (previousFocus?.isConnected && typeof previousFocus.focus === 'function') previousFocus.focus()
     }
   }, [dialogRef, open])
