@@ -121,8 +121,8 @@ export async function loadReadinessReport() {
 
   return {
     parts: [
-      { id: 'foundation-call-flow', title: 'General Zoom Scenarios', ...parts[0] },
-      { id: 'device-navigation', title: 'Device & Navigation Awareness', ...parts[1] },
+      { id: 'foundation-call-flow', number: 1, title: 'General Zoom Scenarios', ...parts[0] },
+      { id: 'device-navigation', number: 2, title: 'Device & Navigation Awareness', ...parts[1] },
     ],
   }
 }
