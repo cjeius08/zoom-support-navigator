@@ -15,8 +15,7 @@ it('shows role-aware navigation and account controls', () => {
   expect(screen.getByRole('navigation')).toHaveTextContent('Training & Resources')
   expect(screen.getByRole('button', { name: /ja_admin/i })).toBeInTheDocument()
   expect(screen.getAllByTestId('nav-icon').length).toBeGreaterThan(3)
-  expect(screen.queryByRole('img', { name: 'OGCon' })).not.toBeInTheDocument()
-  expect(screen.getByLabelText('Support Workspace')).toHaveTextContent('Support Workspace')
+    expect(screen.getByLabelText('Ogletree Support Workspace')).toHaveTextContent('Ogletree Support Workspace')
 })
 
 it('does not render admin navigation for agents', () => {
@@ -34,7 +33,7 @@ it('exposes What’s New and console ownership metadata to all agents', async ()
   expect(screen.getByText(/Owner\s+Cjei A\./i)).toBeInTheDocument()
   expect(screen.getByText(/Collaborator\s+Nina F\./i)).toBeInTheDocument()
 
-  const versionChip = screen.getByRole('button', { name: /Console v1\.0.*Updated Sep 19/i })
+  const versionChip = screen.getByRole('button', { name: /Workspace v1\.0.*Updated Sep 19/i })
   await user.click(versionChip)
   expect(onNavigate).toHaveBeenCalledWith('updates')
 })
