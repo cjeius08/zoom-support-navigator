@@ -1,11 +1,12 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { expect, it } from 'vitest'
-import { LiveCallFlow } from './LiveCallFlow'
+import { expect, it, vi } from 'vitest'
+import { LiveCallFlow, LiveCallFlowDetails } from './LiveCallFlow'
 
-it('keeps the seven-stage workflow collapsed until the agent asks to view it', async () => {
+it('keeps the summary card compact and uses the toggle only to request full workflow visibility', async () => {
   const user = userEvent.setup()
-  render(<LiveCallFlow />)
+  const onExpandedChange = vi.fn()
+  render(<LiveCallFlow expanded={false} onExpandedChange={onExpandedChange} />)
 
   const toggle = screen.getByRole('button', { name: /View full call flow/i })
   expect(toggle).toHaveAttribute('aria-expanded', 'false')
@@ -13,7 +14,13 @@ it('keeps the seven-stage workflow collapsed until the agent asks to view it', a
 
   await user.click(toggle)
 
-  expect(screen.getByRole('button', { name: /Hide full call flow/i })).toHaveAttribute('aria-expanded', 'true')
+  expect(onExpandedChange).toHaveBeenCalledWith(true)
+  expect(screen.queryByRole('table', { name: 'Live call flow' })).not.toBeInTheDocument()
+})
+
+it('renders the seven-stage detailed workflow when the parent chooses to show it', () => {
+  render(<LiveCallFlowDetails />)
+
   const table = screen.getByRole('table', { name: 'Live call flow' })
   expect(within(table).getByRole('columnheader', { name: 'Step' })).toBeInTheDocument()
   expect(within(table).getByRole('columnheader', { name: 'Agent Action' })).toBeInTheDocument()
