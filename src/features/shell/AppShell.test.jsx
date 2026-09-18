@@ -83,7 +83,7 @@ it('opens Call Documentation as a global dock without navigating away and preser
   await user.click(screen.getByRole('button', { name: 'Minimize Call Documentation' }))
   expect(screen.getByLabelText('Call Documentation minimized')).toBeInTheDocument()
 
-  await user.click(screen.getByRole('button', { name: /Call Documentation/i }))
+  await user.click(screen.getByRole('button', { name: 'Restore Call Documentation' }))
   expect(screen.getByLabelText('Caller name')).toHaveValue('Persistent Caller')
 
   await user.click(screen.getByRole('button', { name: 'Close Call Documentation' }))
