@@ -106,13 +106,13 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
       <button className="account-menu" aria-expanded={profileOpen} aria-label={`${profile.username} account`} onClick={() => { const next = !profileOpen; setProfileOpen(next); if (next) { setMessage(''); setProfileError(''); setProfileErrorField('') } }}>{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<span className="account-copy"><strong>{profile.username}</strong><small>{isAdmin ? 'JA Admin' : 'Agent'}</small></span><svg className="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></button>
     </header>
 
-    {compactNav && open && <button type="button" className="sidebar-backdrop" aria-label="Close navigation" onClick={() => closeNavigation({ restoreFocus: true })} />}
+    {open && <button type="button" className="sidebar-backdrop" aria-label="Close navigation" onClick={() => closeNavigation({ restoreFocus: true })} />}
 
     <aside
       id="primary-sidebar"
       className={`sidebar ${open ? 'open' : ''}`}
       aria-hidden={compactNav ? String(!open) : undefined}
-      inert={compactNav && !open ? '' : undefined}
+      inert={compactNav && !open ? true : undefined}
       onKeyDown={event => {
         if (compactNav && open && event.key === 'Escape') {
           event.preventDefault()
