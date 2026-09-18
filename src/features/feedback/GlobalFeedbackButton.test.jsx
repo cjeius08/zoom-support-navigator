@@ -4,7 +4,8 @@ import { cwd } from 'node:process'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
-import { buildGlobalFeedbackContext, GlobalFeedbackButton } from './GlobalFeedbackButton'
+import { GlobalFeedbackButton } from './GlobalFeedbackButton'
+import { buildGlobalFeedbackContext } from './feedbackContext'
 
 it('captures hidden report context at the moment the report is opened', () => {
   const originalWidth = window.innerWidth
