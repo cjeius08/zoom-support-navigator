@@ -3,6 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, expect, it, vi } from 'vitest'
 import { PROCESSES } from '../../data/processes'
 import { ScriptsCommunication } from './ScriptsCommunication'
+import { COMMON_ISSUE_ROUTES } from '../navigator/commonIssueRoutes'
+import { SCENARIO_SCRIPTS, SCENARIO_SCRIPT_VERIFIED_AT } from './scenarioScripts'
 import {
   COMMUNICATION_AVOID_PAIRS,
   COMMUNICATION_SECTIONS,
@@ -110,4 +112,52 @@ it('keeps the agent self-check visible in the live-call language view', () => {
   expect(screen.getByText(/Did I give only one instruction at a time/i)).toBeInTheDocument()
   expect(screen.getByText(/Did I confirm the result instead of assuming success/i)).toBeInTheDocument()
   expect(screen.getByText(/approved basic support scope/i)).toBeInTheDocument()
+})
+
+
+it('locks Phase 4 Batch 3 specialized scenario scripts to existing Common Issue routes', () => {
+  expect(SCENARIO_SCRIPT_VERIFIED_AT).toBe('September 19, 2026')
+  expect(SCENARIO_SCRIPTS).toHaveLength(19)
+
+  const specializedIds = [
+    'bluetooth-headset',
+    'secure-connection',
+    'transfer-device',
+    'join-muted',
+    'join-video-preference',
+    'meeting-volume',
+    'auto-computer-audio',
+    'multiple-audio-input-channels',
+    'participants-before-join',
+    'invite',
+  ]
+
+  const routeIds = new Set(COMMON_ISSUE_ROUTES.map(route => route.id))
+  const scenarioById = new Map(SCENARIO_SCRIPTS.map(scenario => [scenario.id, scenario]))
+
+  for (const id of specializedIds) {
+    const scenario = scenarioById.get(id)
+    expect(scenario, 'missing specialized scenario ' + id).toBeTruthy()
+    expect(routeIds.has(scenario.routeId), id + ' points to a missing Common Issue route').toBe(true)
+    expect(scenario.opening).toBeTruthy()
+    expect(scenario.guidePhrase).toBeTruthy()
+    expect(scenario.confirmPhrase).toBeTruthy()
+    expect(scenario.boundaryPhrase).toBeTruthy()
+  }
+})
+
+it('renders the specialized scenario using the existing live-call card pattern', async () => {
+  const user = userEvent.setup()
+  render(<ScriptsCommunication />)
+
+  await user.click(screen.getByRole('tab', { name: 'Scenario Scripts' }))
+  await user.click(screen.getByRole('tab', { name: 'Bluetooth Headset' }))
+
+  const panel = screen.getByRole('region', { name: 'Bluetooth Headset scenario' })
+  expect(within(panel).getByText('Opening line')).toBeInTheDocument()
+  expect(within(panel).getByText('Discovery questions')).toBeInTheDocument()
+  expect(within(panel).getByText('Next-step phrasing')).toBeInTheDocument()
+  expect(within(panel).getByText('Verify the result')).toBeInTheDocument()
+  expect(within(panel).getByText('When basic support stops')).toBeInTheDocument()
+  expect(within(panel).getByText(/same device running Zoom/i)).toBeInTheDocument()
 })
