@@ -55,7 +55,7 @@ it('switches to Mac and exposes macOS-specific permission guidance', async () =>
   expect(within(panel).getByText(/Command \+ Shift \+ A toggles mute/i)).toBeInTheDocument()
   expect(within(panel).getByRole('heading', { name: /Camera, microphone, and screen sharing can be blocked by macOS/i })).toBeInTheDocument()
   expect(within(panel).getAllByText(/System Settings → Privacy & Security/i).length).toBeGreaterThan(0)
-  expect(within(panel).getByText(/Screen & System Audio Recording/i)).toBeInTheDocument()
+  expect(within(panel).getAllByText(/Screen & System Audio Recording/i).length).toBeGreaterThan(0)
 })
 
 it('shows the visual before each set of optional source links', () => {
