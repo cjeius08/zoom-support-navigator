@@ -33,7 +33,7 @@ describe('Training & Resources', () => {
     await user.click(screen.getByRole('button', { name: 'Open scenario scripts' }))
 
     expect(screen.getByRole('tab', { name: 'Scenario Scripts' })).toHaveAttribute('aria-selected', 'true')
-    expect(screen.getByRole('region', { name: /Can't Join scenario/i })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: /Can.t Join scenario/i })).toBeInTheDocument()
   })
 
   it('publishes Training Roadmap as the default report context', () => {
