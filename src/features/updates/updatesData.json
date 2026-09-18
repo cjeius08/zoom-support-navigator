@@ -8,6 +8,20 @@
   },
   "updates": [
     {
+      "id": "strict-qa-remediation",
+      "date": "2026-09-18",
+      "area": "Accessibility / Usability / Security",
+      "title": "Strict QA findings remediated",
+      "changed": "Resolved the strict QA findings that affected live-call usability and accessibility. Closed mobile navigation is no longer keyboard-focusable, natural caller-language search now routes key support phrases more reliably, long Call Guides use progressive disclosure without removing approved content, avatar selection and process tabs have efficient keyboard behavior, form errors identify their fields, dialogs prevent background scrolling, and the active navigation item is announced to assistive technology. Supabase hardening also removed unintended client execution of an internal SECURITY DEFINER helper, moved citext out of the exposed public schema, optimized RLS auth checks, and added missing foreign-key indexes.",
+      "checks": [
+        "On tablet/mobile widths, keep the sidebar closed and confirm keyboard focus stays on visible controls; open it and confirm navigation becomes available.",
+        "Search mic not working, They can’t hear me, stuck waiting room, host hasnt started meeting, and Where is the share screen button? and confirm the intended support route ranks first.",
+        "Open a long Call Guide and confirm only the first set of steps, scripts, and very long callouts are shown initially, with Show remaining controls preserving access to all approved content.",
+        "Use keyboard-only navigation in the avatar picker and process tabs, and confirm validation errors identify the relevant form field.",
+        "Open a process/profile/training/report dialog and confirm the page behind it does not scroll."
+      ]
+    },
+    {
       "id": "final-qa-accessibility-gate",
       "date": "2026-09-18",
       "area": "Accessibility / Release QA",
