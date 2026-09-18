@@ -103,10 +103,17 @@ it('routes the caller phrase "I cant hear you" to audio output rather than guess
 })
 
 
-it('keeps the microphone route from skipping the meeting-audio connection check', () => {
+it('keeps the microphone route from skipping meeting audio without pretending Zoom uses one universal mobile label', () => {
   const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'cant-be-heard')
   expect(route.confirm.some(question => /Join Audio|connected to meeting audio/i.test(question))).toBe(true)
-  expect(route.checks.some(check => /meeting audio/i.test(check.title + ' ' + check.instruction))).toBe(true)
+  expect(route.checks.some(check => /internet-audio option shown on the device/i.test(check.instruction))).toBe(true)
+  expect(route.discrepancy).toMatch(/current official Zoom Support articles/i)
   expect(route.discrepancy).toMatch(/Call Over Internet/i)
   expect(route.discrepancy).toMatch(/Wifi or Cellular Data/i)
+})
+
+it('uses the same label-safe rule for the cannot-hear mobile audio path', () => {
+  const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'cant-hear')
+  expect(route.checks.some(check => /internet-audio option shown on the device/i.test(check.instruction))).toBe(true)
+  expect(route.discrepancy).toMatch(/current official Zoom Support articles/i)
 })
