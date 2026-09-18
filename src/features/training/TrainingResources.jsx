@@ -22,13 +22,17 @@ function VideoViewer({ videos, index, onClose }) {
   </div>
 }
 
-export function TrainingResources({ initialVideoId = null, onReportContextChange = () => {} }) {
+export function TrainingResources({ initialVideoId = null, initialTarget = null, onReportContextChange = () => {} }) {
   const initialIndex = initialVideoId ? TRAINING_VIDEOS.findIndex(video => video.id === initialVideoId) : -1
-  const [section, setSection] = useState(initialVideoId ? 'videos' : 'roadmap')
+  const [section, setSection] = useState(initialVideoId ? 'videos' : initialTarget?.section || 'roadmap')
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
   const [activeIndex, setActiveIndex] = useState(initialIndex >= 0 ? initialIndex : null)
-  const [scriptTarget, setScriptTarget] = useState({ mode: null, subsection: null, scenario: null })
+  const [scriptTarget, setScriptTarget] = useState({
+    mode: initialTarget?.mode || null,
+    subsection: initialTarget?.subsection || null,
+    scenario: initialTarget?.scenario || null,
+  })
 
   useEffect(() => {
     if (!initialVideoId) return
@@ -40,6 +44,19 @@ export function TrainingResources({ initialVideoId = null, onReportContextChange
       setActiveIndex(nextIndex)
     }
   }, [initialVideoId])
+
+  useEffect(() => {
+    if (!initialTarget?.section) return
+    setSection(initialTarget.section)
+    setActiveIndex(null)
+    if (initialTarget.section === 'scripts') {
+      setScriptTarget({
+        mode: initialTarget.mode || 'language',
+        subsection: initialTarget.subsection || null,
+        scenario: initialTarget.scenario || null,
+      })
+    }
+  }, [initialTarget])
 
   const filteredVideos = useMemo(() => TRAINING_VIDEOS.filter((video) => {
     const haystack = (video.title + ' ' + video.usefulFor + ' ' + video.relatedCategories.join(' ')).toLowerCase()

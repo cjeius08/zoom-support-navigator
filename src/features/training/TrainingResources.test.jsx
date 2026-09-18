@@ -63,6 +63,27 @@ describe('Training & Resources', () => {
     expect(screen.getByRole('tab', { name: 'Can’t Hear' })).toHaveAttribute('aria-selected', 'true')
   })
 
+  it('opens the exact training location requested by the Readiness Lab without becoming a training tab itself', () => {
+    const { rerender } = render(<TrainingResources initialTarget={{
+      view: 'training',
+      section: 'scripts',
+      mode: 'language',
+      subsection: 'identify',
+    }} />)
+
+    expect(screen.getByRole('tab', { name: 'Scripts & Communication' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tabpanel', { name: 'Identify Caller / Hearing' })).toBeInTheDocument()
+    expect(screen.queryByRole('tab', { name: 'Readiness Lab' })).not.toBeInTheDocument()
+
+    rerender(<TrainingResources initialTarget={{
+      view: 'training',
+      section: 'lessons',
+    }} />)
+
+    expect(screen.getByRole('tab', { name: 'Guided Visual Lessons' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tabpanel', { name: 'Follow the Ogletree call flow before troubleshooting' })).toBeInTheDocument()
+  })
+
   it('publishes the active Guided Visual Lesson as report context', async () => {
     const user = userEvent.setup()
     const onReportContextChange = vi.fn()

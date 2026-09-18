@@ -10,6 +10,21 @@
   },
   "updates": [
     {
+      "id": "phase6-readiness-lab-part1",
+      "date": "2026-09-19",
+      "area": "Training / Readiness Validation",
+      "title": "Readiness Lab opens as a persistent five-part validation tool",
+      "changed": "Added the Phase 6 Batch 3A Readiness Lab as a global live tool instead of another Training & Resources tab. The five-part path is Foundation & Call Flow, Device & Navigation Awareness, Troubleshooting Judgment, Scope & Referral Judgment, and Live Call Readiness. Part 1 is fully interactive with four scenario-based, first-attempt questions. The lab is open-book by design: each question shows exactly where the answer lives in the workspace, and Find in Workspace opens that resource while preserving the current question, selected answer, and progress. The lab can be minimized, restored, closed, and reopened without losing its in-session state. Parts 2–5 remain intentionally locked until this checkpoint is approved.",
+      "checks": [
+        "Open Readiness Lab from the sidebar and confirm it appears as a docked live tool without navigating away from the current page.",
+        "Confirm five readiness parts are visible and only Foundation & Call Flow is active in this checkpoint.",
+        "Answer a Part 1 question, use Find in Workspace, and confirm the underlying Training & Resources page opens to the exact answer location while Readiness Lab stays open with the same question and selection.",
+        "Check an answer and confirm first-attempt feedback appears and the progress counter advances.",
+        "Minimize and restore Readiness Lab and confirm the current Part 1 progress remains.",
+        "Open Training Roadmap and confirm Readiness Lab replaces the old Practice Lab placeholder and says Part 1 is available from the sidebar."
+      ]
+    },
+    {
       "id": "ogletree-call-flow-alignment",
       "date": "2026-09-19",
       "area": "Live Support / Call Flow",

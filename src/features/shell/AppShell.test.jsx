@@ -13,6 +13,7 @@ it('shows role-aware navigation and account controls', () => {
   expect(screen.getByRole('navigation')).toHaveTextContent('Team Management')
   expect(screen.getByRole('navigation')).toHaveTextContent('Usage Analytics')
   expect(screen.getByRole('navigation')).toHaveTextContent('Training & Resources')
+  expect(screen.getByRole('navigation')).toHaveTextContent('Readiness Lab')
   expect(screen.getByRole('button', { name: /ja_admin/i })).toBeInTheDocument()
   expect(screen.getAllByTestId('nav-icon').length).toBeGreaterThan(3)
     expect(screen.getByLabelText('Ogletree Support Workspace')).toHaveTextContent('Ogletree Support Workspace')
@@ -119,6 +120,42 @@ it('opens Scope Check as a global live tool and preserves the Documentation draf
 
   await user.click(screen.getByRole('button', { name: 'Call Documentation' }))
   expect(screen.getByLabelText('Caller name')).toHaveValue('Persistent Caller')
+})
+
+it('opens Readiness Lab as a global live tool and keeps it open while locating an answer', async () => {
+  const user = userEvent.setup()
+  const onNavigate = vi.fn()
+  const onOpenReadinessResource = vi.fn()
+  render(<AppShell
+    profile={agentProfile}
+    onNavigate={onNavigate}
+    onOpenReadinessResource={onOpenReadinessResource}
+  ><div>Current page content</div></AppShell>)
+
+  const labButton = screen.getByRole('button', { name: 'Readiness Lab' })
+  await user.click(labButton)
+
+  expect(labButton).toHaveAttribute('aria-pressed', 'true')
+  expect(onNavigate).not.toHaveBeenCalled()
+  expect(screen.getByRole('heading', { name: 'Readiness Lab' })).toBeInTheDocument()
+
+  await user.click(screen.getByRole('radio', { name: /Let the caller explain the concern/i }))
+  await user.click(screen.getByRole('button', { name: 'Find in Workspace' }))
+
+  expect(onOpenReadinessResource).toHaveBeenCalledWith({
+    view: 'training',
+    section: 'scripts',
+    mode: 'language',
+    subsection: 'listen',
+  })
+  expect(screen.getByRole('heading', { name: 'Readiness Lab' })).toBeInTheDocument()
+  expect(screen.getByRole('radio', { name: /Let the caller explain the concern/i })).toHaveAttribute('aria-checked', 'true')
+
+  await user.click(screen.getByRole('button', { name: 'Minimize Readiness Lab' }))
+  expect(screen.getByLabelText('Readiness Lab minimized')).toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: 'Restore Readiness Lab' }))
+  expect(screen.getByRole('heading', { name: 'Readiness Lab' })).toBeInTheDocument()
 })
 
 it('uses the tablet breakpoint for the authenticated sidebar without leaving a closed-sidebar sliver', () => {
