@@ -120,7 +120,7 @@ it('walks from stop decision to exact handoff contact and approved wording', asy
 
   await user.click(screen.getByRole('button', { name: 'Waiting Room admission' }))
 
-  expect(screen.getByText(/Meeting host, meeting organizer, or contact listed in the meeting invitation/i)).toBeInTheDocument()
+  expect(screen.getAllByText(/Meeting host, meeting organizer, or contact listed in the meeting invitation/i).length).toBeGreaterThanOrEqual(2)
   expect(screen.getByText(/agent cannot admit the participant/i)).toBeInTheDocument()
   expect(screen.getByText(/Admission is controlled by the meeting host/i)).toBeInTheDocument()
 
@@ -142,7 +142,7 @@ it('does not guess a referral contact until an approved roadblock is selected', 
 
   await user.click(screen.getByRole('button', { name: /Zoom account, sign-in, license, role, or administrative permission/i }))
   expect(screen.getByText('WHO OWNS THE NEXT STEP')).toBeInTheDocument()
-  expect(screen.getByText('Organization IT / help desk or Zoom administrator')).toBeInTheDocument()
+  expect(screen.getAllByText('Organization IT / help desk or Zoom administrator').length).toBeGreaterThanOrEqual(2)
 })
 
 it('clears handoff selection when a scope answer changes', async () => {
