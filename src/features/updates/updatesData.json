@@ -10,13 +10,28 @@
   },
   "updates": [
     {
+      "id": "phase6-readiness-lab-persistence",
+      "date": "2026-09-19",
+      "area": "Training / Readiness Validation",
+      "title": "Readiness Lab attempts are now server-locked and reportable",
+      "changed": "Hardened Readiness Lab so incomplete or incorrect attempts cannot be erased by closing, refreshing, reopening, or starting over. Part 1 now uses five general Zoom support scenarios with no hearing or proceeding assumptions. The server creates or resumes one active attempt, permanently locks each answer when Check answer is pressed, requires all five checked answers before submission, preserves every submitted score, and enforces a maximum of three attempts. Reset / New Attempt stays disabled until the current attempt is fully checked and submitted. Usage Analytics now has a separate JA-only Readiness Lab Report showing every user’s first score, latest submitted score, attempts used, incomplete progress, and the incorrect selected/correct answers for each attempt.",
+      "checks": [
+        "Open Readiness Lab and confirm Part 1 is General Zoom Scenarios with five questions covering joining, hearing audio, microphone audio, camera, and screen sharing.",
+        "Choose a wrong answer and press Check answer; close and reopen Readiness Lab and confirm the same wrong answer remains selected, locked, and counted.",
+        "Confirm Reset / New Attempt is greyed out while the current attempt is incomplete or has not been submitted.",
+        "Check all five answers and confirm Submit Attempt becomes available; after submission, confirm the score remains in Attempt history and Start Attempt 2 becomes available.",
+        "Repeat through Attempt 3 and confirm no fourth attempt can be started.",
+        "As JA, open Usage Analytics → Readiness Lab Report and confirm first score, latest submitted score, attempts used, in-progress attempts, and incorrect-answer details are shown per user."
+      ]
+    },
+    {
       "id": "phase6-readiness-lab-part1",
       "date": "2026-09-19",
       "area": "Training / Readiness Validation",
-      "title": "Readiness Lab opens as a persistent five-part validation tool",
-      "changed": "Added the Phase 6 Batch 3A Readiness Lab as a global live tool instead of another Training & Resources tab. The five-part path is Foundation & Call Flow, Device & Navigation Awareness, Troubleshooting Judgment, Scope & Referral Judgment, and Live Call Readiness. Part 1 is fully interactive with four scenario-based, first-attempt questions. The lab is open-book by design: each question shows exactly where the answer lives in the workspace, and Find in Workspace opens that resource while preserving the current question, selected answer, and progress. The lab can be minimized, restored, closed, and reopened without losing its in-session state. Parts 2–5 remain intentionally locked until this checkpoint is approved.",
+      "title": "Initial Readiness Lab checkpoint (superseded by persistent attempts)",
+      "changed": "Added the Phase 6 Batch 3A Readiness Lab as a global live tool instead of another Training & Resources tab. The five-part path is Foundation & Call Flow, Device & Navigation Awareness, Troubleshooting Judgment, Scope & Referral Judgment, and Live Call Readiness. Part 1 is fully interactive with four scenario-based, first-attempt questions. The lab is open-book by design: each question shows exactly where the answer lives in the workspace, and Find in Workspace opens that resource while preserving the current question, selected answer, and progress. The lab can be minimized, restored, closed, and reopened without losing its in-session state. Parts 2–5 remain intentionally locked until this checkpoint is approved. This initial in-session checkpoint was superseded later on September 19 by the server-backed attempt-history update, which changed Part 1 to five general Zoom scenarios and added permanent scoring, three-attempt enforcement, and JA reporting.",
       "checks": [
-        "Open Readiness Lab from the sidebar and confirm it appears as a docked live tool without navigating away from the current page.",
+        "Historical checkpoint only: use the newer Readiness Lab persistence entry for the current behavior.",
         "Confirm five readiness parts are visible and only Foundation & Call Flow is active in this checkpoint.",
         "Answer a Part 1 question, use Find in Workspace, and confirm the underlying Training & Resources page opens to the exact answer location while Readiness Lab stays open with the same question and selection.",
         "Check an answer and confirm first-attempt feedback appears and the progress counter advances.",
