@@ -74,10 +74,12 @@ export const COMMON_ISSUE_ROUTES = [
     discrepancy: 'The approved “Can’t Join” Process Document lists reinstall early in its sequence. The training instructions separately state that uninstall/reinstall is not the first solution. OGCon therefore keeps reinstall out of this fast route and leaves it in the full approved process pending document review.',
     visuals: [
       {
-        title: 'Zoom Home control',
-        src: 'https://assets.zoom.us/generic-images/common-buttons-and-icons/outline/home-button.png',
-        alt: 'Official Zoom Home icon',
-        note: 'Official Zoom asset referenced by the current Joining a Zoom meeting article.',
+        title: 'Join from Zoom Workplace without signing in',
+        src: 'assets/visual-references/join-meeting.png',
+        alt: 'Zoom Workplace join screen showing the Join a meeting option',
+        note: 'Use this visual when guiding a caller to join from Zoom Workplace without first signing in. Enter the meeting ID or use the invitation link, then continue to the preview, waiting screen, or meeting.',
+        sourceLabel: 'Visual reference matched to the approved Joining a Zoom Meeting process',
+        sourceUrl: 'https://support.palcs.org/hc/en-us/articles/38306094116627-Zoom-sign-in-options-removal-blank-screen',
       },
     ],
   },
@@ -150,10 +152,12 @@ export const COMMON_ISSUE_ROUTES = [
     discrepancy: 'Current official Zoom Support articles use different labels for the mobile internet-audio choice: the mobile troubleshooting article says “Call Over Internet,” while the audio-testing article says “Wifi or Cellular Data.” OGCon therefore tells agents to use the internet-audio option actually shown on the caller’s device instead of treating either label as universal.',
     visuals: [
       {
-        title: 'Audio-device menu indicator',
-        src: 'https://assets.zoom.us/generic-images/common-buttons-and-icons/outline/up-arrow-button.png',
-        alt: 'Official Zoom upward arrow icon beside the audio control',
-        note: 'Official Zoom asset used in the current desktop audio troubleshooting article.',
+        title: 'Select and test the correct speaker',
+        src: 'assets/visual-references/audio-settings.png',
+        alt: 'Zoom Audio settings showing the speaker selector, Test Speaker control, and volume controls',
+        note: 'Use the Speaker section to choose the intended output device, run Test Speaker, and confirm the caller can hear Zoom.',
+        sourceLabel: 'Real Zoom audio settings screen matched to the approved audio process',
+        sourceUrl: 'https://www.rcmusic.com/learning/examinations/remote-exams/help-with-remote-practical-exams/remote-examination-zoom-guide',
       },
     ],
   },
@@ -228,16 +232,12 @@ export const COMMON_ISSUE_ROUTES = [
     discrepancy: 'The approved mobile microphone Process Document says “Call Over Internet.” Current official Zoom Support articles are themselves inconsistent: the mobile troubleshooting article also says “Call Over Internet,” while the audio-testing article says “Wifi or Cellular Data.” OGCon keeps the approved process unchanged and tells agents to use the internet-audio option actually shown on the caller’s device.',
     visuals: [
       {
-        title: 'Muted microphone control',
-        src: 'https://assets.zoom.us/generic-images/common-buttons-and-icons/filled/audio-off-button.png',
-        alt: 'Official Zoom muted microphone icon',
-        note: 'Official Zoom asset referenced by the current desktop audio troubleshooting article.',
-      },
-      {
-        title: 'Open audio-device choices',
-        src: 'https://assets.zoom.us/generic-images/common-buttons-and-icons/outline/up-arrow-button.png',
-        alt: 'Official Zoom upward arrow icon beside Mute or Unmute',
-        note: 'Use the arrow beside Mute/Unmute to change the microphone or speaker during a desktop meeting.',
+        title: 'Select and test the correct microphone',
+        src: 'assets/visual-references/audio-settings.png',
+        alt: 'Zoom Audio settings showing the microphone selector and microphone test controls',
+        note: 'Use the Microphone section to choose the intended input device and confirm Zoom detects the caller’s voice before moving to permissions or deeper troubleshooting.',
+        sourceLabel: 'Real Zoom audio settings screen matched to the approved audio process',
+        sourceUrl: 'https://www.rcmusic.com/learning/examinations/remote-exams/help-with-remote-practical-exams/remote-examination-zoom-guide',
       },
     ],
   },
@@ -308,7 +308,16 @@ export const COMMON_ISSUE_ROUTES = [
         url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0063407',
       },
     ],
-    visuals: [],
+    visuals: [
+      {
+        title: 'Confirm the selected camera and preview',
+        src: 'assets/visual-references/video-settings.png',
+        alt: 'Zoom Video settings showing the selected camera and video preview',
+        note: 'Use the Camera selector and preview to confirm Zoom is using the intended camera before moving to permissions or reinstall steps.',
+        sourceLabel: 'Real Zoom video settings screen matched to the approved camera process',
+        sourceUrl: 'https://marketing.prodigyems.com/blog-posts/how-to-maximize-your-zoom-recordings',
+      },
+    ],
   },
   {
     id: 'waiting-entry',
@@ -372,7 +381,16 @@ export const COMMON_ISSUE_ROUTES = [
         url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0063329',
       },
     ],
-    visuals: [],
+    visuals: [
+      {
+        title: 'Recognize the waiting-for-host state',
+        src: 'assets/visual-references/waiting-for-host.png',
+        alt: 'Zoom Workplace waiting screen showing Waiting for the host to start the meeting',
+        note: 'This visual is specifically the Waiting for host state: the caller has connected to Zoom and must wait for the host to start the session. Do not confuse this with a host-controlled Waiting Room.',
+        sourceLabel: 'Real Zoom Workplace waiting screen matched to the approved process',
+        sourceUrl: 'https://utelecon.adm.u-tokyo.ac.jp/en/zoom/join/',
+      },
+    ],
   },
 
   {
@@ -426,7 +444,16 @@ export const COMMON_ISSUE_ROUTES = [
       { title: 'Using host and co-host controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065164' },
     ],
     discrepancy: 'Current Zoom documentation can place Start share under More on mobile while the dedicated screen-sharing article refers to Share in the meeting controls. OGCon therefore guides by the visible Share / Start share label and checks More before calling the control missing.',
-    visuals: [],
+    visuals: [
+      {
+        title: 'Choose what to share',
+        src: 'assets/visual-references/screen-share.png',
+        alt: 'Zoom Share Screen dialog showing available screens or application windows',
+        note: 'Use this visual after locating Share / Start share. Select the intended screen or window and enable Share sound only when needed.',
+        sourceLabel: 'Real Zoom Share Screen dialog matched to the approved sharing process',
+        sourceUrl: 'https://answers.communitybiblestudy.org/knowledge-base/group-leaders-how-to-show-the-weekly-teaching-video-in-zoom/',
+      },
+    ],
   },
   {
     id: 'chat',
@@ -477,7 +504,16 @@ export const COMMON_ISSUE_ROUTES = [
     supportingSources: [
       { title: 'Participant controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062674' },
     ],
-    visuals: [],
+    visuals: [
+      {
+        title: 'Locate the in-meeting Chat control',
+        src: 'assets/visual-references/workplace-controls.png',
+        alt: 'Zoom Workplace meeting toolbar showing the in-meeting controls including Chat',
+        note: 'Use the meeting toolbar to locate Chat, then confirm the intended recipient before sending. Chat availability can still depend on host or administrator settings.',
+        sourceLabel: 'Current Zoom Workplace toolbar reference matched to the approved chat process',
+        sourceUrl: 'https://uit.stanford.edu/service/zoom/release',
+      },
+    ],
   },
   {
     id: 'meeting-controls',
@@ -529,7 +565,16 @@ export const COMMON_ISSUE_ROUTES = [
     supportingSources: [
       { title: 'Using host and co-host controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065164' },
     ],
-    visuals: [],
+    visuals: [
+      {
+        title: 'Locate the main meeting controls',
+        src: 'assets/visual-references/meeting-controls.png',
+        alt: 'Zoom meeting interface showing Audio, Video, Participants, Chat, Reactions, Share, More, and Leave or End controls',
+        note: 'Use this as a control map. Exact order and availability can vary by platform, role, window size, and meeting settings, so check More before declaring a control missing.',
+        sourceLabel: 'Zoom meeting-controls visual matched to the approved controls process',
+        sourceUrl: 'https://zoom.us/fr/pricing/education',
+      },
+    ],
   },
   {
     id: 'reactions',
@@ -580,7 +625,16 @@ export const COMMON_ISSUE_ROUTES = [
     supportingSources: [
       { title: 'Participant controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062674' },
     ],
-    visuals: [],
+    visuals: [
+      {
+        title: 'Locate React and Raise Hand',
+        src: 'assets/visual-references/workplace-controls.png',
+        alt: 'Zoom Workplace meeting toolbar showing the React control among the in-meeting controls',
+        note: 'Open React / Reactions to find available reactions or Raise Hand. On smaller or mobile interfaces, the option may appear under More.',
+        sourceLabel: 'Current Zoom Workplace toolbar reference matched to the approved reactions process',
+        sourceUrl: 'https://uit.stanford.edu/service/zoom/release',
+      },
+    ],
   },
   {
     id: 'invite',
@@ -632,7 +686,16 @@ export const COMMON_ISSUE_ROUTES = [
       { title: 'Participant controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062674' },
       { title: 'Using host and co-host controls in a meeting', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065164' },
     ],
-    visuals: [],
+    visuals: [
+      {
+        title: 'Start from Participants to invite someone',
+        src: 'assets/visual-references/workplace-controls.png',
+        alt: 'Zoom Workplace meeting toolbar showing the Participants control',
+        note: 'Open Participants first, then use the available Invite control to copy or share the current meeting invitation. Exact placement can vary with role and interface.',
+        sourceLabel: 'Current Zoom Workplace toolbar reference matched to the approved participant-controls process',
+        sourceUrl: 'https://uit.stanford.edu/service/zoom/release',
+      },
+    ],
   },
 
   {
