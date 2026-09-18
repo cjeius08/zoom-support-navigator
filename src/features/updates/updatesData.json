@@ -4,9 +4,60 @@
     "effectiveDate": "2026-09-18",
     "owner": "Cjei A.",
     "collaborator": "Nina F.",
-    "nextReview": "2026-10-18"
+    "nextReview": "2026-10-18",
+    "updatePolicy": "Every shipped user-facing feature, support-content change, or bug fix gets an entry here. Test-only, CI-only, and internal refactors are not listed."
   },
   "updates": [
+    {
+      "id": "interactive-guided-discovery",
+      "date": "2026-09-19",
+      "area": "Training / Live Call Support",
+      "title": "Scenario discovery now guides the next approved step",
+      "changed": "Replaced the static Discovery Questions block in Scenario Scripts with interactive answer choices. Agents can select what the caller reports and OGCon immediately narrows the next approved action or suggests the correct linked route. All 19 Scenario Scripts now have guided discovery, including device-, role-, state-, and permission-specific branching where it changes the support path.",
+      "checks": [
+        "Open Training & Resources → Scripts & Communication → Scenario Scripts → Bluetooth Headset.",
+        "Select Connected to this device → They can’t hear me → Windows and confirm the recommendation changes to Select the headset as Zoom Microphone.",
+        "Switch to Can’t Join, choose Waiting Room, and confirm OGCon recommends the Waiting to Get In route instead of continuing failed-join troubleshooting.",
+        "Switch between scenarios and confirm discovery answers reset rather than leaking into the next caller scenario."
+      ]
+    },
+    {
+      "id": "phase4-scenario-expansion",
+      "date": "2026-09-19",
+      "area": "Training / Scripts & Communication",
+      "title": "Scenario Scripts expanded from 9 to 19 live-call scenarios",
+      "changed": "Added ten specialized scripts to the existing Phase 4 live-call structure: Bluetooth Headset, Secure Connection Error, Transfer to Another Device, Join Muted, Camera On / Off on Join, Meeting Volume, Auto Computer Audio, Specific Audio Input Channels, Who Is Already in the Meeting?, and Invite / Copy Link. Each script remains linked to its approved Common Issue route and source processes.",
+      "checks": [
+        "Open Scenario Scripts and confirm all 19 scenario tabs are available.",
+        "Open Secure Connection Error and confirm the script clearly limits that specialty path to the documented Mac error.",
+        "Open Join Muted and confirm connected-but-muted is kept separate from Don’t connect to audio.",
+        "Open Invite / Copy Link and confirm the script explains the technical control without deciding who is authorized to attend."
+      ]
+    },
+    {
+      "id": "global-report-context",
+      "date": "2026-09-19",
+      "area": "Feedback / Reliability",
+      "title": "Report an issue is global and captures the current screen context",
+      "changed": "Moved Report an issue to the global console shell so it stays visible across pages and resized windows. Reports now capture the current page, selected tab, section, active device, caller role, Common Issue, process/category IDs, browser path, viewport size, browser user agent, and client timestamp. Admin Feedback Queue can display the captured context for troubleshooting.",
+      "checks": [
+        "Resize the browser narrowly and confirm Report an issue remains visible at the lower-right corner.",
+        "Submit a report from a Common Issue or Training scenario and confirm the active tab/section is captured.",
+        "In Admin → Feedback Queue, expand Captured screen context and confirm route, viewport, browser, and available live-call context are shown."
+      ]
+    },
+    {
+      "id": "updates-release-policy",
+      "date": "2026-09-19",
+      "area": "Support Console / Change Log",
+      "title": "What’s New now follows a clear release-entry rule",
+      "changed": "Defined the What’s New page as the user-facing release log for OGCon. Every shipped user-facing feature, support-content change, or bug fix must receive an update entry. Test-only changes, CI maintenance, and invisible internal refactors stay out of the user-facing log so the page remains useful instead of becoming raw commit history.",
+      "checks": [
+        "Open What’s New / Updates and confirm September 19 entries appear above the September 18 history.",
+        "Confirm the Update policy note explains which shipped changes are listed.",
+        "Confirm the header/version chip now shows the latest update date from the newest change-log entry."
+      ]
+    },
     {
       "id": "uiux-phase2-common-issue-routes",
       "date": "2026-09-18",
