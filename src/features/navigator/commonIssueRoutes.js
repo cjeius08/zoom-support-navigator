@@ -59,6 +59,14 @@ export const COMMON_ISSUE_ROUTES = [
     },
     supportingSources: [
       {
+        title: 'Troubleshooting when you can’t join a Zoom meeting',
+        url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0068749',
+      },
+      {
+        title: 'Troubleshooting invalid Zoom meeting ID',
+        url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0068841',
+      },
+      {
         title: 'Joining a Zoom meeting without an account',
         url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0059553',
       },
@@ -83,6 +91,7 @@ export const COMMON_ISSUE_ROUTES = [
     classificationNote: 'Treat this as an audio-output symptom first—not a connection diagnosis. If they are inside the meeting and the meeting itself is stable, stay on the speaker/audio path.',
     searchPhrases: [
       'i cant hear anyone',
+      'i cant hear you',
       'cant hear them',
       'cant hear anybody',
       'no sound',
@@ -282,6 +291,10 @@ export const COMMON_ISSUE_ROUTES = [
         title: 'Testing your video',
         url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0061836',
       },
+      {
+        title: 'Zoom frequently asked questions',
+        url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0063407',
+      },
     ],
     visuals: [],
   },
@@ -347,14 +360,7 @@ export const COMMON_ISSUE_ROUTES = [
         url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0063329',
       },
     ],
-    visuals: [
-      {
-        title: 'Participants control',
-        src: 'https://assets.zoom.us/generic-images/common-buttons-and-icons/filled/participants-or-channel-button.png',
-        alt: 'Official Zoom Participants icon',
-        note: 'Hosts use Participants to find the Waiting Room section and admit a participant.',
-      },
-    ],
+    visuals: [],
   },
 ]
 
