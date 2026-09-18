@@ -5,7 +5,7 @@ import { Navigator } from './Navigator'
 import { COMMON_ISSUE_ROUTES, searchCommonIssueRoutes } from './commonIssueRoutes'
 import { PROCESSES } from '../../data/processes'
 
-it('preserves the five Fastest Routes and exposes all fifteen reviewed routes under Common Issues', async () => {
+it('preserves the five Fastest Routes and exposes all nineteen reviewed routes under Common Issues', async () => {
   const user = userEvent.setup()
   render(<Navigator />)
 
@@ -16,7 +16,7 @@ it('preserves the five Fastest Routes and exposes all fifteen reviewed routes un
   expect(screen.getByRole('button', { name: /I’m waiting to get in/i })).toBeInTheDocument()
 
   await user.click(screen.getByRole('tab', { name: 'Common Issues' }))
-  expect(COMMON_ISSUE_ROUTES).toHaveLength(15)
+  expect(COMMON_ISSUE_ROUTES).toHaveLength(19)
   expect(screen.getByRole('button', { name: /Can’t share my screen/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Can’t find chat \/ can’t send a message/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Can’t find a meeting control/i })).toBeInTheDocument()
@@ -27,6 +27,10 @@ it('preserves the five Fastest Routes and exposes all fifteen reviewed routes un
   expect(screen.getByRole('button', { name: /switch this meeting to another device/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /join with my microphone muted/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /camera on\/off when I join/i })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /meeting is too loud \/ too quiet/i })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /connect to computer audio automatically/i })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /choose specific audio input channels/i })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /Who is already in the meeting/i })).toBeInTheDocument()
 })
 
 it('classifies cannot-hear as an audio-output symptom before assuming connection trouble', async () => {
@@ -81,6 +85,10 @@ it.each([
   ['switch meeting to another device', 'transfer-device'],
   ['join muted', 'join-muted'],
   ['camera off when joining', 'join-video-preference'],
+  ['meeting too quiet', 'meeting-volume'],
+  ['automatically connect to computer audio', 'auto-computer-audio'],
+  ['specific audio input channels', 'multiple-audio-input-channels'],
+  ['who is already in the meeting', 'participants-before-join'],
 ])('maps %s to the reviewed Phase 2 route before process lookup', (query, routeId) => {
   expect(searchCommonIssueRoutes(query)[0]?.id).toBe(routeId)
 })
@@ -103,6 +111,58 @@ it.each([
   const firstOption = within(listbox).getAllByRole('option')[0]
   expect(firstOption).toHaveTextContent(title)
   expect(firstOption).toHaveTextContent('Common Issue')
+})
+
+
+it.each([
+  ['meeting too quiet', 'The meeting is too loud / too quiet'],
+  ['automatically connect to computer audio', 'I want Zoom to connect to computer audio automatically'],
+  ['specific audio input channels', 'I need to choose specific audio input channels'],
+  ['who is already in the meeting', 'Who is already in the meeting?'],
+])('shows the intended Batch 4 Common Issue first in autocomplete for %s', async (query, title) => {
+  const user = userEvent.setup()
+  render(<Navigator />)
+  const search = screen.getByRole('combobox', { name: 'Search support processes' })
+
+  await user.type(search, query)
+
+  const listbox = screen.getByRole('listbox', { name: 'Search suggestions' })
+  const firstOption = within(listbox).getAllByRole('option')[0]
+  expect(firstOption).toHaveTextContent(title)
+  expect(firstOption).toHaveTextContent('Common Issue')
+})
+
+it('keeps meeting volume separate from individual-participant microphone trouble', () => {
+  const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'meeting-volume')
+  expect(route.classificationNote).toMatch(/per-participant volume control/i)
+  expect(route.checks.some(check => /Windows Volume Mixer/i.test(check.instruction))).toBe(true)
+  expect(route.checks.some(check => /Mobile: use the phone or tablet/i.test(check.instruction))).toBe(true)
+})
+
+it('treats automatic computer audio as a desktop preference that may be admin-controlled', () => {
+  const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'auto-computer-audio')
+  expect(route.classificationNote).toMatch(/desktop app setting/i)
+  expect(route.checks.some(check => /Automatically connect to computer audio/i.test(check.instruction))).toBe(true)
+  expect(route.checks.some(check => /administrator may control/i.test(check.instruction))).toBe(true)
+})
+
+it('requires three or more detected channels before showing multi-channel guidance', () => {
+  const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'multiple-audio-input-channels')
+  expect(route.classificationNote).toMatch(/three or more audio channels/i)
+  expect(route.checks.some(check => /Click Save/i.test(check.instruction))).toBe(true)
+})
+
+it('states the eligibility requirements before promising pre-join participant viewing', () => {
+  const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'participants-before-join')
+  expect(route.classificationNote).toMatch(/Pro, Business, Enterprise, or Education/i)
+  expect(route.classificationNote).toMatch(/Zoom Calendar/i)
+  expect(route.confirm.some(question => /calendar service integrated/i.test(question))).toBe(true)
+})
+
+it('maps every approved process either to a Common Issue route or to the approved agent guidance method', () => {
+  const routedIds = new Set(COMMON_ISSUE_ROUTES.flatMap(route => route.processIds))
+  const unrouted = PROCESSES.map(process => process.id).filter(id => !routedIds.has(id))
+  expect(unrouted).toEqual(['locate-describe-guide-confirm'])
 })
 
 it('keeps the secure-connection route Mac-specific and exposes the internal-vs-Zoom sequence discrepancy', () => {
