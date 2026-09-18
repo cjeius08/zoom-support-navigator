@@ -18,7 +18,8 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.metadata.updatePolicy).toMatch(/Every shipped user-facing feature/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
   expect(data.updates[0].date).toBe('2026-09-19')
-  expect(data.updates.slice(0, 19).map(entry => entry.id)).toEqual([
+  expect(data.updates.slice(0, 20).map(entry => entry.id)).toEqual([
+    'avatar-persistence-polish',
     'phase6-readiness-lab-part5-live-call',
     'phase6-readiness-lab-part4-scope-referral',
     'phase6-readiness-lab-part3-troubleshooting',
