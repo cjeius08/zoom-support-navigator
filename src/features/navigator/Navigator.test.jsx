@@ -6,7 +6,7 @@ import { Navigator } from './Navigator'
 it('opens a source-driven Call Guide with safe copy actions before lossless source views', async () => {
   const user = userEvent.setup()
   render(<Navigator />)
-  expect(screen.getByRole('heading', { name: 'Locate → Describe → Guide → Confirm' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Live Call Flow' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Common Issues' })).toBeInTheDocument()
   await user.click(screen.getByRole('button', { name: /Customer cannot join/i }))
   const dialog = screen.getByRole('dialog')
