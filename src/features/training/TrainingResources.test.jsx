@@ -48,4 +48,21 @@ describe('Training & Resources', () => {
     expect(screen.getByRole('dialog', { name: 'How to Join a Zoom Meeting' })).toBeInTheDocument()
   })
 
+
+  it('opens the Scripts & Communication workspace without disturbing the other training sections', async () => {
+    const user = userEvent.setup()
+    render(<TrainingResources />)
+
+    const scriptsTab = screen.getByRole('tab', { name: 'Scripts & Communication' })
+    await user.click(scriptsTab)
+
+    expect(scriptsTab).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('heading', { name: /Live-call language that stays inside scope/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Call Language' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.queryByRole('searchbox', { name: 'Search training videos' })).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('tab', { name: 'Device Walkthroughs' }))
+    expect(screen.getByRole('heading', { name: /Choose the caller’s device/i })).toBeInTheDocument()
+  })
+
 })
