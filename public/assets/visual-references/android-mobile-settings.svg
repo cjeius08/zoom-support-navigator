@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="t d">
+<title id="t">Android Zoom settings and permissions guide</title>
+<desc id="d">Source-verified Android guide showing Zoom Settings, Meetings, Always Mute My Microphone, Turn Off My Video, and Android permissions.</desc>
+<rect width="1200" height="720" rx="28" fill="#0b1218"/>
+<text x="48" y="58" fill="#8bd5ff" font-family="Arial" font-size="18" font-weight="700">SOURCE-VERIFIED ANDROID GUIDE</text>
+<text x="48" y="92" fill="#eef8ff" font-family="Arial" font-size="28" font-weight="700">Join defaults and Android permissions</text>
+<rect x="70" y="130" width="500" height="500" rx="24" fill="#121a21" stroke="#405a6d"/>
+<text x="100" y="170" fill="#eef8ff" font-family="Arial" font-size="22" font-weight="700">Zoom → Settings → Meetings</text>
+<text x="100" y="218" fill="#b6c7d3" font-family="Arial" font-size="16">Always Mute My Microphone</text>
+<rect x="445" y="196" width="72" height="34" rx="17" fill="#1986f2"/><circle cx="500" cy="213" r="14" fill="#fff"/>
+<text x="100" y="272" fill="#b6c7d3" font-family="Arial" font-size="16">Turn Off My Video</text>
+<rect x="445" y="250" width="72" height="34" rx="17" fill="#1986f2"/><circle cx="500" cy="267" r="14" fill="#fff"/>
+<text x="100" y="332" fill="#8197a7" font-family="Arial" font-size="14">These are default join preferences.</text>
+<text x="100" y="362" fill="#8197a7" font-family="Arial" font-size="14">One-time Join Options are separate.</text>
+<rect x="630" y="130" width="500" height="500" rx="24" fill="#121a21" stroke="#405a6d"/>
+<text x="660" y="170" fill="#eef8ff" font-family="Arial" font-size="22" font-weight="700">Android Settings → Apps → Zoom</text>
+<text x="660" y="218" fill="#b6c7d3" font-family="Arial" font-size="16">Permissions</text>
+<rect x="660" y="246" width="410" height="56" rx="12" fill="#0e151b" stroke="#364b5a"/>
+<text x="686" y="280" fill="#dce8ef" font-family="Arial" font-size="16">Microphone  ·  Allowed</text>
+<rect x="660" y="318" width="410" height="56" rx="12" fill="#0e151b" stroke="#364b5a"/>
+<text x="686" y="352" fill="#dce8ef" font-family="Arial" font-size="16">Camera  ·  Allowed</text>
+<text x="660" y="418" fill="#8197a7" font-family="Arial" font-size="14">Menu names vary by Android maker.</text>
+<text x="660" y="448" fill="#8197a7" font-family="Arial" font-size="14">Look for Apps, Permission Manager,</text>
+<text x="660" y="472" fill="#8197a7" font-family="Arial" font-size="14">or Privacy controls.</text>
+<text x="48" y="690" fill="#8197a7" font-family="Arial" font-size="13">Guide based on current Zoom Support labels and Android permission flow; not a pixel-for-pixel UI reproduction.</text>
+</svg>
