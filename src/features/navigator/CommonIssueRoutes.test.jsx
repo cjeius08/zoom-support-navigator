@@ -5,7 +5,8 @@ import { Navigator } from './Navigator'
 import { COMMON_ISSUE_ROUTES, searchCommonIssueRoutes } from './commonIssueRoutes'
 import { PROCESSES } from '../../data/processes'
 
-it('shows the five Phase 2 common-issue routes in caller language', () => {
+it('preserves the five Fastest Routes and exposes all ten reviewed routes under Common Issues', async () => {
+  const user = userEvent.setup()
   render(<Navigator />)
 
   expect(screen.getByRole('button', { name: /Can’t join the meeting/i })).toBeInTheDocument()
@@ -13,6 +14,14 @@ it('shows the five Phase 2 common-issue routes in caller language', () => {
   expect(screen.getByRole('button', { name: /They can’t hear me/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /My camera isn’t working/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /I’m waiting to get in/i })).toBeInTheDocument()
+
+  await user.click(screen.getByRole('tab', { name: 'Common Issues' }))
+  expect(COMMON_ISSUE_ROUTES).toHaveLength(10)
+  expect(screen.getByRole('button', { name: /Can’t share my screen/i })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /Can’t find chat \/ can’t send a message/i })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /Can’t find a meeting control/i })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /Raise hand \/ reactions/i })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /Invite someone \/ copy invite link/i })).toBeInTheDocument()
 })
 
 it('classifies cannot-hear as an audio-output symptom before assuming connection trouble', async () => {
@@ -50,10 +59,20 @@ it('routes natural caller language directly to the common issue guide', async ()
   const listbox = screen.getByRole('listbox', { name: 'Search suggestions' })
   const firstOption = within(listbox).getAllByRole('option')[0]
   expect(firstOption).toHaveTextContent('They can’t hear me')
-  expect(firstOption).toHaveTextContent('Common Issue Route')
+  expect(firstOption).toHaveTextContent('Common Issue')
 
   await user.click(firstOption)
   expect(screen.getByRole('dialog', { name: /They can’t hear me/i })).toBeInTheDocument()
+})
+
+it.each([
+  ['cant share', 'cant-share'],
+  ['cant find chat', 'chat'],
+  ['find a meeting control', 'meeting-controls'],
+  ['raise hand', 'reactions'],
+  ['copy invite link', 'invite'],
+])('maps %s to the reviewed Phase 2 route before process lookup', (query, routeId) => {
+  expect(searchCommonIssueRoutes(query)[0]?.id).toBe(routeId)
 })
 
 it('uses the Phase 1 device and role context inside a common issue route', async () => {
