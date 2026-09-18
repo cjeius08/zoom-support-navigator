@@ -1,6 +1,7 @@
 import { supabase } from './supabaseClient'
 import { derivePresenceState } from '../features/analytics/usageSummary'
-import { loadReadinessAdminReport, READINESS_QUESTION_SETS } from './readinessApi'
+import { loadReadinessAdminReport } from './readinessApi'
+import { READINESS_QUESTION_SETS } from './readinessQuestionSets'
 
 const PAGE_SIZE = 1000
 
