@@ -5,6 +5,26 @@ const DEVICES = ['Windows', 'Mac', 'iPhone', 'Android', 'Browser']
 const ROLES = ['Host', 'Participant']
 const STATUSES = ['Resolved', 'Unresolved', 'Escalation Needed']
 
+
+const GUIDANCE_METHOD = [
+  {
+    name: 'Locate',
+    detail: 'Find the correct Zoom area, platform, label, or control before asking the caller to act.',
+  },
+  {
+    name: 'Describe',
+    detail: 'Explain what the control looks like and what it does using the visible Zoom label.',
+  },
+  {
+    name: 'Guide',
+    detail: 'Give one action at a time, then pause. If the screen differs, stop and reassess instead of guessing.',
+  },
+  {
+    name: 'Confirm',
+    detail: 'Verify what changed or test the function before moving to the next step or closing the call.',
+  },
+]
+
 const CALL_STEPS = [
   {
     name: 'Opening',
@@ -149,6 +169,26 @@ export function LiveCallFlowDetails({ onClose }) {
       </div>
       {onClose && <button type="button" className="live-call-panel-close" onClick={onClose}>Close detailed flow</button>}
     </div>
+
+    <section className="live-call-guidance-method" aria-label="Locate Describe Guide Confirm method">
+      <div className="live-call-guidance-heading">
+        <div>
+          <p className="eyebrow">Approved agent guidance method</p>
+          <h3>Locate → Describe → Guide → Confirm</h3>
+        </div>
+        <span>Use with every troubleshooting route</span>
+      </div>
+      <div className="live-call-guidance-grid">
+        {GUIDANCE_METHOD.map((stage, index) => <article key={stage.name}>
+          <span>{index + 1}</span>
+          <div>
+            <strong>{stage.name}</strong>
+            <p>{stage.detail}</p>
+          </div>
+        </article>)}
+      </div>
+      <p className="live-call-guidance-rule"><strong>Core rule:</strong> Do not move to the next instruction until the caller confirms what they see or what happened.</p>
+    </section>
 
     <div className="live-call-table-wrap">
       <table className="live-call-table" aria-label="Live call flow">
