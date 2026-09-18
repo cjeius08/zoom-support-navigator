@@ -43,7 +43,7 @@ export const READINESS_PARTS = [
     title: 'Live Call Readiness',
     shortTitle: 'Live Call',
     purpose: 'Can the agent combine call flow, discovery, guidance, confirmation, documentation, and boundary judgment?',
-    questionSetVersion: null,
-    status: 'planned',
+    questionSetVersion: READINESS_QUESTION_SETS.liveCallReadiness,
+    status: 'available',
   },
 ]
