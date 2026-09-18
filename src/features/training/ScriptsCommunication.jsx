@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
 import { COMMON_ISSUE_ROUTES } from '../navigator/commonIssueRoutes'
 import { SCENARIO_SCRIPTS } from './scenarioScripts'
@@ -70,7 +70,7 @@ function FrameworkCard({ item, sectionId, index, copiedId, onCopy }) {
   </article>
 }
 
-export function ScriptsCommunication() {
+export function ScriptsCommunication({ onReportContextChange = () => {} }) {
   const [mode, setMode] = useState('language')
   const [activeSectionId, setActiveSectionId] = useState(COMMUNICATION_SECTIONS[0].id)
   const [activeScenarioId, setActiveScenarioId] = useState(SCENARIO_SCRIPTS[0].id)
@@ -79,6 +79,14 @@ export function ScriptsCommunication() {
   const activeSection = COMMUNICATION_SECTIONS.find(section => section.id === activeSectionId) ?? COMMUNICATION_SECTIONS[0]
   const activeScenario = SCENARIO_SCRIPTS.find(scenario => scenario.id === activeScenarioId) ?? SCENARIO_SCRIPTS[0]
   const activeRoute = COMMON_ISSUE_ROUTES.find(route => route.id === activeScenario.routeId)
+
+  useEffect(() => {
+    const modeLabels = { language: 'Call Language', scenarios: 'Scenario Scripts', avoid: 'Avoid / Use Instead' }
+    onReportContextChange({
+      selected_tab: modeLabels[mode] || mode,
+      current_section: mode === 'language' ? activeSection.title : mode === 'scenarios' ? activeScenario.label : 'Wording guardrails',
+    })
+  }, [mode, activeSection.title, activeScenario.label, onReportContextChange])
 
   async function copyPhrase(text, id) {
     setCopyError('')
