@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
 import { ProcessDrawer } from './ProcessDrawer'
 import { searchProcesses } from './smartSearch'
