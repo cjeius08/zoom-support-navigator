@@ -36,8 +36,8 @@ it('respects reduced-motion preferences across the console', () => {
   expect(responsiveCss).toMatch(/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.sidebar\s*\{[^}]*transition:\s*none/)
 })
 
-it('keeps search suggestions visible and scrollable instead of clipping under the hero', () => {
+it('keeps search suggestions visible and scrollable instead of clipping under Smart Search', () => {
   const css = read('src/accessibility-ui.css')
-  expect(css).toMatch(/\.hero\s*\{[^}]*overflow:\s*visible/)
+  expect(css).toMatch(/\.smart-search-card\s*\{[^}]*overflow:\s*visible/)
   expect(css).toMatch(/\.search-suggestions\s*\{[^}]*z-index:\s*60[^}]*max-height:\s*23rem[^}]*overflow-y:\s*auto/)
 })
