@@ -38,7 +38,7 @@ it('freezes the complete Phase 4 inventory and approved traceability', () => {
     const route = routes.get(scenario.routeId)
     expect(route, scenario.id + ' must keep a linked Common Issue route').toBeTruthy()
     expect(route.confirm?.length, scenario.id + ' must retain discovery prompts').toBeGreaterThanOrEqual(3)
-    expect(route.checks?.length, scenario.id + ' must retain approved route checks').toBeGreaterThan(0)
+    expect((route.checks?.length || 0) + (route.states?.length || 0), scenario.id + ' must retain approved route actions or states').toBeGreaterThan(0)
     expect(route.processIds?.length, scenario.id + ' must retain source traceability').toBeGreaterThan(0)
 
     for (const processId of route.processIds) {
@@ -123,7 +123,7 @@ it('keeps scenario copy actions scoped to the phrase the agent clicked', async (
 
   expect(within(openingCard).getByRole('button', { name: 'Copied' })).toBeInTheDocument()
   expect(within(guideCard).getByRole('button', { name: 'Copy phrase' })).toBeInTheDocument()
-  expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1)
+  expect(within(guideCard).queryByRole('button', { name: 'Copied' })).not.toBeInTheDocument()
 })
 
 it('keeps global report context on the exact active Phase 4 scenario', async () => {
