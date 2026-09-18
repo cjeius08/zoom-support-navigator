@@ -1,6 +1,11 @@
 import { supabase } from './supabaseClient'
 
-export const READINESS_QUESTION_SET_VERSION = 'zoom_general_scenarios_v1'
+export const READINESS_QUESTION_SETS = {
+  generalScenarios: 'zoom_general_scenarios_v1',
+  deviceNavigation: 'zoom_device_navigation_v1',
+}
+
+export const READINESS_QUESTION_SET_VERSION = READINESS_QUESTION_SETS.generalScenarios
 
 async function callReadinessRpc(name, args = {}) {
   if (!supabase) throw new Error('Readiness Lab is unavailable because Supabase is not configured.')
@@ -9,15 +14,15 @@ async function callReadinessRpc(name, args = {}) {
   return data
 }
 
-export function getReadinessState() {
+export function getReadinessState(questionSetVersion = READINESS_QUESTION_SET_VERSION) {
   return callReadinessRpc('zoom_readiness_get_state', {
-    p_question_set_version: READINESS_QUESTION_SET_VERSION,
+    p_question_set_version: questionSetVersion,
   })
 }
 
-export function startOrResumeReadiness() {
+export function startOrResumeReadiness(questionSetVersion = READINESS_QUESTION_SET_VERSION) {
   return callReadinessRpc('zoom_readiness_start_or_resume', {
-    p_question_set_version: READINESS_QUESTION_SET_VERSION,
+    p_question_set_version: questionSetVersion,
   })
 }
 
@@ -35,8 +40,8 @@ export function submitReadinessAttempt(attemptId) {
   })
 }
 
-export function loadReadinessAdminReport() {
+export function loadReadinessAdminReport(questionSetVersion = READINESS_QUESTION_SET_VERSION) {
   return callReadinessRpc('zoom_readiness_admin_report', {
-    p_question_set_version: READINESS_QUESTION_SET_VERSION,
+    p_question_set_version: questionSetVersion,
   })
 }
