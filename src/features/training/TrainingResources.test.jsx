@@ -15,11 +15,42 @@ describe('Training & Resources', () => {
     }
   })
 
+
+  it('uses the roadmap as the training home and opens existing resources from the learning path', async () => {
+    const user = userEvent.setup()
+    render(<TrainingResources />)
+
+    expect(screen.getByRole('tab', { name: 'Training Roadmap' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('heading', { name: /Follow one learning path/i })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Open call method' }))
+
+    expect(screen.getByRole('tab', { name: 'Scripts & Communication' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: 'Call Language' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tabpanel', { name: 'Locate → Describe → Guide → Confirm' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('tab', { name: 'Training Roadmap' }))
+    await user.click(screen.getByRole('button', { name: 'Open scenario scripts' }))
+
+    expect(screen.getByRole('tab', { name: 'Scenario Scripts' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('region', { name: /Can't Join scenario/i })).toBeInTheDocument()
+  })
+
+  it('publishes Training Roadmap as the default report context', () => {
+    const onReportContextChange = vi.fn()
+    render(<TrainingResources onReportContextChange={onReportContextChange} />)
+
+    expect(onReportContextChange).toHaveBeenLastCalledWith(expect.objectContaining({
+      selected_tab: 'Training Roadmap',
+      current_section: 'Phase 6 learning path',
+    }))
+  })
+
   it('filters cards locally without creating an iframe before a video is opened', async () => {
     const user = userEvent.setup()
     render(<TrainingResources />)
     expect(screen.getByRole('heading', { name: 'Training & Resources' })).toBeInTheDocument()
-    expect(screen.getByRole('tab', { name: 'Device Walkthroughs' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: 'Training Roadmap' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.queryByTitle(/video player/i)).not.toBeInTheDocument()
     await user.click(screen.getByRole('tab', { name: 'Video Library' }))
     await user.type(screen.getByRole('searchbox', { name: 'Search training videos' }), 'audio')
@@ -85,6 +116,7 @@ describe('Training & Resources', () => {
   it('keeps Training & Resources reference-only and does not expose Documentation as a training tab', () => {
     render(<TrainingResources />)
 
+    expect(screen.getByRole('tab', { name: 'Training Roadmap' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'Device Walkthroughs' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'Scripts & Communication' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'Video Library' })).toBeInTheDocument()
