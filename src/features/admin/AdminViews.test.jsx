@@ -14,7 +14,7 @@ beforeEach(() => {
   loadUsage.mockReset()
   loadFeedback.mockReset()
   loadReadinessReport.mockReset()
-  loadReadinessReport.mockResolvedValue({ questionSetVersion: 'zoom_general_scenarios_v1', maxAttempts: 3, users: [] })
+  loadReadinessReport.mockResolvedValue({ parts: [] })
   updateFeedbackStatus.mockReset()
   loadTeam.mockResolvedValue([{ id: 'agent-1', username: 'agent_one', initials: 'AO', role: 'agent', status: 'active', avatar_id: null, presence: 'active' }])
   runAdminAction.mockReset()
@@ -132,15 +132,18 @@ it('shows Readiness Lab attempt history separately with scores and incorrect ans
     presence: [],
   })
   loadReadinessReport.mockResolvedValue({
-    questionSetVersion: 'zoom_general_scenarios_v1',
-    maxAttempts: 3,
-    users: [{
-      id: 'u1',
-      username: 'agent_one',
-      initials: 'AO',
-      role: 'agent',
-      status: 'active',
-      attempts: [
+    parts: [{
+      id: 'foundation-call-flow',
+      title: 'General Zoom Scenarios',
+      questionSetVersion: 'zoom_general_scenarios_v1',
+      maxAttempts: 3,
+      users: [{
+        id: 'u1',
+        username: 'agent_one',
+        initials: 'AO',
+        role: 'agent',
+        status: 'active',
+        attempts: [
         {
           id: 'attempt-1',
           attemptNumber: 1,
@@ -170,8 +173,22 @@ it('shows Readiness Lab attempt history separately with scores and incorrect ans
           startedAt: now,
           submittedAt: null,
           incorrectAnswers: [],
-        },
-      ],
+          },
+        ],
+      }],
+    }, {
+      id: 'device-navigation',
+      title: 'Device & Navigation Awareness',
+      questionSetVersion: 'zoom_device_navigation_v1',
+      maxAttempts: 3,
+      users: [{
+        id: 'u1',
+        username: 'agent_one',
+        initials: 'AO',
+        role: 'agent',
+        status: 'active',
+        attempts: [],
+      }],
     }],
   })
 
@@ -179,6 +196,8 @@ it('shows Readiness Lab attempt history separately with scores and incorrect ans
   render(<UsageAnalytics />)
 
   expect(await screen.findByRole('heading', { name: 'Readiness Lab Report' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'General Zoom Scenarios' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Device & Navigation Awareness' })).toBeInTheDocument()
   expect(screen.getByText('Attempt 1')).toBeInTheDocument()
   expect(screen.getByText('Score 3/5')).toBeInTheDocument()
   expect(screen.getByText('Attempt 2')).toBeInTheDocument()
