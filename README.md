@@ -1,6 +1,6 @@
-# Zoom Support Navigator
+# Ogletree Support Workspace
 
-React/Vite and Supabase foundation for the approved Zoom Support Navigator project.
+React/Vite and Supabase foundation for the Ogletree Support Workspace.
 
 ## Safety boundary
 
