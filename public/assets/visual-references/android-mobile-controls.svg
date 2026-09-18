@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="t d">
+<title id="t">Android Zoom meeting controls guide</title>
+<desc id="d">Source-verified Android guide showing Zoom meeting controls with Mute, Video, Chat, More, Participants, and Share.</desc>
+<rect width="1200" height="720" rx="28" fill="#0b1218"/>
+<text x="48" y="58" fill="#8bd5ff" font-family="Arial" font-size="18" font-weight="700">SOURCE-VERIFIED ANDROID GUIDE</text>
+<text x="48" y="92" fill="#eef8ff" font-family="Arial" font-size="28" font-weight="700">Zoom mobile meeting controls</text>
+<rect x="390" y="116" width="420" height="562" rx="32" fill="#171d23" stroke="#4f6474" stroke-width="3"/>
+<rect x="550" y="130" width="100" height="10" rx="5" fill="#080c0f"/>
+<text x="420" y="178" fill="#b9c7d0" font-family="Arial" font-size="14">9:41</text>
+<text x="704" y="178" fill="#b9c7d0" font-family="Arial" font-size="14">▰  5G</text>
+<rect x="414" y="208" width="372" height="320" rx="18" fill="#202830"/>
+<circle cx="600" cy="350" r="72" fill="#344552"/>
+<text x="566" y="360" fill="#dbe7ee" font-family="Arial" font-size="22" font-weight="700">CALLER</text>
+<rect x="414" y="548" width="372" height="100" rx="14" fill="#11171c"/>
+<g font-family="Arial" font-size="12" text-anchor="middle">
+<circle cx="457" cy="584" r="18" fill="#d94848"/><text x="457" y="616" fill="#d9e8f2">Mute</text>
+<circle cx="527" cy="584" r="18" fill="#485865"/><text x="527" y="616" fill="#d9e8f2">Video</text>
+<circle cx="597" cy="584" r="18" fill="#485865"/><text x="597" y="616" fill="#d9e8f2">Chat</text>
+<circle cx="667" cy="584" r="18" fill="#485865"/><text x="667" y="616" fill="#d9e8f2">Share</text>
+<circle cx="737" cy="584" r="18" fill="#485865"/><text x="737" y="616" fill="#d9e8f2">More</text>
+</g>
+<path d="M744 562l48-88" stroke="#6ac1ff" stroke-width="3"/>
+<rect x="795" y="392" width="330" height="156" rx="16" fill="#13222d" stroke="#3e769a"/>
+<text x="818" y="424" fill="#8bd5ff" font-family="Arial" font-size="15" font-weight="700">Android cue</text>
+<text x="818" y="452" fill="#d4e0e8" font-family="Arial" font-size="14">More can reveal Participants,</text>
+<text x="818" y="476" fill="#d4e0e8" font-family="Arial" font-size="14">Host tools, reactions, and settings.</text>
+<text x="818" y="500" fill="#d4e0e8" font-family="Arial" font-size="14">Controls can vary by role and layout.</text>
+<text x="48" y="690" fill="#8197a7" font-family="Arial" font-size="13">Guide based on current Zoom Support navigation; not a pixel-for-pixel UI reproduction.</text>
+</svg>
