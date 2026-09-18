@@ -39,18 +39,40 @@ export function CommonIssueDrawer({
     : []
 
   const selectedDevice = callContext?.device ?? null
+  const selectedRole = callContext?.role ?? null
   const desktopAppDevice = selectedDevice === 'Windows' || selectedDevice === 'Mac'
-  const deviceSpecificTitles = route.id === 'cant-hear'
+  const legacyDeviceSpecificTitles = route.id === 'cant-hear'
     ? new Set(['Test and select the Zoom speaker'])
     : route.id === 'cant-be-heard'
       ? new Set(['Select and test the correct microphone'])
       : route.id === 'camera-not-working'
         ? new Set(['Select the correct camera'])
         : new Set()
-  const hasDeviceSpecificChecks = deviceSpecificTitles.size > 0
-  const visibleChecks = route.checks.filter(check => (
-    !deviceSpecificTitles.has(check.title) || desktopAppDevice
-  ))
+
+  const routeHasDeviceBoundary = Array.isArray(route.supportedDevices) && route.supportedDevices.length > 0
+  const routeDeviceMismatch = Boolean(
+    selectedDevice
+    && routeHasDeviceBoundary
+    && !route.supportedDevices.includes(selectedDevice),
+  )
+  const routeNeedsDeviceSelection = routeHasDeviceBoundary && !selectedDevice
+  const hasDeviceScopedChecks = route.checks.some(check => Array.isArray(check.devices))
+    || legacyDeviceSpecificTitles.size > 0
+  const hasRoleScopedChecks = route.checks.some(check => Array.isArray(check.roles))
+
+  const visibleChecks = route.checks.filter(check => {
+    if (routeDeviceMismatch || routeNeedsDeviceSelection) return false
+    if (Array.isArray(check.devices) && (!selectedDevice || !check.devices.includes(selectedDevice))) return false
+    if (Array.isArray(check.roles) && (!selectedRole || !check.roles.includes(selectedRole))) return false
+    if (legacyDeviceSpecificTitles.has(check.title) && !desktopAppDevice) return false
+    return true
+  })
+
+  function stateAction(state) {
+    return selectedRole && state.roleActions?.[selectedRole]
+      ? state.roleActions[selectedRole]
+      : state.action
+  }
 
   function selectTab(id, { focus = false } = {}) {
     setTab(id)
@@ -153,15 +175,29 @@ export function CommonIssueDrawer({
                 <span>{state.badge}</span>
                 <h3>{state.title}</h3>
                 <p>{state.body}</p>
-                <div><strong>Next action</strong><p>{state.action}</p></div>
+                <div><strong>Next action</strong><p>{stateAction(state)}</p></div>
               </article>)}
             </div>
           </section>}
 
-          {hasDeviceSpecificChecks && !selectedDevice && <section className="common-issue-section common-issue-device-prompt">
+          {(routeNeedsDeviceSelection || (hasDeviceScopedChecks && !selectedDevice)) && <section className="common-issue-section common-issue-device-prompt">
             <p className="eyebrow">Device needed</p>
             <h3>Select the caller’s device in Live Call Flow</h3>
-            <p>OGCon is hiding device-specific app steps until the caller’s device is selected, so the agent does not give desktop-only instructions to a mobile or browser caller.</p>
+            <p>{routeHasDeviceBoundary
+              ? `This route has platform-specific guidance. Supported in this approved path: ${route.supportedDevices.join(', ')}.`
+              : 'OGCon is hiding device-specific app steps until the caller’s device is selected, so the agent does not give desktop-only instructions to a mobile or browser caller.'}</p>
+          </section>}
+
+          {routeDeviceMismatch && <section className="common-issue-section common-issue-device-prompt">
+            <p className="eyebrow">Different device path</p>
+            <h3>This route does not match the selected device</h3>
+            <p>{route.unsupportedDeviceNote || `The approved steps in this route do not apply to ${selectedDevice}. Choose a route that matches the caller’s platform before continuing.`}</p>
+          </section>}
+
+          {hasRoleScopedChecks && !selectedRole && !routeDeviceMismatch && !routeNeedsDeviceSelection && <section className="common-issue-section common-issue-device-prompt">
+            <p className="eyebrow">Caller role needed</p>
+            <h3>Select Host or Participant in Live Call Flow</h3>
+            <p>OGCon is hiding role-specific steps until the caller’s role is selected, so participant-only permissions are not shown to a host.</p>
           </section>}
 
           {visibleChecks.length > 0 && <section className="common-issue-section">
