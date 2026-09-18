@@ -10,6 +10,19 @@
   },
   "updates": [
     {
+      "id": "avatar-persistence-polish",
+      "date": "2026-09-19",
+      "area": "Profile / Avatar",
+      "title": "Saved avatars now persist and display more cleanly",
+      "changed": "Fixed the profile hydration path so a saved avatar is restored after logout/login instead of disappearing from the authenticated header. Standardized the avatar gallery on one centered crop treatment so all approved avatars use the same visual framing, corrected the selected-state styling for the radio-based picker, and enlarged the top-right account avatar slightly for better visibility.",
+      "checks": [
+        "Choose an avatar, log out, sign back in, and confirm the same saved avatar appears immediately without choosing again.",
+        "Open Change Avatar and scan several avatars; each image should stay centered inside its tile with consistent framing.",
+        "Confirm the selected avatar tile has a visible selected outline.",
+        "Confirm the top-right account avatar is slightly larger while the header remains balanced on desktop and mobile."
+      ]
+    },
+    {
       "id": "phase6-readiness-lab-part5-live-call",
       "date": "2026-09-19",
       "area": "Training / Readiness Validation",
