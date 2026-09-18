@@ -1,5 +1,7 @@
 name: Verify Pull Request
 
+# Mirrors the production test/lint/build gate without deploying.
+
 on:
   pull_request:
     branches: [main]
