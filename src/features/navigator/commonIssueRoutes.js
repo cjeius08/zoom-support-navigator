@@ -175,14 +175,20 @@ export const COMMON_ISSUE_ROUTES = [
     ],
     confirm: [
       'Are they already inside the meeting?',
+      'Do they see Join Audio, or are they already connected to meeting audio?',
       'Does the Zoom microphone control show that they are muted?',
       'Are they using the built-in microphone, a headset, USB microphone, or Bluetooth?',
     ],
     checks: [
       {
         title: 'Check Zoom mute and any physical mute switch',
-        instruction: 'Unmute in Zoom if muted. Also check the headset or microphone for a physical mute button or switch.',
+        instruction: 'Unmute in Zoom if muted. Also check the headset or microphone for a physical mute button or switch. If Zoom will not allow the participant to unmute, the host may need to allow or unmute them; the support agent cannot override host controls.',
         expected: 'Zoom shows the microphone as unmuted and the physical device is not muted.',
+      },
+      {
+        title: 'Confirm the participant joined meeting audio',
+        instruction: 'If Zoom is showing Join Audio, connect to meeting audio before testing the microphone. On current Zoom mobile guidance, internet audio is shown as Wifi or Cellular Data.',
+        expected: 'The meeting shows the normal microphone/audio control and Zoom is connected to meeting audio.',
       },
       {
         title: 'Select and test the correct microphone',
@@ -213,7 +219,12 @@ export const COMMON_ISSUE_ROUTES = [
         title: 'Troubleshooting speaker or microphone issues on your mobile device',
         url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0066222',
       },
+      {
+        title: 'Testing your audio settings for Zoom meetings',
+        url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062765',
+      },
     ],
+    discrepancy: 'The approved mobile microphone Process Document uses the older wording “Call Over Internet.” Current official Zoom Support uses “Wifi or Cellular Data” for internet audio on mobile. OGCon shows the current Zoom wording while keeping the approved source unchanged and flags this difference for document review.',
     visuals: [
       {
         title: 'Muted microphone control',
