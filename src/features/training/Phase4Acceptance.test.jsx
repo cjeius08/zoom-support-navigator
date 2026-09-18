@@ -27,9 +27,12 @@ it('freezes the complete Phase 4 inventory and approved traceability', () => {
   expect(SCENARIO_SCRIPT_VERIFIED_AT).toBe('September 19, 2026')
   expect(SCENARIO_SCRIPTS).toHaveLength(19)
   expect(new Set(SCENARIO_SCRIPTS.map(item => item.id)).size).toBe(19)
-  expect(COMMUNICATION_SECTIONS).toHaveLength(7)
+  expect(COMMUNICATION_SECTIONS).toHaveLength(11)
   expect(COMMUNICATION_AVOID_PAIRS).toHaveLength(6)
-  expect(COMMUNICATION_SELF_CHECK.length).toBeGreaterThanOrEqual(3)
+  expect(COMMUNICATION_SELF_CHECK.length).toBeGreaterThanOrEqual(8)
+  expect(COMMUNICATION_SECTIONS.map(section => section.id)).toEqual([
+    'opening', 'listen', 'empathy', 'assurance', 'identify', 'probe', 'troubleshoot', 'confirm-resolution', 'recap', 'final-check', 'closing',
+  ])
 
   const routes = new Map(COMMON_ISSUE_ROUTES.map(route => [route.id, route]))
   const processIds = new Set(PROCESSES.map(process => process.id))
