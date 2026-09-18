@@ -136,7 +136,7 @@ it('keeps meeting volume separate from individual-participant microphone trouble
   const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'meeting-volume')
   expect(route.classificationNote).toMatch(/per-participant volume control/i)
   expect(route.checks.some(check => /Windows Volume Mixer/i.test(check.instruction))).toBe(true)
-  expect(route.checks.some(check => /Mobile: use the phone or tablet/i.test(check.instruction))).toBe(true)
+  expect(route.checks.some(check => /iPhone or Android/i.test(check.instruction))).toBe(true)
 })
 
 it('treats automatic computer audio as a desktop preference that may be admin-controlled', () => {
