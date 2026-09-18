@@ -12,7 +12,20 @@ it('renders the seven-stage live call flow in Step, Agent Action, Suggested Scri
   expect(within(table).getByRole('columnheader', { name: 'Suggested Script' })).toBeInTheDocument()
 
   for (const label of ['Opening', 'Acknowledgment', 'Identify', 'Resolution', 'Recap', 'Adjacent Issues', 'Closing']) {
-    expect(within(table).getByRole('row', { name: new RegExp(label, 'i') })).toBeInTheDocument()
+    expect(within(table).getByRole('rowheader', { name: new RegExp(`\\b${label}import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { expect, it } from 'vitest'
+import { LiveCallFlow } from './LiveCallFlow'
+
+it('renders the seven-stage live call flow in Step, Agent Action, Suggested Script columns', () => {
+  render(<LiveCallFlow />)
+
+  const table = screen.getByRole('table', { name: 'Live call flow' })
+  expect(within(table).getByRole('columnheader', { name: 'Step' })).toBeInTheDocument()
+  expect(within(table).getByRole('columnheader', { name: 'Agent Action' })).toBeInTheDocument()
+  expect(within(table).getByRole('columnheader', { name: 'Suggested Script' })).toBeInTheDocument()
+
+, 'i') })).toBeInTheDocument()
   }
 })
 
