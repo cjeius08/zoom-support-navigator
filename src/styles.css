@@ -407,7 +407,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   }
 }
 
-/* Temporary neutral identity: no OGCon branding. */
+/* Ogletree Support Workspace identity. */
 .console-brand-neutral {
   display: flex;
   align-items: center;
