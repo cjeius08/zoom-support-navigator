@@ -55,7 +55,7 @@ export function TrainingResources({ initialVideoId = null }) {
         <h1>Training &amp; Resources</h1>
         <p>Use visual device walkthroughs for live guidance, or open the training video library for deeper learning.</p>
       </div>
-      <span className="playlist-label">{section === 'devices' ? 'Phase 3 · Windows + Mac + iPhone + Android' : 'Getting Started with Zoom · ' + TRAINING_VIDEOS.length + ' videos'}</span>
+      <span className="playlist-label">{section === 'devices' ? 'Phase 3 · Windows + Mac + iPhone + Android + Browser' : 'Getting Started with Zoom · ' + TRAINING_VIDEOS.length + ' videos'}</span>
     </div>
 
     <div className="training-section-tabs" role="tablist" aria-label="Training resource sections">
