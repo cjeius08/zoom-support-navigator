@@ -5,13 +5,14 @@ import { AvatarPicker } from '../profile/AvatarPicker'
 import { CONSOLE_METADATA, LAST_UPDATED, formatShortConsoleDate } from '../updates/updatesData'
 import '../updates/updates.css'
 import { useDialogFocus } from '../../lib/useDialogFocus'
+import { GlobalFeedbackButton } from '../feedback/GlobalFeedbackButton'
 
 const agentLinks = [['navigator', 'Navigator'], ['training', 'Training & Resources'], ['updates', 'What’s New / Updates'], ['feedback', 'Feedback']]
 const adminLinks = [['admin', 'Admin Home'], ['team', 'Team Management'], ['usage', 'Usage Analytics'], ['feedback_queue', 'Feedback Queue']]
 
 function Icon({ type }) { const paths = { navigator: 'M4 11.5 12 4l8 7.5v8.5H4z', training: 'M4 5h6a3 3 0 0 1 2 3v12a3 3 0 0 0-2-1H4zM20 5h-6a3 3 0 0 0-2 3v12a3 3 0 0 1 2-1h6z', updates: 'M12 4v8l4 2M4 12a8 8 0 1 0 2.3-5.7L4 8M4 4v4h4', feedback: 'M5 5h14v10H9l-4 4z', admin: 'M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7z', team: 'M16 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M17 11a3 3 0 0 0-1-5.8M21 20v-2a4 4 0 0 0-2.7-3.8', usage: 'M5 20V10M12 20V4M19 20v-7', feedback_queue: 'M5 4h14v16H5zM8 9h8M8 13h6' }; return <svg data-testid="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d={paths[type] || paths.feedback} /></svg> }
 
-export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, currentView = 'navigator', onNavigate = () => {} }) {
+export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, currentView = 'navigator', onNavigate = () => {}, onFeedback, reportContext = {} }) {
   const [open, setOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [avatarOpen, setAvatarOpen] = useState(false)
@@ -132,6 +133,8 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     </aside>
 
     <main className="app-main">{children}</main>
+
+    <GlobalFeedbackButton currentView={currentView} reportContext={reportContext} onSubmit={onFeedback} />
 
     {profileOpen && <div className="modal-backdrop" role="presentation" onClick={event => event.target === event.currentTarget && closeProfile()}><div ref={profileDialogRef} tabIndex={-1} className="profile-panel" role="dialog" aria-modal="true" aria-labelledby="profile-title"><div className="profile-summary">{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<div><h2 id="profile-title">My Profile</h2><strong>{profile.username}</strong><p>{profile.initials} · {isAdmin ? 'JA Admin' : 'Agent'}</p></div></div>{message && <p className="success-message" role="status">{message}</p>}{profileError && <p id="profile-error" role="alert">{profileError}</p>}{avatarOpen ? <AvatarPicker selectedId={profile.avatar_id} onCancel={() => setAvatarOpen(false)} onSave={async id => { setMessage(''); setProfileError(''); setProfileErrorField(''); try { await onAvatarChange?.(id); setAvatarOpen(false); setMessage('Avatar updated.') } catch (avatarError) { setProfileError(avatarError?.message || 'Could not update avatar.') } }} /> : passwordOpen ? <form onSubmit={submitPassword} noValidate><h3>Change Password</h3><label>New password<input name="password" type="password" autoComplete="new-password" disabled={passwordSaving} aria-invalid={profileErrorField === 'password' ? 'true' : undefined} aria-describedby={profileErrorField === 'password' ? 'profile-error' : undefined} /></label><label>Confirm password<input name="confirm" type="password" autoComplete="new-password" disabled={passwordSaving} aria-invalid={profileErrorField === 'confirm' ? 'true' : undefined} aria-describedby={profileErrorField === 'confirm' ? 'profile-error' : undefined} /></label><div className="dialog-actions"><button type="button" disabled={passwordSaving} onClick={() => setPasswordOpen(false)}>Cancel</button><button disabled={passwordSaving}>{passwordSaving ? 'Saving…' : 'Save Password'}</button></div></form> : <div className="profile-actions"><button onClick={() => { setMessage(''); setProfileError(''); setProfileErrorField(''); setAvatarOpen(true) }}>Change Avatar</button><button onClick={() => { setMessage(''); setProfileError(''); setProfileErrorField(''); setPasswordOpen(true) }}>Change Password</button><button onClick={onLogout}>Logout</button></div>}</div></div>}
   </div>
