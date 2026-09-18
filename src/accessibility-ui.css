@@ -17,14 +17,14 @@
   margin-top: 1rem;
 }
 
-/* The suggestion list intentionally extends outside the hero card. */
-.hero {
+/* The suggestion list intentionally extends outside the compact Smart Search card. */
+.smart-search-card {
   position: relative;
-  z-index: 5;
+  z-index: 8;
   overflow: visible;
 }
 
-.hero .search-combobox input {
+.smart-search-card .search-combobox input {
   width: 100%;
   margin-top: 0;
 }
