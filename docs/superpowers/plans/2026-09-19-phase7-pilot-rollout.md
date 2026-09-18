@@ -53,6 +53,16 @@ Flow:
 
 This batch may mutate only the disposable pilot identity created for the test.
 
+## Batch 2 result — 2026-09-19
+
+Status: **PASS with one manual-only coverage gap.**
+
+The disposable `pilot_qat` / `QAT` lifecycle was exercised end-to-end for activation, login, avatar persistence, self password change, forced-change/session invalidation state, deactivation, reactivation, permanent deletion, and cleanup. The live pilot also exposed and led to fixes for avatar rehydration, centering, selected-state visibility, and header sizing.
+
+The connected automation layer does not expose Supabase Auth Admin password mutation and blocks raw temporary-password handling, so the Edge Function's actual temporary-password replacement was not automated. The same reset flow's `must_change_password` flag, session invalidation, authorization, and audit event were verified directly.
+
+Detailed record: `docs/superpowers/plans/2026-09-19-phase7-batch2-pilot-results.md`
+
 ## Batch 3 — Controlled Team Pilot
 
 Run with JA plus one designated non-disposable sample agent.
