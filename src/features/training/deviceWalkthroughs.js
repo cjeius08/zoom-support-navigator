@@ -401,6 +401,114 @@ export const DEVICE_WALKTHROUGHS = [
         url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0066222',
       },
     ],
+  },
+  {
+    id: 'browser',
+    label: 'Browser',
+    title: 'Browser / Zoom Web App walkthrough',
+    subtitle: 'Zoom Web App in a desktop browser',
+    summary: 'Use this path when the caller is staying in the browser instead of launching the installed Zoom app. First confirm the Join from your browser path, then separate Zoom Web App controls from browser and operating-system permissions.',
+    quickFacts: [
+      'No installed Zoom app required',
+      'Join from your browser can be controlled by the host/account',
+      'Browser permissions can block mic, camera, or screen share',
+    ],
+    sections: [
+      {
+        id: 'browser-join',
+        eyebrow: '1 · Join from browser',
+        title: 'Stay in the browser instead of launching the app',
+        image: 'assets/visual-references/browser-webapp-join.svg',
+        imageAlt: 'Browser guide showing the Zoom launch page with Join from your browser, name field, and Join button',
+        steps: [
+          'Open the meeting invitation link in a supported browser.',
+          'If the page prompts the caller to open or download Zoom Workplace, cancel or dismiss that app-launch prompt.',
+          'Click Join from your browser. Enter the caller’s display name and continue to Join.',
+          'If Join from your browser is not offered, do not assume a browser problem—the host or account may have that option disabled, and end-to-end encrypted meetings do not show the browser-join link.',
+        ],
+        whatTheyShouldSee: 'The caller enters the Zoom Web App without installing or opening the desktop app, or the route correctly identifies that browser joining is not available for this meeting.',
+      },
+      {
+        id: 'browser-controls',
+        eyebrow: '2 · In-meeting map',
+        title: 'Use the Web App meeting toolbar',
+        image: 'assets/visual-references/browser-webapp-controls.svg',
+        imageAlt: 'Zoom Web App meeting toolbar guide showing Audio, Video, Participants, Chat, Share, More, and profile settings',
+        steps: [
+          'After joining, look along the bottom of the Zoom Web App meeting window for the meeting controls toolbar.',
+          'Use Join Audio / Mute / Unmute for meeting audio, Video for the caller’s camera, and the available Participants, Chat, Share, or More controls.',
+          'Exact controls can vary by host/admin settings, plan support, role, and toolbar configuration, so do not treat a missing control as a browser failure until those boundaries are checked.',
+        ],
+        whatTheyShouldSee: 'The browser meeting toolbar appears at the bottom of the meeting window with the controls available to this caller.',
+      },
+      {
+        id: 'browser-settings-audio',
+        eyebrow: '3 · Settings / Audio',
+        title: 'Web App settings stay inside the meeting',
+        image: 'assets/visual-references/browser-webapp-controls.svg',
+        imageAlt: 'Zoom Web App guide highlighting profile picture to Settings and Audio device tests',
+        steps: [
+          'In the Zoom Web App meeting toolbar, open the profile picture and choose Settings.',
+          'Use Audio to select the browser-visible speaker and microphone and run Test Speaker or Test Mic where available.',
+          'For camera selection, use the Video control or the relevant Web App video setting before changing browser permissions.',
+        ],
+        whatTheyShouldSee: 'The Web App settings window opens and Zoom can see the browser-exposed audio or video devices.',
+      },
+      {
+        id: 'browser-permissions',
+        eyebrow: '4 · Browser permissions',
+        title: 'Allow the browser to use microphone, camera, and screen share',
+        image: 'assets/visual-references/browser-permissions.svg',
+        imageAlt: 'Browser permission guide showing microphone, camera, and screen share permissions for the Zoom Web App',
+        steps: [
+          'When the browser asks for microphone or camera access, choose Allow for the feature the caller needs.',
+          'If access was blocked earlier, open the browser’s site permissions for Zoom and allow the affected device, then reload or rejoin when required.',
+          'For screen sharing, follow the browser’s screen, window, or tab picker and any system-level capture permission prompt.',
+          'If the browser itself is blocked by Windows, macOS, or ChromeOS privacy settings, fix the browser permission at the operating-system level rather than changing unrelated Zoom settings.',
+        ],
+        whatTheyShouldSee: 'Zoom Web App has browser access to the required microphone, camera, or screen, and the affected meeting feature becomes available.',
+      },
+    ],
+    platformNotes: [
+      {
+        title: 'Web App is not the desktop app',
+        text: 'Do not give installed-app Settings paths to a browser caller. The Web App has its own in-meeting Settings and can have different feature availability.',
+      },
+      {
+        title: 'Browser join can be unavailable',
+        text: 'The host/account controls Show a "Join from your browser" link. E2EE meetings also do not offer that browser-join link.',
+      },
+      {
+        title: 'Mobile browser is more limited',
+        text: 'Zoom states that the meeting experience on mobile web browsers has more limited functionality than the desktop web browser. Use the iPhone or Android walkthrough when the caller is using the installed mobile app.',
+      },
+    ],
+    sources: [
+      {
+        title: 'Joining a Zoom meeting',
+        url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060732',
+      },
+      {
+        title: 'Using the Zoom Web App on Chromebook and web browser',
+        url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0059744',
+      },
+      {
+        title: 'Participant controls in a meeting',
+        url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062674',
+      },
+      {
+        title: 'Changing settings in the Zoom Web App',
+        url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0059423',
+      },
+      {
+        title: 'Allowing microphone, camera, and screen share permissions in the Zoom Web App',
+        url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0078476',
+      },
+      {
+        title: 'Enabling or disabling the Join from your browser link setting',
+        url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0067293',
+      },
+    ],
   }
 ]
 
