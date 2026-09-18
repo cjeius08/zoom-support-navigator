@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   loadFeedback,
+  loadReadinessReport,
   loadTeam,
   loadUsage,
   runAdminAction,
@@ -488,7 +489,143 @@ const USAGE_PERIODS = [
   ["custom", "Custom"],
 ];
 
+function ReadinessAnalyticsReport() {
+  const loader = useCallback(() => loadReadinessReport(), []);
+  const state = useData(loader);
+
+  return (
+    <State state={state}>
+      {(data) => {
+        const users = data?.users || [];
+        const attempts = users.flatMap((user) => user.attempts || []);
+        const submitted = attempts.filter((attempt) => attempt.status === "submitted");
+        const firstSubmitted = users
+          .map((user) => (user.attempts || []).find((attempt) => attempt.attemptNumber === 1 && attempt.status === "submitted"))
+          .filter(Boolean);
+        const firstScoreAverage = firstSubmitted.length
+          ? firstSubmitted.reduce((sum, attempt) => sum + attempt.score, 0) / firstSubmitted.length
+          : null;
+
+        return (
+          <section className="readiness-admin-report" aria-labelledby="readiness-admin-title">
+            <div className="real-summary readiness-admin-summary" aria-label="Readiness Lab summary">
+              <div>
+                <strong>{users.filter((user) => (user.attempts || []).length > 0).length}</strong>
+                <span>Users Started</span>
+              </div>
+              <div>
+                <strong>{submitted.length}</strong>
+                <span>Submitted Attempts</span>
+              </div>
+              <div>
+                <strong>{attempts.filter((attempt) => attempt.status === "active").length}</strong>
+                <span>In Progress</span>
+              </div>
+              <div>
+                <strong>{firstScoreAverage === null ? "—" : `${firstScoreAverage.toFixed(1)}/5`}</strong>
+                <span>Avg. First Attempt</span>
+              </div>
+            </div>
+
+            <div className="readiness-admin-heading">
+              <div>
+                <p className="eyebrow">Readiness Lab history</p>
+                <h2 id="readiness-admin-title">Scores, attempts, and incorrect answers</h2>
+              </div>
+              <span>Maximum {data?.maxAttempts || 3} attempts per user</span>
+            </div>
+
+            <div className="readiness-admin-list">
+              {users.map((user) => {
+                const userAttempts = user.attempts || [];
+                const firstAttempt = userAttempts.find((attempt) => attempt.attemptNumber === 1);
+                const submittedAttempts = userAttempts.filter((attempt) => attempt.status === "submitted");
+                const latestSubmitted = submittedAttempts[submittedAttempts.length - 1];
+                const activeAttempt = userAttempts.find((attempt) => attempt.status === "active");
+
+                return (
+                  <article className="readiness-admin-user" key={user.id}>
+                    <header>
+                      <div>
+                        <strong>{user.username || user.initials}</strong>
+                        <small>{user.initials} · {user.role === "creator_admin" ? "JA Admin" : "Agent"}</small>
+                      </div>
+                      <span>{userAttempts.length}/{data?.maxAttempts || 3} attempts used</span>
+                    </header>
+
+                    <dl className="readiness-admin-metrics">
+                      <div>
+                        <dt>First attempt</dt>
+                        <dd>{firstAttempt
+                          ? firstAttempt.status === "submitted"
+                            ? `${firstAttempt.score}/${firstAttempt.totalQuestions}`
+                            : `In progress · ${firstAttempt.checkedCount}/${firstAttempt.totalQuestions}`
+                          : "Not started"}</dd>
+                      </div>
+                      <div>
+                        <dt>Latest submitted</dt>
+                        <dd>{latestSubmitted ? `${latestSubmitted.score}/${latestSubmitted.totalQuestions}` : "—"}</dd>
+                      </div>
+                      <div>
+                        <dt>Current progress</dt>
+                        <dd>{activeAttempt ? `Attempt ${activeAttempt.attemptNumber} · ${activeAttempt.checkedCount}/${activeAttempt.totalQuestions}` : "—"}</dd>
+                      </div>
+                    </dl>
+
+                    {userAttempts.length ? (
+                      <div className="readiness-admin-attempts">
+                        {userAttempts.map((attempt) => (
+                          <details key={attempt.id}>
+                            <summary>
+                              <strong>Attempt {attempt.attemptNumber}</strong>
+                              <span>{attempt.status === "submitted"
+                                ? `${attempt.score}/${attempt.totalQuestions} · Submitted`
+                                : `${attempt.checkedCount}/${attempt.totalQuestions} · In progress`}</span>
+                            </summary>
+                            <div className="readiness-admin-attempt-detail">
+                              {(attempt.incorrectAnswers || []).length ? (
+                                <ol>
+                                  {attempt.incorrectAnswers.map((answer) => (
+                                    <li key={answer.questionId}>
+                                      <strong>Question {answer.questionOrder}</strong>
+                                      <p>{answer.prompt}</p>
+                                      <dl>
+                                        <div><dt>Selected</dt><dd>{answer.selectedAnswer}</dd></div>
+                                        <div><dt>Correct</dt><dd>{answer.correctAnswer}</dd></div>
+                                      </dl>
+                                    </li>
+                                  ))}
+                                </ol>
+                              ) : (
+                                <p>{attempt.status === "submitted"
+                                  ? "No incorrect answers recorded for this attempt."
+                                  : "No incorrect checked answers recorded yet."}</p>
+                              )}
+                            </div>
+                          </details>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="readiness-admin-empty">No Readiness Lab attempt has been started by this user.</p>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+
+            <p className="usage-privacy-note">
+              Readiness reporting stores the user, attempt number, checked answers, score,
+              and timestamps. It does not store customer call notes or customer-entered data.
+            </p>
+          </section>
+        );
+      }}
+    </State>
+  );
+}
+
 export function UsageAnalytics() {
+  const [reportView, setReportView] = useState("usage");
   const [period, setPeriod] = useState("daily");
   const [customStart, setCustomStart] = useState("");
   const [customEnd, setCustomEnd] = useState("");
@@ -506,101 +643,128 @@ export function UsageAnalytics() {
     <section className="console-view usage-analytics">
       <div className="view-heading">
         <div>
-          <p className="eyebrow">Privacy-safe metadata</p>
+          <p className="eyebrow">JA only · secure reporting</p>
           <h1>Usage Analytics</h1>
           <p>
-            Active time counts only recent-interaction windows. Idle browser
-            tabs do not continue accumulating active hours.
+            Review privacy-safe workspace activity separately from Readiness Lab
+            attempts, scores, and incorrect-answer history.
           </p>
         </div>
       </div>
 
-      <div className="usage-period-controls" role="group" aria-label="Usage period">
-        {USAGE_PERIODS.map(([id, label]) => (
-          <button
-            type="button"
-            className={period === id ? "active" : ""}
-            aria-pressed={period === id}
-            key={id}
-            onClick={() => setPeriod(id)}
-          >
-            {label}
-          </button>
-        ))}
+      <div className="admin-report-tabs" role="tablist" aria-label="Analytics report">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={reportView === "usage"}
+          className={reportView === "usage" ? "active" : ""}
+          onClick={() => setReportView("usage")}
+        >
+          Workspace Activity
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={reportView === "readiness"}
+          className={reportView === "readiness" ? "active" : ""}
+          onClick={() => setReportView("readiness")}
+        >
+          Readiness Lab Report
+        </button>
       </div>
 
-      {period === "custom" && (
-        <div className="usage-custom-range">
-          <label>
-            Start date
-            <input type="date" value={customStart} onChange={(event) => setCustomStart(event.target.value)} />
-          </label>
-          <label>
-            End date
-            <input type="date" value={customEnd} onChange={(event) => setCustomEnd(event.target.value)} />
-          </label>
-        </div>
-      )}
+      {reportView === "readiness" ? (
+        <ReadinessAnalyticsReport />
+      ) : (
+        <>
+          <div className="usage-period-controls" role="group" aria-label="Usage period">
+            {USAGE_PERIODS.map(([id, label]) => (
+              <button
+                type="button"
+                className={period === id ? "active" : ""}
+                aria-pressed={period === id}
+                key={id}
+                onClick={() => setPeriod(id)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
 
-      <State state={state}>
-        {(data) => {
-          const summary = buildUsageSummary({ ...data, start: range.start, end: range.end });
-          return (
-            <>
-              <div className="real-summary usage-summary" aria-label="Usage summary">
-                <div aria-label={`Total Users: ${summary.totalUsers}`}>
-                  <strong>{summary.totalUsers}</strong>
-                  <span>Total Users</span>
-                </div>
-                <div aria-label={`Active Now: ${summary.active}`}>
-                  <strong>{summary.active}</strong>
-                  <span>Active Now</span>
-                </div>
-                <div aria-label={`Idle: ${summary.idle}`}>
-                  <strong>{summary.idle}</strong>
-                  <span>Idle</span>
-                </div>
-                <div aria-label={`Offline: ${summary.offline}`}>
-                  <strong>{summary.offline}</strong>
-                  <span>Offline</span>
-                </div>
-                <div aria-label={`Active Time: ${formatActiveDuration(summary.activeSeconds)}`}>
-                  <strong>{formatActiveDuration(summary.activeSeconds)}</strong>
-                  <span>Active Time</span>
-                </div>
-              </div>
+          {period === "custom" && (
+            <div className="usage-custom-range">
+              <label>
+                Start date
+                <input type="date" value={customStart} onChange={(event) => setCustomStart(event.target.value)} />
+              </label>
+              <label>
+                End date
+                <input type="date" value={customEnd} onChange={(event) => setCustomEnd(event.target.value)} />
+              </label>
+            </div>
+          )}
 
-              <div className="usage-user-list" aria-label="Usage by user">
-                {summary.users.map((user) => (
-                  <article className="usage-user-row" key={user.id}>
-                    <div className="usage-user-identity">
-                      <strong>{user.username || user.initials}</strong>
-                      <small>
-                        {user.initials} · {user.role === "creator_admin" ? "JA Admin" : "Agent"}
-                      </small>
+          <State state={state}>
+            {(data) => {
+              const summary = buildUsageSummary({ ...data, start: range.start, end: range.end });
+              return (
+                <>
+                  <div className="real-summary usage-summary" aria-label="Usage summary">
+                    <div aria-label={`Total Users: ${summary.totalUsers}`}>
+                      <strong>{summary.totalUsers}</strong>
+                      <span>Total Users</span>
                     </div>
-                    <span className={`presence-badge ${user.presence}`}>{user.presence}</span>
-                    <dl>
-                      <div><dt>Active time</dt><dd>{formatActiveDuration(user.activeSeconds)}</dd></div>
-                      <div><dt>Sessions</dt><dd>{user.sessions}</dd></div>
-                      <div><dt>Events</dt><dd>{user.events}</dd></div>
-                      <div><dt>Top process</dt><dd>{user.topProcess || "—"}</dd></div>
-                      <div><dt>Top category</dt><dd>{user.topCategory || "—"}</dd></div>
-                      <div><dt>Top tool</dt><dd>{user.topTool || "—"}</dd></div>
-                    </dl>
-                  </article>
-                ))}
-              </div>
+                    <div aria-label={`Active Now: ${summary.active}`}>
+                      <strong>{summary.active}</strong>
+                      <span>Active Now</span>
+                    </div>
+                    <div aria-label={`Idle: ${summary.idle}`}>
+                      <strong>{summary.idle}</strong>
+                      <span>Idle</span>
+                    </div>
+                    <div aria-label={`Offline: ${summary.offline}`}>
+                      <strong>{summary.offline}</strong>
+                      <span>Offline</span>
+                    </div>
+                    <div aria-label={`Active Time: ${formatActiveDuration(summary.activeSeconds)}`}>
+                      <strong>{formatActiveDuration(summary.activeSeconds)}</strong>
+                      <span>Active Time</span>
+                    </div>
+                  </div>
 
-              <p className="usage-privacy-note">
-                Analytics stores identifiers and timestamps only. Search text,
-                call notes, clipboard content, and customer-entered form values
-                are not captured.
-              </p>
-            </>
-          );
-        }}
-      </State>
+                  <div className="usage-user-list" aria-label="Usage by user">
+                    {summary.users.map((user) => (
+                      <article className="usage-user-row" key={user.id}>
+                        <div className="usage-user-identity">
+                          <strong>{user.username || user.initials}</strong>
+                          <small>
+                            {user.initials} · {user.role === "creator_admin" ? "JA Admin" : "Agent"}
+                          </small>
+                        </div>
+                        <span className={`presence-badge ${user.presence}`}>{user.presence}</span>
+                        <dl>
+                          <div><dt>Active time</dt><dd>{formatActiveDuration(user.activeSeconds)}</dd></div>
+                          <div><dt>Sessions</dt><dd>{user.sessions}</dd></div>
+                          <div><dt>Events</dt><dd>{user.events}</dd></div>
+                          <div><dt>Top process</dt><dd>{user.topProcess || "—"}</dd></div>
+                          <div><dt>Top category</dt><dd>{user.topCategory || "—"}</dd></div>
+                          <div><dt>Top tool</dt><dd>{user.topTool || "—"}</dd></div>
+                        </dl>
+                      </article>
+                    ))}
+                  </div>
+
+                  <p className="usage-privacy-note">
+                    Analytics stores identifiers and timestamps only. Search text,
+                    call notes, clipboard content, and customer-entered form values
+                    are not captured.
+                  </p>
+                </>
+              );
+            }}
+          </State>
+        </>
+      )}
     </section>
   );
 }
