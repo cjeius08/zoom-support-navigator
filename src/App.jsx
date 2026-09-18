@@ -11,7 +11,6 @@ import { TrainingResources } from './features/training/TrainingResources'
 import { FeedbackPage } from './features/feedback/FeedbackPage'
 import { UpdatesView } from './features/updates/UpdatesView'
 import { assetUrl } from './lib/assetUrl'
-import { BrandMark } from './components/BrandMark'
 import { useUsageTracking } from './features/analytics/usePresence'
 import './styles.css'
 import './accessibility-ui.css'
@@ -86,8 +85,7 @@ export default function App() {
   if (activationOpen) return <main className="access-shell" style={accessStyle}><section className="access-card"><ActivateAccountForm onActivate={activateAccount} onCancel={()=>setActivationOpen(false)}/></section></main>
   return <main className="access-shell" style={accessStyle}>
     <section className="access-card" aria-labelledby="app-title">
-      <div className="access-brand"><BrandMark variant="login" /><span>Support Console</span></div>
-      <h1 id="app-title">Support Console</h1>
+      <h1 id="app-title">Support Workspace</h1>
       <p>Sign in to access the support-process workspace.</p>
       <form onSubmit={submit} noValidate>
         <label>Username<span className="access-input"><svg data-testid="username-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" /></svg><input name="username" autoComplete="username" placeholder="Enter your username" required aria-invalid={errorField === 'username' ? 'true' : undefined} aria-describedby={errorField === 'username' ? 'login-error' : undefined} /></span></label>
