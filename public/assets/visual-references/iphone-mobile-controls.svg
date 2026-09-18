@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="t d">
+<title id="t">iPhone Zoom meeting controls guide</title>
+<desc id="d">Source-verified iPhone guide showing Join Audio, Mute, Video, Chat, More, and Share controls in the Zoom mobile app.</desc>
+<rect width="1200" height="720" rx="28" fill="#0b1218"/>
+<text x="48" y="58" fill="#86ceff" font-family="Arial" font-size="18" font-weight="700">SOURCE-VERIFIED iPHONE GUIDE</text>
+<text x="48" y="92" fill="#eef8ff" font-family="Arial" font-size="28" font-weight="700">Zoom mobile meeting controls</text>
+<rect x="390" y="118" width="420" height="560" rx="52" fill="#171d23" stroke="#485b6c" stroke-width="3"/>
+<rect x="520" y="132" width="160" height="22" rx="11" fill="#070b0e"/>
+<text x="420" y="188" fill="#b9c7d0" font-family="Arial" font-size="14">9:41</text>
+<text x="717" y="188" fill="#b9c7d0" font-family="Arial" font-size="14">5G  ▰</text>
+<rect x="414" y="218" width="372" height="310" rx="24" fill="#202830"/>
+<circle cx="600" cy="346" r="70" fill="#33424f"/>
+<text x="570" y="357" fill="#dbe7ee" font-family="Arial" font-size="22" font-weight="700">CALLER</text>
+<rect x="414" y="548" width="372" height="102" rx="22" fill="#10161b"/>
+<g font-family="Arial" font-size="12" text-anchor="middle">
+<circle cx="455" cy="585" r="18" fill="#287ee9"/><text x="455" y="618" fill="#d9e8f2">Audio</text>
+<circle cx="525" cy="585" r="18" fill="#d94848"/><text x="525" y="618" fill="#d9e8f2">Mute</text>
+<circle cx="595" cy="585" r="18" fill="#485865"/><text x="595" y="618" fill="#d9e8f2">Video</text>
+<circle cx="665" cy="585" r="18" fill="#485865"/><text x="665" y="618" fill="#d9e8f2">Chat</text>
+<circle cx="735" cy="585" r="18" fill="#485865"/><text x="735" y="618" fill="#d9e8f2">More</text>
+</g>
+<path d="M745 561l45-80" stroke="#6ac1ff" stroke-width="3"/>
+<rect x="790" y="416" width="325" height="130" rx="16" fill="#13222d" stroke="#3e769a"/>
+<text x="812" y="448" fill="#86ceff" font-family="Arial" font-size="15" font-weight="700">iPhone cue</text>
+<text x="812" y="476" fill="#d4e0e8" font-family="Arial" font-size="14">Tap the meeting to reveal controls.</text>
+<text x="812" y="500" fill="#d4e0e8" font-family="Arial" font-size="14">Use More for additional options.</text>
+<text x="812" y="524" fill="#d4e0e8" font-family="Arial" font-size="14">Labels can vary by meeting state.</text>
+<text x="48" y="690" fill="#8197a7" font-family="Arial" font-size="13">Guide based on current Zoom Support navigation; not a pixel-for-pixel UI reproduction.</text>
+</svg>
