@@ -7,11 +7,12 @@ import '../updates/updates.css'
 import { useDialogFocus } from '../../lib/useDialogFocus'
 import { GlobalFeedbackButton } from '../feedback/GlobalFeedbackButton'
 import { CallDocumentation } from '../training/CallDocumentation'
+import { ScopeCheck } from '../live/ScopeCheck'
 
-const agentLinks = [['navigator', 'Navigator', 'page'], ['documentation', 'Call Documentation', 'tool'], ['training', 'Training & Resources', 'page'], ['updates', 'What’s New / Updates', 'page'], ['feedback', 'Feedback', 'page']]
+const agentLinks = [['navigator', 'Navigator', 'page'], ['documentation', 'Call Documentation', 'tool'], ['scope_check', 'Scope Check', 'tool'], ['training', 'Training & Resources', 'page'], ['updates', 'What’s New / Updates', 'page'], ['feedback', 'Feedback', 'page']]
 const adminLinks = [['admin', 'Admin Home', 'page'], ['team', 'Team Management', 'page'], ['usage', 'Usage Analytics', 'page'], ['feedback_queue', 'Feedback Queue', 'page']]
 
-function Icon({ type }) { const paths = { navigator: 'M4 11.5 12 4l8 7.5v8.5H4z', training: 'M4 5h6a3 3 0 0 1 2 3v12a3 3 0 0 0-2-1H4zM20 5h-6a3 3 0 0 0-2 3v12a3 3 0 0 1 2-1h6z', updates: 'M12 4v8l4 2M4 12a8 8 0 1 0 2.3-5.7L4 8M4 4v4h4', feedback: 'M5 5h14v10H9l-4 4z', admin: 'M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7z', team: 'M16 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M17 11a3 3 0 0 0-1-5.8M21 20v-2a4 4 0 0 0-2.7-3.8', usage: 'M5 20V10M12 20V4M19 20v-7', feedback_queue: 'M5 4h14v16H5zM8 9h8M8 13h6', documentation: 'M6 3h9l3 3v15H6zM9 10h6M9 14h6M9 18h4M15 3v4h4' }; return <svg data-testid="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d={paths[type] || paths.feedback} /></svg> }
+function Icon({ type }) { const paths = { navigator: 'M4 11.5 12 4l8 7.5v8.5H4z', training: 'M4 5h6a3 3 0 0 1 2 3v12a3 3 0 0 0-2-1H4zM20 5h-6a3 3 0 0 0-2 3v12a3 3 0 0 1 2-1h6z', updates: 'M12 4v8l4 2M4 12a8 8 0 1 0 2.3-5.7L4 8M4 4v4h4', feedback: 'M5 5h14v10H9l-4 4z', admin: 'M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7z', team: 'M16 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M17 11a3 3 0 0 0-1-5.8M21 20v-2a4 4 0 0 0-2.7-3.8', usage: 'M5 20V10M12 20V4M19 20v-7', feedback_queue: 'M5 4h14v16H5zM8 9h8M8 13h6', documentation: 'M6 3h9l3 3v15H6zM9 10h6M9 14h6M9 18h4M15 3v4h4', scope_check: 'M12 3l7 4v5c0 4.5-3 7.2-7 8-4-.8-7-3.5-7-8V7zM9 12l2 2 4-5' }; return <svg data-testid="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d={paths[type] || paths.feedback} /></svg> }
 
 export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, currentView = 'navigator', onNavigate = () => {}, onFeedback, reportContext = {} }) {
   const [open, setOpen] = useState(false)
@@ -22,8 +23,8 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   const [profileError, setProfileError] = useState('')
   const [profileErrorField, setProfileErrorField] = useState('')
   const [passwordSaving, setPasswordSaving] = useState(false)
-  const [documentationOpen, setDocumentationOpen] = useState(false)
-  const [documentationMinimized, setDocumentationMinimized] = useState(false)
+  const [activeLiveTool, setActiveLiveTool] = useState(null)
+  const [liveToolMinimized, setLiveToolMinimized] = useState(false)
   const [compactNav, setCompactNav] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 800)
   const profileDialogRef = useRef(null)
   const menuToggleRef = useRef(null)
@@ -126,11 +127,11 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           ? <button
               key={id}
               type="button"
-              aria-pressed={documentationOpen}
-              className={documentationOpen ? 'tool-open' : ''}
+              aria-pressed={activeLiveTool === id}
+              className={activeLiveTool === id ? 'tool-open' : ''}
               onClick={() => {
-                setDocumentationOpen(true)
-                setDocumentationMinimized(false)
+                setActiveLiveTool(id)
+                setLiveToolMinimized(false)
                 closeNavigation()
               }}
             ><Icon type={id} /><span>{label}</span></button>
@@ -150,12 +151,21 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     <main className="app-main">{children}</main>
 
     <CallDocumentation
-      open={documentationOpen}
-      minimized={documentationMinimized}
-      onMinimize={() => setDocumentationMinimized(value => !value)}
+      open={activeLiveTool === 'documentation'}
+      minimized={liveToolMinimized}
+      onMinimize={() => setLiveToolMinimized(value => !value)}
       onClose={() => {
-        setDocumentationOpen(false)
-        setDocumentationMinimized(false)
+        setActiveLiveTool(null)
+        setLiveToolMinimized(false)
+      }}
+    />
+    <ScopeCheck
+      open={activeLiveTool === 'scope_check'}
+      minimized={liveToolMinimized}
+      onMinimize={() => setLiveToolMinimized(value => !value)}
+      onClose={() => {
+        setActiveLiveTool(null)
+        setLiveToolMinimized(false)
       }}
     />
 
