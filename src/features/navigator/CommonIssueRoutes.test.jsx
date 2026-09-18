@@ -117,3 +117,11 @@ it('uses the same label-safe rule for the cannot-hear mobile audio path', () => 
   expect(route.checks.some(check => /internet-audio option shown on the device/i.test(check.instruction))).toBe(true)
   expect(route.discrepancy).toMatch(/current official Zoom Support articles/i)
 })
+
+
+it('uses Zoom’s documented manual join address instead of an alternate hostname', () => {
+  const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'cant-join')
+  const routeText = route.checks.map(check => check.instruction).join(' ')
+  expect(routeText).toContain('zoom.us/join')
+  expect(routeText).not.toContain('join.zoom.us')
+})
