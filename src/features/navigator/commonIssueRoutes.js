@@ -1,4 +1,4 @@
-import { searchProcesses } from './smartSearch'
+import { normalizeSearchText, searchProcesses } from './smartSearch'
 
 export const COMMON_ISSUE_ROUTES = [
   {
@@ -938,7 +938,23 @@ export function routeById(id) {
 }
 
 export function searchCommonIssueRoutes(query) {
-  return searchProcesses(routeSearchDocs, query)
+  const normalizedQuery = normalizeSearchText(query)
+
+  const exactPhraseMatches = normalizedQuery
+    ? COMMON_ISSUE_ROUTES.filter(route => (
+        normalizeSearchText(route.title) === normalizedQuery
+        || route.searchPhrases.some(phrase => normalizeSearchText(phrase) === normalizedQuery)
+      ))
+    : []
+
+  const rankedMatches = searchProcesses(routeSearchDocs, query)
     .map(result => routesById.get(result.id))
     .filter(Boolean)
+
+  const seen = new Set()
+  return [...exactPhraseMatches, ...rankedMatches].filter(route => {
+    if (seen.has(route.id)) return false
+    seen.add(route.id)
+    return true
+  })
 }
