@@ -96,6 +96,6 @@ export function DeviceWalkthroughs() {
       </section>
     </section>
 
-    <p className="device-coming-next">Next Phase 3 batch: iPhone + Android. Browser follows after mobile so we can keep the review small.</p>
+    <p className="device-coming-next">Next Phase 3 batch: Browser + final device walkthrough QA/freeze.</p>
   </section>
 }
