@@ -79,16 +79,17 @@ export function ReadinessLab({
   const exhausted = submittedCount >= maxAttempts && !activeAttempt
 
   useEffect(() => {
-    if (!open) return undefined
+    if (!open || !activePart.questionSetVersion) return undefined
     let live = true
 
     async function load() {
       setLoading(true)
       setError('')
+      setState(null)
       try {
-        let next = await getReadinessState()
+        let next = await getReadinessState(activePart.questionSetVersion)
         if (!next?.activeAttempt && (next?.attempts?.length || 0) === 0) {
-          next = await startOrResumeReadiness()
+          next = await startOrResumeReadiness(activePart.questionSetVersion)
         }
         if (!live) return
         setState(next)
@@ -107,7 +108,7 @@ export function ReadinessLab({
 
     load()
     return () => { live = false }
-  }, [open])
+  }, [open, activePart.questionSetVersion])
 
   function selectAnswer(optionId) {
     if (!question || answer || busy) return
@@ -124,7 +125,7 @@ export function ReadinessLab({
         questionId: question.id,
         selectedOptionId,
       })
-      const next = await getReadinessState()
+      const next = await getReadinessState(activePart.questionSetVersion)
       setState(next)
     } catch (checkError) {
       setError(checkError?.message || 'Could not save this answer.')
@@ -139,7 +140,7 @@ export function ReadinessLab({
     setError('')
     try {
       await submitReadinessAttempt(activeAttempt.id)
-      const next = await getReadinessState()
+      const next = await getReadinessState(activePart.questionSetVersion)
       setState(next)
       setSelections({})
     } catch (submitError) {
@@ -154,7 +155,7 @@ export function ReadinessLab({
     setBusy(true)
     setError('')
     try {
-      const next = await startOrResumeReadiness()
+      const next = await startOrResumeReadiness(activePart.questionSetVersion)
       setState(next)
       setSelections({})
       setQuestionIndex(findResumeIndex(next?.questions || [], next?.activeAttempt?.answers || []))
@@ -200,7 +201,7 @@ export function ReadinessLab({
     <div className="documentation-dock-body readiness-lab-body">
       <aside className="readiness-open-book">
         <strong>Open-book by design</strong>
-        <span>Five general Zoom scenarios. Every attempt is saved, up to three total attempts. Closing the lab does not erase an unfinished attempt.</span>
+        <span>Each available readiness part uses five source-backed questions. Every part keeps its own attempt history, up to three attempts, and closing the lab does not erase unfinished progress.</span>
       </aside>
 
       {error && <p role="alert">{error}</p>}
@@ -326,7 +327,7 @@ export function ReadinessLab({
               <span>{part.number}</span>
               <div>
                 <strong>{part.title}</strong>
-                <small>{part.status === 'available' ? 'Part 1 available now' : part.purpose}</small>
+                <small>{part.status === 'available' ? `Part ${part.number} available now` : part.purpose}</small>
               </div>
             </li>)}
           </ol>

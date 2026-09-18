@@ -165,6 +165,19 @@ describe('Training & Resources', () => {
   })
 
 
+  it('deep-links a Readiness device question to the exact Device Walkthrough', () => {
+    render(<TrainingResources initialTarget={{
+      view: 'training',
+      section: 'devices',
+      device: 'iphone',
+    }} />)
+
+    expect(screen.getByRole('tab', { name: 'Device Walkthroughs' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: /iPhone Zoom Workplace mobile app on iOS/i })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('heading', { name: 'iPhone mobile walkthrough' })).toBeInTheDocument()
+  })
+
+
   it('keeps Training & Resources reference-only and does not expose Documentation as a training tab', () => {
     render(<TrainingResources />)
 

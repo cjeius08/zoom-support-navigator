@@ -13,6 +13,8 @@ const readinessMocks = vi.hoisted(() => ({
 
 vi.mock('../../lib/readinessApi', () => readinessMocks)
 
+const DEVICE_QUESTION_SET = 'zoom_device_navigation_v1'
+
 const QUESTIONS = [
   {
     id: 'join-exact-state',
@@ -81,6 +83,35 @@ const QUESTIONS = [
   },
 ]
 
+const DEVICE_QUESTIONS = [
+  {
+    id: 'windows-toolbar-location',
+    order: 1,
+    type: 'Scenario',
+    prompt: 'A Windows caller says the meeting controls disappeared. What should the agent do first?',
+    options: [
+      { id: 'a', text: 'Open Windows Settings.' },
+      { id: 'b', text: 'Move the pointer inside the Zoom meeting window and look along the bottom.' },
+    ],
+    locationLabel: 'Training & Resources → Device Walkthroughs → Windows → In-meeting map',
+    resourceTarget: { view: 'training', section: 'devices', device: 'windows' },
+    source: 'Device Walkthroughs · Windows desktop walkthrough',
+  },
+  ...['mac', 'iphone', 'android', 'browser'].map((device, index) => ({
+    id: `${device}-device-check`,
+    order: index + 2,
+    type: 'Scenario',
+    prompt: `${device} navigation check`,
+    options: [
+      { id: 'a', text: 'Wrong path.' },
+      { id: 'b', text: 'Correct device path.' },
+    ],
+    locationLabel: `Training & Resources → Device Walkthroughs → ${device}`,
+    resourceTarget: { view: 'training', section: 'devices', device },
+    source: `Device Walkthroughs · ${device}`,
+  })),
+]
+
 function answer(questionId, isCorrect = true, selectedOptionId = 'b') {
   return {
     questionId,
@@ -92,27 +123,33 @@ function answer(questionId, isCorrect = true, selectedOptionId = 'b') {
   }
 }
 
-function activeState({ attemptNumber = 1, answers = [], attempts } = {}) {
+function activeState({
+  attemptNumber = 1,
+  answers = [],
+  attempts,
+  questionSetVersion = 'zoom_general_scenarios_v1',
+  questions = QUESTIONS,
+} = {}) {
   const activeAttempt = {
     id: `attempt-${attemptNumber}`,
     attemptNumber,
     status: 'active',
     score: null,
-    totalQuestions: 5,
+    totalQuestions: questions.length,
     startedAt: '2026-09-19T00:00:00Z',
     submittedAt: null,
     answers,
   }
   return {
-    questionSetVersion: 'zoom_general_scenarios_v1',
+    questionSetVersion,
     maxAttempts: 3,
-    questions: QUESTIONS,
+    questions,
     attempts: attempts || [{
       id: activeAttempt.id,
       attemptNumber,
       status: 'active',
       score: null,
-      totalQuestions: 5,
+      totalQuestions: questions.length,
       checkedCount: answers.length,
       startedAt: activeAttempt.startedAt,
       submittedAt: null,
@@ -153,11 +190,13 @@ it('shows five readiness parts and the five-question general Zoom scenario set',
 
   expect(READINESS_PARTS).toHaveLength(5)
   expect(await screen.findByRole('heading', { name: 'Readiness Lab' })).toBeInTheDocument()
-  expect(screen.getByText(/Five general Zoom scenarios/i)).toBeInTheDocument()
+  expect(screen.getByText(/Each available readiness part uses five source-backed questions/i)).toBeInTheDocument()
 
   const tabs = screen.getAllByRole('tab')
   expect(tabs).toHaveLength(5)
   expect(screen.getByRole('tab', { name: /Scenarios Available now/i })).toHaveAttribute('aria-selected', 'true')
+  expect(screen.getByRole('tab', { name: /Devices Available now/i })).toBeEnabled()
+  expect(screen.getByRole('tab', { name: /Troubleshooting Coming next/i })).toBeDisabled()
   expect(screen.getByText('Question 1 of 5')).toBeInTheDocument()
   expect(screen.getByText(QUESTIONS[0].prompt)).toBeInTheDocument()
 })
@@ -291,4 +330,36 @@ it('blocks a fourth attempt after three submitted attempts', async () => {
   const reset = await screen.findByRole('button', { name: '3 of 3 attempts used' })
   expect(reset).toBeDisabled()
   expect(screen.getByText(/All 3 attempts are recorded/i)).toBeInTheDocument()
+})
+
+
+it('loads Part 2 as its own persistent device-navigation attempt and deep-links the exact device walkthrough', async () => {
+  const user = userEvent.setup()
+  const onOpenResource = vi.fn()
+  readinessMocks.getReadinessState.mockImplementation((questionSetVersion) => {
+    if (questionSetVersion === DEVICE_QUESTION_SET) {
+      return Promise.resolve(activeState({
+        questionSetVersion: DEVICE_QUESTION_SET,
+        questions: DEVICE_QUESTIONS,
+      }))
+    }
+    return Promise.resolve(activeState())
+  })
+
+  render(<ReadinessLab open onOpenResource={onOpenResource} />)
+  await screen.findByText(QUESTIONS[0].prompt)
+
+  await user.click(screen.getByRole('tab', { name: /Devices Available now/i }))
+
+  expect(await screen.findByRole('heading', { name: 'Device & Navigation Awareness' })).toBeInTheDocument()
+  expect(screen.getByText('Question 1 of 5')).toBeInTheDocument()
+  expect(screen.getByText(DEVICE_QUESTIONS[0].prompt)).toBeInTheDocument()
+  expect(readinessMocks.getReadinessState).toHaveBeenCalledWith(DEVICE_QUESTION_SET)
+
+  await user.click(screen.getByRole('button', { name: 'Find in Workspace' }))
+  expect(onOpenResource).toHaveBeenCalledWith({
+    view: 'training',
+    section: 'devices',
+    device: 'windows',
+  })
 })
