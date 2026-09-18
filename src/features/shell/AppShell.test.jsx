@@ -15,8 +15,8 @@ it('shows role-aware navigation and account controls', () => {
   expect(screen.getByRole('navigation')).toHaveTextContent('Training & Resources')
   expect(screen.getByRole('button', { name: /ja_admin/i })).toBeInTheDocument()
   expect(screen.getAllByTestId('nav-icon').length).toBeGreaterThan(3)
-  expect(screen.getByRole('img', { name: 'OGCon' })).toBeInTheDocument()
-  expect(screen.getByText('Support Console')).toBeInTheDocument()
+  expect(screen.queryByRole('img', { name: 'OGCon' })).not.toBeInTheDocument()
+  expect(screen.getByLabelText('Support Workspace')).toHaveTextContent('Support Workspace')
 })
 
 it('does not render admin navigation for agents', () => {
@@ -104,7 +104,7 @@ it('keeps the sidebar footer visible when a wide browser window has limited vert
   expect(globalCss).toMatch(/\.console-meta-mini span\s*\{[^}]*overflow-wrap:\s*anywhere/)
 })
 
-it('keeps the console brand horizontal and removes nonessential header text on compact screens', () => {
+it('keeps the neutral workspace title horizontal and removes nonessential header text on compact screens', () => {
   const accessibilityCss = readFileSync(join(cwd(), 'src/accessibility-ui.css'), 'utf8')
   const responsiveCss = readFileSync(join(cwd(), 'src/features/shell/responsiveShell.css'), 'utf8')
   expect(accessibilityCss).toMatch(/\.console-brand\s*\{[^}]*flex-direction:\s*row/)
