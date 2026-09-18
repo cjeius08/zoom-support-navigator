@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="t d">
+<title id="t">Zoom Web App browser join guide</title>
+<desc id="d">Source-verified browser guide showing a Zoom invite launch page with Join from your browser and the name field before joining.</desc>
+<rect width="1200" height="720" rx="28" fill="#0b1218"/>
+<text x="48" y="58" fill="#8bd5ff" font-family="Arial" font-size="18" font-weight="700">SOURCE-VERIFIED BROWSER GUIDE</text>
+<text x="48" y="92" fill="#eef8ff" font-family="Arial" font-size="28" font-weight="700">Join through the Zoom Web App</text>
+<rect x="90" y="130" width="1020" height="500" rx="24" fill="#111921" stroke="#405a6d"/>
+<rect x="90" y="130" width="1020" height="54" rx="24" fill="#18242d"/>
+<circle cx="128" cy="157" r="8" fill="#e86666"/><circle cx="155" cy="157" r="8" fill="#e6b95e"/><circle cx="182" cy="157" r="8" fill="#63c67a"/>
+<rect x="230" y="143" width="610" height="28" rx="14" fill="#0d141a"/>
+<text x="260" y="163" fill="#8fa5b3" font-family="Arial" font-size="13">zoom.us / launch meeting</text>
+<text x="140" y="242" fill="#eef8ff" font-family="Arial" font-size="28" font-weight="700">Open Zoom Workplace?</text>
+<rect x="140" y="276" width="250" height="54" rx="12" fill="#24333f"/><text x="265" y="309" fill="#d8e7ef" text-anchor="middle" font-family="Arial" font-size="16">Cancel app prompt</text>
+<path d="M392 303h120" stroke="#68bdf5" stroke-width="4" marker-end="url(#a)"/>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#68bdf5"/></marker></defs>
+<rect x="520" y="270" width="420" height="68" rx="13" fill="#0d62c8"/>
+<text x="730" y="312" fill="#fff" text-anchor="middle" font-family="Arial" font-size="20" font-weight="700">Join from your browser</text>
+<rect x="520" y="370" width="420" height="54" rx="10" fill="#0d141a" stroke="#415767"/>
+<text x="544" y="403" fill="#9eb0bc" font-family="Arial" font-size="15">Your Name</text>
+<rect x="520" y="450" width="180" height="52" rx="11" fill="#1377df"/>
+<text x="610" y="482" fill="#fff" text-anchor="middle" font-family="Arial" font-size="18" font-weight="700">Join</text>
+<text x="140" y="565" fill="#93a7b5" font-family="Arial" font-size="15">If Join from your browser is missing, the host/account setting may not allow it.</text>
+<text x="48" y="690" fill="#8197a7" font-family="Arial" font-size="13">Guide based on current Zoom Support flow; not a pixel-for-pixel UI reproduction.</text>
+</svg>
