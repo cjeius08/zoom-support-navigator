@@ -52,10 +52,11 @@ export const TRAINING_ROADMAP_MODULES = [
     number: 5,
     phase: 'Learn visually',
     title: 'Guided visual lessons',
-    objective: 'Short visual teaching modules will combine the approved call method, device view, and support logic into one guided lesson at a time.',
-    resource: 'Phase 6 · Batch 2',
-    status: 'coming',
-    statusLabel: 'Coming in Batch 2',
+    objective: 'Use short visual teaching modules to connect the approved call method, device view, symptom recognition, waiting states, and support boundaries.',
+    resource: 'Guided Visual Lessons · 5 core lessons',
+    status: 'available',
+    actionLabel: 'Open guided lessons',
+    target: { section: 'lessons' },
     skills: ['See the concept', 'Follow the visual sequence', 'Connect the lesson to live support'],
   },
   {
@@ -77,7 +78,7 @@ export function TrainingRoadmap({ onOpenResource = () => {} }) {
       <div>
         <p className="eyebrow">Phase 6 · Training environment</p>
         <h2 id="training-roadmap-title">Follow one learning path instead of opening everything at once</h2>
-        <p>Move from the call method, to device orientation, to applied support. Use the existing resources as lessons now; guided visual lessons and practice exercises will be added in the next Phase 6 batches.</p>
+        <p>Move from the call method, to device orientation, to applied support, then reinforce the patterns with guided visual lessons. Practice exercises will be added in the next Phase 6 batch.</p>
       </div>
       <span className="device-verified">6-step learning path</span>
     </div>
