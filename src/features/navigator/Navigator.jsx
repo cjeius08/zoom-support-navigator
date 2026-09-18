@@ -115,7 +115,7 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
     }
   }
 
-  return <main className="navigator" id="navigator">
+  return <section className="navigator" id="navigator" aria-label="Support Navigator">
     <section className="hero">
       <div className="hero-kicker"><span className="status-dot" /> Support process workspace</div>
       <h1>Find the next step <em>without opening documents.</em></h1>
@@ -165,5 +165,5 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
     <button type="button" className="feedback-fab" onClick={()=>setFeedbackOpen(true)}>Report an issue</button>
     {selected&&<ProcessDrawer process={selected} onClose={()=>setSelected(null)} onOpenTraining={onOpenTraining} onTrackEvent={onTrackEvent}/>}
     {feedbackOpen&&<div className="modal-backdrop" role="presentation" onMouseDown={event=>event.target===event.currentTarget&&setFeedbackOpen(false)}><div ref={feedbackDialogRef} tabIndex={-1} className="profile-panel" role="dialog" aria-modal="true" aria-label="Report an issue"><FeedbackForm context={{route_id:'navigator',page_label:'Navigator',process_id:selected?.id??null,category_id:selected?.category??null}} onCancel={()=>setFeedbackOpen(false)} onSubmit={async payload=>{await onFeedback?.(payload);setFeedbackOpen(false)}}/></div></div>}
-  </main>
+  </section>
 }
