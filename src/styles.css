@@ -406,3 +406,18 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     gap: .32rem;
   }
 }
+
+/* Temporary neutral identity: no OGCon branding. */
+.console-brand-neutral {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.console-brand-neutral .console-brand-title {
+  color: #f5f8fb;
+  font-size: 1rem;
+  font-weight: 720;
+  line-height: 1.1;
+  letter-spacing: -.015em;
+  white-space: nowrap;
+}
