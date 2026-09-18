@@ -91,3 +91,22 @@ it('keeps all five readiness question migrations recorded in the repository', ()
   expect(combined).toContain('zoom_scope_referral_judgment_v1')
   expect(combined).toContain('zoom_live_call_readiness_v1')
 })
+
+
+it('keeps Readiness RPC privilege escalation out of the exposed public schema', () => {
+  const source = readFileSync(
+    join(cwd(), 'supabase/migrations/20260918224500_zoom_readiness_rpc_security_hardening.sql'),
+    'utf8',
+  )
+
+  expect(source).toContain('private.zoom_readiness_get_state_impl')
+  expect(source).toContain('private.zoom_readiness_start_or_resume_impl')
+  expect(source).toContain('private.zoom_readiness_check_answer_impl')
+  expect(source).toContain('private.zoom_readiness_submit_attempt_impl')
+  expect(source).toContain('private.zoom_readiness_admin_report_impl')
+
+  expect(source).toContain('revoke all on function public.zoom_readiness_get_state(text) from public, anon')
+  expect(source).toContain('grant execute on function public.zoom_readiness_get_state(text) to authenticated, service_role')
+
+  expect(source).not.toMatch(/CREATE OR REPLACE FUNCTION public\.zoom_readiness_[\s\S]*?SECURITY DEFINER/i)
+})
