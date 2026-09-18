@@ -19,7 +19,9 @@ describe('Training & Resources', () => {
     const user = userEvent.setup()
     render(<TrainingResources />)
     expect(screen.getByRole('heading', { name: 'Training & Resources' })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Device Walkthroughs' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.queryByTitle(/video player/i)).not.toBeInTheDocument()
+    await user.click(screen.getByRole('tab', { name: 'Video Library' }))
     await user.type(screen.getByRole('searchbox', { name: 'Search training videos' }), 'audio')
     expect(screen.getByText('How to Mute and Unmute on Zoom (PC, Mac & Phone Calls)')).toBeInTheDocument()
     expect(screen.queryByText('Zoom Waiting Room: How to Enable and Configure Settings')).not.toBeInTheDocument()
@@ -28,6 +30,7 @@ describe('Training & Resources', () => {
   it('opens the privacy-enhanced player with next and YouTube fallback controls', async () => {
     const user = userEvent.setup()
     render(<TrainingResources />)
+    await user.click(screen.getByRole('tab', { name: 'Video Library' }))
     const card = screen.getByText('How to Join a Zoom Meeting').closest('article')
     await user.click(within(card).getByRole('button', { name: /watch video/i }))
     const dialog = screen.getByRole('dialog', { name: /how to join a zoom meeting/i })
@@ -36,4 +39,13 @@ describe('Training & Resources', () => {
     await user.click(within(dialog).getByRole('button', { name: /next video/i }))
     expect(screen.getByRole('dialog')).toHaveAccessibleName(/basic in-meeting navigation/i)
   })
+
+  it('opens a requested training video directly in the Video Library', () => {
+    const requested = TRAINING_VIDEOS.find(video => video.title === 'How to Join a Zoom Meeting')
+    render(<TrainingResources initialVideoId={requested.id} />)
+
+    expect(screen.getByRole('tab', { name: 'Video Library' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('dialog', { name: 'How to Join a Zoom Meeting' })).toBeInTheDocument()
+  })
+
 })
