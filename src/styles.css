@@ -421,3 +421,285 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   letter-spacing: -.015em;
   white-space: nowrap;
 }
+
+
+/* Phase 3 · Device-specific walkthroughs */
+.training-section-tabs {
+  display: flex;
+  gap: .4rem;
+  margin: 1rem 0;
+  padding: .35rem;
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid rgba(127, 172, 207, .18);
+  border-radius: .78rem;
+  background: rgba(8, 15, 21, .42);
+}
+.training-section-tabs button {
+  padding: .58rem .85rem;
+  border: 1px solid transparent;
+  border-radius: .55rem;
+  color: #9eb2c1;
+  background: transparent;
+  font-size: .8rem;
+}
+.training-section-tabs button[aria-selected="true"] {
+  border-color: rgba(83, 169, 239, .42);
+  color: #f4f9fd;
+  background: rgba(24, 109, 180, .2);
+}
+.training-section-tabs button:focus-visible,
+.device-selector button:focus-visible,
+.device-source-list a:focus-visible {
+  outline: 2px solid #63b8ff;
+  outline-offset: 2px;
+}
+
+.device-walkthroughs {
+  display: grid;
+  gap: 1rem;
+}
+.device-walkthrough-intro,
+.device-walkthrough-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+.device-walkthrough-intro h2,
+.device-walkthrough-header h2 {
+  margin: .2rem 0 .35rem;
+}
+.device-walkthrough-intro > div > p:last-child,
+.device-walkthrough-header > div > p:last-child {
+  max-width: 54rem;
+  margin: 0;
+  color: #aabcc9;
+  line-height: 1.5;
+}
+.device-verified {
+  flex: 0 0 auto;
+  padding: .34rem .55rem;
+  border: 1px solid rgba(100, 177, 235, .24);
+  border-radius: 999px;
+  color: #92cfff;
+  background: rgba(27, 105, 169, .11);
+  font-size: .68rem;
+}
+
+.device-selector {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .65rem;
+}
+.device-selector button {
+  display: grid;
+  gap: .2rem;
+  padding: .9rem 1rem;
+  border: 1px solid rgba(151, 188, 215, .18);
+  border-radius: .78rem;
+  background: rgba(15, 24, 31, .64);
+  text-align: left;
+}
+.device-selector button:hover {
+  border-color: rgba(79, 171, 245, .48);
+  background: rgba(23, 74, 114, .17);
+}
+.device-selector button[aria-selected="true"] {
+  border-color: rgba(75, 172, 250, .67);
+  background: linear-gradient(135deg, rgba(24, 116, 190, .22), rgba(17, 31, 42, .74));
+  box-shadow: inset 0 0 0 1px rgba(75, 172, 250, .08);
+}
+.device-selector strong {
+  color: #f2f8fc;
+  font-size: .95rem;
+}
+.device-selector span {
+  color: #8fa6b7;
+  font-size: .73rem;
+}
+
+.device-walkthrough-panel {
+  display: grid;
+  gap: 1rem;
+  padding: 1.05rem;
+  border: 1px solid rgba(125, 181, 228, .2);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, rgba(17, 27, 35, .9), rgba(15, 22, 28, .8));
+  box-shadow: 0 1rem 2.6rem rgba(0, 0, 0, .17);
+}
+.device-quick-facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: .35rem;
+  max-width: 30rem;
+}
+.device-quick-facts span {
+  padding: .32rem .5rem;
+  border: 1px solid rgba(114, 173, 219, .2);
+  border-radius: 999px;
+  color: #bed8e9;
+  background: rgba(21, 71, 111, .14);
+  font-size: .68rem;
+  line-height: 1.3;
+}
+
+.device-walkthrough-sections {
+  display: grid;
+  gap: .8rem;
+}
+.device-walkthrough-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(18rem, .95fr);
+  gap: 1rem;
+  padding: .95rem;
+  border: 1px solid rgba(255, 255, 255, .07);
+  border-radius: .85rem;
+  background: rgba(3, 10, 15, .28);
+}
+.device-walkthrough-copy h3 {
+  margin: .22rem 0 .55rem;
+  color: #f1f7fb;
+  font-size: 1rem;
+}
+.device-walkthrough-copy ol {
+  display: grid;
+  gap: .48rem;
+  margin: .2rem 0 .8rem;
+  padding-left: 1.25rem;
+}
+.device-walkthrough-copy li {
+  padding-left: .18rem;
+  color: #c5d3dc;
+  font-size: .8rem;
+  line-height: 1.48;
+}
+.device-expected {
+  padding: .62rem .7rem;
+  border-left: 2px solid rgba(77, 174, 250, .66);
+  border-radius: .25rem .55rem .55rem .25rem;
+  background: rgba(30, 101, 158, .09);
+}
+.device-expected strong {
+  color: #9ed6ff;
+  font-size: .68rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.device-expected p {
+  margin: .25rem 0 0;
+  color: #c8d7e1;
+  font-size: .76rem;
+  line-height: 1.45;
+}
+.device-walkthrough-visual {
+  display: grid;
+  place-items: center;
+  min-height: 12rem;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(151, 186, 212, .13);
+  border-radius: .72rem;
+  background: rgba(255, 255, 255, .025);
+}
+.device-walkthrough-visual img {
+  display: block;
+  width: 100%;
+  max-height: 24rem;
+  object-fit: contain;
+}
+
+.device-platform-notes,
+.device-source-list {
+  display: grid;
+  gap: .7rem;
+  padding-top: .15rem;
+}
+.device-section-heading h3 {
+  margin: .2rem 0 0;
+  font-size: .98rem;
+}
+.device-platform-notes > div:last-child {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .55rem;
+}
+.device-platform-notes article {
+  padding: .7rem;
+  border: 1px solid rgba(255, 255, 255, .07);
+  border-radius: .7rem;
+  background: rgba(255, 255, 255, .025);
+}
+.device-platform-notes strong {
+  color: #ecf6fc;
+  font-size: .76rem;
+}
+.device-platform-notes p {
+  margin: .28rem 0 0;
+  color: #9fb2c0;
+  font-size: .73rem;
+  line-height: 1.42;
+}
+
+.device-source-list > div:last-child {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .45rem;
+}
+.device-source-list a {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .62rem .7rem;
+  border: 1px solid rgba(104, 168, 216, .15);
+  border-radius: .6rem;
+  color: #9ed5ff;
+  background: rgba(20, 71, 111, .08);
+  font-size: .73rem;
+  text-decoration: none;
+}
+.device-source-list a:hover {
+  border-color: rgba(84, 175, 247, .46);
+  background: rgba(26, 104, 168, .14);
+}
+.device-coming-next {
+  margin: 0;
+  color: #8299aa;
+  font-size: .72rem;
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .device-walkthrough-section {
+    grid-template-columns: 1fr;
+  }
+  .device-walkthrough-visual {
+    min-height: 0;
+  }
+  .device-platform-notes > div:last-child {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 650px) {
+  .training-section-tabs {
+    width: 100%;
+  }
+  .training-section-tabs button {
+    flex: 1;
+  }
+  .device-walkthrough-intro,
+  .device-walkthrough-header {
+    flex-direction: column;
+  }
+  .device-quick-facts {
+    justify-content: flex-start;
+  }
+  .device-selector,
+  .device-source-list > div:last-child {
+    grid-template-columns: 1fr;
+  }
+  .device-coming-next {
+    text-align: left;
+  }
+}
