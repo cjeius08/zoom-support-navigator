@@ -4,17 +4,21 @@ import { beforeEach, expect, it, vi } from 'vitest'
 import { ReadinessLab } from './ReadinessLab'
 import { READINESS_PARTS } from './readinessLabData'
 
-const loadReadinessState = vi.fn()
-const startOrResumeReadinessAttempt = vi.fn()
-const checkReadinessAnswer = vi.fn()
-const submitReadinessAttempt = vi.fn()
+const readinessMocks = vi.hoisted(() => ({
+  loadReadinessState: vi.fn(),
+  startOrResumeReadinessAttempt: vi.fn(),
+  checkReadinessAnswer: vi.fn(),
+  submitReadinessAttempt: vi.fn(),
+}))
 
-vi.mock('../../lib/readinessApi', () => ({
+vi.mock('../../lib/readinessApi', () => readinessMocks)
+
+const {
   loadReadinessState,
   startOrResumeReadinessAttempt,
   checkReadinessAnswer,
   submitReadinessAttempt,
-}))
+} = readinessMocks
 
 const questions = [
   {
