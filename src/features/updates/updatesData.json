@@ -9,6 +9,21 @@
   },
   "updates": [
     {
+      "id": "phase6-guided-visual-lessons",
+      "date": "2026-09-19",
+      "area": "Training / Visual Learning",
+      "title": "Guided Visual Lessons turn core support concepts into visual patterns",
+      "changed": "Added five short, source-backed Guided Visual Lessons inside Training & Resources: one-step call guidance, device-first orientation, speaker-versus-microphone symptom direction, Waiting for host versus Waiting Room, and the basic-support stop/referral boundary. Each lesson uses a compact visual flow or side-by-side comparison, shows three call-ready takeaways, and links to the exact existing approved resource instead of duplicating the full workflow. The Training Roadmap now marks Guided Visual Lessons as available; Practice Lab remains reserved for Phase 6 Batch 3.",
+      "checks": [
+        "Open Training & Resources → Guided Visual Lessons and confirm five lesson tabs are available.",
+        "Open Guide one visible action at a time and confirm the visual sequence is Locate → Describe → Guide → Confirm.",
+        "Open Separate speaker problems from microphone problems and confirm I can’t hear anyone maps to OUTPUT / Speaker while They can’t hear me maps to INPUT / Microphone.",
+        "Open A waiting screen is not automatically a failed join and confirm Waiting for host is kept separate from Waiting Room.",
+        "Open Know when basic support should stop and confirm the visual sequence ends in Stop → Refer when the remaining action needs outside authority.",
+        "Use a lesson’s resource button and confirm it opens the exact existing Device Walkthrough, Call Language section, or Scenario Script rather than a duplicate copy."
+      ]
+    },
+    {
       "id": "phase6-training-roadmap",
       "date": "2026-09-19",
       "area": "Training / Learning Path",

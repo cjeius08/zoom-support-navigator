@@ -46,6 +46,37 @@ describe('Training & Resources', () => {
     }))
   })
 
+
+  it('opens Guided Visual Lessons from the roadmap and deep-links lesson resources', async () => {
+    const user = userEvent.setup()
+    render(<TrainingResources />)
+
+    await user.click(screen.getByRole('button', { name: 'Open guided lessons' }))
+    expect(screen.getByRole('tab', { name: 'Guided Visual Lessons' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('heading', { name: /Learn the pattern before practicing the call/i })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('tab', { name: /Separate speaker problems from microphone problems/i }))
+    await user.click(screen.getByRole('button', { name: 'Open the Can’t Hear scenario' }))
+
+    expect(screen.getByRole('tab', { name: 'Scripts & Communication' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: 'Scenario Scripts' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: 'Can’t Hear' })).toHaveAttribute('aria-selected', 'true')
+  })
+
+  it('publishes the active Guided Visual Lesson as report context', async () => {
+    const user = userEvent.setup()
+    const onReportContextChange = vi.fn()
+    render(<TrainingResources onReportContextChange={onReportContextChange} />)
+
+    await user.click(screen.getByRole('tab', { name: 'Guided Visual Lessons' }))
+    await user.click(screen.getByRole('tab', { name: /Know when basic support should stop/i }))
+
+    expect(onReportContextChange).toHaveBeenLastCalledWith(expect.objectContaining({
+      selected_tab: 'Guided Visual Lessons',
+      current_section: 'Know when basic support should stop',
+    }))
+  })
+
   it('filters cards locally without creating an iframe before a video is opened', async () => {
     const user = userEvent.setup()
     render(<TrainingResources />)
@@ -117,6 +148,7 @@ describe('Training & Resources', () => {
     render(<TrainingResources />)
 
     expect(screen.getByRole('tab', { name: 'Training Roadmap' })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Guided Visual Lessons' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'Device Walkthroughs' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'Scripts & Communication' })).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'Video Library' })).toBeInTheDocument()

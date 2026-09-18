@@ -126,7 +126,7 @@ function ScenarioDiscoveryCard({ scenarioId, route }) {
   </article>
 }
 
-export function ScriptsCommunication({ onReportContextChange = () => {}, initialMode = null, initialSectionId = null }) {
+export function ScriptsCommunication({ onReportContextChange = () => {}, initialMode = null, initialSectionId = null, initialScenarioId = null }) {
   const [mode, setMode] = useState(initialMode || 'language')
   const [activeSectionId, setActiveSectionId] = useState(initialSectionId || COMMUNICATION_SECTIONS[0].id)
   const [activeScenarioId, setActiveScenarioId] = useState(SCENARIO_SCRIPTS[0].id)
@@ -143,7 +143,10 @@ export function ScriptsCommunication({ onReportContextChange = () => {}, initial
     if (initialSectionId && COMMUNICATION_SECTIONS.some(section => section.id === initialSectionId)) {
       setActiveSectionId(initialSectionId)
     }
-  }, [initialMode, initialSectionId])
+    if (initialScenarioId && SCENARIO_SCRIPTS.some(scenario => scenario.id === initialScenarioId)) {
+      setActiveScenarioId(initialScenarioId)
+    }
+  }, [initialMode, initialSectionId, initialScenarioId])
 
   useEffect(() => {
     const modeLabels = { language: 'Call Language', scenarios: 'Scenario Scripts', avoid: 'Avoid / Use Instead' }

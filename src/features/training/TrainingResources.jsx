@@ -4,6 +4,7 @@ import { useDialogFocus } from '../../lib/useDialogFocus'
 import { DeviceWalkthroughs } from './DeviceWalkthroughs'
 import { ScriptsCommunication } from './ScriptsCommunication'
 import { TrainingRoadmap } from './TrainingRoadmap'
+import { GuidedLessons } from './GuidedLessons'
 
 function VideoViewer({ videos, index, onClose }) {
   const dialogRef = useRef(null)
@@ -27,7 +28,7 @@ export function TrainingResources({ initialVideoId = null, onReportContextChange
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
   const [activeIndex, setActiveIndex] = useState(initialIndex >= 0 ? initialIndex : null)
-  const [scriptTarget, setScriptTarget] = useState({ mode: null, subsection: null })
+  const [scriptTarget, setScriptTarget] = useState({ mode: null, subsection: null, scenario: null })
 
   useEffect(() => {
     if (!initialVideoId) return
@@ -47,8 +48,11 @@ export function TrainingResources({ initialVideoId = null, onReportContextChange
   const viewerVideos = Object.assign(filteredVideos, { onChange: setActiveIndex })
 
   useEffect(() => {
+    if (section === 'lessons') return
+
     const sectionLabels = {
       roadmap: 'Training Roadmap',
+      lessons: 'Guided Visual Lessons',
       devices: 'Device Walkthroughs',
       scripts: 'Scripts & Communication',
       videos: 'Video Library',
@@ -78,6 +82,7 @@ export function TrainingResources({ initialVideoId = null, onReportContextChange
       setScriptTarget({
         mode: target.mode || 'language',
         subsection: target.subsection || null,
+        scenario: target.scenario || null,
       })
     }
     setSection(target.section)
@@ -91,7 +96,7 @@ export function TrainingResources({ initialVideoId = null, onReportContextChange
         <h1>Training &amp; Resources</h1>
         <p>Start with the roadmap, then open the visual walkthroughs, communication lessons, scenarios, and videos when you need them.</p>
       </div>
-      <span className="playlist-label">{section === 'roadmap' ? 'Phase 6 · Structured learning path' : section === 'devices' ? 'Phase 3 · Windows + Mac + iPhone + Android + Browser' : section === 'scripts' ? 'Phase 4 · Call language + scenario scripts' : 'Getting Started with Zoom · ' + TRAINING_VIDEOS.length + ' videos'}</span>
+      <span className="playlist-label">{section === 'roadmap' ? 'Phase 6 · Structured learning path' : section === 'lessons' ? 'Phase 6 · Guided visual lessons' : section === 'devices' ? 'Phase 3 · Windows + Mac + iPhone + Android + Browser' : section === 'scripts' ? 'Phase 4 · Call language + scenario scripts' : 'Getting Started with Zoom · ' + TRAINING_VIDEOS.length + ' videos'}</span>
     </div>
 
     <div className="training-section-tabs" role="tablist" aria-label="Training resource sections">
@@ -101,6 +106,12 @@ export function TrainingResources({ initialVideoId = null, onReportContextChange
         aria-selected={section === 'roadmap'}
         onClick={() => changeSection('roadmap')}
       >Training Roadmap</button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected={section === 'lessons'}
+        onClick={() => changeSection('lessons')}
+      >Guided Visual Lessons</button>
       <button
         type="button"
         role="tab"
@@ -123,13 +134,16 @@ export function TrainingResources({ initialVideoId = null, onReportContextChange
 
     {section === 'roadmap'
       ? <TrainingRoadmap onOpenResource={openRoadmapResource} />
-      : section === 'devices'
-        ? <DeviceWalkthroughs onReportContextChange={onReportContextChange} />
+      : section === 'lessons'
+        ? <GuidedLessons onOpenResource={openRoadmapResource} onReportContextChange={onReportContextChange} />
+        : section === 'devices'
+          ? <DeviceWalkthroughs onReportContextChange={onReportContextChange} />
         : section === 'scripts'
           ? <ScriptsCommunication
               onReportContextChange={onReportContextChange}
               initialMode={scriptTarget.mode}
               initialSectionId={scriptTarget.subsection}
+              initialScenarioId={scriptTarget.scenario}
             />
           : <>
           <div className="training-controls"><label>Search training videos<input type="search" aria-label="Search training videos" value={query} onChange={(event) => { setQuery(event.target.value); setActiveIndex(null) }} placeholder="Search topics and support categories" /></label><label>Filter by category<select aria-label="Filter training by category" value={category} onChange={(event) => { setCategory(event.target.value); setActiveIndex(null) }}>{TRAINING_CATEGORIES.map((name) => <option key={name}>{name}</option>)}</select></label></div>
