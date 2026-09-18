@@ -1,4 +1,4 @@
-import { READINESS_QUESTION_SETS } from '../../lib/readinessApi'
+import { READINESS_QUESTION_SETS } from '../../lib/readinessQuestionSets'
 
 export const READINESS_PARTS = [
   {
