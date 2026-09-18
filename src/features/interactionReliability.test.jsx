@@ -111,7 +111,7 @@ it('shows copy feedback only on the clicked control and reports clipboard failur
   vi.spyOn(navigator.clipboard, 'writeText').mockRejectedValueOnce(new Error('Clipboard blocked'))
   await user.click(within(dialog).getByRole('button', { name: 'Copy Quick Steps' }))
   expect(await within(dialog).findByRole('button', { name: 'Copy failed' })).toBeInTheDocument()
-, 10000)
+}, 10000)
 
 it('traps focus in the process drawer and restores focus to its opener on Escape', async () => {
   const user = userEvent.setup()
