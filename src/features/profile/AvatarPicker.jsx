@@ -9,7 +9,7 @@ export function AvatarPicker({ selectedId, onSave, onCancel }) {
     const normalizedIndex = (index + AVATAR_IDS.length) % AVATAR_IDS.length
     const id = AVATAR_IDS[normalizedIndex]
     setSelected(id)
-    if (focus) window.requestAnimationFrame(() => optionRefs.current[normalizedIndex]?.focus())
+    if (focus) optionRefs.current[normalizedIndex]?.focus()
   }
 
   function handleKeyDown(event, index) {
