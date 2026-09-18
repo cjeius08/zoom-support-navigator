@@ -40,6 +40,7 @@ export function AvatarPicker({ selectedId, onSave, onCancel }) {
           onClick={() => setSelected(id)}
         >
           <img loading="lazy" src={avatarUrl(id)} alt="" />
+          {active && <span className="avatar-selected-indicator" aria-hidden="true">✓</span>}
         </button>
       })}
     </div>
