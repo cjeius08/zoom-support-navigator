@@ -74,6 +74,32 @@ describe('post-QA remediation gate', () => {
     expect(screen.queryByRole('button', { name: /Show remaining steps/i })).not.toBeInTheDocument()
   })
 
+
+  it('progressively discloses long source-script groups', async () => {
+    const user = userEvent.setup()
+    const process = PROCESSES.find(item => item.id === 'transferring-meetings-and-webinars-between-devices')
+    const guide = buildCallGuide(process)
+    render(<ProcessDrawer process={process} onClose={() => {}} />)
+
+    expect(document.querySelectorAll('.suggested-script').length).toBeLessThan(guide.globalScripts.length)
+    const showMore = screen.getByRole('button', { name: /Show remaining scripts/i })
+    await user.click(showMore)
+    expect(document.querySelectorAll('.suggested-script')).toHaveLength(guide.globalScripts.length)
+  })
+
+  it('progressively discloses oversized referral callouts', async () => {
+    const user = userEvent.setup()
+    const process = PROCESSES.find(item => item.id === 'zoom-basic-support-boundaries-decision-path-referral-process')
+    const guide = buildCallGuide(process)
+    const referral = guide.callouts.find(callout => callout.kind === 'referral')
+    render(<ProcessDrawer process={process} onClose={() => {}} />)
+
+    const referralCard = document.querySelector('.guide-callout.referral')
+    expect(referralCard.querySelectorAll('.callout-line').length).toBeLessThan(referral.lines.length)
+    await user.click(within(referralCard).getByRole('button', { name: /Show remaining referral details/i }))
+    expect(referralCard.querySelectorAll('.callout-line')).toHaveLength(referral.lines.length)
+  })
+
   it('uses one tab stop for the avatar grid and arrow keys to move selection', async () => {
     const user = userEvent.setup()
     render(<AvatarPicker selectedId="avatar-01" onSave={() => {}} onCancel={() => {}} />)
