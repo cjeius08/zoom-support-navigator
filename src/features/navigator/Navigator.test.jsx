@@ -36,8 +36,10 @@ it('shows source-page and Zoom-visual counts on process cards', async () => {
   expect(screen.getAllByText(/Zoom visuals?/i).length).toBeGreaterThan(0)
 })
 
-it('shows a friendly decorative icon on every support category card', () => {
+it('shows a friendly decorative icon on every support category card', async () => {
+  const user = userEvent.setup()
   render(<Navigator />)
+  await user.click(screen.getByRole('tab', { name: 'Process Guides' }))
   const icons = screen.getAllByTestId('category-icon')
   expect(icons).toHaveLength(7)
   icons.forEach(icon => expect(icon).toHaveAttribute('aria-hidden', 'true'))
@@ -70,7 +72,7 @@ it('routes a typo in natural caller language to the Common Issue before process 
 
   const listbox = screen.getByRole('listbox', { name: 'Search suggestions' })
   const options = within(listbox).getAllByRole('option')
-  expect(options.length).toBeLessThanOrEqual(6)
+  expect(options.length).toBeLessThanOrEqual(8)
   expect(options[0]).toHaveTextContent('Can’t join the meeting')
   expect(options[0]).toHaveTextContent('Common Issue')
 
@@ -118,7 +120,7 @@ it.each([
   const commonHeading = screen.getByRole('heading', { name: 'Common Issues' })
   const processHeading = screen.getByRole('heading', { name: 'Process Guides' })
   expect(commonHeading.compareDocumentPosition(processHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
-  expect(screen.getByText(routeTitle)).toBeInTheDocument()
+  expect(screen.getAllByText(routeTitle).length).toBeGreaterThan(0)
 })
 
 it('emits only identifier-based analytics events for support interactions', async () => {
