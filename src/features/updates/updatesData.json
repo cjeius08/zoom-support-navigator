@@ -9,6 +9,21 @@
   },
   "updates": [
     {
+      "id": "phase5-scope-check",
+      "date": "2026-09-19",
+      "area": "Live Tools / Support Boundaries",
+      "title": "Scope Check now tells agents when to continue or stop",
+      "changed": "Added a global Scope Check live tool beside Call Documentation. Agents can classify the remaining action, indicate how far approved troubleshooting has progressed, and confirm whether the next step stays within approved authority. OGCon then returns Continue Approved Troubleshooting, Stop + Refer, Resolved — Document & Close, or More Information Needed. The decision path follows the approved Zoom Basic Support Boundaries resource and does not invent referral contacts or promise internal escalation. The Navigator resolution status was also renamed from Escalation Needed to Referral Needed to match the approved handoff model.",
+      "checks": [
+        "From Navigator, open Scope Check from the sidebar and confirm the current troubleshooting page does not change.",
+        "Select Basic Zoom setup → Approved troubleshooting steps still remain → No, next step stays inside approved scope; confirm OGCon returns Continue Approved Troubleshooting.",
+        "Change the issue type to Host action or meeting-owner permission and confirm OGCon switches to Stop + Refer.",
+        "Select All approved troubleshooting completed; issue remains and confirm Stop + Refer appears even when the issue began as a basic Zoom concern.",
+        "Switch from Scope Check back to Call Documentation and confirm the existing documentation draft is still present.",
+        "In Live Call Flow, confirm the resolution-status choice now says Referral Needed instead of Escalation Needed."
+      ]
+    },
+    {
       "id": "global-documentation-dock",
       "date": "2026-09-19",
       "area": "Live Tools / Documentation",
