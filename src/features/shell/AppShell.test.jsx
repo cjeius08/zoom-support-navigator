@@ -34,7 +34,7 @@ it('exposes What’s New and console ownership metadata to all agents', async ()
   expect(screen.getByText(/Owner\s+Cjei A\./i)).toBeInTheDocument()
   expect(screen.getByText(/Collaborator\s+Nina F\./i)).toBeInTheDocument()
 
-  const versionChip = screen.getByRole('button', { name: /Console v1\.0.*Updated Sep 18/i })
+  const versionChip = screen.getByRole('button', { name: /Console v1\.0.*Updated Sep 19/i })
   await user.click(versionChip)
   expect(onNavigate).toHaveBeenCalledWith('updates')
 })
