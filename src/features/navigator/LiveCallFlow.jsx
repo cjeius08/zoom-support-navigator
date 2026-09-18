@@ -60,15 +60,17 @@ function ChoiceGroup({ label, options, value, onChange, className = '' }) {
   </div>
 }
 
-export function LiveCallFlow({ value, onChange }) {
+export function LiveCallFlow({ value, onChange, expanded: controlledExpanded, onExpandedChange }) {
   const [internalDevice, setInternalDevice] = useState(null)
   const [internalRole, setInternalRole] = useState(null)
   const [internalStatus, setInternalStatus] = useState(null)
-  const [expanded, setExpanded] = useState(false)
+  const [internalExpanded, setInternalExpanded] = useState(false)
   const controlled = value !== undefined
+  const expandedControlled = controlledExpanded !== undefined
   const device = controlled ? value.device : internalDevice
   const role = controlled ? value.role : internalRole
   const status = controlled ? value.status : internalStatus
+  const expanded = expandedControlled ? controlledExpanded : internalExpanded
 
   function updateContext(field, nextValue) {
     if (!controlled) {
@@ -88,7 +90,13 @@ export function LiveCallFlow({ value, onChange }) {
     onChange?.({ device: null, role: null, status: null })
   }
 
-  return <section className={`live-call-flow${expanded ? ' live-call-flow-expanded' : ''}`} aria-label="Core Live Call Flow">
+  function toggleExpanded() {
+    const next = !expanded
+    if (!expandedControlled) setInternalExpanded(next)
+    onExpandedChange?.(next)
+  }
+
+  return <section className="live-call-flow" aria-label="Core Live Call Flow">
     <div className="live-call-flow-heading">
       <div>
         <p className="eyebrow">Live call context</p>
@@ -118,42 +126,56 @@ export function LiveCallFlow({ value, onChange }) {
       className="live-call-toggle"
       aria-expanded={expanded}
       aria-controls="live-call-workflow-details"
-      onClick={() => setExpanded(current => !current)}
+      onClick={toggleExpanded}
     >
       <span>{expanded ? 'Hide full call flow' : 'View full call flow'}</span>
       <small>7 steps</small>
       <span className="live-call-toggle-icon" aria-hidden="true">{expanded ? '−' : '+'}</span>
     </button>
+  </section>
+}
 
-    {expanded && <div id="live-call-workflow-details" className="live-call-workflow-details">
-      <p className="live-call-workflow-note">Use these stages as a conversation guide. Keep the call natural and move one step at a time.</p>
-      <div className="live-call-table-wrap">
-        <table className="live-call-table" aria-label="Live call flow">
-          <thead>
-            <tr>
-              <th scope="col">Step</th>
-              <th scope="col">Agent Action</th>
-              <th scope="col">Suggested Script</th>
-            </tr>
-          </thead>
-          <tbody>
-            {CALL_STEPS.map((step, index) => <tr key={step.name}>
-              <th scope="row">
-                <span className="live-call-step-number">{index + 1}</span>
-                <span>{step.name}</span>
-              </th>
-              <td>
-                <span className="live-call-cell-label">Agent Action</span>
-                <p>{step.action}</p>
-              </td>
-              <td>
-                <span className="live-call-cell-label">Suggested Script</span>
-                <blockquote>{step.script}</blockquote>
-              </td>
-            </tr>)}
-          </tbody>
-        </table>
+export function LiveCallFlowDetails({ onClose }) {
+  return <section
+    id="live-call-workflow-details"
+    className="live-call-workflow-panel"
+    aria-label="Detailed Live Call Flow"
+  >
+    <div className="live-call-workflow-panel-heading">
+      <div>
+        <p className="eyebrow">Full call workflow</p>
+        <h2>Detailed Call Workflow</h2>
+        <p>Use these stages as a conversation guide. Keep the call natural and move one step at a time.</p>
       </div>
-    </div>}
+      {onClose && <button type="button" className="live-call-panel-close" onClick={onClose}>Hide full call flow</button>}
+    </div>
+
+    <div className="live-call-table-wrap">
+      <table className="live-call-table" aria-label="Live call flow">
+        <thead>
+          <tr>
+            <th scope="col">Step</th>
+            <th scope="col">Agent Action</th>
+            <th scope="col">Suggested Script</th>
+          </tr>
+        </thead>
+        <tbody>
+          {CALL_STEPS.map((step, index) => <tr key={step.name}>
+            <th scope="row">
+              <span className="live-call-step-number">{index + 1}</span>
+              <span>{step.name}</span>
+            </th>
+            <td>
+              <span className="live-call-cell-label">Agent Action</span>
+              <p>{step.action}</p>
+            </td>
+            <td>
+              <span className="live-call-cell-label">Suggested Script</span>
+              <blockquote>{step.script}</blockquote>
+            </td>
+          </tr>)}
+        </tbody>
+      </table>
+    </div>
   </section>
 }
