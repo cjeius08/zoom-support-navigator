@@ -2124,6 +2124,143 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   }
 }
 
+.readiness-loading,
+.readiness-error {
+  margin: 0;
+  padding: .58rem .62rem;
+  border-radius: .58rem;
+  font-size: .61rem;
+  line-height: 1.42;
+}
+.readiness-loading {
+  border: 1px solid rgba(101, 164, 205, .16);
+  background: rgba(30, 91, 134, .06);
+  color: #9db7c8;
+}
+.readiness-error {
+  border: 1px solid rgba(223, 115, 115, .2);
+  background: rgba(126, 45, 45, .08);
+  color: #efb0b0;
+}
+.readiness-answer-options button.answer-correct {
+  border-color: rgba(71, 185, 127, .48);
+  background: rgba(32, 123, 79, .13);
+  color: #e9fff2;
+}
+.readiness-answer-options button.answer-incorrect {
+  border-color: rgba(219, 145, 76, .5);
+  background: rgba(128, 73, 26, .12);
+  color: #fff1e1;
+}
+.readiness-attempt-actions {
+  display: grid;
+  gap: .38rem;
+  padding: .64rem;
+  border: 1px solid rgba(123, 174, 211, .12);
+  border-radius: .66rem;
+  background: rgba(255,255,255,.014);
+}
+.readiness-attempt-actions > small {
+  color: #6f8391;
+  font-size: .55rem;
+  line-height: 1.38;
+}
+.readiness-reset-disabled,
+.readiness-submit-attempt {
+  padding: .46rem .58rem;
+  border-radius: .52rem;
+  font-size: .6rem;
+  font-weight: 760;
+}
+.readiness-reset-disabled {
+  border: 1px solid rgba(117, 155, 181, .12);
+  background: rgba(255,255,255,.015);
+  color: #657886;
+}
+.readiness-reset-disabled:disabled {
+  cursor: not-allowed;
+  opacity: .68;
+}
+.readiness-submit-attempt {
+  border: 1px solid rgba(73, 181, 126, .3);
+  background: rgba(37, 124, 82, .15);
+  color: #9ee1b9;
+}
+.readiness-attempt-history {
+  display: grid;
+  gap: .48rem;
+  padding: .64rem;
+  border: 1px solid rgba(123, 174, 211, .11);
+  border-radius: .68rem;
+  background: rgba(255,255,255,.012);
+}
+.readiness-attempt-history > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .65rem;
+}
+.readiness-attempt-history > div strong {
+  color: #c4d5df;
+  font-size: .62rem;
+}
+.readiness-attempt-history > div span {
+  color: #6d8391;
+  font-size: .54rem;
+}
+.readiness-attempt-history ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .38rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.readiness-attempt-history li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: .38rem;
+  align-items: start;
+  padding: .42rem;
+  border: 1px solid rgba(111, 155, 187, .09);
+  border-radius: .52rem;
+  background: rgba(2, 9, 14, .28);
+}
+.readiness-attempt-history li.recorded {
+  border-color: rgba(79, 167, 226, .18);
+  background: rgba(28, 94, 139, .055);
+}
+.readiness-attempt-history li > span {
+  display: grid;
+  place-items: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: rgba(49, 124, 177, .13);
+  color: #8dc8ef;
+  font-size: .51rem;
+  font-weight: 800;
+}
+.readiness-attempt-history li > div {
+  display: grid;
+  gap: .06rem;
+  min-width: 0;
+}
+.readiness-attempt-history li strong {
+  color: #aebfc9;
+  font-size: .55rem;
+}
+.readiness-attempt-history li small {
+  color: #687d8a;
+  font-size: .5rem;
+  line-height: 1.3;
+}
+@media (max-width: 560px) {
+  .readiness-attempt-history ol {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Phase 5 · Scope Check live tool */
 .scope-check-body {
   align-content: start;
