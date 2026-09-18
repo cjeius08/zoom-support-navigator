@@ -132,7 +132,7 @@ it('keeps the agent self-check aligned to the full call flow', () => {
 
   expect(screen.getByRole('heading', { name: 'Agent self-check' })).toBeInTheDocument()
   expect(screen.getByText(/let the caller explain the concern before troubleshooting/i)).toBeInTheDocument()
-  expect(screen.getByText(/hearing status/i)).toBeInTheDocument()
+  expect(screen.getAllByText(/hearing status/i).length).toBeGreaterThanOrEqual(2)
   expect(screen.getByText(/Did I give only one troubleshooting instruction at a time/i)).toBeInTheDocument()
   expect(screen.getByText(/recap the result or next step/i)).toBeInTheDocument()
 })
