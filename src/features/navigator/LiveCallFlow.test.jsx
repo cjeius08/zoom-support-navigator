@@ -31,6 +31,17 @@ it('renders the seven-stage detailed workflow when the parent chooses to show it
   }
 })
 
+
+it('shows the approved Locate Describe Guide Confirm method in the detailed workflow', () => {
+  render(<LiveCallFlowDetails />)
+
+  const method = screen.getByRole('region', { name: 'Locate Describe Guide Confirm method' })
+  for (const stage of ['Locate', 'Describe', 'Guide', 'Confirm']) {
+    expect(within(method).getByText(stage)).toBeInTheDocument()
+  }
+  expect(within(method).getByText(/Do not move to the next instruction until the caller confirms/i)).toBeInTheDocument()
+})
+
 it('captures device, caller role, and resolution status with clear pressed states', async () => {
   const user = userEvent.setup()
   render(<LiveCallFlow />)
