@@ -225,7 +225,7 @@ export const COMMON_ISSUE_ROUTES = [
         url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062765',
       },
     ],
-    discrepancy: 'The approved mobile microphone Process Document says “Call Over Internet.” Current official Zoom Support is itself inconsistent: the mobile troubleshooting article also says “Call Over Internet,” while the audio-testing article says “Wifi or Cellular Data.” OGCon keeps the approved process unchanged and tells agents to use the internet-audio option actually shown on the caller’s device.',
+    discrepancy: 'The approved mobile microphone Process Document says “Call Over Internet.” Current official Zoom Support articles are themselves inconsistent: the mobile troubleshooting article also says “Call Over Internet,” while the audio-testing article says “Wifi or Cellular Data.” OGCon keeps the approved process unchanged and tells agents to use the internet-audio option actually shown on the caller’s device.',
     visuals: [
       {
         title: 'Muted microphone control',
