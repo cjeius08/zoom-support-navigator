@@ -126,15 +126,24 @@ function ScenarioDiscoveryCard({ scenarioId, route }) {
   </article>
 }
 
-export function ScriptsCommunication({ onReportContextChange = () => {} }) {
-  const [mode, setMode] = useState('language')
-  const [activeSectionId, setActiveSectionId] = useState(COMMUNICATION_SECTIONS[0].id)
+export function ScriptsCommunication({ onReportContextChange = () => {}, initialMode = null, initialSectionId = null }) {
+  const [mode, setMode] = useState(initialMode || 'language')
+  const [activeSectionId, setActiveSectionId] = useState(initialSectionId || COMMUNICATION_SECTIONS[0].id)
   const [activeScenarioId, setActiveScenarioId] = useState(SCENARIO_SCRIPTS[0].id)
   const [copiedId, setCopiedId] = useState(null)
   const [copyError, setCopyError] = useState('')
   const activeSection = COMMUNICATION_SECTIONS.find(section => section.id === activeSectionId) ?? COMMUNICATION_SECTIONS[0]
   const activeScenario = SCENARIO_SCRIPTS.find(scenario => scenario.id === activeScenarioId) ?? SCENARIO_SCRIPTS[0]
   const activeRoute = COMMON_ISSUE_ROUTES.find(route => route.id === activeScenario.routeId)
+
+  useEffect(() => {
+    if (initialMode && ['language', 'scenarios', 'avoid'].includes(initialMode)) {
+      setMode(initialMode)
+    }
+    if (initialSectionId && COMMUNICATION_SECTIONS.some(section => section.id === initialSectionId)) {
+      setActiveSectionId(initialSectionId)
+    }
+  }, [initialMode, initialSectionId])
 
   useEffect(() => {
     const modeLabels = { language: 'Call Language', scenarios: 'Scenario Scripts', avoid: 'Avoid / Use Instead' }

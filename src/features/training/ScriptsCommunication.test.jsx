@@ -168,3 +168,17 @@ it('renders the specialized scenario using the existing live-call card pattern',
   expect(within(panel).getByText('Select the headset as Zoom Microphone')).toBeInTheDocument()
   expect(within(panel).getByText(/choose the Bluetooth headset under Microphone/i)).toBeInTheDocument()
 })
+
+
+it('can open a roadmap-targeted communication mode and subsection', () => {
+  const { rerender } = render(<ScriptsCommunication initialMode="language" initialSectionId="guide" />)
+
+  expect(screen.getByRole('tab', { name: 'Call Language' })).toHaveAttribute('aria-selected', 'true')
+  expect(screen.getByRole('tabpanel', { name: 'Locate → Describe → Guide → Confirm' })).toBeInTheDocument()
+
+  rerender(<ScriptsCommunication initialMode="avoid" />)
+  expect(screen.getByRole('tab', { name: 'Avoid / Use Instead' })).toHaveAttribute('aria-selected', 'true')
+
+  rerender(<ScriptsCommunication initialMode="scenarios" />)
+  expect(screen.getByRole('tab', { name: 'Scenario Scripts' })).toHaveAttribute('aria-selected', 'true')
+})
