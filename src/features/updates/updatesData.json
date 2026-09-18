@@ -8,6 +8,20 @@
   },
   "updates": [
     {
+      "id": "uiux-phase2-common-issue-routes",
+      "date": "2026-09-18",
+      "area": "Live Support / UI UX Phase 2",
+      "title": "Common Issue Routes added to Navigator",
+      "changed": "Added the first Phase 2 live-call routing layer for five high-frequency concerns: Can’t join the meeting, I can’t hear anyone, They can’t hear me, My camera isn’t working, and I’m waiting to get in. Each route starts from the caller’s symptom, asks only the questions that change the path, separates symptoms from assumed causes, shows one-step-at-a-time guidance and expected results, keeps Waiting for host distinct from Waiting Room, carries forward the Phase 1 device/role/status context, and preserves access to approved Process Documents plus traceable official Zoom Support sources. Natural caller-language search now surfaces these fast routes before deeper process results when appropriate.",
+      "checks": [
+        "Search I cant hear you and confirm the Audio-output Common Issue Route appears first instead of a connection diagnosis.",
+        "Open I’m waiting to get in and confirm Waiting for host and Waiting Room are explained as separate meeting states with different next actions.",
+        "Choose a Phase 1 device and caller role, open a Common Issue Route, and confirm the selected context appears inside the route.",
+        "Open Full Process from a route and confirm the original approved Process Documents remain available without modified source wording.",
+        "Open Sources and confirm official Zoom Support references and the verification date are visible; any known internal/current-source discrepancy should be flagged rather than silently reconciled."
+      ]
+    },
+    {
       "id": "uiux-phase1-core-live-call-flow",
       "date": "2026-09-18",
       "area": "Live Support / UI UX Phase 1",
