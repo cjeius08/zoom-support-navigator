@@ -83,7 +83,7 @@ export default function App() {
           : target.section === 'lessons'
             ? 'Guided Visual Lessons'
             : 'Training & Resources',
-        current_section: target.subsection || target.section || null,
+        current_section: target.device || target.subsection || target.section || null,
       })
       setView('training')
       return
