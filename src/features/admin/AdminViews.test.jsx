@@ -4,16 +4,19 @@ import { beforeEach, expect, it, vi } from 'vitest'
 
 const loadTeam = vi.fn()
 const loadUsage = vi.fn()
+const loadReadinessReport = vi.fn()
 const loadFeedback = vi.fn()
 const updateFeedbackStatus = vi.fn()
 const runAdminAction = vi.fn()
-vi.mock('../../lib/adminApi', () => ({ loadFeedback, loadTeam, loadUsage, updateFeedbackStatus, runAdminAction }))
+vi.mock('../../lib/adminApi', () => ({ loadFeedback, loadReadinessReport, loadTeam, loadUsage, updateFeedbackStatus, runAdminAction }))
 
 beforeEach(() => {
   loadUsage.mockReset()
+  loadReadinessReport.mockReset()
   loadFeedback.mockReset()
   updateFeedbackStatus.mockReset()
   loadTeam.mockResolvedValue([{ id: 'agent-1', username: 'agent_one', initials: 'AO', role: 'agent', status: 'active', avatar_id: null, presence: 'active' }])
+  loadReadinessReport.mockResolvedValue({ questionSetVersion: 'zoom_general_scenarios_v1', maxAttempts: 3, users: [] })
   runAdminAction.mockReset()
 })
 
@@ -83,6 +86,71 @@ it('shows accurate presence and zero-usage users across usage periods', async ()
   expect(screen.getByRole('button', { name: 'Monthly' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Custom' })).toBeInTheDocument()
   expect(screen.getByText('zero_agent')).toBeInTheDocument()
+})
+
+it('shows a separate Readiness Lab report with first score, attempts, and incorrect answers', async () => {
+  const user = userEvent.setup()
+  const now = new Date().toISOString()
+  loadUsage.mockResolvedValue({
+    profiles: [],
+    events: [],
+    sessions: [],
+    presence: [],
+  })
+  loadReadinessReport.mockResolvedValue({
+    questionSetVersion: 'zoom_general_scenarios_v1',
+    maxAttempts: 3,
+    users: [{
+      id: 'u1',
+      username: 'agent_one',
+      initials: 'AO',
+      role: 'agent',
+      status: 'active',
+      attempts: [
+        {
+          id: 'a1',
+          attemptNumber: 1,
+          status: 'submitted',
+          score: 3,
+          totalQuestions: 5,
+          checkedCount: 5,
+          submittedAt: now,
+          incorrectAnswers: [{
+            questionId: 'join-exact-state',
+            questionOrder: 1,
+            prompt: 'A Zoom user says they cannot get into the meeting.',
+            selectedAnswer: 'Restart immediately.',
+            correctAnswer: 'Ask what exact Zoom screen or message appears first.',
+          }],
+        },
+        {
+          id: 'a2',
+          attemptNumber: 2,
+          status: 'active',
+          score: null,
+          totalQuestions: 5,
+          checkedCount: 2,
+          submittedAt: null,
+          incorrectAnswers: [],
+        },
+      ],
+    }],
+  })
+
+  const { UsageAnalytics } = await import('./AdminViews')
+  render(<UsageAnalytics />)
+
+  await user.click(screen.getByRole('tab', { name: 'Readiness Lab Report' }))
+
+  expect(await screen.findByRole('heading', { name: 'Scores, attempts, and incorrect answers' })).toBeInTheDocument()
+  expect(screen.getByText('agent_one')).toBeInTheDocument()
+  expect(screen.getByText('2/3 attempts used')).toBeInTheDocument()
+  expect(screen.getByText('3/5')).toBeInTheDocument()
+  expect(screen.getByText('Attempt 2 · 2/5')).toBeInTheDocument()
+
+  await user.click(screen.getByText('Attempt 1'))
+  expect(screen.getByText('Restart immediately.')).toBeInTheDocument()
+  expect(screen.getByText('Ask what exact Zoom screen or message appears first.')).toBeInTheDocument()
 })
 
 it('lets JA update feedback status, see history, and open the stored page', async () => {
