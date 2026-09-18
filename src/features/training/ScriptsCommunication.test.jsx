@@ -7,6 +7,7 @@ import { COMMON_ISSUE_ROUTES } from '../navigator/commonIssueRoutes'
 import { SCENARIO_SCRIPTS, SCENARIO_SCRIPT_VERIFIED_AT } from './scenarioScripts'
 import {
   COMMUNICATION_AVOID_PAIRS,
+  COMMUNICATION_CALL_FLOW_SOURCE,
   COMMUNICATION_SECTIONS,
   COMMUNICATION_SOURCE_IDS,
   COMMUNICATION_VERIFIED_AT,
@@ -19,15 +20,20 @@ beforeEach(() => {
   })
 })
 
-it('locks the Phase 4 Batch 1 communication foundation to approved source processes', () => {
-  expect(COMMUNICATION_VERIFIED_AT).toBe('September 18, 2026')
+it('locks call language to the current Ogletree call-flow stages and approved process sources', () => {
+  expect(COMMUNICATION_VERIFIED_AT).toBe('September 19, 2026')
+  expect(COMMUNICATION_CALL_FLOW_SOURCE).toMatch(/Ogletree.*Tier 1 Zoom Support.*Standard Call Flow Outline/i)
   expect(COMMUNICATION_SECTIONS.map(section => section.id)).toEqual([
     'opening',
-    'acknowledgment',
-    'discovery',
-    'guide',
+    'listen',
+    'empathy',
+    'assurance',
+    'identify',
+    'probe',
+    'troubleshoot',
+    'confirm-resolution',
     'recap',
-    'boundary',
+    'final-check',
     'closing',
   ])
 
@@ -45,37 +51,54 @@ it('locks the Phase 4 Batch 1 communication foundation to approved source proces
   }
 })
 
-it('shows Opening first and switches through discovery and the four-stage communication method', async () => {
+it('starts with the official greeting and moves through listen, empathy, assurance, identification, and probing before troubleshooting', async () => {
   const user = userEvent.setup()
   render(<ScriptsCommunication />)
 
-  expect(screen.getByRole('tabpanel', { name: 'Opening & scope' })).toBeInTheDocument()
-  expect(screen.getByText(/I’ll help you check the basic Zoom setup/i)).toBeInTheDocument()
+  const opening = screen.getByRole('tabpanel', { name: 'Opening / Greeting' })
+  expect(within(opening).getByText(/Thank you for calling Ogletree Zoom Support/i)).toBeInTheDocument()
 
-  await user.click(screen.getByRole('tab', { name: 'Discovery questions' }))
-  const discovery = screen.getByRole('tabpanel', { name: 'Discovery questions' })
-  expect(within(discovery).getByText(/What are you trying to do in Zoom/i)).toBeInTheDocument()
-  expect(within(discovery).getByText(/Windows computer, Mac, web browser, iPhone, or Android/i)).toBeInTheDocument()
-  expect(within(discovery).getByText(/exact wording/i)).toBeInTheDocument()
+  await user.click(screen.getByRole('tab', { name: 'Listen & Acknowledge' }))
+  expect(screen.getByRole('tabpanel', { name: 'Listen & Acknowledge' })).toHaveTextContent(/listen first/i)
 
-  await user.click(screen.getByRole('tab', { name: 'Locate → Describe → Guide → Confirm' }))
-  const framework = screen.getByRole('tabpanel', { name: 'Locate → Describe → Guide → Confirm' })
+  await user.click(screen.getByRole('tab', { name: 'Empathy Statement' }))
+  expect(screen.getByRole('tabpanel', { name: 'Empathy Statement' })).toHaveTextContent(/hearing/i)
+
+  await user.click(screen.getByRole('tab', { name: 'Assure / Take Ownership' }))
+  expect(screen.getByRole('tabpanel', { name: 'Assure / Take Ownership' })).toHaveTextContent(/approved checks/i)
+
+  await user.click(screen.getByRole('tab', { name: 'Identify Caller / Hearing' }))
+  const identify = screen.getByRole('tabpanel', { name: 'Identify Caller / Hearing' })
+  expect(within(identify).getByText(/Has the hearing already started/i)).toBeInTheDocument()
+  expect(within(identify).getByText(/other participants/i)).toBeInTheDocument()
+
+  await user.click(screen.getByRole('tab', { name: 'Probe & Diagnose' }))
+  const probe = screen.getByRole('tabpanel', { name: 'Probe & Diagnose' })
+  expect(within(probe).getByText(/Can you tell me what you’re experiencing/i)).toBeInTheDocument()
+  expect(within(probe).getByText(/Can you hear the other participants/i)).toBeInTheDocument()
+})
+
+it('keeps Locate Describe Guide Confirm as the troubleshooting method, not the entire call flow', async () => {
+  const user = userEvent.setup()
+  render(<ScriptsCommunication />)
+
+  await user.click(screen.getByRole('tab', { name: 'Troubleshoot' }))
+  const framework = screen.getByRole('tabpanel', { name: 'Troubleshoot' })
   for (const stage of ['Locate', 'Describe', 'Guide', 'Confirm']) {
     expect(within(framework).getByText(stage, { selector: 'strong' })).toBeInTheDocument()
   }
 })
 
-it('keeps support-boundary language neutral and does not promise an escalation', async () => {
+it('keeps unresolved-call guardrails neutral and does not promise an escalation the team does not perform', async () => {
   const user = userEvent.setup()
   render(<ScriptsCommunication />)
 
-  await user.click(screen.getByRole('tab', { name: 'Support boundary & referral' }))
-  const panel = screen.getByRole('tabpanel', { name: 'Support boundary & referral' })
+  await user.click(screen.getByRole('tab', { name: 'Avoid / Use Instead' }))
+  const panel = screen.getByRole('tabpanel', { name: 'Avoid and use instead' })
 
-  expect(within(panel).getByText(/completed the basic troubleshooting steps available to us/i)).toBeInTheDocument()
-  expect(within(panel).getByText(/Please contact your organization’s IT help desk or Zoom administrator/i)).toBeInTheDocument()
-  expect(within(panel).getByText(/unable to make decisions regarding the proceeding/i)).toBeInTheDocument()
-  expect(within(panel).queryByText(/I’ll escalate this/i)).not.toBeInTheDocument()
+  expect(within(panel).getByText('“I’ll escalate this to your Zoom administrator.”')).toBeInTheDocument()
+  expect(within(panel).getByText(/Please contact your organization’s Zoom administrator or IT team/i)).toBeInTheDocument()
+  expect(within(panel).getByText(/Do not promise an escalation/i)).toBeInTheDocument()
 })
 
 it('shows approved Avoid / Use Instead guardrails', async () => {
@@ -92,28 +115,27 @@ it('shows approved Avoid / Use Instead guardrails', async () => {
   expect(within(panel).getByText(/feature may be controlled by the meeting host/i)).toBeInTheDocument()
 })
 
-it('copies a phrase without changing the approved wording', async () => {
+it('copies the current Ogletree opening without changing the wording', async () => {
   const user = userEvent.setup()
   render(<ScriptsCommunication />)
 
-  const opening = screen.getByRole('tabpanel', { name: 'Opening & scope' })
-  const firstCard = within(opening).getByText(/I’ll help you check the basic Zoom setup/i).closest('article')
+  const opening = screen.getByRole('tabpanel', { name: 'Opening / Greeting' })
+  const firstCard = within(opening).getByText(/Thank you for calling Ogletree Zoom Support/i).closest('article')
   await user.click(within(firstCard).getByRole('button', { name: 'Copy phrase' }))
 
-  expect(within(firstCard).getByText(/I’ll help you check the basic Zoom setup/i)).toBeInTheDocument()
   expect(within(firstCard).getByRole('button', { name: 'Copied' })).toBeInTheDocument()
   expect(screen.queryByText(/Copy failed/i)).not.toBeInTheDocument()
 })
 
-it('keeps the agent self-check visible in the live-call language view', () => {
+it('keeps the agent self-check aligned to the full call flow', () => {
   render(<ScriptsCommunication />)
 
   expect(screen.getByRole('heading', { name: 'Agent self-check' })).toBeInTheDocument()
-  expect(screen.getByText(/Did I give only one instruction at a time/i)).toBeInTheDocument()
-  expect(screen.getByText(/Did I confirm the result instead of assuming success/i)).toBeInTheDocument()
-  expect(screen.getByText(/approved basic support scope/i)).toBeInTheDocument()
+  expect(screen.getByText(/let the caller explain the concern before troubleshooting/i)).toBeInTheDocument()
+  expect(screen.getByText(/hearing status/i)).toBeInTheDocument()
+  expect(screen.getByText(/Did I give only one troubleshooting instruction at a time/i)).toBeInTheDocument()
+  expect(screen.getByText(/recap the result or next step/i)).toBeInTheDocument()
 })
-
 
 it('locks Phase 4 Batch 3 specialized scenario scripts to existing Common Issue routes', () => {
   expect(SCENARIO_SCRIPT_VERIFIED_AT).toBe('September 19, 2026')
@@ -169,12 +191,14 @@ it('renders the specialized scenario using the existing live-call card pattern',
   expect(within(panel).getByText(/choose the Bluetooth headset under Microphone/i)).toBeInTheDocument()
 })
 
-
-it('can open a roadmap-targeted communication mode and subsection', () => {
-  const { rerender } = render(<ScriptsCommunication initialMode="language" initialSectionId="guide" />)
+it('can open a roadmap-targeted communication mode and call-flow stage', () => {
+  const { rerender } = render(<ScriptsCommunication initialMode="language" initialSectionId="opening" />)
 
   expect(screen.getByRole('tab', { name: 'Call Language' })).toHaveAttribute('aria-selected', 'true')
-  expect(screen.getByRole('tabpanel', { name: 'Locate → Describe → Guide → Confirm' })).toBeInTheDocument()
+  expect(screen.getByRole('tabpanel', { name: 'Opening / Greeting' })).toBeInTheDocument()
+
+  rerender(<ScriptsCommunication initialMode="language" initialSectionId="troubleshoot" />)
+  expect(screen.getByRole('tabpanel', { name: 'Troubleshoot' })).toBeInTheDocument()
 
   rerender(<ScriptsCommunication initialMode="avoid" />)
   expect(screen.getByRole('tab', { name: 'Avoid / Use Instead' })).toHaveAttribute('aria-selected', 'true')
@@ -182,7 +206,6 @@ it('can open a roadmap-targeted communication mode and subsection', () => {
   rerender(<ScriptsCommunication initialMode="scenarios" />)
   expect(screen.getByRole('tab', { name: 'Scenario Scripts' })).toHaveAttribute('aria-selected', 'true')
 })
-
 
 it('can open the exact scenario requested by a guided lesson', () => {
   render(<ScriptsCommunication initialMode="scenarios" initialScenarioId="waiting-entry" />)
