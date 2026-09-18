@@ -8,7 +8,8 @@ it('opens a source-driven Call Guide with safe copy actions before lossless sour
   render(<Navigator />)
   expect(screen.getByRole('heading', { name: 'Live Call Flow' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Common Issues' })).toBeInTheDocument()
-  await user.click(screen.getByRole('button', { name: /Customer cannot join/i }))
+  await user.click(screen.getByRole('button', { name: /Joining Meetings/i }))
+  await user.click(screen.getByRole('button', { name: /Troubleshooting When You Can’t Join a Zoom Meeting/i }))
   const dialog = screen.getByRole('dialog')
   expect(within(dialog).getByRole('tab', { name: 'Call Guide' })).toHaveAttribute('aria-selected', 'true')
   expect(within(dialog).getByRole('button', { name: 'Copy Quick Steps' })).toBeInTheDocument()
@@ -106,7 +107,7 @@ it('emits only identifier-based analytics events for support interactions', asyn
     categoryId: 'audio',
   })
 
-  await user.click(screen.getByRole('button', { name: /Customer cannot join/i }))
+  await user.click(screen.getByRole('button', { name: /Zoom Audio Troubleshooting/i }))
   const dialog = screen.getByRole('dialog')
   await user.click(within(dialog).getAllByRole('button', { name: 'Copy Script' })[0])
 
