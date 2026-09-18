@@ -82,7 +82,7 @@ export async function loadUsage({ start, end } = {}) {
 export async function loadFeedback() {
   const reportsPromise = loadPaged(() => supabase
     .from('zoom_feedback_reports')
-    .select('id,type,status,route_id,page_label,process_id,category_id,what_noticed,suggested_change,created_at,updated_at,resolved_at,reporter_user_id')
+    .select('id,type,status,route_id,page_label,process_id,category_id,selected_tab,current_section,active_device,active_caller_role,active_common_issue,page_path,page_hash,viewport_width,viewport_height,browser_user_agent,client_reported_at,what_noticed,suggested_change,created_at,updated_at,resolved_at,reporter_user_id')
     .order('created_at', { ascending: false }))
 
   const historyPromise = loadPaged(() => supabase
