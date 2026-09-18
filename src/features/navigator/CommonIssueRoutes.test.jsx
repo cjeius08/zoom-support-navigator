@@ -2,6 +2,8 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it } from 'vitest'
 import { Navigator } from './Navigator'
+import { COMMON_ISSUE_ROUTES, searchCommonIssueRoutes } from './commonIssueRoutes'
+import { PROCESSES } from '../../data/processes'
 
 it('shows the five Phase 2 common-issue routes in caller language', () => {
   render(<Navigator />)
@@ -80,4 +82,22 @@ it('keeps authoritative sources visible but secondary to the quick route', async
   expect(within(dialog).getByRole('link', { name: /Official Zoom Support/i })).toHaveAttribute('href', expect.stringContaining('support.zoom.com'))
   expect(within(dialog).getByText(/Zoom Camera Troubleshooting During a Meeting/i)).toBeInTheDocument()
   expect(within(dialog).getByText(/Verified against official Zoom Support: September 18, 2026/i)).toBeInTheDocument()
+})
+
+
+it('keeps every Phase 2 route traceable to existing approved processes and official Zoom sources', () => {
+  const approvedIds = new Set(PROCESSES.map(process => process.id))
+
+  for (const route of COMMON_ISSUE_ROUTES) {
+    expect(route.processIds.length).toBeGreaterThan(0)
+    route.processIds.forEach(id => expect(approvedIds.has(id)).toBe(true))
+    expect(route.primarySource.url).toMatch(/^https:\/\/support\.zoom\.com\//)
+    ;(route.supportingSources ?? []).forEach(source => expect(source.url).toMatch(/^https:\/\/support\.zoom\.com\//))
+  }
+})
+
+it('routes the caller phrase "I cant hear you" to audio output rather than guessing connection trouble', () => {
+  const matches = searchCommonIssueRoutes('I cant hear you')
+  expect(matches[0]?.id).toBe('cant-hear')
+  expect(matches[0]?.classification).toBe('Audio-output symptom')
 })
