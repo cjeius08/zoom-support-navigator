@@ -2,6 +2,8 @@ const STOP_WORDS = new Set([
   'a', 'an', 'the', 'is', 'are', 'am', 'my', 'our', 'their',
   'customer', 'customers', 'zoom', 'issue', 'issues', 'problem', 'problems',
   'not', 'no', 'working', 'work', 'works', 'wont', 'doesnt', 'does', 'do',
+  'i', 'me', 'myself', 'we', 'us', 'you', 'they', 'them', 'where', 'button',
+  'hasnt', 'havent', 'room',
 ])
 
 const SEARCH_ALIASES = {
@@ -22,6 +24,8 @@ const SEARCH_ALIASES = {
   joining: ['join'],
   cannot: ['cant', 'unable'],
   unable: ['cant', 'cannot'],
+  stuck: ['waiting'],
+  started: ['start'],
 }
 
 const FIELD_WEIGHTS = {
@@ -170,13 +174,44 @@ function phraseBonus(document, normalizedQuery) {
   return 0
 }
 
+const INTENT_HINTS = [
+  {
+    query: /\b(?:mic|microphone)\b.*\bnot working\b|\bnot working\b.*\b(?:mic|microphone)\b/,
+    title: /troubleshooting speaker or microphone issues/,
+    bonus: 220,
+  },
+  {
+    query: /\bhear me\b/,
+    title: /troubleshooting speaker or microphone issues/,
+    bonus: 220,
+  },
+  {
+    query: /\bwaiting room\b|\bstuck waiting\b|\bhost hasnt started\b|\bhost has not started\b/,
+    title: /waiting for the host to start/,
+    bonus: 260,
+  },
+  {
+    query: /\bshare screen button\b|\bwhere.*share screen\b/,
+    title: /sharing your screen/,
+    bonus: 220,
+  },
+]
+
+function intentBonus(document, normalizedQuery) {
+  return INTENT_HINTS.reduce((total, hint) => (
+    hint.query.test(normalizedQuery) && hint.title.test(document.title)
+      ? total + hint.bonus
+      : total
+  ), 0)
+}
+
 function scoreProcess(process, query) {
   const normalizedQuery = normalizeSearchText(query)
   const terms = meaningfulQueryTerms(query)
   if (!normalizedQuery || !terms.length) return 0
 
   const document = searchDocument(process)
-  let score = phraseBonus(document, normalizedQuery)
+  let score = phraseBonus(document, normalizedQuery) + intentBonus(document, normalizedQuery)
 
   for (const term of terms) {
     let bestTermScore = 0
