@@ -9,6 +9,7 @@
   background: linear-gradient(145deg, rgba(19, 29, 38, .91), rgba(16, 23, 29, .82));
   box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, .2);
   backdrop-filter: blur(14px);
+  container-type: inline-size;
 }
 
 .live-call-flow-heading {
@@ -344,5 +345,63 @@
 @media (prefers-reduced-motion: reduce) {
   .live-call-choice-options button {
     transition: none;
+  }
+}
+
+
+@container (max-width: 38rem) {
+  .live-call-table-wrap {
+    overflow: visible;
+    border: 0;
+    background: transparent;
+  }
+
+  .live-call-table,
+  .live-call-table tbody {
+    display: grid;
+    gap: .6rem;
+  }
+
+  .live-call-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .live-call-table tr {
+    display: grid;
+  }
+
+  .live-call-table tbody tr {
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .08);
+    border-radius: .72rem;
+    background: rgba(6, 12, 18, .34);
+  }
+
+  .live-call-table th,
+  .live-call-table td {
+    display: block;
+    width: 100%;
+    padding: .68rem .75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, .07);
+  }
+
+  .live-call-table tbody th {
+    background: rgba(26, 54, 75, .32);
+  }
+
+  .live-call-cell-label {
+    display: block;
+    margin-bottom: .28rem;
+    color: #7f9aad;
+    font-size: .62rem;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
   }
 }
