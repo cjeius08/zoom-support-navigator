@@ -90,7 +90,7 @@ function ScenarioDiscoveryCard({ scenarioId, route }) {
       <div>
         <p className="eyebrow">Ask only what changes the route</p>
         <h4>Guided discovery</h4>
-        <p>Select what the caller tells you. OGCon will narrow the next approved step.</p>
+        <p>Select what the caller tells you. The workspace will narrow the next approved step.</p>
       </div>
       <button
         type="button"
