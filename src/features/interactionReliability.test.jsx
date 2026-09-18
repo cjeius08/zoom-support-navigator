@@ -87,6 +87,13 @@ it('carries a related training selection through the full app route', async () =
   expect(within(dialog).getByTitle('Video player: How to Join a Zoom Meeting')).toBeInTheDocument()
 })
 
+
+it('exposes exactly one main landmark in the authenticated Navigator', async () => {
+  render(<App />)
+  await screen.findByRole('heading', { name: /Find the next step/i })
+  expect(screen.getAllByRole('main')).toHaveLength(1)
+})
+
 it('shows copy feedback only on the clicked control and reports clipboard failure inline', async () => {
   const user = userEvent.setup()
   render(<Navigator />)
