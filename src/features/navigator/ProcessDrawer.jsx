@@ -11,6 +11,8 @@ const TABS = [
   ["full", "Full Process"],
 ];
 
+const STEP_PREVIEW_LIMIT = 6;
+
 const trainingCategoryByProcessCategory = {
   join: "Joining Meetings",
   audio: "Audio & Microphone",
@@ -22,10 +24,13 @@ const trainingCategoryByProcessCategory = {
 
 export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent }) {
   const [tab, setTab] = useState("quick");
+  const [stepsExpanded, setStepsExpanded] = useState(false);
   const dialogRef = useRef(null);
   const copyResetRef = useRef(null);
   const [copyState, setCopyState] = useState({ id: "", status: "" });
   const guide = useMemo(() => buildCallGuide(process), [process]);
+  const visibleSteps = stepsExpanded ? guide.steps : guide.steps.slice(0, STEP_PREVIEW_LIMIT);
+  const hiddenStepCount = Math.max(0, guide.steps.length - visibleSteps.length);
   useDialogFocus(dialogRef, true, onClose);
   useEffect(() => () => window.clearTimeout(copyResetRef.current), []);
 
@@ -66,7 +71,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent }
       "quick-steps",
     );
   }
-  function selectTab(id) {
+  function selectTab(id, { focus = false } = {}) {
     setTab(id);
     onTrackEvent?.({
       eventType: "tool_open",
@@ -75,6 +80,20 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent }
       categoryId: process.category,
       toolId: `tab_${id}`,
     });
+    if (focus) {
+      window.requestAnimationFrame(() => document.getElementById(`process-tab-${id}`)?.focus());
+    }
+  }
+
+  function handleTabKey(event, index) {
+    let nextIndex = null;
+    if (event.key === "ArrowRight") nextIndex = (index + 1) % TABS.length;
+    if (event.key === "ArrowLeft") nextIndex = (index - 1 + TABS.length) % TABS.length;
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = TABS.length - 1;
+    if (nextIndex === null) return;
+    event.preventDefault();
+    selectTab(TABS[nextIndex][0], { focus: true });
   }
 
   function openVisual(visual) {
@@ -117,18 +136,28 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent }
           </button>
         </header>
         <div className="process-tabs" role="tablist" aria-label="Process views">
-          {TABS.map(([id, label]) => (
+          {TABS.map(([id, label], index) => (
             <button
               key={id}
+              id={`process-tab-${id}`}
               role="tab"
               aria-selected={tab === id}
+              aria-controls="process-tabpanel"
+              tabIndex={tab === id ? 0 : -1}
+              onKeyDown={(event) => handleTabKey(event, index)}
               onClick={() => selectTab(id)}
             >
               {label}
             </button>
           ))}
         </div>
-        <div className="drawer-content">
+        <div
+          className="drawer-content"
+          id="process-tabpanel"
+          role="tabpanel"
+          aria-labelledby={`process-tab-${tab}`}
+          tabIndex={0}
+        >
           {tab === "quick" && (
             <section className="call-guide" aria-label="Call Guide">
               <div className="section-heading">
@@ -185,7 +214,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent }
                 </section>
               ))}
               <div className="call-step-list">
-                {guide.steps.map((step, index) => (
+                {visibleSteps.map((step, index) => (
                   <article
                     className="call-step-card"
                     id={`call-step-${index}`}
@@ -256,13 +285,22 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent }
                       {index > 0 && (
                         <a href={`#call-step-${index - 1}`}>Previous Step</a>
                       )}
-                      {index < guide.steps.length - 1 && (
+                      {index < visibleSteps.length - 1 && (
                         <a href={`#call-step-${index + 1}`}>Next Step</a>
                       )}
                     </nav>
                   </article>
                 ))}
               </div>
+              {hiddenStepCount > 0 && (
+                <button
+                  type="button"
+                  className="show-more-steps"
+                  onClick={() => setStepsExpanded(true)}
+                >
+                  Show remaining {hiddenStepCount} steps
+                </button>
+              )}
               {guide.callouts.length > 0 && (
                 <section className="guide-callouts">
                   {guide.callouts.map((callout, index) => (
