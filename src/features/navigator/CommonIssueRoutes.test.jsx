@@ -5,7 +5,7 @@ import { Navigator } from './Navigator'
 import { COMMON_ISSUE_ROUTES, searchCommonIssueRoutes } from './commonIssueRoutes'
 import { PROCESSES } from '../../data/processes'
 
-it('preserves the five Fastest Routes and exposes all ten reviewed routes under Common Issues', async () => {
+it('preserves the five Fastest Routes and exposes all fifteen reviewed routes under Common Issues', async () => {
   const user = userEvent.setup()
   render(<Navigator />)
 
@@ -16,12 +16,17 @@ it('preserves the five Fastest Routes and exposes all ten reviewed routes under 
   expect(screen.getByRole('button', { name: /I’m waiting to get in/i })).toBeInTheDocument()
 
   await user.click(screen.getByRole('tab', { name: 'Common Issues' }))
-  expect(COMMON_ISSUE_ROUTES).toHaveLength(10)
+  expect(COMMON_ISSUE_ROUTES).toHaveLength(15)
   expect(screen.getByRole('button', { name: /Can’t share my screen/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Can’t find chat \/ can’t send a message/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Can’t find a meeting control/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Raise hand \/ reactions/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Invite someone \/ copy invite link/i })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /Unable to establish secure connection/i })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /Bluetooth headset isn’t working/i })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /switch this meeting to another device/i })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /join with my microphone muted/i })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /camera on\/off when I join/i })).toBeInTheDocument()
 })
 
 it('classifies cannot-hear as an audio-output symptom before assuming connection trouble', async () => {
@@ -71,8 +76,35 @@ it.each([
   ['find a meeting control', 'meeting-controls'],
   ['raise hand', 'reactions'],
   ['copy invite link', 'invite'],
+  ['unable to establish secure connection', 'secure-connection'],
+  ['bluetooth headset not working', 'bluetooth-headset'],
+  ['switch meeting to another device', 'transfer-device'],
+  ['join muted', 'join-muted'],
+  ['camera off when joining', 'join-video-preference'],
 ])('maps %s to the reviewed Phase 2 route before process lookup', (query, routeId) => {
   expect(searchCommonIssueRoutes(query)[0]?.id).toBe(routeId)
+})
+
+it('keeps the secure-connection route Mac-specific and exposes the internal-vs-Zoom sequence discrepancy', () => {
+  const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'secure-connection')
+  expect(route.classificationNote).toMatch(/exact.*Unable to establish secure connection/i)
+  expect(route.classificationNote).toMatch(/Mac/i)
+  expect(route.discrepancy).toMatch(/approved internal process starts with updating Zoom/i)
+  expect(route.discrepancy).toMatch(/public article presents complete uninstall\/reinstall earlier/i)
+})
+
+it('keeps join-muted separate from joining with no audio connection', () => {
+  const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'join-muted')
+  expect(route.classificationNote).toMatch(/Joining muted still connects/i)
+  expect(route.classificationNote).toMatch(/Don’t connect to audio/i)
+  expect(route.checks.some(check => /Keep my microphone muted/i.test(check.instruction))).toBe(true)
+})
+
+it('keeps camera join preferences explicit about default versus one-time behavior', () => {
+  const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'join-video-preference')
+  expect(route.confirm.some(question => /every meeting or only the next meeting/i.test(question))).toBe(true)
+  expect(route.checks.some(check => /Keep my camera off/i.test(check.instruction))).toBe(true)
+  expect(route.checks.some(check => /Turn off my video/i.test(check.instruction))).toBe(true)
 })
 
 it('uses the Phase 1 device and role context inside a common issue route', async () => {
