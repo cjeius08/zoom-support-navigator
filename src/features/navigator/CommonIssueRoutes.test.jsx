@@ -20,7 +20,7 @@ it('classifies cannot-hear as an audio-output symptom before assuming connection
   await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
 
   const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
-  expect(within(dialog).getByText(/audio-output symptom/i)).toBeInTheDocument()
+  expect(within(dialog).getByText('Audio-output symptom')).toBeInTheDocument()
   expect(within(dialog).getByText(/Are they already inside the meeting/i)).toBeInTheDocument()
   expect(within(dialog).getByText(/If the meeting itself is reconnecting, dropping, or not loading/i)).toBeInTheDocument()
 })
@@ -35,7 +35,7 @@ it('keeps waiting-for-host and Waiting Room as separate meeting states', async (
   expect(within(dialog).getByRole('heading', { name: 'Waiting for host' })).toBeInTheDocument()
   expect(within(dialog).getByText(/successfully connected to Zoom/i)).toBeInTheDocument()
   expect(within(dialog).getByRole('heading', { name: 'Waiting Room' })).toBeInTheDocument()
-  expect(within(dialog).getByText(/host controls admission/i)).toBeInTheDocument()
+  expect(within(dialog).getByText('Host controls admission')).toBeInTheDocument()
 })
 
 it('routes natural caller language directly to the common issue guide', async () => {
