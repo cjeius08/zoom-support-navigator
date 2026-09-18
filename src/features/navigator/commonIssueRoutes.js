@@ -696,7 +696,16 @@ export const COMMON_ISSUE_ROUTES = [
       { title: 'Changing settings in the Zoom Workplace desktop and mobile app', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060612' },
     ],
     discrepancy: 'The approved internal process starts with updating Zoom when the app can still open, while Zoom’s current public article presents complete uninstall/reinstall earlier in its troubleshooting sequence. OGCon keeps the approved internal order and surfaces this sequence difference instead of silently rewriting it.',
-    visuals: [],
+    visuals: [
+      {
+        title: 'Recognize the exact secure-connection error',
+        src: 'assets/visual-references/secure-connection-error.png',
+        alt: 'Zoom on macOS showing the Unable to establish secure connection to Zoom error',
+        note: 'Use this image only to confirm the exact error before following the Mac-specific recovery path.',
+        sourceLabel: 'Zoom Community — real Zoom error screen matched to the approved process',
+        sourceUrl: 'https://community.zoom.com/meetings-2/error-unable-to-establish-secure-connection-to-zoom-error-code-205digicert-26586',
+      },
+    ],
   },
   {
     id: 'bluetooth-headset',
@@ -754,7 +763,16 @@ export const COMMON_ISSUE_ROUTES = [
     supportingSources: [
       { title: 'Changing settings in the Zoom Workplace desktop and mobile app', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060612' },
     ],
-    visuals: [],
+    visuals: [
+      {
+        title: 'Zoom audio device selectors',
+        src: 'assets/visual-references/audio-settings.png',
+        alt: 'Zoom audio settings showing speaker and microphone device selectors and audio test controls',
+        note: 'This desktop reference shows where to select the intended speaker and microphone. For Bluetooth, choose the headset under both device selectors when available.',
+        sourceLabel: 'Real Zoom audio settings screen matched to approved audio processes',
+        sourceUrl: 'https://www.rcmusic.com/learning/examinations/remote-exams/help-with-remote-practical-exams/remote-examination-zoom-guide',
+      },
+    ],
   },
   {
     id: 'transfer-device',
@@ -809,7 +827,16 @@ export const COMMON_ISSUE_ROUTES = [
       url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0062024',
     },
     supportingSources: [],
-    visuals: [],
+    visuals: [
+      {
+        title: 'Find the in-progress meeting and select Switch',
+        src: 'assets/visual-references/switch-device.png',
+        alt: 'Zoom Workplace showing an in-progress meeting with the Switch action for moving the session to another device',
+        note: 'On the second device signed in to the same Zoom account, Switch replaces Start or Join for an eligible in-progress session.',
+        sourceLabel: 'Real Zoom Workplace device-transfer view matched to the approved process',
+        sourceUrl: 'https://utelecon.adm.u-tokyo.ac.jp/en/zoom/misc/app/',
+      },
+    ],
   },
   {
     id: 'join-muted',
@@ -860,7 +887,16 @@ export const COMMON_ISSUE_ROUTES = [
     supportingSources: [
       { title: 'Changing settings in the Zoom Workplace desktop and mobile app', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060612' },
     ],
-    visuals: [],
+    visuals: [
+      {
+        title: 'Keep the microphone muted when joining',
+        src: 'assets/visual-references/join-experience-settings.png',
+        alt: 'Zoom Workplace Join experience settings showing the Keep my microphone muted option',
+        note: 'Use Keep my microphone muted for the default mute-on-join behavior. This is different from Don’t connect to audio for a single join.',
+        sourceLabel: 'Recent real Zoom Workplace Join experience settings matched to the approved process',
+        sourceUrl: 'https://zapier.com/blog/zoom-tips/',
+      },
+    ],
   },
   {
     id: 'join-video-preference',
@@ -913,7 +949,16 @@ export const COMMON_ISSUE_ROUTES = [
       { title: 'Previewing your video before joining', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0061118' },
       { title: 'Changing settings in the Zoom Workplace desktop and mobile app', url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060612' },
     ],
-    visuals: [],
+    visuals: [
+      {
+        title: 'Choose the camera behavior before joining',
+        src: 'assets/visual-references/join-experience-settings.png',
+        alt: 'Zoom Workplace Join experience settings showing the Keep my camera off option',
+        note: 'Use Keep my camera off for the desktop default. For a one-time join, use the video option shown on the Join screen instead of changing the default.',
+        sourceLabel: 'Recent real Zoom Workplace Join experience settings matched to the approved process',
+        sourceUrl: 'https://zapier.com/blog/zoom-tips/',
+      },
+    ],
   },
 ]
 
