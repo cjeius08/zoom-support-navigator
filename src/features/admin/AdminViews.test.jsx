@@ -205,6 +205,20 @@ it('shows Readiness Lab attempt history separately with scores and incorrect ans
         status: 'active',
         attempts: [],
       }],
+    }, {
+      id: 'scope-referral',
+      number: 4,
+      title: 'Scope & Referral Judgment',
+      questionSetVersion: 'zoom_scope_referral_judgment_v1',
+      maxAttempts: 3,
+      users: [{
+        id: 'u1',
+        username: 'agent_one',
+        initials: 'AO',
+        role: 'agent',
+        status: 'active',
+        attempts: [],
+      }],
     }],
   })
 
@@ -215,6 +229,7 @@ it('shows Readiness Lab attempt history separately with scores and incorrect ans
   expect(screen.getByRole('heading', { name: 'General Zoom Scenarios' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Device & Navigation Awareness' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Troubleshooting Judgment' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Scope & Referral Judgment' })).toBeInTheDocument()
   expect(screen.getByText('Attempt 1')).toBeInTheDocument()
   expect(screen.getByText('Score 3/5')).toBeInTheDocument()
   expect(screen.getByText('Attempt 2')).toBeInTheDocument()
