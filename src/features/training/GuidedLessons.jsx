@@ -4,26 +4,31 @@ import { assetUrl } from '../../lib/assetUrl'
 
 export const GUIDED_LESSONS = [
   {
-    id: 'one-step-method',
+    id: 'official-call-flow',
     number: 1,
     level: 'Foundation',
-    title: 'Guide one visible action at a time',
-    summary: 'The agent should never race ahead of what the caller can actually see. Orient first, explain the control, give one action, then confirm the result.',
-    remember: 'If the caller cannot find the control, do not give the next instruction yet.',
-    sourceProcessIds: ['locate-describe-guide-confirm'],
+    title: 'Follow the Ogletree call flow before troubleshooting',
+    summary: 'The call starts with listening and context—not technical steps. Use the official sequence to keep the conversation professional, diagnose the right issue, and confirm the outcome before closing.',
+    remember: 'Greet → Listen → Empathize → Assure → Probe → Troubleshoot → Confirm → Close.',
+    sourceProcessIds: ['zoom-basic-support-boundaries-decision-path-referral-process', 'locate-describe-guide-confirm'],
+    sourceLabel: 'Ogletree – Tier 1 Zoom Support · Standard Call Flow Outline',
     flow: [
-      { label: 'Locate', cue: 'Find the area or control first.', example: '“Look for the microphone icon at the bottom.”' },
-      { label: 'Describe', cue: 'Tell them what it looks like and what it does.', example: '“It controls whether others can hear your microphone.”' },
-      { label: 'Guide', cue: 'Give one action only.', example: '“Select Unmute once, then tell me what changes.”' },
-      { label: 'Confirm', cue: 'Test the result instead of assuming success.', example: '“Can the other participants hear you now?”' },
+      { label: 'Greet', cue: 'Open professionally and identify the support team.', example: 'Invite the caller to explain what they need help with.' },
+      { label: 'Listen', cue: 'Let the caller finish explaining before you troubleshoot.', example: 'Acknowledge the concern before asking technical questions.' },
+      { label: 'Empathize', cue: 'Recognize the impact, especially around an active hearing.', example: 'Match the urgency without assuming the cause.' },
+      { label: 'Assure', cue: 'Take ownership of the support steps without promising the outcome.', example: 'Explain that you will walk through the approved checks.' },
+      { label: 'Probe', cue: 'Identify device, app/browser, hearing status, who is affected, and the exact symptom.', example: 'Start open-ended, then ask targeted questions.' },
+      { label: 'Troubleshoot', cue: 'Use the approved Tier 1 route one step at a time.', example: 'Inside troubleshooting, use Locate → Describe → Guide → Confirm.' },
+      { label: 'Confirm', cue: 'Test the exact function that failed.', example: 'Never assume the issue is fixed.' },
+      { label: 'Close', cue: 'Recap, make the final check, then close or explain the documented next step.', example: 'If unresolved, follow the agreed referral/escalation process.' },
     ],
     takeaways: [
-      'Pause after every meaningful instruction.',
-      'Use what the caller sees—not what you expect their screen to show.',
-      'A confirmed result decides whether you continue, change route, or stop.',
+      'Do not jump from greeting directly into troubleshooting.',
+      'Hearing status belongs early because it changes urgency and context.',
+      'Confirmation comes before recap and closing, whether the issue is resolved or unresolved.',
     ],
-    actionLabel: 'Open the full call method',
-    target: { section: 'scripts', mode: 'language', subsection: 'guide' },
+    actionLabel: 'Open the call flow language',
+    target: { section: 'scripts', mode: 'language', subsection: 'opening' },
   },
   {
     id: 'device-first',
@@ -154,7 +159,7 @@ export const GUIDED_LESSONS = [
   },
 ]
 
-function SourceChips({ ids }) {
+function SourceChips({ ids, label }) {
   const sources = useMemo(
     () => ids.map(id => PROCESSES.find(process => process.id === id)).filter(Boolean),
     [ids],
@@ -162,6 +167,7 @@ function SourceChips({ ids }) {
 
   return <div className="guided-lesson-sources" aria-label="Approved lesson sources">
     <span>Source-backed</span>
+    {label && <strong>{label}</strong>}
     {sources.map(source => <strong key={source.id}>{source.title}</strong>)}
   </div>
 }
@@ -242,7 +248,7 @@ export function GuidedLessons({ onOpenResource = () => {}, onReportContextChange
           <h3>{active.title}</h3>
           <p>{active.summary}</p>
         </div>
-        <SourceChips ids={active.sourceProcessIds} />
+        <SourceChips ids={active.sourceProcessIds} label={active.sourceLabel} />
       </header>
 
       <aside className="guided-remember">
