@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
 import { COMMON_ISSUE_ROUTES } from '../navigator/commonIssueRoutes'
 import { SCENARIO_SCRIPTS } from './scenarioScripts'
+import { getScenarioDiscovery } from './scenarioDiscovery'
 import {
   COMMUNICATION_AVOID_PAIRS,
   COMMUNICATION_SECTIONS,
@@ -66,6 +67,61 @@ function FrameworkCard({ item, sectionId, index, copiedId, onCopy }) {
         copiedId={copiedId}
         onCopy={onCopy}
       />
+    </div>
+  </article>
+}
+
+function ScenarioDiscoveryCard({ scenarioId, route }) {
+  const [answers, setAnswers] = useState({})
+  const discovery = getScenarioDiscovery(scenarioId, route, answers)
+
+  if (!discovery) {
+    return <article className="scenario-script-card scenario-script-discovery">
+      <p className="eyebrow">Ask only what changes the route</p>
+      <h4>Discovery questions</h4>
+      <ol>{(route?.confirm ?? []).map(question => <li key={question}>{question}</li>)}</ol>
+    </article>
+  }
+
+  const hasAnswers = Object.keys(answers).length > 0
+
+  return <article className="scenario-script-card scenario-script-discovery scenario-guided-discovery">
+    <div className="scenario-discovery-heading">
+      <div>
+        <p className="eyebrow">Ask only what changes the route</p>
+        <h4>Guided discovery</h4>
+        <p>Select what the caller tells you. OGCon will narrow the next approved step.</p>
+      </div>
+      <button
+        type="button"
+        className="scenario-discovery-reset"
+        disabled={!hasAnswers}
+        onClick={() => setAnswers({})}
+      >Reset answers</button>
+    </div>
+
+    <div className="scenario-discovery-questions">
+      {discovery.questions.map((question, index) => <fieldset key={question.id}>
+        <legend><span>{index + 1}</span>{question.prompt}</legend>
+        <div className="scenario-discovery-options">
+          {question.options.map(choice => <button
+            key={choice.value}
+            type="button"
+            aria-pressed={answers[question.id] === choice.value}
+            onClick={() => setAnswers(current => ({ ...current, [question.id]: choice.value }))}
+          >{choice.label}</button>)}
+        </div>
+      </fieldset>)}
+    </div>
+
+    <div
+      className={`scenario-discovery-result scenario-discovery-result-${discovery.recommendation.state}`}
+      aria-live="polite"
+    >
+      <span>{discovery.recommendation.state === 'ready' ? 'Recommended next step' : 'Discovery status'}</span>
+      <strong>{discovery.recommendation.title}</strong>
+      <p>{discovery.recommendation.text}</p>
+      {discovery.recommendation.route && <small>Suggested route · {discovery.recommendation.route}</small>}
     </div>
   </article>
 }
@@ -224,13 +280,11 @@ export function ScriptsCommunication({ onReportContextChange = () => {} }) {
                   />
                 </article>
 
-                <article className="scenario-script-card scenario-script-discovery">
-                  <p className="eyebrow">Ask only what changes the route</p>
-                  <h4>Discovery questions</h4>
-                  <ol>
-                    {(activeRoute?.confirm ?? []).map(question => <li key={question}>{question}</li>)}
-                  </ol>
-                </article>
+                <ScenarioDiscoveryCard
+                  key={activeScenario.id}
+                  scenarioId={activeScenario.id}
+                  route={activeRoute}
+                />
 
                 <article className="scenario-script-card">
                   <p className="eyebrow">Guide</p>
