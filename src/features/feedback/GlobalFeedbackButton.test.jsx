@@ -55,7 +55,7 @@ it('renders the report button globally and submits the captured page context', a
     onSubmit={onSubmit}
   />)
 
-  const button = screen.getByRole('button', { name: /Report an issue from Training & Resources/i })
+  const button = screen.getByRole('button', { name: 'Report an issue' })
   await user.click(button)
 
   const dialog = screen.getByRole('dialog', { name: 'Report an issue' })
@@ -80,10 +80,10 @@ it('renders the report button globally and submits the captured page context', a
 
 it('keeps the global report button independent of the current page', () => {
   const { rerender } = render(<GlobalFeedbackButton currentView="navigator" reportContext={{}} onSubmit={vi.fn()} />)
-  expect(screen.getByRole('button', { name: /Report an issue from Navigator/i })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Report an issue' })).toBeInTheDocument()
 
   rerender(<GlobalFeedbackButton currentView="usage" reportContext={{}} onSubmit={vi.fn()} />)
-  expect(screen.getByRole('button', { name: /Report an issue from Usage Analytics/i })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Report an issue' })).toBeInTheDocument()
 })
 
 
