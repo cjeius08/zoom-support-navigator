@@ -67,7 +67,7 @@ export const TRAINING_ROADMAP_MODULES = [
     objective: 'Use open-book scenario checks to prove you can find and apply the right workspace guidance instead of memorizing scripts.',
     resource: 'Global live tool · 5-part readiness path',
     status: 'partial',
-    statusLabel: 'Part 1 available',
+    statusLabel: 'Parts 1–2 available',
     skills: ['Find the answer in the workspace', 'Apply the guidance', 'Identify review areas'],
   },
 ]
@@ -78,7 +78,7 @@ export function TrainingRoadmap({ onOpenResource = () => {} }) {
       <div>
         <p className="eyebrow">Phase 6 · Training environment</p>
         <h2 id="training-roadmap-title">Follow one learning path instead of opening everything at once</h2>
-        <p>Move from the official call flow, to device orientation, to applied support, then reinforce the patterns with guided visual lessons. Readiness Lab Part 1 is now available from the sidebar; the remaining four readiness parts will be added after this checkpoint is approved.</p>
+        <p>Move from the official call flow, to device orientation, to applied support, then reinforce the patterns with guided visual lessons. Readiness Lab Parts 1 and 2 are now available from the sidebar; Parts 3–5 remain intentionally locked for later checkpoints.</p>
       </div>
       <span className="device-verified">6-step learning path</span>
     </div>
