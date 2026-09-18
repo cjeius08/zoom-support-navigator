@@ -3,13 +3,13 @@ export const TRAINING_ROADMAP_MODULES = [
     id: 'call-method',
     number: 1,
     phase: 'Foundation',
-    title: 'Learn the live-call method',
-    objective: 'Build the habit of Locate → Describe → Guide → Confirm before troubleshooting specific symptoms.',
+    title: 'Learn the Ogletree call flow',
+    objective: 'Learn the official sequence from greeting and active listening through diagnosis, troubleshooting, confirmation, recap, final check, and closing.',
     resource: 'Scripts & Communication · Call Language',
     status: 'available',
-    actionLabel: 'Open call method',
-    target: { section: 'scripts', mode: 'language', subsection: 'guide' },
-    skills: ['Locate the visible control', 'Give one action at a time', 'Confirm the result'],
+    actionLabel: 'Open call flow language',
+    target: { section: 'scripts', mode: 'language', subsection: 'opening' },
+    skills: ['Listen before troubleshooting', 'Check hearing status early', 'Confirm before closing'],
   },
   {
     id: 'device-orientation',
@@ -78,7 +78,7 @@ export function TrainingRoadmap({ onOpenResource = () => {} }) {
       <div>
         <p className="eyebrow">Phase 6 · Training environment</p>
         <h2 id="training-roadmap-title">Follow one learning path instead of opening everything at once</h2>
-        <p>Move from the call method, to device orientation, to applied support, then reinforce the patterns with guided visual lessons. Practice exercises will be added in the next Phase 6 batch.</p>
+        <p>Move from the official call flow, to device orientation, to applied support, then reinforce the patterns with guided visual lessons. Practice exercises will be added in the next Phase 6 batch.</p>
       </div>
       <span className="device-verified">6-step learning path</span>
     </div>
