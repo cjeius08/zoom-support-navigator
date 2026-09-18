@@ -29,6 +29,20 @@ export function CommonIssueDrawer({
     .map(id => PROCESSES.find(process => process.id === id))
     .filter(Boolean)
 
+  const selectedDevice = callContext?.device ?? null
+  const desktopAppDevice = selectedDevice === 'Windows' || selectedDevice === 'Mac'
+  const deviceSpecificTitles = route.id === 'cant-hear'
+    ? new Set(['Test and select the Zoom speaker'])
+    : route.id === 'cant-be-heard'
+      ? new Set(['Select and test the correct microphone'])
+      : route.id === 'camera-not-working'
+        ? new Set(['Select the correct camera'])
+        : new Set()
+  const hasDeviceSpecificChecks = deviceSpecificTitles.size > 0
+  const visibleChecks = route.checks.filter(check => (
+    !deviceSpecificTitles.has(check.title) || desktopAppDevice
+  ))
+
   function selectTab(id, { focus = false } = {}) {
     setTab(id)
     onTrackEvent?.({
@@ -135,10 +149,16 @@ export function CommonIssueDrawer({
             </div>
           </section>}
 
-          {route.checks.length > 0 && <section className="common-issue-section">
+          {hasDeviceSpecificChecks && !selectedDevice && <section className="common-issue-section common-issue-device-prompt">
+            <p className="eyebrow">Device needed</p>
+            <h3>Select the caller’s device in Live Call Flow</h3>
+            <p>OGCon is hiding device-specific app steps until the caller’s device is selected, so the agent does not give desktop-only instructions to a mobile or browser caller.</p>
+          </section>}
+
+          {visibleChecks.length > 0 && <section className="common-issue-section">
             <p className="eyebrow">Guide one step at a time</p>
             <div className="common-issue-step-list">
-              {route.checks.map((check, index) => <article key={check.title}>
+              {visibleChecks.map((check, index) => <article key={check.title}>
                 <span className="common-issue-step-number">{index + 1}</span>
                 <div>
                   <h3>{check.title}</h3>
