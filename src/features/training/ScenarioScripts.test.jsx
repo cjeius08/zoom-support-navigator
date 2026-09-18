@@ -65,7 +65,7 @@ it('shows the scenario workspace with Can’t Join selected first', async () => 
   expect(within(panel).getByRole('tab', { name: 'Can’t Join' })).toHaveAttribute('aria-selected', 'true')
   expect(within(panel).getByRole('heading', { name: 'Can’t Join' })).toBeInTheDocument()
   expect(within(panel).getByText(/Let’s first confirm exactly where Zoom is stopping you/i)).toBeInTheDocument()
-  expect(within(panel).getByRole('heading', { name: 'Discovery questions' })).toBeInTheDocument()
+  expect(within(panel).getByRole('heading', { name: 'Guided discovery' })).toBeInTheDocument()
   expect(within(panel).getByText(/outside the meeting, or do they already see a Zoom waiting screen/i)).toBeInTheDocument()
   expect(within(panel).getByText(/Common Issue · cant-join/i)).toBeInTheDocument()
 })

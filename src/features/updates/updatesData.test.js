@@ -15,7 +15,15 @@ it('keeps console metadata and update history complete and newest-first', () => 
     collaborator: 'Nina F.',
     nextReview: '2026-10-18',
   })
+  expect(data.metadata.updatePolicy).toMatch(/Every shipped user-facing feature/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
+  expect(data.updates[0].date).toBe('2026-09-19')
+  expect(data.updates.slice(0, 4).map(entry => entry.id)).toEqual([
+    'interactive-guided-discovery',
+    'phase4-scenario-expansion',
+    'global-report-context',
+    'updates-release-policy',
+  ])
 
   data.updates.forEach((entry) => {
     expect(entry.id).toBeTruthy()

@@ -155,9 +155,16 @@ it('renders the specialized scenario using the existing live-call card pattern',
 
   const panel = screen.getByRole('region', { name: 'Bluetooth Headset scenario' })
   expect(within(panel).getByText('Opening line')).toBeInTheDocument()
-  expect(within(panel).getByText('Discovery questions')).toBeInTheDocument()
+  expect(within(panel).getByText('Guided discovery')).toBeInTheDocument()
   expect(within(panel).getByText('Next-step phrasing')).toBeInTheDocument()
   expect(within(panel).getByText('Verify the result')).toBeInTheDocument()
   expect(within(panel).getByText('When basic support stops')).toBeInTheDocument()
   expect(within(panel).getByText(/same device running Zoom/i)).toBeInTheDocument()
+
+  await user.click(within(panel).getByRole('button', { name: 'Connected to this device' }))
+  await user.click(within(panel).getByRole('button', { name: 'They can’t hear me' }))
+  await user.click(within(panel).getByRole('button', { name: 'Windows' }))
+
+  expect(within(panel).getByText('Select the headset as Zoom Microphone')).toBeInTheDocument()
+  expect(within(panel).getByText(/choose the Bluetooth headset under Microphone/i)).toBeInTheDocument()
 })
