@@ -68,6 +68,16 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
 
   const searchMatches = useMemo(() => query.trim() ? searchProcesses(PROCESSES, query) : [], [query])
   const routeMatches = useMemo(() => query.trim() ? searchCommonIssueRoutes(query) : [], [query])
+  const processMatches = useMemo(() => {
+    const processesById = new Map(PROCESSES.map(process => [process.id, process]))
+    const related = routeMatches.flatMap(route => route.processIds ?? []).map(id => processesById.get(id)).filter(Boolean)
+    const seen = new Set()
+    return [...related, ...searchMatches].filter(process => {
+      if (seen.has(process.id)) return false
+      seen.add(process.id)
+      return true
+    })
+  }, [routeMatches, searchMatches])
 
   const categoryProcesses = useMemo(() => (
     category ? PROCESSES.filter(process => process.category === category) : []
@@ -77,8 +87,8 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
   const suggestions = query.trim()
     ? [
         ...routeMatches.map(route => ({ kind: 'route', route })),
-        ...searchMatches.map(process => ({ kind: 'process', process })),
-      ].slice(0, 6)
+        ...processMatches.map(process => ({ kind: 'process', process })),
+      ].slice(0, 8)
     : []
   const showSuggestions = suggestionsOpen && suggestions.length > 0
 
@@ -191,7 +201,7 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
           })}
         </div>}
       </div>
-      <span className="sr-only" role="status" aria-live="polite">{query.trim() ? `${routeMatches.length} common issue ${routeMatches.length === 1 ? 'route' : 'routes'} and ${searchMatches.length} matching support ${searchMatches.length === 1 ? 'process' : 'processes'}.` : ''}</span>
+      <span className="sr-only" role="status" aria-live="polite">{query.trim() ? `${routeMatches.length} common issue ${routeMatches.length === 1 ? 'route' : 'routes'} and ${processMatches.length} related ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.` : ''}</span>
     </section>
     <section className="navigator-library" aria-label="Navigator library">
       <div className="navigator-library-tabs" role="tablist" aria-label="Navigator views">
@@ -226,10 +236,10 @@ export function Navigator({ onFeedback, onOpenTraining, onTrackEvent, initialPro
           <section className="search-result-block" aria-labelledby="process-search-heading">
             <div className="search-result-block-heading">
               <h3 id="process-search-heading">Process Guides</h3>
-              <span>{searchMatches.length}</span>
+              <span>{processMatches.length}</span>
             </div>
-            {searchMatches.length > 0 ? <div className="process-grid">
-              {searchMatches.map(process => <button className="process-card" key={process.id} onClick={() => openProcess(process, 'search_result')}>
+            {processMatches.length > 0 ? <div className="process-grid">
+              {processMatches.map(process => <button className="process-card" key={process.id} onClick={() => openProcess(process, 'search_result')}>
                 <small className="result-type-badge">Process Guide</small>
                 <strong>{process.title}</strong>
                 <span>{process.purpose}</span>
