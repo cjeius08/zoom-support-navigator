@@ -81,7 +81,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent }
       toolId: `tab_${id}`,
     });
     if (focus) {
-      window.requestAnimationFrame(() => document.getElementById(`process-tab-${id}`)?.focus());
+      document.getElementById(`process-tab-${id}`)?.focus();
     }
   }
 
