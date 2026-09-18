@@ -14,7 +14,7 @@ it('locks the Phase 6 Batch 1 roadmap to six ordered learning modules', () => {
     'readiness-lab',
   ])
   expect(TRAINING_ROADMAP_MODULES.filter(module => module.status === 'available')).toHaveLength(5)
-  expect(TRAINING_ROADMAP_MODULES.filter(module => module.status === 'partial')).toHaveLength(1)
+  expect(TRAINING_ROADMAP_MODULES.filter(module => module.status === 'complete')).toHaveLength(1)
 })
 
 it('shows a progressive visual path without pretending unfinished modules are available', () => {
@@ -33,7 +33,7 @@ it('shows a progressive visual path without pretending unfinished modules are av
   expect(screen.getByRole('button', { name: 'Open guided lessons' })).toBeInTheDocument()
 
   expect(screen.queryByText('Coming in Batch 2')).not.toBeInTheDocument()
-  expect(screen.getByText('Parts 1–4 available')).toBeInTheDocument()
+  expect(screen.getByText('All 5 parts available')).toBeInTheDocument()
   expect(screen.getByText('Open Readiness Lab from the sidebar')).toBeInTheDocument()
   expect(screen.queryByRole('button', { name: /readiness lab/i })).not.toBeInTheDocument()
 })

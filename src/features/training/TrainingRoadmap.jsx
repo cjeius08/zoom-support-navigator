@@ -66,8 +66,8 @@ export const TRAINING_ROADMAP_MODULES = [
     title: 'Readiness Lab',
     objective: 'Use open-book scenario checks to prove you can find and apply the right workspace guidance instead of memorizing scripts.',
     resource: 'Global live tool · 5-part readiness path',
-    status: 'partial',
-    statusLabel: 'Parts 1–4 available',
+    status: 'complete',
+    statusLabel: 'All 5 parts available',
     skills: ['Find the answer in the workspace', 'Apply the guidance', 'Identify review areas'],
   },
 ]
@@ -78,20 +78,20 @@ export function TrainingRoadmap({ onOpenResource = () => {} }) {
       <div>
         <p className="eyebrow">Phase 6 · Training environment</p>
         <h2 id="training-roadmap-title">Follow one learning path instead of opening everything at once</h2>
-        <p>Move from the official call flow, to device orientation, to applied support, then reinforce the patterns with guided visual lessons. Readiness Lab Parts 1, 2, 3, and 4 are now available from the sidebar; Part 5 remains intentionally locked for the final checkpoint.</p>
+        <p>Move from the official call flow, to device orientation, to applied support, then reinforce the patterns with guided visual lessons. All five Readiness Lab parts are now available from the sidebar as the final validation step.</p>
       </div>
       <span className="device-verified">6-step learning path</span>
     </div>
 
     <div className="training-roadmap-key" aria-label="Training roadmap legend">
       <span><i className="roadmap-dot roadmap-dot-ready" />Available now</span>
-      <span><i className="roadmap-dot roadmap-dot-next" />In progress / next readiness parts</span>
+      <span><i className="roadmap-dot roadmap-dot-next" />Global tool / use from sidebar</span>
     </div>
 
     <ol className="training-roadmap-flow">
       {TRAINING_ROADMAP_MODULES.map((module, index) => <li
         key={module.id}
-        className={module.status === 'available' ? 'roadmap-module roadmap-module-ready' : 'roadmap-module roadmap-module-coming'}
+        className={module.status === 'available' || module.status === 'complete' ? 'roadmap-module roadmap-module-ready' : 'roadmap-module roadmap-module-coming'}
       >
         <div className="roadmap-rail" aria-hidden="true">
           <span>{module.number}</span>
@@ -104,7 +104,7 @@ export function TrainingRoadmap({ onOpenResource = () => {} }) {
               <p className="eyebrow">{module.phase}</p>
               <h3>{module.title}</h3>
             </div>
-            <span className={module.status === 'available' ? 'roadmap-status roadmap-status-ready' : 'roadmap-status roadmap-status-coming'}>
+            <span className={module.status === 'available' || module.status === 'complete' ? 'roadmap-status roadmap-status-ready' : 'roadmap-status roadmap-status-coming'}>
               {module.status === 'available' ? 'Available now' : module.statusLabel}
             </span>
           </header>
@@ -122,7 +122,7 @@ export function TrainingRoadmap({ onOpenResource = () => {} }) {
             </div>
             {module.status === 'available'
               ? <button type="button" onClick={() => onOpenResource(module.target)}>{module.actionLabel}</button>
-              : <span className="roadmap-coming-note">{module.status === 'partial' ? 'Open Readiness Lab from the sidebar' : 'Planned · not yet interactive'}</span>}
+              : <span className="roadmap-coming-note">{module.status === 'complete' ? 'Open Readiness Lab from the sidebar' : 'Planned · not yet interactive'}</span>}
           </footer>
         </article>
       </li>)}

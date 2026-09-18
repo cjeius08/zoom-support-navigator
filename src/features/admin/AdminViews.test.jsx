@@ -219,6 +219,20 @@ it('shows Readiness Lab attempt history separately with scores and incorrect ans
         status: 'active',
         attempts: [],
       }],
+    }, {
+      id: 'live-call-readiness',
+      number: 5,
+      title: 'Live Call Readiness',
+      questionSetVersion: 'zoom_live_call_readiness_v1',
+      maxAttempts: 3,
+      users: [{
+        id: 'u1',
+        username: 'agent_one',
+        initials: 'AO',
+        role: 'agent',
+        status: 'active',
+        attempts: [],
+      }],
     }],
   })
 
@@ -230,6 +244,7 @@ it('shows Readiness Lab attempt history separately with scores and incorrect ans
   expect(screen.getByRole('heading', { name: 'Device & Navigation Awareness' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Troubleshooting Judgment' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Scope & Referral Judgment' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Live Call Readiness' })).toBeInTheDocument()
   expect(screen.getByText('Attempt 1')).toBeInTheDocument()
   expect(screen.getByText('Score 3/5')).toBeInTheDocument()
   expect(screen.getByText('Attempt 2')).toBeInTheDocument()
