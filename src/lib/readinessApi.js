@@ -1,9 +1,5 @@
 import { supabase } from './supabaseClient'
-
-export const READINESS_QUESTION_SETS = {
-  generalScenarios: 'zoom_general_scenarios_v1',
-  deviceNavigation: 'zoom_device_navigation_v1',
-}
+import { READINESS_QUESTION_SETS } from './readinessQuestionSets'
 
 export const READINESS_QUESTION_SET_VERSION = READINESS_QUESTION_SETS.generalScenarios
 
