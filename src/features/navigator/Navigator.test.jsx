@@ -176,3 +176,26 @@ it('keeps the top workspace compact and renders the expanded call workflow full-
   expect(workspace.compareDocumentPosition(details) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   expect(details.compareDocumentPosition(library) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
 })
+
+
+it('publishes selected tab, device, caller role, and active Common Issue for global reports', async () => {
+  const user = userEvent.setup()
+  const onReportContextChange = vi.fn()
+  render(<Navigator onReportContextChange={onReportContextChange} />)
+
+  await user.click(screen.getByRole('button', { name: 'Windows' }))
+  await user.click(screen.getByRole('button', { name: 'Participant' }))
+  await user.click(screen.getByRole('tab', { name: 'Common Issues' }))
+  await user.click(screen.getByRole('button', { name: /My camera isn’t working/i }))
+
+  const dialog = screen.getByRole('dialog', { name: /My camera isn’t working/i })
+  await user.click(within(dialog).getByRole('tab', { name: 'Visual Guide' }))
+
+  expect(onReportContextChange).toHaveBeenLastCalledWith(expect.objectContaining({
+    selected_tab: 'Visual Guide',
+    active_device: 'Windows',
+    active_caller_role: 'Participant',
+    active_common_issue: 'camera-not-working',
+    category_id: 'video',
+  }))
+})
