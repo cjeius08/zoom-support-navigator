@@ -64,6 +64,7 @@ export function LiveCallFlow({ value, onChange }) {
   const [internalDevice, setInternalDevice] = useState(null)
   const [internalRole, setInternalRole] = useState(null)
   const [internalStatus, setInternalStatus] = useState(null)
+  const [expanded, setExpanded] = useState(false)
   const controlled = value !== undefined
   const device = controlled ? value.device : internalDevice
   const role = controlled ? value.role : internalRole
@@ -90,9 +91,9 @@ export function LiveCallFlow({ value, onChange }) {
   return <section className="live-call-flow" aria-label="Core Live Call Flow">
     <div className="live-call-flow-heading">
       <div>
-        <p className="eyebrow">Phase 1 · Core workflow</p>
+        <p className="eyebrow">Live call context</p>
         <h2>Live Call Flow</h2>
-        <p>Use this from top to bottom while you’re on the call. Keep the conversation natural and move one step at a time.</p>
+        <p>Set the caller context once. OGCon carries it into the troubleshooting route.</p>
       </div>
       <button type="button" className="live-call-reset" onClick={resetCall}>Reset call</button>
     </div>
@@ -100,34 +101,6 @@ export function LiveCallFlow({ value, onChange }) {
     <div className="live-call-context" aria-label="Call context">
       <ChoiceGroup label="Device" options={DEVICES} value={device} onChange={next => updateContext('device', next)} />
       <ChoiceGroup label="Caller role" options={ROLES} value={role} onChange={next => updateContext('role', next)} />
-    </div>
-
-    <div className="live-call-table-wrap">
-      <table className="live-call-table" aria-label="Live call flow">
-        <thead>
-          <tr>
-            <th scope="col">Step</th>
-            <th scope="col">Agent Action</th>
-            <th scope="col">Suggested Script</th>
-          </tr>
-        </thead>
-        <tbody>
-          {CALL_STEPS.map((step, index) => <tr key={step.name}>
-            <th scope="row">
-              <span className="live-call-step-number">{index + 1}</span>
-              <span>{step.name}</span>
-            </th>
-            <td>
-              <span className="live-call-cell-label">Agent Action</span>
-              <p>{step.action}</p>
-            </td>
-            <td>
-              <span className="live-call-cell-label">Suggested Script</span>
-              <blockquote>{step.script}</blockquote>
-            </td>
-          </tr>)}
-        </tbody>
-      </table>
     </div>
 
     <div className="live-call-resolution">
@@ -139,5 +112,48 @@ export function LiveCallFlow({ value, onChange }) {
         className="live-call-status"
       />
     </div>
+
+    <button
+      type="button"
+      className="live-call-toggle"
+      aria-expanded={expanded}
+      aria-controls="live-call-workflow-details"
+      onClick={() => setExpanded(current => !current)}
+    >
+      <span>{expanded ? 'Hide full call flow' : 'View full call flow'}</span>
+      <small>7 steps</small>
+      <span className="live-call-toggle-icon" aria-hidden="true">{expanded ? '−' : '+'}</span>
+    </button>
+
+    {expanded && <div id="live-call-workflow-details" className="live-call-workflow-details">
+      <p className="live-call-workflow-note">Use these stages as a conversation guide. Keep the call natural and move one step at a time.</p>
+      <div className="live-call-table-wrap">
+        <table className="live-call-table" aria-label="Live call flow">
+          <thead>
+            <tr>
+              <th scope="col">Step</th>
+              <th scope="col">Agent Action</th>
+              <th scope="col">Suggested Script</th>
+            </tr>
+          </thead>
+          <tbody>
+            {CALL_STEPS.map((step, index) => <tr key={step.name}>
+              <th scope="row">
+                <span className="live-call-step-number">{index + 1}</span>
+                <span>{step.name}</span>
+              </th>
+              <td>
+                <span className="live-call-cell-label">Agent Action</span>
+                <p>{step.action}</p>
+              </td>
+              <td>
+                <span className="live-call-cell-label">Suggested Script</span>
+                <blockquote>{step.script}</blockquote>
+              </td>
+            </tr>)}
+          </tbody>
+        </table>
+      </div>
+    </div>}
   </section>
 }
