@@ -7,7 +7,10 @@ it('opens a source-driven Call Guide with safe copy actions before lossless sour
   const user = userEvent.setup()
   render(<Navigator />)
   expect(screen.getByRole('heading', { name: 'Live Call Flow' })).toBeInTheDocument()
-  expect(screen.getByRole('heading', { name: 'Common Issues' })).toBeInTheDocument()
+  expect(screen.getByRole('tab', { name: 'Fastest Routes' })).toHaveAttribute('aria-selected', 'true')
+  expect(screen.getByRole('tab', { name: 'Common Issues' })).toBeInTheDocument()
+  expect(screen.getByRole('tab', { name: 'Process Guides' })).toBeInTheDocument()
+  await user.click(screen.getByRole('tab', { name: 'Process Guides' }))
   await user.click(screen.getByRole('button', { name: /Joining Meetings/i }))
   await user.click(screen.getByRole('button', { name: /Troubleshooting When You Can’t Join a Zoom Meeting/i }))
   const dialog = screen.getByRole('dialog')
@@ -27,6 +30,7 @@ it('opens a source-driven Call Guide with safe copy actions before lossless sour
 
 it('shows source-page and Zoom-visual counts on process cards', async () => {
   const user = userEvent.setup(); render(<Navigator />)
+  await user.click(screen.getByRole('tab', { name: 'Process Guides' }))
   await user.click(screen.getByRole('button', { name: /Audio & Microphone/i }))
   expect(screen.getAllByText(/source pages?/i).length).toBeGreaterThan(0)
   expect(screen.getAllByText(/Zoom visuals?/i).length).toBeGreaterThan(0)
@@ -57,7 +61,7 @@ it('offers keyboard-accessible search suggestions and opens the highlighted proc
   expect(screen.getByRole('dialog')).toBeInTheDocument()
 })
 
-it('suggests and opens the intended process even when the search has a typo', async () => {
+it('routes a typo in natural caller language to the Common Issue before process documentation', async () => {
   const user = userEvent.setup()
   render(<Navigator />)
   const search = screen.getByRole('combobox', { name: 'Search support processes' })
@@ -67,39 +71,62 @@ it('suggests and opens the intended process even when the search has a typo', as
   const listbox = screen.getByRole('listbox', { name: 'Search suggestions' })
   const options = within(listbox).getAllByRole('option')
   expect(options.length).toBeLessThanOrEqual(6)
-  const joinSuggestion = within(listbox).getByRole('option', { name: /Troubleshooting When You Can’t Join a Zoom Meeting/i })
+  expect(options[0]).toHaveTextContent('Can’t join the meeting')
+  expect(options[0]).toHaveTextContent('Common Issue')
 
-  await user.click(joinSuggestion)
+  await user.click(options[0])
 
-  const dialog = screen.getByRole('dialog')
-  expect(within(dialog).getByRole('heading', { name: /Troubleshooting When You Can’t Join a Zoom Meeting/i })).toBeInTheDocument()
+  expect(screen.getByRole('dialog', { name: /Can’t join the meeting/i })).toBeInTheDocument()
 })
 
-it('opens the exact process selected from meeting control suggestions', async () => {
+it('routes meeting-control language to the reviewed Common Issue first', async () => {
   const user = userEvent.setup()
   render(<Navigator />)
   const search = screen.getByRole('combobox', { name: 'Search support processes' })
 
-  await user.type(search, 'meeting control')
+  await user.type(search, 'find a meeting control')
 
   const listbox = screen.getByRole('listbox', { name: 'Search suggestions' })
   const selectedOption = within(listbox).getAllByRole('option')[0]
-  const selectedTitle = selectedOption.querySelector('strong')?.textContent
-  expect(selectedTitle).toBeTruthy()
+  expect(selectedOption).toHaveTextContent('Can’t find a meeting control')
+  expect(selectedOption).toHaveTextContent('Common Issue')
 
   await user.click(selectedOption)
 
-  const dialog = screen.getByRole('dialog')
-  expect(within(dialog).getByRole('heading', { name: selectedTitle })).toBeInTheDocument()
+  expect(screen.getByRole('dialog', { name: /Can’t find a meeting control/i })).toBeInTheDocument()
   expect(screen.queryByRole('listbox', { name: 'Search suggestions' })).not.toBeInTheDocument()
 })
 
+
+it.each([
+  ['cant share', 'Can’t share my screen', /Sharing Your Screen, Desktop, or Content in Zoom/i],
+  ['cant find chat', 'Can’t find chat \/ can’t send a message', /Chatting in a Zoom Meeting/i],
+  ['find a meeting control', 'Can’t find a meeting control', /Using Participant Controls in a Zoom Meeting|Zoom Meeting Controls & Icons/i],
+])('shows Common Issues before Process Guides for %s', async (query, routeTitle, processTitle) => {
+  const user = userEvent.setup()
+  render(<Navigator />)
+  const search = screen.getByRole('combobox', { name: 'Search support processes' })
+
+  await user.type(search, query)
+
+  const listbox = screen.getByRole('listbox', { name: 'Search suggestions' })
+  const options = within(listbox).getAllByRole('option')
+  expect(options[0]).toHaveTextContent(routeTitle)
+  expect(options[0]).toHaveTextContent('Common Issue')
+  expect(options.some(option => processTitle.test(option.textContent ?? '') && /Process Guide/.test(option.textContent ?? ''))).toBe(true)
+
+  const commonHeading = screen.getByRole('heading', { name: 'Common Issues' })
+  const processHeading = screen.getByRole('heading', { name: 'Process Guides' })
+  expect(commonHeading.compareDocumentPosition(processHeading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  expect(screen.getByText(routeTitle)).toBeInTheDocument()
+})
 
 it('emits only identifier-based analytics events for support interactions', async () => {
   const user = userEvent.setup()
   const onTrackEvent = vi.fn()
   render(<Navigator onTrackEvent={onTrackEvent} />)
 
+  await user.click(screen.getByRole('tab', { name: 'Process Guides' }))
   await user.click(screen.getByRole('button', { name: /Audio & Microphone/i }))
   expect(onTrackEvent).toHaveBeenCalledWith({
     eventType: 'category_open',
