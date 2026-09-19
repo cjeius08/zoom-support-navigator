@@ -5,10 +5,39 @@
     "owner": "Cjei A.",
     "collaborator": "Nina F.",
     "nextReview": "2026-10-18",
-    "updatePolicy": "Every shipped user-facing feature, support-content change, or bug fix gets an entry here. Test-only, CI-only, and internal refactors are not listed.",
+    "updatePolicy": "User-facing features, support-content changes, and bug fixes are visible to everyone. Admin-only operational changes are listed only for administrators.",
     "productName": "Ogletree Support Workspace"
   },
   "updates": [
+    {
+      "id": "ozzie-first-signin-role-labels",
+      "date": "2026-09-19",
+      "area": "Workspace / Onboarding",
+      "audience": "all",
+      "title": "Ozzie now welcomes users immediately after first sign-in",
+      "changed": "The Meet Ozzie introduction now opens immediately after a user completes their first sign-in instead of waiting for a page refresh. The same introduction can be reopened later from My Profile. Account subtitles now use the workspace title assigned by an administrator: Member or Lead, while the creator account displays Admin.",
+      "checks": [
+        "Sign in with an account that has not completed the Ozzie introduction and confirm the video opens without refreshing the page.",
+        "Choose Start Exploring or Skip, then refresh and confirm the introduction does not auto-open again.",
+        "Open My Profile and confirm Meet Ozzie Again reopens the same introduction.",
+        "Confirm the account subtitle shows Admin, Member, or Lead instead of the generic Agent label."
+      ]
+    },
+    {
+      "id": "admin-member-lead-role-management",
+      "date": "2026-09-19",
+      "area": "Admin / Team Management",
+      "audience": "admin",
+      "title": "Team Management adds Member and Lead assignment",
+      "changed": "Administrators can now assign Member or Lead when generating an invite and can change the title later for an existing account. Member and Lead currently keep the same standard workspace permissions; Lead is a title only until separate privileges are defined. Admin-only release notes are also hidden from Member and Lead accounts, while user-facing updates remain visible to everyone.",
+      "checks": [
+        "Open Team Management → Add Team Member and confirm the Role field offers Member and Lead.",
+        "Open Actions for an existing non-admin account and confirm Edit Role can switch between Member and Lead.",
+        "Sign in with the updated account and confirm the assigned title appears beneath the username.",
+        "Open What’s New as a Member or Lead and confirm entries marked Admin only are not shown.",
+        "Open What’s New as Admin and confirm admin-only entries remain visible with an Admin only badge."
+      ]
+    },
     {
       "id": "readiness-resume-remaining-count",
       "date": "2026-09-19",
@@ -20,7 +49,8 @@
         "Confirm the lab opens on the first unanswered question rather than visually restarting at Question 1.",
         "Confirm the resume banner shows how many questions are completed and how many remain.",
         "Confirm previously checked questions remain saved and can still be reviewed with Previous."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "avatar-selected-indicator",
@@ -32,7 +62,8 @@
         "Open My Profile → Change Avatar and confirm the current avatar has a visible check badge and selected ring.",
         "Choose a different avatar and confirm the indicator moves immediately to the newly selected avatar.",
         "Confirm only one avatar shows the selected indicator at a time."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "avatar-persistence-polish",
@@ -45,7 +76,8 @@
         "Open Change Avatar and scan several avatars; each image should stay centered inside its tile with consistent framing.",
         "Confirm the selected avatar tile has a visible selected outline.",
         "Confirm the top-right account avatar is slightly larger while the header remains balanced on desktop and mobile."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "phase6-readiness-lab-part5-live-call",
@@ -60,7 +92,8 @@
         "Use Open Training & Resources and confirm the exact answer location is still not revealed.",
         "Open Training Roadmap and confirm Readiness Lab shows All 5 parts available.",
         "As JA, open Usage Analytics → Readiness Lab Report and confirm Live Call Readiness appears as a separate Part 5 report section."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "phase6-readiness-lab-part4-scope-referral",
@@ -74,7 +107,8 @@
         "Confirm the first scenario does not over-refer an in-scope basic issue when approved troubleshooting steps still remain.",
         "Confirm the remaining scenarios test the correct next owner for host, account/admin, hardware/device, and privacy/proceeding boundaries.",
         "As JA, open Usage Analytics → Readiness Lab Report and confirm Scope & Referral Judgment appears as a separate Part 4 report section."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "phase6-readiness-lab-part3-troubleshooting",
@@ -88,7 +122,8 @@
         "Confirm the five questions ask what to do after an observed result rather than only asking where a Zoom control is located.",
         "Use Open Training & Resources and confirm the exact answer location is still not revealed.",
         "As JA, open Usage Analytics → Readiness Lab Report and confirm Troubleshooting Judgment appears as a separate Part 3 report section."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "readiness-resource-discovery",
@@ -101,7 +136,8 @@
         "Confirm the resource button says Open Training & Resources rather than Find in Workspace.",
         "Use the button and confirm Training & Resources opens at its general home instead of jumping directly to the answer.",
         "Return to Readiness Lab and confirm the same question, selection, and attempt progress are still preserved."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "phase6-readiness-lab-part2-device-navigation",
@@ -115,7 +151,8 @@
         "Use Find in Workspace on a Part 2 question and confirm Training & Resources opens Device Walkthroughs on the exact matching device.",
         "Answer part of Part 2, close and reopen the lab, and confirm Part 2 resumes separately from Part 1 progress.",
         "As JA, open Usage Analytics → Readiness Lab Report and confirm General Zoom Scenarios and Device & Navigation Awareness appear as separate report sections."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "readiness-persistent-attempt-history",
@@ -129,7 +166,8 @@
         "Complete and submit an attempt, then confirm its score remains recorded before starting Attempt 2.",
         "Complete three attempts and confirm a fourth attempt cannot be started.",
         "As JA, open Usage Analytics and confirm Readiness Lab Report lists each agent's attempts separately with scores and incorrect answers."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "phase6-readiness-lab-part1",
@@ -144,7 +182,8 @@
         "Check an answer and confirm first-attempt feedback appears and the progress counter advances.",
         "Minimize and restore Readiness Lab and confirm the current Part 1 progress remains.",
         "Open Training Roadmap and confirm Readiness Lab replaces the old Practice Lab placeholder and says Part 1 is available from the sidebar."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "ogletree-call-flow-alignment",
@@ -159,7 +198,8 @@
         "After Confirmation of Resolution, confirm the resolved path shows Recap → Final Check → Closing and the unresolved path shows Explain Next Step → Escalate / Document → Recap → Closing.",
         "Open Training & Resources → Scripts & Communication → Call Language and confirm the stage tabs follow the new call-flow order before troubleshooting.",
         "Open Guided Visual Lessons and confirm Lesson 1 now teaches the official Ogletree call-flow pattern before the device and symptom lessons."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "ogletree-support-workspace-rebrand",
@@ -173,7 +213,8 @@
         "Confirm the version chip and What’s New metadata use Workspace v1.0 / Workspace Version instead of Console wording.",
         "Open Scope Check, Live Call Flow, Call Documentation, Common Issue guidance, and Scripts & Communication and confirm no current guidance refers to OGCon.",
         "Confirm the existing GitHub Pages URL and repository name are unchanged."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "phase6-guided-visual-lessons",
@@ -188,7 +229,8 @@
         "Open A waiting screen is not automatically a failed join and confirm Waiting for host is kept separate from Waiting Room.",
         "Open Know when basic support should stop and confirm the visual sequence ends in Stop → Refer when the remaining action needs outside authority.",
         "Use a lesson’s resource button and confirm it opens the exact existing Device Walkthrough, Call Language section, or Scenario Script rather than a duplicate copy."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "phase6-training-roadmap",
@@ -203,7 +245,8 @@
         "Select Open device walkthroughs and confirm the existing Device Walkthroughs resource opens without duplicated roadmap content.",
         "Confirm Guided Visual Lessons is available and Practice Lab remains the next planned step.",
         "Select Open Video Library under Reinforce anytime and confirm the existing video library opens."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "phase5-referral-handoff",
@@ -218,7 +261,8 @@
         "Choose Network, firewall, VPN, or managed security restriction and confirm the contact changes to organization IT / network support.",
         "Use Copy handoff wording and confirm only the approved caller-facing referral sentence is copied.",
         "Change any earlier Scope Check answer and confirm the previously selected referral roadblock and handoff guidance reset instead of carrying into the new decision."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "phase5-scope-check",
@@ -233,7 +277,8 @@
         "Select All approved troubleshooting completed; issue remains and confirm Stop + Refer appears even when the issue began as a basic Zoom concern.",
         "Switch from Scope Check back to Call Documentation and confirm the existing documentation draft is still present.",
         "In Live Call Flow, confirm the resolution-status choice now says Referral Needed instead of Escalation Needed."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "global-documentation-dock",
@@ -247,7 +292,8 @@
         "Select Minimize and confirm the dock collapses to a small bar; restore it and confirm the entered draft is still present.",
         "Close Call Documentation, reopen it from the sidebar, and confirm the draft is still present until Clear is used.",
         "Open Training & Resources and confirm Documentation is no longer a training tab; Device Walkthroughs, Scripts & Communication, and Video Library remain available."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "phase5-documentation-workspace",
@@ -259,7 +305,8 @@
         "Use the newer Call Documentation sidebar tool for the current workflow.",
         "Confirm the same approved fields and copy-ready summary remain available in the global dock.",
         "Confirm caller-entered text remains local to the active browser session and is not included in the workspace analytics or feedback context."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "interactive-guided-discovery",
@@ -272,7 +319,8 @@
         "Select Connected to this device → They can’t hear me → Windows and confirm the recommendation changes to Select the headset as Zoom Microphone.",
         "Switch to Can’t Join, choose Waiting Room, and confirm the workspace recommends the Waiting to Get In route instead of continuing failed-join troubleshooting.",
         "Switch between scenarios and confirm discovery answers reset rather than leaking into the next caller scenario."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "phase4-scenario-expansion",
@@ -285,7 +333,8 @@
         "Open Secure Connection Error and confirm the script clearly limits that specialty path to the documented Mac error.",
         "Open Join Muted and confirm connected-but-muted is kept separate from Don’t connect to audio.",
         "Open Invite / Copy Link and confirm the script explains the technical control without deciding who is authorized to attend."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "global-report-context",
@@ -297,7 +346,8 @@
         "Resize the browser narrowly and confirm Report an issue remains visible at the lower-right corner.",
         "Submit a report from a Common Issue or Training scenario and confirm the active tab/section is captured.",
         "In Admin → Feedback Queue, expand Captured screen context and confirm route, viewport, browser, and available live-call context are shown."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "updates-release-policy",
@@ -309,7 +359,8 @@
         "Open What’s New / Updates and confirm September 19 entries appear above the September 18 history.",
         "Confirm the Update policy note explains which shipped changes are listed.",
         "Confirm the header/version chip now shows the latest update date from the newest change-log entry."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "uiux-phase2-common-issue-routes",
@@ -323,7 +374,8 @@
         "Choose a Phase 1 device and caller role, open a Common Issue Route, and confirm the selected context appears inside the route.",
         "Open Full Process from a route and confirm the original approved Process Documents remain available without modified source wording.",
         "Open Sources and confirm official Zoom Support references and the verification date are visible; any known internal/current-source discrepancy should be flagged rather than silently reconciled."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "uiux-phase1-core-live-call-flow",
@@ -336,7 +388,8 @@
         "Select a device, Host or Participant, and a resolution status; each selected option should remain visibly pressed.",
         "Use Reset call and confirm all call-context selections clear for the next caller.",
         "Resize to mobile width and confirm each call-flow row remains readable as Step, Agent Action, and Suggested Script without horizontal clipping."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "strict-qa-remediation",
@@ -350,7 +403,8 @@
         "Open a long Call Guide and confirm only the first set of steps, scripts, and very long callouts are shown initially, with Show remaining controls preserving access to all approved content.",
         "Use keyboard-only navigation in the avatar picker and process tabs, and confirm validation errors identify the relevant form field.",
         "Open a process/profile/training/report dialog and confirm the page behind it does not scroll."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "final-qa-accessibility-gate",
@@ -363,7 +417,8 @@
         "Resize the browser through compact desktop, tablet, and narrow mobile widths and confirm navigation, cards, process drawers, feedback actions, and admin usage controls remain reachable without horizontal clipping.",
         "Enable reduced motion in the operating system and confirm transitions/animations are minimized.",
         "Search CAN'T HEAR, microphone issue, camra not working, cant jion, bluetooh, screen share, and share screen and confirm the intended approved processes remain discoverable."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "admin-analytics-accuracy",
@@ -376,7 +431,8 @@
         "Leave the Console untouched for more than five minutes and confirm the account becomes Idle rather than continuing to accumulate active time; stale heartbeat records should display Offline.",
         "In Usage Analytics, switch between Daily, Weekly, Monthly, and Custom and confirm every team member remains listed even when they have zero events.",
         "In Feedback Queue, change a report status and confirm its history is recorded, then use Open Page to return to the stored process or safe Console page."
-      ]
+      ],
+      "audience": "admin"
     },
     {
       "id": "interaction-reliability",
@@ -389,7 +445,8 @@
         "Open a Related Training item from a process and confirm the exact selected video opens.",
         "Use multiple Copy controls and confirm only the clicked control shows Copied ✓ or Copy failed.",
         "Open process, report, profile, and admin dialogs with the keyboard and confirm Escape closes them and focus returns to the opener."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "wide-short-window-sidebar-footer",
@@ -401,7 +458,8 @@
         "Keep the browser fairly wide, then reduce only its height and confirm the sidebar does not clip the bottom metadata.",
         "Confirm the navigation list scrolls when needed while Workspace v1.0, Owner Cjei A., Collaborator Nina F., and Logout remain visible.",
         "Repeat with the admin account, where the navigation list is longest, and confirm the footer remains readable."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "mobile-admin-drawer-footer",
@@ -413,7 +471,8 @@
         "Open the hamburger menu while the browser is narrow and vertically short, especially while signed in as an admin.",
         "Confirm the navigation list can scroll without pushing the workspace metadata below the screen.",
         "Confirm Workspace v1.0, Owner Cjei A., Collaborator Nina F., and Logout remain fully visible and readable at the bottom of the open drawer."
-      ]
+      ],
+      "audience": "admin"
     },
     {
       "id": "progressive-window-reflow",
@@ -426,7 +485,8 @@
         "Around compact desktop widths, confirm Common Issues moves below the main category section before the cards become cramped.",
         "Continue narrowing the window and confirm category cards move from three columns to two, then one, while the four-step workflow becomes two columns, then one.",
         "At tablet/mobile widths, confirm the fixed sidebar changes to the hamburger drawer and leaves no hidden strip or content overlap."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "updates-console-metadata",
@@ -438,7 +498,8 @@
         "Open What’s New / Updates from the sidebar or the version chip in the header.",
         "Confirm Workspace Version 1.0, Owner Cjei A., Collaborator Nina F., and the review dates are visible.",
         "Confirm update entries show both What changed and What to check."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "call-guide-script-cleanup",
@@ -450,7 +511,8 @@
         "Open a process with multiple scripted steps and confirm the giant duplicate script block is gone.",
         "Confirm each relevant step still has its own Suggested Script and Copy Script control.",
         "If a process has a source-level script, confirm it appears once as Additional Source Script."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "smart-search",
@@ -462,7 +524,8 @@
         "Search cant jion, camra, bluetooh, and meeting control and confirm useful suggestions appear while typing.",
         "Confirm the suggestions are fully visible over the content below the search field.",
         "Click a suggestion and confirm the process that opens has the same title as the selected suggestion."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "responsive-console-shell",
@@ -474,7 +537,8 @@
         "At desktop width, confirm the sidebar remains normally visible.",
         "At 768px or mobile width, confirm the hamburger opens the drawer and the backdrop closes it.",
         "Confirm the closed drawer leaves no strip on the left edge and the header brand does not stack or collide."
-      ]
+      ],
+      "audience": "all"
     },
     {
       "id": "navigator-accessibility",
@@ -485,7 +549,8 @@
       "checks": [
         "Confirm every support category card has a distinct visible icon.",
         "In search, use Arrow Up or Arrow Down, Enter, and Escape and confirm the suggestion list responds correctly."
-      ]
+      ],
+      "audience": "all"
     }
   ]
 }
