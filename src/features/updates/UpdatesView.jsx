@@ -18,7 +18,7 @@ export function UpdatesView({ isAdmin = false }) {
         <div>
           <p className="eyebrow">Workspace change log</p>
           <h1 id="updates-title">What’s New / Updates</h1>
-          <p>Recent user-facing changes and the exact items to check after an update.</p>
+          <p>Recent workspace changes with concise verification notes where they are still useful.</p>
         </div>
         <span className="updates-version-pill">Workspace v{CONSOLE_METADATA.version}</span>
       </header>
@@ -48,6 +48,7 @@ export function UpdatesView({ isAdmin = false }) {
                 <div className="update-card-meta">
                   <span className="update-area">{entry.area}</span>
                   {isAdmin && entry.audience === 'admin' && <span className="update-audience-badge">Admin only</span>}
+                  {entry.status === 'historical' && <span className="update-history-badge">Historical</span>}
                 </div>
                 <h2>{entry.title}</h2>
               </div>
@@ -58,12 +59,12 @@ export function UpdatesView({ isAdmin = false }) {
                 <h3>What changed</h3>
                 <p>{entry.changed}</p>
               </section>
-              <section>
-                <h3>What to check</h3>
+              {entry.checks?.length > 0 && <section>
+                <h3>Verification</h3>
                 <ul>
                   {entry.checks.map((check) => <li key={check}>{check}</li>)}
                 </ul>
-              </section>
+              </section>}
             </div>
           </article>
         ))}
