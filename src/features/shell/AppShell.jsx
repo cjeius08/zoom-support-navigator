@@ -27,6 +27,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   const [activeLiveTool, setActiveLiveTool] = useState(null)
   const [liveToolMinimized, setLiveToolMinimized] = useState(false)
   const [compactNav, setCompactNav] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 800)
+  const [headerScrolled, setHeaderScrolled] = useState(() => typeof window !== 'undefined' && window.scrollY > 24)
   const profileDialogRef = useRef(null)
   const menuToggleRef = useRef(null)
   const isAdmin = profile.role === 'creator_admin'
@@ -55,6 +56,13 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     window.addEventListener('resize', updateCompactNav)
     updateCompactNav()
     return () => window.removeEventListener('resize', updateCompactNav)
+  }, [])
+
+  useEffect(() => {
+    const updateHeaderScrollState = () => setHeaderScrolled(window.scrollY > 24)
+    window.addEventListener('scroll', updateHeaderScrollState, { passive: true })
+    updateHeaderScrollState()
+    return () => window.removeEventListener('scroll', updateHeaderScrollState)
   }, [])
 
   useDialogFocus(profileDialogRef, profileOpen, closeProfile)
@@ -89,7 +97,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   }
 
   return <div className="app-shell" style={style}>
-    <header className="app-header">
+    <header className={`app-header${headerScrolled ? ' header-scrolled' : ''}`}>
       <button
         ref={menuToggleRef}
         className="menu-toggle"
@@ -102,7 +110,9 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
       </button>
       <div className="ozzie-header-brand" aria-label="Ozzie">
-        <img src={assetUrl('assets/ozzie-header.webp')} alt="Ozzie" />
+        <span className="ozzie-logo-stage ozzie-logo-stage-header">
+          <img src={assetUrl('assets/ozzie-header.webp')} alt="Ozzie" />
+        </span>
       </div>
       <button className="account-menu" aria-expanded={profileOpen} aria-label={`${profile.username} account`} onClick={() => { const next = !profileOpen; setProfileOpen(next); if (next) { setMessage(''); setProfileError(''); setProfileErrorField('') } }}>{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<span className="account-copy"><strong>{profile.username}</strong><small>{isAdmin ? 'JA Admin' : 'Agent'}</small></span><svg className="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></button>
     </header>
