@@ -13,7 +13,8 @@ import {
   dateRangeForPeriod,
   formatActiveDuration,
 } from "../analytics/usageSummary";
-import { useDialogFocus } from "../../lib/useDialogFocus";\nimport { CallNotesReport } from "./CallNotesReport";
+import { useDialogFocus } from "../../lib/useDialogFocus";
+import { CallNotesReport } from "./CallNotesReport";
 
 function useData(loader, refreshKey = 0) {
   const [state, setState] = useState({ loading: true, data: null, error: "" });
