@@ -44,6 +44,23 @@ function workspaceRoleLabel(person) {
   return person?.workspace_role === "lead" ? "Lead" : "Member";
 }
 
+function readinessAttemptSummary(attempts = [], maxAttempts = 3) {
+  const ordered = [...attempts].sort(
+    (a, b) => Number(a.attemptNumber || 0) - Number(b.attemptNumber || 0),
+  );
+  const submitted = ordered.filter((attempt) => attempt.status === "submitted");
+  const first = submitted[0] || null;
+  const latest = submitted[submitted.length - 1] || null;
+  const inProgress = ordered.some((attempt) => attempt.status === "active");
+
+  return {
+    firstScore: first ? `${first.score}/${first.totalQuestions}` : "—",
+    latestScore: latest ? `${latest.score}/${latest.totalQuestions}` : "—",
+    attemptsUsed: `${ordered.length}/${maxAttempts}`,
+    status: inProgress ? "In progress" : submitted.length ? "Completed" : "Not started",
+  };
+}
+
 export function AdminHome({ onNavigate }) {
   return (
     <section className="console-view">
@@ -683,70 +700,90 @@ export function UsageAnalytics() {
                     <h3 id={`readiness-report-${part.id}`}>{part.title}</h3>
                   </div>
                   <div className="usage-user-list" aria-label={`${part.title} attempts by user`}>
-                    {(part.users || []).map((user) => (
-                      <article className="usage-user-row readiness-report-user" key={`${part.id}-${user.id}`}>
-                        <div className="usage-user-identity">
-                          <strong>{user.username || user.initials}</strong>
-                          <small>
-                            {user.initials} · {workspaceRoleLabel(user)}
-                          </small>
-                        </div>
-
-                        {user.attempts?.length ? (
-                          <div className="readiness-report-attempts">
-                            {user.attempts.map((attempt) => (
-                              <details key={attempt.id} open={attempt.status === "active"}>
-                                <summary>
-                                  <strong>Attempt {attempt.attemptNumber}</strong>
-                                  <span>
-                                    {attempt.status === "submitted"
-                                      ? `Score ${attempt.score}/${attempt.totalQuestions}`
-                                      : `${attempt.checkedCount}/${attempt.totalQuestions} checked · In progress`}
-                                  </span>
-                                </summary>
-                                <dl>
-                                  <div>
-                                    <dt>Status</dt>
-                                    <dd>{attempt.status === "submitted" ? "Submitted" : "In progress"}</dd>
-                                  </div>
-                                  <div>
-                                    <dt>Started</dt>
-                                    <dd>{attempt.startedAt ? new Date(attempt.startedAt).toLocaleString() : "—"}</dd>
-                                  </div>
-                                  <div>
-                                    <dt>Submitted</dt>
-                                    <dd>{attempt.submittedAt ? new Date(attempt.submittedAt).toLocaleString() : "—"}</dd>
-                                  </div>
-                                </dl>
-
-                                <div className="readiness-report-misses">
-                                  <strong>Incorrect answers</strong>
-                                  {attempt.incorrectAnswers?.length ? (
-                                    <ol>
-                                      {attempt.incorrectAnswers.map((miss) => (
-                                        <li key={`${attempt.id}-${miss.questionId}`}>
-                                          <p>{miss.prompt}</p>
-                                          <small><b>Selected:</b> {miss.selectedAnswer || miss.selectedOptionId}</small>
-                                          <small><b>Correct:</b> {miss.correctAnswer || miss.correctOptionId}</small>
-                                        </li>
-                                      ))}
-                                    </ol>
-                                  ) : (
-                                    <small>
-                                      {attempt.status === "submitted"
-                                        ? "No incorrect answers recorded."
-                                        : "Incorrect answers will appear here as this attempt is checked."}
-                                    </small>
-                                  )}
-                                </div>
-                              </details>
-                            ))}
+                    {(part.users || []).map((user) => {
+                      const summary = readinessAttemptSummary(user.attempts, part.maxAttempts || 3);
+                      return (
+                        <article className="usage-user-row readiness-report-user" key={`${part.id}-${user.id}`}>
+                          <div className="usage-user-identity">
+                            <strong>{user.username || user.initials}</strong>
+                            <small>
+                              {user.initials} · {workspaceRoleLabel(user)}
+                            </small>
                           </div>
-                        ) : (
-                          <p>No attempts yet for this part.</p>
-                        )}
-                      </article>
-                    ))}
+
+                          <div className="readiness-report-content">
+                            <dl
+                              className="readiness-summary-grid"
+                              aria-label={`${user.username || user.initials} ${part.title} summary`}
+                            >
+                              <div><dt>First score</dt><dd>{summary.firstScore}</dd></div>
+                              <div><dt>Latest score</dt><dd>{summary.latestScore}</dd></div>
+                              <div><dt>Attempts used</dt><dd>{summary.attemptsUsed}</dd></div>
+                              <div>
+                                <dt>Status</dt>
+                                <dd className={`readiness-summary-status ${summary.status.toLowerCase().replaceAll(" ", "-")}`}>
+                                  {summary.status}
+                                </dd>
+                              </div>
+                            </dl>
+
+                            {user.attempts?.length ? (
+                              <div className="readiness-report-attempts">
+                                {user.attempts.map((attempt) => (
+                                  <details key={attempt.id} open={attempt.status === "active"}>
+                                    <summary>
+                                      <strong>Attempt {attempt.attemptNumber}</strong>
+                                      <span>
+                                        {attempt.status === "submitted"
+                                          ? `Score ${attempt.score}/${attempt.totalQuestions}`
+                                          : `${attempt.checkedCount}/${attempt.totalQuestions} checked · In progress`}
+                                      </span>
+                                    </summary>
+                                    <dl>
+                                      <div>
+                                        <dt>Status</dt>
+                                        <dd>{attempt.status === "submitted" ? "Submitted" : "In progress"}</dd>
+                                      </div>
+                                      <div>
+                                        <dt>Started</dt>
+                                        <dd>{attempt.startedAt ? new Date(attempt.startedAt).toLocaleString() : "—"}</dd>
+                                      </div>
+                                      <div>
+                                        <dt>Submitted</dt>
+                                        <dd>{attempt.submittedAt ? new Date(attempt.submittedAt).toLocaleString() : "—"}</dd>
+                                      </div>
+                                    </dl>
+
+                                    <div className="readiness-report-misses">
+                                      <strong>Incorrect answers</strong>
+                                      {attempt.incorrectAnswers?.length ? (
+                                        <ol>
+                                          {attempt.incorrectAnswers.map((miss) => (
+                                            <li key={`${attempt.id}-${miss.questionId}`}>
+                                              <p>{miss.prompt}</p>
+                                              <small><b>Selected:</b> {miss.selectedAnswer || miss.selectedOptionId}</small>
+                                              <small><b>Correct:</b> {miss.correctAnswer || miss.correctOptionId}</small>
+                                            </li>
+                                          ))}
+                                        </ol>
+                                      ) : (
+                                        <small>
+                                          {attempt.status === "submitted"
+                                            ? "No incorrect answers recorded."
+                                            : "Incorrect answers will appear here as this attempt is checked."}
+                                        </small>
+                                      )}
+                                    </div>
+                                  </details>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="readiness-no-attempts">No attempts yet for this part.</p>
+                            )}
+                          </div>
+                        </article>
+                      );
+                    })}
                   </div>
                 </section>
               ))}
