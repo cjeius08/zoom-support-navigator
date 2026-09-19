@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
 import { COMMON_ISSUE_VERIFIED_AT } from './commonIssueRoutes'
 import { useDialogFocus } from '../../lib/useDialogFocus'
+import { FavoriteToggle } from '../favorites/FavoriteToggle'
 import './commonIssueRoutes.css'
 
 const TABS = [
@@ -30,6 +31,9 @@ export function CommonIssueDrawer({
   onContextChange,
   onTabChange,
   onTrackEvent,
+  isFavorite = false,
+  favoriteBusy = false,
+  onToggleFavorite = () => {},
 }) {
   const [tab, setTab] = useState('quick')
   const dialogRef = useRef(null)
@@ -117,7 +121,15 @@ export function CommonIssueDrawer({
           <h2 id="common-issue-title">{route.title}</h2>
           <p>{route.subtitle}</p>
         </div>
-        <button type="button" className="drawer-close" aria-label="Close common issue route" onClick={onClose}>×</button>
+        <div className="drawer-header-actions">
+          <FavoriteToggle
+            active={isFavorite}
+            busy={favoriteBusy}
+            label={route.title}
+            onToggle={onToggleFavorite}
+          />
+          <button type="button" className="drawer-close" aria-label="Close common issue route" onClick={onClose}>×</button>
+        </div>
       </header>
 
       <div className="common-issue-context common-issue-context-editor" aria-label="Route context">

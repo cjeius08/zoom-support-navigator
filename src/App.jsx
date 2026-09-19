@@ -10,6 +10,8 @@ import { AdminHome, FeedbackQueue, TeamManagement, UsageAnalytics } from './feat
 import { TrainingResources } from './features/training/TrainingResources'
 import { FeedbackPage } from './features/feedback/FeedbackPage'
 import { UpdatesView } from './features/updates/UpdatesView'
+import { FavoritesView } from './features/favorites/FavoritesView'
+import { useFavorites } from './features/favorites/useFavorites'
 import { assetUrl } from './lib/assetUrl'
 import { useUsageTracking } from './features/analytics/usePresence'
 import './styles.css'
@@ -40,6 +42,14 @@ export default function App() {
   const [reportContext, setReportContext] = useState(EMPTY_REPORT_CONTEXT)
   const [showPassword, setShowPassword] = useState(false)
   const { trackEvent } = useUsageTracking(profile?.id ?? null, profile ? view : null)
+  const {
+    favorites,
+    loading: favoritesLoading,
+    error: favoritesError,
+    isFavorite,
+    isFavoriteBusy,
+    toggleFavorite,
+  } = useFavorites(profile?.id ?? null)
   const accessStyle = { '--login-workspace-image': `url(${assetUrl('assets/login-workspace-background.png')})` }
 
   const updateReportContext = useCallback((nextContext) => {
@@ -139,6 +149,28 @@ export default function App() {
     setView(safeRoutes.has(item?.route_id) ? item.route_id : 'navigator')
   }
 
+  function openFavoriteProcess(processId) {
+    trackEvent({ eventType: 'process_open', routeId: 'favorites', processId, toolId: 'favorites' })
+    setNavigatorCommonIssueId(null)
+    setNavigatorProcessId(processId)
+    setReportContext({
+      ...EMPTY_REPORT_CONTEXT,
+      process_id: processId,
+    })
+    setView('navigator')
+  }
+
+  function openFavoriteCommonIssue(commonIssueId) {
+    trackEvent({ eventType: 'tool_open', routeId: 'favorites', toolId: `common_issue_${commonIssueId}_favorite` })
+    setNavigatorProcessId(null)
+    setNavigatorCommonIssueId(commonIssueId)
+    setReportContext({
+      ...EMPTY_REPORT_CONTEXT,
+      active_common_issue: commonIssueId,
+    })
+    setView('navigator')
+  }
+
   useEffect(() => { getCurrentProfile().then(setProfile).catch(() => signOut()).finally(() => setLoading(false)) }, [])
 
   async function submit(event) {
@@ -164,7 +196,40 @@ export default function App() {
   if (loading) return <main className="access-shell"><p>Loading secure session…</p></main>
   if (profile?.must_change_password) return <ForcePasswordChange onChange={async password => { await changeOwnPassword(password); setProfile(await getCurrentProfile()) }} onLogout={async () => { await signOut(); setProfile(null) }} />
   if (profile) {
-    const content = view==='navigator'?<Navigator onOpenTraining={openTraining} onTrackEvent={trackEvent} initialProcessId={navigatorProcessId} initialCommonIssueId={navigatorCommonIssueId} onReportContextChange={updateReportContext}/>:view==='training'?<TrainingResources initialVideoId={trainingVideoId} initialTarget={trainingTarget} onReportContextChange={updateReportContext}/>:view==='updates'?<UpdatesView/>:view==='feedback'?<FeedbackPage onSubmit={submitFeedback} onCancel={()=>navigate('navigator')}/>:view==='admin'?<AdminHome onNavigate={navigate}/>:view==='team'?<TeamManagement/>:view==='usage'?<UsageAnalytics/>:<FeedbackQueue onOpenPage={openFeedbackTarget}/>
+    const content = view === 'navigator'
+      ? <Navigator
+          onOpenTraining={openTraining}
+          onTrackEvent={trackEvent}
+          initialProcessId={navigatorProcessId}
+          initialCommonIssueId={navigatorCommonIssueId}
+          onReportContextChange={updateReportContext}
+          isFavorite={isFavorite}
+          isFavoriteBusy={isFavoriteBusy}
+          onToggleFavorite={toggleFavorite}
+        />
+      : view === 'favorites'
+        ? <FavoritesView
+            favorites={favorites}
+            loading={favoritesLoading}
+            error={favoritesError}
+            busyFor={isFavoriteBusy}
+            onToggleFavorite={toggleFavorite}
+            onOpenProcess={openFavoriteProcess}
+            onOpenCommonIssue={openFavoriteCommonIssue}
+          />
+        : view === 'training'
+          ? <TrainingResources initialVideoId={trainingVideoId} initialTarget={trainingTarget} onReportContextChange={updateReportContext}/>
+          : view === 'updates'
+            ? <UpdatesView/>
+            : view === 'feedback'
+              ? <FeedbackPage onSubmit={submitFeedback} onCancel={()=>navigate('navigator')}/>
+              : view === 'admin'
+                ? <AdminHome onNavigate={navigate}/>
+                : view === 'team'
+                  ? <TeamManagement/>
+                  : view === 'usage'
+                    ? <UsageAnalytics/>
+                    : <FeedbackQueue onOpenPage={openFeedbackTarget}/>
     return <AppShell profile={profile} currentView={view} onNavigate={navigate} onOpenReadinessResource={openReadinessResource} onFeedback={submitFeedback} reportContext={reportContext} onPasswordChange={changeOwnPassword} onAvatarChange={async avatarId=>{await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}} onLogout={async()=>{await signOut();setProfile(null)}}>{content}</AppShell>
   }
 

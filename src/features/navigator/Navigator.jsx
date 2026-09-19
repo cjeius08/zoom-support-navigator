@@ -5,6 +5,7 @@ import { searchProcesses } from './smartSearch'
 import { LiveCallFlow, LiveCallFlowDetails } from './LiveCallFlow'
 import { CommonIssueDrawer } from './CommonIssueDrawer'
 import { COMMON_ISSUE_ROUTES, routeById, searchCommonIssueRoutes } from './commonIssueRoutes'
+import { FavoriteToggle } from '../favorites/FavoriteToggle'
 
 const categories = [
   ['join', 'Joining Meetings', 'Links, waiting rooms, access errors'],
@@ -33,7 +34,63 @@ function CategoryIcon({ type }) {
   return <span className={`category-icon category-icon-${type}`} data-testid="category-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d={categoryIconPaths[type]} /></svg></span>
 }
 
-export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = null, initialCommonIssueId = null, onReportContextChange = () => {} }) {
+function FavoriteRouteCard({
+  route,
+  onOpen,
+  favorite = false,
+  busy = false,
+  onToggleFavorite = () => {},
+  fast = false,
+  showType = false,
+}) {
+  return <article className="favorite-card-shell">
+    <button type="button" className={`route-card${fast ? ' route-card-fast' : ''}`} onClick={onOpen}>
+      {showType ? <span className="result-type-badge">Common Issue</span> : fast ? <span>{route.group}</span> : null}
+      <strong>{route.title}</strong>
+      <small>{route.subtitle}</small>
+      <b>Open Quick Guide →</b>
+    </button>
+    <FavoriteToggle
+      active={favorite}
+      busy={busy}
+      compact
+      className="favorite-card-toggle"
+      label={route.title}
+      onToggle={onToggleFavorite}
+    />
+  </article>
+}
+
+function FavoriteProcessCard({
+  process,
+  onOpen,
+  favorite = false,
+  busy = false,
+  onToggleFavorite = () => {},
+}) {
+  return <article className="favorite-card-shell">
+    <button type="button" className="process-card" onClick={onOpen}>
+      <small className="result-type-badge">Process Guide</small>
+      <strong>{process.title}</strong>
+      <span>{process.purpose}</span>
+      <div className="process-meta">
+        {process.images?.length > 0 && <span>{process.images.length} source {process.images.length === 1 ? 'page' : 'pages'}</span>}
+        {process.visualReferences?.length > 0 && <span>{process.visualReferences.length} Zoom {process.visualReferences.length === 1 ? 'visual' : 'visuals'}</span>}
+      </div>
+      <b>Open process →</b>
+    </button>
+    <FavoriteToggle
+      active={favorite}
+      busy={busy}
+      compact
+      className="favorite-card-toggle"
+      label={process.title}
+      onToggle={onToggleFavorite}
+    />
+  </article>
+}
+
+export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = null, initialCommonIssueId = null, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -269,12 +326,15 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
               <span>{routeMatches.length}</span>
             </div>
             {routeMatches.length > 0 ? <div className="route-browser-grid">
-              {routeMatches.map(route => <button type="button" className="route-card" key={route.id} onClick={() => openRoute(route, 'search_result')}>
-                <span className="result-type-badge">Common Issue</span>
-                <strong>{route.title}</strong>
-                <small>{route.subtitle}</small>
-                <b>Open Quick Guide →</b>
-              </button>)}
+              {routeMatches.map(route => <FavoriteRouteCard
+                key={route.id}
+                route={route}
+                showType
+                onOpen={() => openRoute(route, 'search_result')}
+                favorite={isFavorite('common_issue', route.id)}
+                busy={isFavoriteBusy('common_issue', route.id)}
+                onToggleFavorite={() => onToggleFavorite('common_issue', route.id)}
+              />)}
             </div> : <div className="navigator-empty-state">No reviewed Common Issue route matches this search yet.</div>}
           </section>
 
@@ -284,13 +344,14 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
               <span>{processMatches.length}</span>
             </div>
             {processMatches.length > 0 ? <div className="process-grid">
-              {processMatches.map(process => <button className="process-card" key={process.id} onClick={() => openProcess(process, 'search_result')}>
-                <small className="result-type-badge">Process Guide</small>
-                <strong>{process.title}</strong>
-                <span>{process.purpose}</span>
-                <div className="process-meta">{process.images?.length>0&&<span>{process.images.length} source {process.images.length===1?'page':'pages'}</span>}{process.visualReferences?.length>0&&<span>{process.visualReferences.length} Zoom {process.visualReferences.length===1?'visual':'visuals'}</span>}</div>
-                <b>Open process →</b>
-              </button>)}
+              {processMatches.map(process => <FavoriteProcessCard
+                key={process.id}
+                process={process}
+                onOpen={() => openProcess(process, 'search_result')}
+                favorite={isFavorite('process', process.id)}
+                busy={isFavoriteBusy('process', process.id)}
+                onToggleFavorite={() => onToggleFavorite('process', process.id)}
+              />)}
             </div> : <div className="navigator-empty-state">No approved Process Guide matches this search.</div>}
           </section>
         </section> : <>
@@ -299,12 +360,15 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
             <h2 id="fastest-routes-heading">Fastest Routes</h2>
             <p className="navigator-tab-intro">Keep the original high-frequency routes one click away. Start with the caller’s symptom, not a document title.</p>
             <div className="fastest-route-grid">
-              {fastestRoutes.map(route => <button type="button" className="route-card route-card-fast" key={route.id} onClick={() => openRoute(route, 'fastest_route')}>
-                <span>{route.group}</span>
-                <strong>{route.title}</strong>
-                <small>{route.subtitle}</small>
-                <b>Open Quick Guide →</b>
-              </button>)}
+              {fastestRoutes.map(route => <FavoriteRouteCard
+                key={route.id}
+                route={route}
+                fast
+                onOpen={() => openRoute(route, 'fastest_route')}
+                favorite={isFavorite('common_issue', route.id)}
+                busy={isFavoriteBusy('common_issue', route.id)}
+                onToggleFavorite={() => onToggleFavorite('common_issue', route.id)}
+              />)}
             </div>
           </section>}
 
@@ -316,11 +380,14 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
               {[...new Set(COMMON_ISSUE_ROUTES.map(route => route.group))].map(group => <section className="route-group" key={group}>
                 <h3>{group}</h3>
                 <div className="route-browser-grid">
-                  {COMMON_ISSUE_ROUTES.filter(route => route.group === group).map(route => <button type="button" className="route-card" key={route.id} onClick={() => openRoute(route, 'common_issues_tab')}>
-                    <strong>{route.title}</strong>
-                    <small>{route.subtitle}</small>
-                    <b>Open Quick Guide →</b>
-                  </button>)}
+                  {COMMON_ISSUE_ROUTES.filter(route => route.group === group).map(route => <FavoriteRouteCard
+                    key={route.id}
+                    route={route}
+                    onOpen={() => openRoute(route, 'common_issues_tab')}
+                    favorite={isFavorite('common_issue', route.id)}
+                    busy={isFavoriteBusy('common_issue', route.id)}
+                    onToggleFavorite={() => onToggleFavorite('common_issue', route.id)}
+                  />)}
                 </div>
               </section>)}
             </div>
@@ -336,13 +403,28 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
                 <h3>{categories.find(c=>c[0]===category)?.[1]}</h3>
                 <span>{categoryProcesses.length}</span>
               </div>
-              <div className="process-grid">{categoryProcesses.map(process=><button className="process-card" key={process.id} onClick={()=>openProcess(process,'process_card')}><small className="result-type-badge">Process Guide</small><strong>{process.title}</strong><span>{process.purpose}</span><div className="process-meta">{process.images?.length>0&&<span>{process.images.length} source {process.images.length===1?'page':'pages'}</span>}{process.visualReferences?.length>0&&<span>{process.visualReferences.length} Zoom {process.visualReferences.length===1?'visual':'visuals'}</span>}</div><b>Open process →</b></button>)}</div>
+              <div className="process-grid">{categoryProcesses.map(process => <FavoriteProcessCard
+                key={process.id}
+                process={process}
+                onOpen={() => openProcess(process, 'process_card')}
+                favorite={isFavorite('process', process.id)}
+                busy={isFavoriteBusy('process', process.id)}
+                onToggleFavorite={() => onToggleFavorite('process', process.id)}
+              />)}</div>
             </section>}
           </section>}
         </>}
       </div>
     </section>
-    {selected&&<ProcessDrawer process={selected} onClose={()=>setSelected(null)} onOpenTraining={onOpenTraining} onTrackEvent={onTrackEvent}/>}
+    {selected&&<ProcessDrawer
+      process={selected}
+      onClose={()=>setSelected(null)}
+      onOpenTraining={onOpenTraining}
+      onTrackEvent={onTrackEvent}
+      isFavorite={isFavorite('process', selected.id)}
+      favoriteBusy={isFavoriteBusy('process', selected.id)}
+      onToggleFavorite={() => onToggleFavorite('process', selected.id)}
+    />}
     {selectedRoute&&<CommonIssueDrawer
       route={selectedRoute}
       callContext={callContext}
@@ -353,6 +435,9 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
       onContextChange={patch=>setCallContext(current=>({...current,...patch}))}
       onTabChange={setCommonIssueTab}
       onTrackEvent={onTrackEvent}
+      isFavorite={isFavorite('common_issue', selectedRoute.id)}
+      favoriteBusy={isFavoriteBusy('common_issue', selectedRoute.id)}
+      onToggleFavorite={() => onToggleFavorite('common_issue', selectedRoute.id)}
     />}
   </section>
 }

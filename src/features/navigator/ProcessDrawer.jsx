@@ -3,6 +3,7 @@ import { assetUrl } from "../../lib/assetUrl";
 import { buildCallGuide, processSections } from "./processText";
 import { relatedTrainingForCategory } from "../../data/trainingVideos";
 import { useDialogFocus } from "../../lib/useDialogFocus";
+import { FavoriteToggle } from "../favorites/FavoriteToggle";
 
 const TABS = [
   ["quick", "Call Guide"],
@@ -24,7 +25,7 @@ const trainingCategoryByProcessCategory = {
   devices: "Devices & App",
 };
 
-export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent }) {
+export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent, isFavorite = false, favoriteBusy = false, onToggleFavorite = () => {} }) {
   const [tab, setTab] = useState("quick");
   const [stepsExpanded, setStepsExpanded] = useState(false);
   const [scriptsExpanded, setScriptsExpanded] = useState(false);
@@ -135,13 +136,21 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent }
             <h2 id="drawer-title">{process.title}</h2>
             <p>{process.purpose}</p>
           </div>
-          <button
-            className="drawer-close"
-            aria-label="Close process"
-            onClick={onClose}
-          >
-            ×
-          </button>
+          <div className="drawer-header-actions">
+            <FavoriteToggle
+              active={isFavorite}
+              busy={favoriteBusy}
+              label={process.title}
+              onToggle={onToggleFavorite}
+            />
+            <button
+              className="drawer-close"
+              aria-label="Close process"
+              onClick={onClose}
+            >
+              ×
+            </button>
+          </div>
         </header>
         <div className="process-tabs" role="tablist" aria-label="Process views">
           {TABS.map(([id, label], index) => (

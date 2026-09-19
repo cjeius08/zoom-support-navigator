@@ -1,5 +1,6 @@
 export const FEEDBACK_PAGE_LABELS = {
   navigator: 'Navigator',
+  favorites: 'Favorites',
   training: 'Training & Resources',
   updates: 'What’s New / Updates',
   feedback: 'Feedback',
