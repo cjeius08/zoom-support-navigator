@@ -137,12 +137,6 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent, 
             <p>{process.purpose}</p>
           </div>
           <div className="drawer-header-actions">
-            <FavoriteToggle
-              active={isFavorite}
-              busy={favoriteBusy}
-              label={process.title}
-              onToggle={onToggleFavorite}
-            />
             <button
               className="drawer-close"
               aria-label="Close process"
@@ -150,6 +144,12 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent, 
             >
               ×
             </button>
+            <FavoriteToggle
+              active={isFavorite}
+              busy={favoriteBusy}
+              label={process.title}
+              onToggle={onToggleFavorite}
+            />
           </div>
         </header>
         <div className="process-tabs" role="tablist" aria-label="Process views">

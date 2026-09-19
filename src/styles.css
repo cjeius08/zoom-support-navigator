@@ -3853,7 +3853,11 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   flex: 0 0 auto;
 }
 .drawer-header-actions .drawer-close {
+  order: 2;
   margin: 0;
+}
+.drawer-header-actions > .favorite-toggle {
+  order: 1;
 }
 .favorites-view {
   display: grid;

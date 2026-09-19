@@ -122,13 +122,13 @@ export function CommonIssueDrawer({
           <p>{route.subtitle}</p>
         </div>
         <div className="drawer-header-actions">
+          <button type="button" className="drawer-close" aria-label="Close common issue route" onClick={onClose}>×</button>
           <FavoriteToggle
             active={isFavorite}
             busy={favoriteBusy}
             label={route.title}
             onToggle={onToggleFavorite}
           />
-          <button type="button" className="drawer-close" aria-label="Close common issue route" onClick={onClose}>×</button>
         </div>
       </header>
 
