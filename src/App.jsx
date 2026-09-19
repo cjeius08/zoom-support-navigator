@@ -47,6 +47,7 @@ export default function App() {
   const [ozzieIntroReplay, setOzzieIntroReplay] = useState(false)
   const [ozzieIntroSaving, setOzzieIntroSaving] = useState(false)
   const [ozzieIntroError, setOzzieIntroError] = useState('')
+  const [ozzieIntroAvailable, setOzzieIntroAvailable] = useState(false)
   const { trackEvent } = useUsageTracking(profile?.id ?? null, profile ? view : null)
   const {
     favorites,
@@ -65,6 +66,7 @@ export default function App() {
     clearRecentViews,
   } = useRecentlyViewed(profile?.id ?? null)
   const accessStyle = { '--login-workspace-image': `url(${assetUrl('assets/login-workspace-background.png')})` }
+  const ozzieIntroVideoSrc = assetUrl('assets/Ozzie2.mp4')
 
   const updateReportContext = useCallback((nextContext) => {
     setReportContext(current => ({ ...current, ...nextContext }))
@@ -188,12 +190,30 @@ export default function App() {
   useEffect(() => { getCurrentProfile().then(setProfile).catch(() => signOut()).finally(() => setLoading(false)) }, [])
 
   useEffect(() => {
-    if (profile && !profile.must_change_password && !profile.ozzie_intro_seen_at) {
-      setOzzieIntroReplay(false)
-      setOzzieIntroError('')
-      setOzzieIntroOpen(true)
+    let live = true
+    if (!profile || profile.must_change_password) {
+      setOzzieIntroAvailable(false)
+      return undefined
     }
-  }, [profile?.id, profile?.must_change_password, profile?.ozzie_intro_seen_at])
+
+    fetch(ozzieIntroVideoSrc, { method: 'HEAD' })
+      .then(response => {
+        if (!live) return
+        setOzzieIntroAvailable(response.ok)
+        if (response.ok && !profile.ozzie_intro_seen_at) {
+          setOzzieIntroReplay(false)
+          setOzzieIntroError('')
+          setOzzieIntroOpen(true)
+        }
+      })
+      .catch(() => {
+        if (live) setOzzieIntroAvailable(false)
+      })
+
+    return () => {
+      live = false
+    }
+  }, [ozzieIntroVideoSrc, profile?.id, profile?.must_change_password, profile?.ozzie_intro_seen_at])
 
   async function finishOzzieIntro() {
     if (ozzieIntroReplay || profile?.ozzie_intro_seen_at) {
@@ -220,6 +240,7 @@ export default function App() {
   }
 
   function replayOzzieIntro() {
+    if (!ozzieIntroAvailable) return
     setOzzieIntroReplay(true)
     setOzzieIntroError('')
     setOzzieIntroOpen(true)
@@ -300,12 +321,13 @@ export default function App() {
         onPasswordChange={changeOwnPassword}
         onAvatarChange={async avatarId=>{await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}}
         onMeetOzzie={replayOzzieIntro}
+        canMeetOzzie={ozzieIntroAvailable}
         onLogout={async()=>{await signOut();setProfile(null);setOzzieIntroOpen(false);setOzzieIntroReplay(false)}}
       >{content}</AppShell>
       <OzzieWelcome
         open={ozzieIntroOpen}
         replay={ozzieIntroReplay}
-        videoSrc={assetUrl('assets/Ozzie2.mp4')}
+        videoSrc={ozzieIntroVideoSrc}
         busy={ozzieIntroSaving}
         error={ozzieIntroError}
         onContinue={finishOzzieIntro}
