@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
-import { CallDocumentation, formatCallDocumentation } from './CallDocumentation'
+import { CallDocumentation } from './CallDocumentation'
+import { formatCallDocumentation } from './callDocumentationFormat'
 
 it('formats the approved documentation fields in a copy-ready order', () => {
   const text = formatCallDocumentation({
