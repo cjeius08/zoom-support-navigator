@@ -15,10 +15,12 @@ it('keeps workspace metadata and update history complete and newest-first', () =
     collaborator: 'Nina F.',
     nextReview: '2026-10-18',
   })
-  expect(data.metadata.updatePolicy).toMatch(/Every shipped user-facing feature/i)
+  expect(data.metadata.updatePolicy).toMatch(/Admin-only operational changes/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
   expect(data.updates[0].date).toBe('2026-09-19')
-  expect(data.updates.slice(0, 22).map(entry => entry.id)).toEqual([
+  expect(data.updates.slice(0, 24).map(entry => entry.id)).toEqual([
+    'ozzie-first-signin-role-labels',
+    'admin-member-lead-role-management',
     'readiness-resume-remaining-count',
     'avatar-selected-indicator',
     'avatar-persistence-polish',
@@ -49,6 +51,7 @@ it('keeps workspace metadata and update history complete and newest-first', () =
     expect(entry.title).toBeTruthy()
     expect(entry.area).toBeTruthy()
     expect(entry.changed).toBeTruthy()
+    expect(['all', 'admin']).toContain(entry.audience)
     expect(Array.isArray(entry.checks)).toBe(true)
     expect(entry.checks.length).toBeGreaterThan(0)
     entry.checks.forEach((check) => expect(check).toBeTruthy())
