@@ -47,7 +47,6 @@ export default function App() {
   const [ozzieIntroReplay, setOzzieIntroReplay] = useState(false)
   const [ozzieIntroSaving, setOzzieIntroSaving] = useState(false)
   const [ozzieIntroError, setOzzieIntroError] = useState('')
-  const [ozzieIntroAvailable, setOzzieIntroAvailable] = useState(false)
   const { trackEvent } = useUsageTracking(profile?.id ?? null, profile ? view : null)
   const {
     favorites,
@@ -190,32 +189,12 @@ export default function App() {
   useEffect(() => { getCurrentProfile().then(setProfile).catch(() => signOut()).finally(() => setLoading(false)) }, [])
 
   useEffect(() => {
-    let live = true
-    if (!profile || profile.must_change_password) {
-      setOzzieIntroAvailable(false)
-      return undefined
+    if (profile && !profile.must_change_password && !profile.ozzie_intro_seen_at) {
+      setOzzieIntroReplay(false)
+      setOzzieIntroError('')
+      setOzzieIntroOpen(true)
     }
-
-    fetch(ozzieIntroVideoSrc, { method: 'HEAD' })
-      .then(response => {
-        if (!live) return
-        const contentType = response.headers.get('content-type') || ''
-        const available = response.ok && contentType.toLowerCase().startsWith('video/')
-        setOzzieIntroAvailable(available)
-        if (available && !profile.ozzie_intro_seen_at) {
-          setOzzieIntroReplay(false)
-          setOzzieIntroError('')
-          setOzzieIntroOpen(true)
-        }
-      })
-      .catch(() => {
-        if (live) setOzzieIntroAvailable(false)
-      })
-
-    return () => {
-      live = false
-    }
-  }, [ozzieIntroVideoSrc, profile?.id, profile?.must_change_password, profile?.ozzie_intro_seen_at])
+  }, [profile?.id, profile?.must_change_password, profile?.ozzie_intro_seen_at])
 
   async function finishOzzieIntro() {
     if (ozzieIntroReplay || profile?.ozzie_intro_seen_at) {
@@ -242,7 +221,6 @@ export default function App() {
   }
 
   function replayOzzieIntro() {
-    if (!ozzieIntroAvailable) return
     setOzzieIntroReplay(true)
     setOzzieIntroError('')
     setOzzieIntroOpen(true)
@@ -302,7 +280,7 @@ export default function App() {
         : view === 'training'
           ? <TrainingResources initialVideoId={trainingVideoId} initialTarget={trainingTarget} onReportContextChange={updateReportContext}/>
           : view === 'updates'
-            ? <UpdatesView/>
+            ? <UpdatesView isAdmin={profile.role === 'creator_admin'}/>
             : view === 'feedback'
               ? <FeedbackPage onSubmit={submitFeedback} onCancel={()=>navigate('navigator')}/>
               : view === 'admin'
@@ -323,7 +301,7 @@ export default function App() {
         onPasswordChange={changeOwnPassword}
         onAvatarChange={async avatarId=>{await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}}
         onMeetOzzie={replayOzzieIntro}
-        canMeetOzzie={ozzieIntroAvailable}
+        canMeetOzzie
         onLogout={async()=>{await signOut();setProfile(null);setOzzieIntroOpen(false);setOzzieIntroReplay(false)}}
       >{content}</AppShell>
       <OzzieWelcome
