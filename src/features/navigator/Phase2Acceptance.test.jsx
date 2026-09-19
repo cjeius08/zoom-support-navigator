@@ -63,9 +63,6 @@ async function openFromSearch({ query, device, role }) {
   const user = userEvent.setup()
   render(<Navigator />)
 
-  if (device) await user.click(screen.getByRole('button', { name: device }))
-  if (role) await user.click(screen.getByRole('button', { name: role }))
-
   const search = screen.getByRole('combobox', { name: 'Search support processes' })
   await user.type(search, query)
 
@@ -73,7 +70,11 @@ async function openFromSearch({ query, device, role }) {
   const first = within(listbox).getAllByRole('option')[0]
   await user.click(first)
 
-  return { user, dialog: screen.getByRole('dialog') }
+  const dialog = screen.getByRole('dialog')
+  if (device) await user.click(within(dialog).getByRole('button', { name: device }))
+  if (role) await user.click(within(dialog).getByRole('button', { name: role }))
+
+  return { user, dialog }
 }
 
 it('freezes the approved Phase 2 route inventory', () => {
@@ -175,13 +176,12 @@ it('accepts a pre-join participant-view request and stops unsupported Browser gu
   expect(within(dialog).queryByRole('heading', { name: /Use Calendar and Invitees/i })).not.toBeInTheDocument()
 })
 
-it('carries the final call outcome back into the shared Live Call Flow context', async () => {
+it('carries the final call outcome in the shared route context', async () => {
   const { user, dialog } = await openFromSearch({ query: 'no sound', device: 'Windows', role: 'Participant' })
 
   await user.click(within(dialog).getByRole('button', { name: 'Resolved' }))
-  await user.click(within(dialog).getByRole('button', { name: 'Close common issue route' }))
-
-  expect(screen.getByRole('button', { name: 'Resolved' })).toHaveAttribute('aria-pressed', 'true')
+  const context = within(dialog).getByLabelText('Route context')
+  expect(context).toHaveTextContent('Resolved')
 })
 
 it('keeps Full Process available from the fast route without forcing the agent to read it first', async () => {
