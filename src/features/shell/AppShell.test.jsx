@@ -65,7 +65,7 @@ it('shows role-aware navigation and account controls', () => {
   expect(screen.getByRole('navigation')).toHaveTextContent('Readiness Lab')
   expect(screen.getByRole('button', { name: /ja_admin/i })).toBeInTheDocument()
   expect(screen.getAllByTestId('nav-icon').length).toBeGreaterThan(3)
-    expect(screen.getByLabelText('Ogletree Support Workspace')).toHaveTextContent('Ogletree Support Workspace')
+  expect(screen.getByRole('img', { name: 'Ozzie' })).toBeInTheDocument()
 })
 
 it('does not render admin navigation for agents', () => {
@@ -83,9 +83,9 @@ it('exposes What’s New and workspace ownership metadata to all agents', async 
   expect(screen.getByText(/Owner\s+Cjei A\./i)).toBeInTheDocument()
   expect(screen.getByText(/Collaborator\s+Nina F\./i)).toBeInTheDocument()
 
-  const versionChip = screen.getByRole('button', { name: /Workspace v1\.0.*Updated Sep 19/i })
-  await user.click(versionChip)
+  await user.click(screen.getByRole('button', { name: 'What’s New / Updates' }))
   expect(onNavigate).toHaveBeenCalledWith('updates')
+  expect(screen.queryByText(/Workspace v1\.0/i)).not.toBeInTheDocument()
 })
 
 it('exposes mobile navigation state and closes it after navigation', async () => {
