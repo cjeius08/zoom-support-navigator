@@ -10,6 +10,21 @@
   },
   "updates": [
     {
+      "id": "phase8-batch1-runtime-stability",
+      "date": "2026-09-19",
+      "area": "Admin / Stabilization",
+      "audience": "admin",
+      "title": "Phase 8 stabilization starts with runtime-state hardening",
+      "changed": "Started Phase 8 as a post-enhancement stabilization phase. Batch 1 keeps the current UI and approved content unchanged while hardening Ozzie first-login state, Usage Analytics date-range loading, Feedback Queue refresh behavior, and Readiness answer lookup against stale React state. Regression coverage also protects the new Back navigation and confirms that Lead remains a title only without admin navigation.",
+      "checks": [
+        "Confirm standard workspace pages and the Back control still behave exactly as before.",
+        "Change a feedback status in Feedback Queue and confirm the list refreshes with the new state.",
+        "Switch Usage Analytics periods and confirm the selected date range still reloads correctly.",
+        "Open Readiness Lab and confirm checked answers and resumed attempts still render correctly.",
+        "Sign in as a Lead account and confirm the title says Lead while admin navigation remains unavailable."
+      ]
+    },
+    {
       "id": "workspace-page-back-navigation",
       "date": "2026-09-19",
       "area": "Workspace / Navigation",
