@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { assetUrl } from '../../lib/assetUrl'
 import { avatarUrl } from '../profile/avatarCatalog'
 import { AvatarPicker } from '../profile/AvatarPicker'
-import { CONSOLE_METADATA, LAST_UPDATED, formatShortConsoleDate } from '../updates/updatesData'
+import { CONSOLE_METADATA, formatShortConsoleDate, lastUpdatedForAudience } from '../updates/updatesData'
 import '../updates/updates.css'
 import { useDialogFocus } from '../../lib/useDialogFocus'
 import { GlobalFeedbackButton } from '../feedback/GlobalFeedbackButton'
@@ -30,8 +30,10 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   const profileDialogRef = useRef(null)
   const menuToggleRef = useRef(null)
   const isAdmin = profile.role === 'creator_admin'
+  const accountRoleLabel = isAdmin ? 'Admin' : profile.workspace_role === 'lead' ? 'Lead' : 'Member'
   const visibleLinks = isAdmin ? [...agentLinks, ...adminLinks] : agentLinks
   const style = { '--workspace-image': `url(${assetUrl('assets/login-workspace-background.png')})` }
+  const visibleLastUpdated = lastUpdatedForAudience(isAdmin)
 
   function closeProfile() {
     setProfileOpen(false)
@@ -103,7 +105,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
       </button>
       <div className="app-header-spacer" aria-hidden="true" />
-      <button className="account-menu" aria-expanded={profileOpen} aria-label={`${profile.username} account`} onClick={() => { const next = !profileOpen; setProfileOpen(next); if (next) { setMessage(''); setProfileError(''); setProfileErrorField('') } }}>{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<span className="account-copy"><strong>{profile.username}</strong><small>{isAdmin ? 'JA Admin' : 'Agent'}</small></span><svg className="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></button>
+      <button className="account-menu" aria-expanded={profileOpen} aria-label={`${profile.username} account`} onClick={() => { const next = !profileOpen; setProfileOpen(next); if (next) { setMessage(''); setProfileError(''); setProfileErrorField('') } }}>{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<span className="account-copy"><strong>{profile.username}</strong><small>{accountRoleLabel}</small></span><svg className="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></button>
     </header>
 
     {open && <button type="button" className="sidebar-backdrop" aria-label="Close navigation" onClick={() => closeNavigation({ restoreFocus: true })} />}
@@ -141,8 +143,8 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
       <div className="sidebar-footer">
         <div className="console-meta-mini" aria-label="Console metadata">
           <strong>Workspace v{CONSOLE_METADATA.version}</strong>
-          <span>Updated {formatShortConsoleDate(LAST_UPDATED)} · Next review {formatShortConsoleDate(CONSOLE_METADATA.nextReview)}</span>
-          <span>Owner {CONSOLE_METADATA.owner}</span>
+          <span>Updated {formatShortConsoleDate(visibleLastUpdated)} · Next review {formatShortConsoleDate(CONSOLE_METADATA.nextReview)}</span>
+          <span>Workspace Lead {CONSOLE_METADATA.owner}</span>
           <span>Collaborator {CONSOLE_METADATA.collaborator}</span>
         </div>
         <button className="logout-button" onClick={onLogout}>Logout</button>
@@ -182,6 +184,6 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
 
     <GlobalFeedbackButton currentView={currentView} reportContext={reportContext} onSubmit={onFeedback} />
 
-    {profileOpen && <div className="modal-backdrop" role="presentation" onClick={event => event.target === event.currentTarget && closeProfile()}><div ref={profileDialogRef} tabIndex={-1} className="profile-panel" role="dialog" aria-modal="true" aria-labelledby="profile-title"><div className="profile-summary">{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<div><h2 id="profile-title">My Profile</h2><strong>{profile.username}</strong><p>{profile.initials} · {isAdmin ? 'JA Admin' : 'Agent'}</p></div></div>{message && <p className="success-message" role="status">{message}</p>}{profileError && <p id="profile-error" role="alert">{profileError}</p>}{avatarOpen ? <AvatarPicker selectedId={profile.avatar_id} onCancel={() => setAvatarOpen(false)} onSave={async id => { setMessage(''); setProfileError(''); setProfileErrorField(''); try { await onAvatarChange?.(id); setAvatarOpen(false); setMessage('Avatar updated.') } catch (avatarError) { setProfileError(avatarError?.message || 'Could not update avatar.') } }} /> : passwordOpen ? <form onSubmit={submitPassword} noValidate><h3>Change Password</h3><label>New password<input name="password" type="password" autoComplete="new-password" disabled={passwordSaving} aria-invalid={profileErrorField === 'password' ? 'true' : undefined} aria-describedby={profileErrorField === 'password' ? 'profile-error' : undefined} /></label><label>Confirm password<input name="confirm" type="password" autoComplete="new-password" disabled={passwordSaving} aria-invalid={profileErrorField === 'confirm' ? 'true' : undefined} aria-describedby={profileErrorField === 'confirm' ? 'profile-error' : undefined} /></label><div className="dialog-actions"><button type="button" disabled={passwordSaving} onClick={() => setPasswordOpen(false)}>Cancel</button><button disabled={passwordSaving}>{passwordSaving ? 'Saving…' : 'Save Password'}</button></div></form> : <div className="profile-actions">{canMeetOzzie && <button onClick={() => { closeProfile(); onMeetOzzie?.() }}>Meet Ozzie Again</button>}<button onClick={() => { setMessage(''); setProfileError(''); setProfileErrorField(''); setAvatarOpen(true) }}>Change Avatar</button><button onClick={() => { setMessage(''); setProfileError(''); setProfileErrorField(''); setPasswordOpen(true) }}>Change Password</button><button onClick={onLogout}>Logout</button></div>}</div></div>}
+    {profileOpen && <div className="modal-backdrop" role="presentation" onClick={event => event.target === event.currentTarget && closeProfile()}><div ref={profileDialogRef} tabIndex={-1} className="profile-panel" role="dialog" aria-modal="true" aria-labelledby="profile-title"><div className="profile-summary">{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<div><h2 id="profile-title">My Profile</h2><strong>{profile.username}</strong><p>{profile.initials} · {accountRoleLabel}</p></div></div>{message && <p className="success-message" role="status">{message}</p>}{profileError && <p id="profile-error" role="alert">{profileError}</p>}{avatarOpen ? <AvatarPicker selectedId={profile.avatar_id} onCancel={() => setAvatarOpen(false)} onSave={async id => { setMessage(''); setProfileError(''); setProfileErrorField(''); try { await onAvatarChange?.(id); setAvatarOpen(false); setMessage('Avatar updated.') } catch (avatarError) { setProfileError(avatarError?.message || 'Could not update avatar.') } }} /> : passwordOpen ? <form onSubmit={submitPassword} noValidate><h3>Change Password</h3><label>New password<input name="password" type="password" autoComplete="new-password" disabled={passwordSaving} aria-invalid={profileErrorField === 'password' ? 'true' : undefined} aria-describedby={profileErrorField === 'password' ? 'profile-error' : undefined} /></label><label>Confirm password<input name="confirm" type="password" autoComplete="new-password" disabled={passwordSaving} aria-invalid={profileErrorField === 'confirm' ? 'true' : undefined} aria-describedby={profileErrorField === 'confirm' ? 'profile-error' : undefined} /></label><div className="dialog-actions"><button type="button" disabled={passwordSaving} onClick={() => setPasswordOpen(false)}>Cancel</button><button disabled={passwordSaving}>{passwordSaving ? 'Saving…' : 'Save Password'}</button></div></form> : <div className="profile-actions">{canMeetOzzie && <button onClick={() => { closeProfile(); onMeetOzzie?.() }}>Meet Ozzie Again</button>}<button onClick={() => { setMessage(''); setProfileError(''); setProfileErrorField(''); setAvatarOpen(true) }}>Change Avatar</button><button onClick={() => { setMessage(''); setProfileError(''); setProfileErrorField(''); setPasswordOpen(true) }}>Change Password</button><button onClick={onLogout}>Logout</button></div>}</div></div>}
   </div>
 }
