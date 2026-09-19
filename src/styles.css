@@ -4335,8 +4335,11 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 
 .documentation-dock-minimized {
-  top: calc(5.25rem + var(--tool-stack-offset, 0rem));
-  transition: top .16s ease, border-color .16s ease, background .16s ease;
+  top: auto;
+  right: auto;
+  bottom: calc(1rem + var(--tool-stack-offset, 0rem));
+  left: 17.25rem;
+  transition: bottom .16s ease, border-color .16s ease, background .16s ease;
 }
 .documentation-dock-minimized:hover {
   border-color: rgba(88, 174, 238, .5);
@@ -4558,7 +4561,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 @media (max-width: 800px) {
   .documentation-dock-minimized {
-    top: calc(5.1rem + var(--tool-stack-offset, 0rem));
+    top: auto;
+    right: auto;
+    bottom: calc(1rem + var(--tool-stack-offset, 0rem));
+    left: .6rem;
   }
 }
 @media (max-width: 700px) {
