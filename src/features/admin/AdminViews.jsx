@@ -64,7 +64,7 @@ export function AdminHome({ onNavigate }) {
         </button>
         <button onClick={() => onNavigate("feedback_queue")}>
           <strong>Feedback Queue</strong>
-          <span>Agent reports and context →</span>
+          <span>User reports and context →</span>
         </button>
       </div>
     </section>
@@ -688,7 +688,7 @@ export function UsageAnalytics() {
                         <div className="usage-user-identity">
                           <strong>{user.username || user.initials}</strong>
                           <small>
-                            {user.initials} · {user.role === "creator_admin" ? "JA Admin" : "Agent"}
+                            {user.initials} · {workspaceRoleLabel(user)}
                           </small>
                         </div>
 
