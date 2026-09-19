@@ -79,6 +79,18 @@ Flow:
 
 No destructive account testing on the real sample agent.
 
+## Batch 3 result — 2026-09-19
+
+Status: **PASS.**
+
+Controlled pilot agent: `cjeitest1` / CJ.
+
+Representative Navigator and Training use increased the agent's usage/session metadata, presence remained observable, one feedback report captured the expected safe screen context, JA status/history controls worked, and the same partial Readiness Attempt 1 remained visible to both the agent and JA reporting.
+
+The pilot exposed one Readiness resume-clarity defect: the backend preserved checked answers correctly, but the reopened UI could look like a fresh five-question set. The fix shipped during the pilot and now shows a clear resumed-attempt banner plus completed/remaining counts.
+
+Detailed record: `docs/superpowers/plans/2026-09-19-phase7-batch3-controlled-pilot-results.md`
+
 ## Batch 4 — Production Rollout & Monitoring
 
 - Run final full test/lint/build.
