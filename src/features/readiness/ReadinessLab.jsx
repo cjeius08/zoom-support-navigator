@@ -47,6 +47,7 @@ function findResumeIndex(questions, answers = []) {
 export function ReadinessLab({
   open = false,
   minimized = false,
+  stackIndex = 0,
   onMinimize = () => {},
   onClose = () => {},
   onOpenResource = () => {},
