@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, expect, it, vi } from 'vitest'
 
@@ -116,6 +116,7 @@ it('lets JA update feedback status, see history, and open the stored page', asyn
 
   await user.selectOptions(screen.getByLabelText('Status for feedback feedback-1'), 'reviewing')
   expect(updateFeedbackStatus).toHaveBeenCalledWith('feedback-1', 'reviewing')
+  await waitFor(() => expect(loadFeedback).toHaveBeenCalledTimes(2))
 
   await user.click(screen.getByRole('button', { name: 'Open Page' }))
   expect(onOpenPage).toHaveBeenCalledWith(expect.objectContaining({
