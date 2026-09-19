@@ -174,7 +174,7 @@ export default function App() {
       <div className="ozzie-logo-stage ozzie-logo-stage-login">
         <img
           className="access-brand-logo"
-          src={assetUrl('assets/ozzie-workspace.svg')}
+          src={assetUrl('assets/ozzie-exact-v2.webp')}
           alt="Ozzie — Ogletree Support Workspace"
         />
       </div>
