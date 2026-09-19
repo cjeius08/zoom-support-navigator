@@ -10,6 +10,19 @@
   },
   "updates": [
     {
+      "id": "phase8-batch4-final-smoke-freeze",
+      "date": "2026-09-19",
+      "area": "Admin / Stabilization",
+      "audience": "admin",
+      "title": "Phase 8 stabilization closes with final smoke and freeze",
+      "changed": "Completed the final stabilization gate across Member, Lead, and Admin workspace surfaces. Added a dedicated responsive smoke test covering desktop, tablet/mobile navigation behavior, role-specific navigation, Back-button availability, and the production shell breakpoints. Production data sanity checks found no missing workspace roles, invalid claimed/pending slots, or orphaned Favorites/Recently Viewed rows. This closes Phase 8; future feature ideas should begin in a new phase rather than being folded into stabilization.",
+      "checks": [
+        "Verify one Member and one Lead account can use the standard workspace while Admin Home, Team Management, Usage Analytics, and Feedback Queue remain unavailable.",
+        "Verify the Admin account still sees the complete admin navigation and Readiness reporting.",
+        "Resize from desktop through tablet/mobile and verify the Back control, hamburger navigation, sidebar footer, and Report an issue remain reachable."
+      ]
+    },
+    {
       "id": "phase8-batch3-data-security-regression",
       "date": "2026-09-19",
       "area": "Admin / Security",
