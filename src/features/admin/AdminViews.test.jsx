@@ -7,9 +7,10 @@ const loadUsage = vi.fn()
 const loadFeedback = vi.fn()
 const loadReadinessReport = vi.fn()
 const loadCallNotesReport = vi.fn()
+const loadStorageGuardrail = vi.fn()
 const updateFeedbackStatus = vi.fn()
 const runAdminAction = vi.fn()
-vi.mock('../../lib/adminApi', () => ({ loadFeedback, loadTeam, loadUsage, loadReadinessReport, loadCallNotesReport, updateFeedbackStatus, runAdminAction }))
+vi.mock('../../lib/adminApi', () => ({ loadFeedback, loadTeam, loadUsage, loadReadinessReport, loadCallNotesReport, loadStorageGuardrail, updateFeedbackStatus, runAdminAction }))
 
 beforeEach(() => {
   loadUsage.mockReset()
@@ -18,6 +19,8 @@ beforeEach(() => {
   loadReadinessReport.mockResolvedValue({ parts: [] })
   loadCallNotesReport.mockReset()
   loadCallNotesReport.mockResolvedValue({ notes: [], profiles: [] })
+  loadStorageGuardrail.mockReset()
+  loadStorageGuardrail.mockResolvedValue({ database_bytes: 13631488, limit_bytes: 524288000, status: 'safe', checked_at: '2026-09-19T09:00:00Z' })
   updateFeedbackStatus.mockReset()
   loadTeam.mockResolvedValue([{ id: 'agent-1', username: 'agent_one', initials: 'AO', role: 'agent', workspace_role: 'member', status: 'active', avatar_id: null, presence: 'active' }])
   runAdminAction.mockReset()
@@ -262,4 +265,13 @@ it('shows Readiness Lab attempt history separately with scores and incorrect ans
   expect(screen.getByText('2/5 checked · In progress')).toBeInTheDocument()
   expect(screen.getByText(/Check microphone input/i)).toBeInTheDocument()
   expect(screen.getByText(/Check speaker output/i)).toBeInTheDocument()
+})
+
+
+it('shows the database storage guardrail on Admin Home', async () => {
+  const { AdminHome } = await import('./AdminViews')
+  render(<AdminHome onNavigate={vi.fn()} />)
+  expect(await screen.findByText(/13.0 MB \/ 500.0 MB/i)).toBeInTheDocument()
+  expect(screen.getByText(/Safe\. No action needed/i)).toBeInTheDocument()
+  expect(screen.getByText(/refreshed hourly/i)).toBeInTheDocument()
 })
