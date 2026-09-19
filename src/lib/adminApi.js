@@ -38,7 +38,7 @@ export async function loadTeam() {
     ...(profiles || []).map(person => ({ ...person, presence: states.get(person.id) || 'offline' })),
     ...(slots || [])
       .filter(slot => slot.status === 'pending' && !claimed.has(slot.claimed_by))
-      .map(slot => ({ id: `pending-${slot.id}`, initials: slot.initials, status: 'pending', pending: true, presence: 'offline', role: 'agent' })),
+      .map(slot => ({ id: `pending-${slot.id}`, initials: slot.initials, status: 'pending', pending: true, presence: 'offline', role: 'agent', workspace_role: slot.workspace_role })),
   ]
 }
 
