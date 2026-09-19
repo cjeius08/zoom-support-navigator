@@ -3760,11 +3760,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   height: auto;
   object-fit: contain;
   filter:
-    brightness(1.48)
+    brightness(1.16)
     contrast(1.08)
-    saturate(1.08)
-    drop-shadow(0 .35rem .9rem rgba(0, 72, 150, .24))
-    drop-shadow(0 0 .18rem rgba(191, 224, 255, .20));
+    saturate(1.05);
 }
 
 .live-call-flow-approved {
