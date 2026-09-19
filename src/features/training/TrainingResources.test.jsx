@@ -42,7 +42,7 @@ describe('Training & Resources', () => {
 
     expect(onReportContextChange).toHaveBeenLastCalledWith(expect.objectContaining({
       selected_tab: 'Training Roadmap',
-      current_section: 'Phase 6 learning path',
+      current_section: 'Structured learning path',
     }))
   })
 
