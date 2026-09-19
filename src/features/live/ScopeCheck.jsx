@@ -10,7 +10,7 @@ import {
   getReferralRoadblocks,
 } from './scopeCheckData'
 
-export function ScopeCheck({ open = false, minimized = false, onMinimize = () => {}, onClose = () => {} }) {
+export function ScopeCheck({ open = false, minimized = false, stackIndex = 0, onMinimize = () => {}, onClose = () => {} }) {
   const [answers, setAnswers] = useState({
     category: '',
     troubleshooting: '',
@@ -49,7 +49,7 @@ export function ScopeCheck({ open = false, minimized = false, onMinimize = () =>
   if (!open) return null
 
   if (minimized) {
-    return <aside className="documentation-dock documentation-dock-minimized scope-check-minimized" aria-label="Scope Check minimized">
+    return <aside style={{ '--tool-stack-index': Math.max(0, stackIndex) }} className="documentation-dock documentation-dock-minimized scope-check-minimized" aria-label="Scope Check minimized">
       <button type="button" className="documentation-dock-restore" aria-label="Restore Scope Check" onClick={onMinimize}>
         <span>
           <strong>Scope Check</strong>
