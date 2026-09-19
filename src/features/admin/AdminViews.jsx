@@ -13,7 +13,7 @@ import {
   dateRangeForPeriod,
   formatActiveDuration,
 } from "../analytics/usageSummary";
-import { useDialogFocus } from "../../lib/useDialogFocus";
+import { useDialogFocus } from "../../lib/useDialogFocus";\nimport { CallNotesReport } from "./CallNotesReport";
 
 function useData(loader, refreshKey = 0) {
   const [state, setState] = useState({ loading: true, data: null, error: "" });
@@ -677,7 +677,7 @@ export function UsageAnalytics() {
         }}
       </State>
 
-      <section className="readiness-admin-report" aria-labelledby="readiness-report-title">
+      <CallNotesReport range={range} />\n\n      <section className="readiness-admin-report" aria-labelledby="readiness-report-title">
         <div className="view-heading">
           <div>
             <p className="eyebrow">Readiness validation</p>
