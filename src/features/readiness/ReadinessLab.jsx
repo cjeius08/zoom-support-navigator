@@ -189,7 +189,7 @@ export function ReadinessLab({
   return <aside className="documentation-dock readiness-lab-dock" aria-labelledby="readiness-lab-title">
     <header className="documentation-dock-header">
       <div>
-        <span className="documentation-dock-kicker">Phase 6 · Readiness validation</span>
+        <span className="documentation-dock-kicker">Readiness validation</span>
         <h2 id="readiness-lab-title">Readiness Lab</h2>
       </div>
       <div className="documentation-dock-window-actions">
