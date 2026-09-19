@@ -39,6 +39,11 @@ function State({ state, children }) {
   return children(state.data);
 }
 
+function workspaceRoleLabel(person) {
+  if (person?.role === "creator_admin") return "Admin";
+  return person?.workspace_role === "lead" ? "Lead" : "Member";
+}
+
 export function AdminHome({ onNavigate }) {
   return (
     <section className="console-view">
@@ -94,6 +99,7 @@ function TeamDialog({ person, onClose, onAction, busy }) {
           <div className="admin-actions">
             <button onClick={() => setMode("username")}>Edit Username</button>
             <button onClick={() => setMode("initials")}>Edit Initials</button>
+            <button onClick={() => setMode("role")}>Edit Role</button>
             <button onClick={() => setMode("password")}>Reset Password</button>
             {person.status === "active" ? (
               <button onClick={() => setMode("deactivate")}>
@@ -173,6 +179,41 @@ function TeamDialog({ person, onClose, onAction, busy }) {
             </div>
           </form>
         )}
+        {mode === "role" && (
+          <form
+            onSubmit={(event) =>
+              submit(event, {
+                action: "set_workspace_role",
+                user_id: person.id,
+                workspace_role: String(
+                  new FormData(event.currentTarget).get("workspace_role"),
+                ),
+              })
+            }
+          >
+            <label>
+              Role
+              <select
+                name="workspace_role"
+                defaultValue={person.workspace_role === "lead" ? "lead" : "member"}
+                required
+              >
+                <option value="member">Member</option>
+                <option value="lead">Lead</option>
+              </select>
+            </label>
+            <p>
+              Member and Lead currently have the same workspace permissions.
+              Lead is a title only for now.
+            </p>
+            <div className="dialog-actions">
+              <button type="button" onClick={() => setMode("")}>
+                Cancel
+              </button>
+              <button disabled={busy}>{busy ? "Processing…" : "Save Role"}</button>
+            </div>
+          </form>
+        )}
         {mode === "password" && (
           <form
             onSubmit={(event) =>
@@ -195,7 +236,7 @@ function TeamDialog({ person, onClose, onAction, busy }) {
                 required
               />
             </label>
-            <p>The agent must change this password at next sign-in.</p>
+            <p>The user must change this password at next sign-in.</p>
             <div className="dialog-actions">
               <button type="button" onClick={() => setMode("")}>
                 Cancel
@@ -280,6 +321,7 @@ export function TeamManagement() {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteCode, setInviteCode] = useState("");
   const [inviteInitials, setInviteInitials] = useState("");
+  const [inviteRole, setInviteRole] = useState("member");
   const [inviteSaving, setInviteSaving] = useState(false);
   const [actionSaving, setActionSaving] = useState(false);
   const inviteLockRef = useRef(false);
@@ -321,15 +363,16 @@ export function TeamManagement() {
     if (inviteLockRef.current) return;
     inviteLockRef.current = true;
     setInviteSaving(true);
-    const initials = String(
-      new FormData(event.currentTarget).get("initials") || "",
-    )
+    const form = new FormData(event.currentTarget);
+    const initials = String(form.get("initials") || "")
       .trim()
       .toUpperCase();
+    const workspaceRole = String(form.get("workspace_role") || "member");
     try {
       const data = await runAdminAction({
         action: "generate_invite",
         initials,
+        workspace_role: workspaceRole,
       });
       setInviteCode(data.invite_code);
       await refresh();
@@ -356,6 +399,7 @@ export function TeamManagement() {
             setInviteOpen(true);
             setInviteCode("");
             setInviteInitials("");
+            setInviteRole("member");
           }}
         >
           Add Team Member
@@ -377,11 +421,9 @@ export function TeamManagement() {
                 <strong>{person.username || "Pending invite"}</strong>
                 <small>
                   {person.initials} ·{" "}
-                  {person.role === "creator_admin"
-                    ? "JA Admin"
-                    : person.pending
-                      ? "Pending agent"
-                      : "Agent"}
+                  {person.pending
+                    ? `Pending ${workspaceRoleLabel(person)}`
+                    : workspaceRoleLabel(person)}
                 </small>
               </div>
               <span
@@ -401,6 +443,7 @@ export function TeamManagement() {
                       setInviteOpen(true);
                       setInviteCode("");
                       setInviteInitials(person.initials);
+                      setInviteRole(person.workspace_role === "lead" ? "lead" : "member");
                     } else setSelected(person);
                   }}
                 >
@@ -445,9 +488,21 @@ export function TeamManagement() {
                 required
               />
             </label>
+            <label>
+              Role
+              <select
+                name="workspace_role"
+                value={inviteRole}
+                onChange={(event) => setInviteRole(event.target.value)}
+                required
+              >
+                <option value="member">Member</option>
+                <option value="lead">Lead</option>
+              </select>
+            </label>
             <p>
               Generating a new code revokes a prior unused invite for these
-              initials.
+              initials. Member and Lead have the same permissions for now.
             </p>
             {inviteCode && (
               <div className="one-time-code">
@@ -579,7 +634,7 @@ export function UsageAnalytics() {
                     <div className="usage-user-identity">
                       <strong>{user.username || user.initials}</strong>
                       <small>
-                        {user.initials} · {user.role === "creator_admin" ? "JA Admin" : "Agent"}
+                        {user.initials} · {workspaceRoleLabel(user)}
                       </small>
                     </div>
                     <span className={`presence-badge ${user.presence}`}>{user.presence}</span>
