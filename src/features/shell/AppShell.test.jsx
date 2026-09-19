@@ -109,7 +109,7 @@ it('exposes What’s New and workspace ownership metadata to all agents', async 
   const { container } = render(<AppShell profile={agentProfile} onNavigate={onNavigate} />)
 
   expect(screen.getByRole('navigation')).toHaveTextContent('What’s New / Updates')
-  expect(screen.getByText(/Workspace Lead\\s+Cjei A\\./i)).toBeInTheDocument()
+  expect(screen.getByText(/Workspace Lead\s+Cjei A\./i)).toBeInTheDocument()
   expect(screen.getByText(/Collaborator\s+Nina F\./i)).toBeInTheDocument()
 
   await user.click(screen.getByRole('button', { name: 'What’s New / Updates' }))
