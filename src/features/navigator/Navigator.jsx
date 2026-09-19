@@ -241,8 +241,6 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
       </section>
 
       <LiveCallFlow
-        value={callContext}
-        onChange={setCallContext}
         expanded={callFlowExpanded}
         onExpandedChange={setCallFlowExpanded}
       />
