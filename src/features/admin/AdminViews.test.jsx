@@ -49,7 +49,8 @@ it('labels a pending member action as regeneration', async () => {
   loadTeam.mockResolvedValueOnce([{ id: 'pending-AB', initials: 'AB', pending: true, status: 'pending', role: 'agent', workspace_role: 'lead', avatar_id: null }])
   const { TeamManagement } = await import('./AdminViews')
   render(<TeamManagement />)
-  expect(await screen.findByRole('button', { name: /regenerate invite for AB/i })).toBeInTheDocument()
+  expect(await screen.findByText(/AB · Pending Lead/i)).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /regenerate invite for AB/i })).toBeInTheDocument()
 })
 
 
