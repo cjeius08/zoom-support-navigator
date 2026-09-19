@@ -1,7 +1,8 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
-import { GUIDED_LESSONS, GuidedLessons } from './GuidedLessons'
+import { GuidedLessons } from './GuidedLessons'
+import { GUIDED_LESSONS } from './guidedLessonsData'
 
 it('locks Phase 6 Batch 2 to five source-backed guided lessons', () => {
   expect(GUIDED_LESSONS).toHaveLength(5)
@@ -34,7 +35,7 @@ it('renders the visual call-method lesson first without adding a scored knowledg
     expect(within(panel).getByText(stage, { selector: 'strong' })).toBeInTheDocument()
   }
   expect(within(panel).getByText(/Greet → Listen → Empathize → Assure → Probe → Troubleshoot → Confirm → Close/i)).toBeInTheDocument()
-  expect(screen.getByText(/Practice questions are intentionally saved for Phase 6 Batch 3/i)).toBeInTheDocument()
+  expect(screen.getByText(/When you’re ready to practice, open Readiness Lab/i)).toBeInTheDocument()
 })
 
 it('switches to audio direction and keeps speaker versus microphone visually separate', async () => {
