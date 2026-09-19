@@ -4,6 +4,7 @@ import {
   loadTeam,
   loadUsage,
   loadReadinessReport,
+  loadStorageGuardrail,
   runAdminAction,
   updateFeedbackStatus,
 } from "../../lib/adminApi";
@@ -40,6 +41,54 @@ function State({ state, children }) {
   return children(state.data);
 }
 
+
+function formatStorageMb(bytes = 0) {
+  return (Number(bytes || 0) / (1024 * 1024)).toFixed(1);
+}
+
+function StorageGuardrailCard({ state }) {
+  if (state.loading) {
+    return <section className="storage-guardrail-card safe" aria-label="Database storage guardrail">
+      <strong>Database storage</strong>
+      <span>Checking current usage…</span>
+    </section>;
+  }
+
+  if (state.error || !state.data) {
+    return <section className="storage-guardrail-card warning" role="status">
+      <strong>Database storage check unavailable</strong>
+      <span>{state.error || "Could not read the latest storage status."}</span>
+    </section>;
+  }
+
+  const used = Number(state.data.database_bytes || 0);
+  const limit = Number(state.data.limit_bytes || 524288000);
+  const percent = limit ? Math.min(100, (used / limit) * 100) : 0;
+  const status = state.data.status || "safe";
+  const copy = {
+    safe: "Safe. No action needed.",
+    warning: "Warning: storage has reached 350 MB. Review growth before it becomes critical.",
+    critical: "Critical: storage has reached 425 MB. Plan cleanup now.",
+    urgent: "Urgent: storage has reached 475 MB. Reduce database size before the Free-plan limit.",
+    limit_reached: "Limit reached: the Free project may enter read-only mode until database size is reduced.",
+  }[status];
+
+  return <section className={`storage-guardrail-card ${status}`} aria-label="Database storage guardrail" role={status === "safe" ? undefined : "alert"}>
+    <div className="storage-guardrail-heading">
+      <div>
+        <p className="eyebrow">Free-plan guardrail</p>
+        <strong>{formatStorageMb(used)} MB / {formatStorageMb(limit)} MB</strong>
+      </div>
+      <span className="storage-guardrail-status">{status.replace("_", " ")}</span>
+    </div>
+    <div className="storage-guardrail-meter" aria-label={`Database storage ${percent.toFixed(1)}% used`}>
+      <span style={{ width: `${percent}%` }} />
+    </div>
+    <p>{copy}</p>
+    <small>Last checked: {new Date(state.data.checked_at).toLocaleString()} · refreshed hourly</small>
+  </section>;
+}
+
 function workspaceRoleLabel(person) {
   if (person?.role === "creator_admin") return "Admin";
   return person?.workspace_role === "lead" ? "Lead" : "Member";
@@ -63,6 +112,9 @@ function readinessAttemptSummary(attempts = [], maxAttempts = 3) {
 }
 
 export function AdminHome({ onNavigate }) {
+  const storageLoader = useCallback(() => loadStorageGuardrail(), []);
+  const storageState = useData(storageLoader);
+
   return (
     <section className="console-view">
       <p className="eyebrow">Admin workspace</p>
@@ -71,6 +123,7 @@ export function AdminHome({ onNavigate }) {
         Manage the real team, review privacy-safe usage, and respond to
         submitted feedback.
       </p>
+      <StorageGuardrailCard state={storageState} />
       <div className="admin-shortcuts">
         <button onClick={() => onNavigate("team")}>
           <strong>Team Management</strong>
