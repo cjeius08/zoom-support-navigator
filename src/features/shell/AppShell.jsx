@@ -122,7 +122,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     >
       <div className="sidebar-scroll-region">
         <div className="sidebar-brand" aria-label="Ozzie — Ogletree Support Workspace">
-          <img src={assetUrl('assets/ozzie-exact-v2.webp')} alt="Ozzie — Ogletree Support Workspace" />
+          <img src={assetUrl('assets/ozzie-approved-exact.png')} alt="Ozzie — Ogletree Support Workspace" />
         </div>
         <nav aria-label="Primary navigation">{visibleLinks.map(([id, label, kind]) => kind === 'tool'
           ? <button
