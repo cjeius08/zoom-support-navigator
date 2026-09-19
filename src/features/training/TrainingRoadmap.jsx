@@ -1,82 +1,10 @@
-export const TRAINING_ROADMAP_MODULES = [
-  {
-    id: 'call-method',
-    number: 1,
-    phase: 'Foundation',
-    title: 'Learn the Ogletree call flow',
-    objective: 'Learn the official sequence from greeting and active listening through diagnosis, troubleshooting, confirmation, recap, final check, and closing.',
-    resource: 'Scripts & Communication · Call Language',
-    status: 'available',
-    actionLabel: 'Open call flow language',
-    target: { section: 'scripts', mode: 'language', subsection: 'opening' },
-    skills: ['Listen before troubleshooting', 'Check hearing status early', 'Confirm before closing'],
-  },
-  {
-    id: 'device-orientation',
-    number: 2,
-    phase: 'Foundation',
-    title: 'Orient yourself on each device',
-    objective: 'Learn where common Zoom controls live on Windows, Mac, iPhone, Android, and Browser before guiding a caller.',
-    resource: 'Device Walkthroughs',
-    status: 'available',
-    actionLabel: 'Open device walkthroughs',
-    target: { section: 'devices' },
-    skills: ['Recognize platform differences', 'Describe visible controls', 'Avoid guessing from another device'],
-  },
-  {
-    id: 'communication-boundaries',
-    number: 3,
-    phase: 'Apply',
-    title: 'Communicate clearly and stay inside scope',
-    objective: 'Use calm support language, avoid unsupported promises, and recognize wording that can create confusion or overcommitment.',
-    resource: 'Scripts & Communication · Avoid / Use Instead',
-    status: 'available',
-    actionLabel: 'Open wording guardrails',
-    target: { section: 'scripts', mode: 'avoid' },
-    skills: ['Set expectations', 'Avoid blame and assumptions', 'Use referral-safe wording'],
-  },
-  {
-    id: 'scenario-routing',
-    number: 4,
-    phase: 'Apply',
-    title: 'Apply the method to common caller scenarios',
-    objective: 'Practice discovery, approved next steps, result confirmation, and the point where basic support should stop.',
-    resource: 'Scripts & Communication · Scenario Scripts',
-    status: 'available',
-    actionLabel: 'Open scenario scripts',
-    target: { section: 'scripts', mode: 'scenarios' },
-    skills: ['Ask route-changing questions', 'Follow the approved next step', 'Recognize the support boundary'],
-  },
-  {
-    id: 'guided-lessons',
-    number: 5,
-    phase: 'Learn visually',
-    title: 'Guided visual lessons',
-    objective: 'Use short visual teaching modules to connect the approved call method, device view, symptom recognition, waiting states, and support boundaries.',
-    resource: 'Guided Visual Lessons · 5 core lessons',
-    status: 'available',
-    actionLabel: 'Open guided lessons',
-    target: { section: 'lessons' },
-    skills: ['See the concept', 'Follow the visual sequence', 'Connect the lesson to live support'],
-  },
-  {
-    id: 'readiness-lab',
-    number: 6,
-    phase: 'Validate',
-    title: 'Readiness Lab',
-    objective: 'Use open-book scenario checks to prove you can find and apply the right workspace guidance instead of memorizing scripts.',
-    resource: 'Global live tool · 5-part readiness path',
-    status: 'complete',
-    statusLabel: 'All 5 parts available',
-    skills: ['Find the answer in the workspace', 'Apply the guidance', 'Identify review areas'],
-  },
-]
+import { TRAINING_ROADMAP_MODULES } from './trainingRoadmapData'
 
 export function TrainingRoadmap({ onOpenResource = () => {} }) {
   return <section className="training-roadmap" aria-labelledby="training-roadmap-title">
     <div className="training-roadmap-intro">
       <div>
-        <p className="eyebrow">Phase 6 · Training environment</p>
+        <p className="eyebrow">Training environment</p>
         <h2 id="training-roadmap-title">Follow one learning path instead of opening everything at once</h2>
         <p>Move from the official call flow, to device orientation, to applied support, then reinforce the patterns with guided visual lessons. All five Readiness Lab parts are now available from the sidebar as the final validation step.</p>
       </div>
