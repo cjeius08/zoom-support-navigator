@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { loadCallNotesReport } from '../../lib/adminApi'
+import { formatCallDocumentation } from '../training/callDocumentationFormat'
 
 function personLabel(person) {
   if (!person) return 'Unknown user'
@@ -73,7 +74,7 @@ export function CallNotesReport({ range }) {
             </dl>
             <details className="call-note-report-details">
               <summary>View saved documentation</summary>
-              <pre>{note.note_text}</pre>
+              <pre>{formatCallDocumentation(note.draft || {})}</pre>
             </details>
           </article>
         })}
