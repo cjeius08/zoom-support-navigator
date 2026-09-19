@@ -77,7 +77,7 @@ it('does not render admin navigation for agents', () => {
 it('exposes What’s New and workspace ownership metadata to all agents', async () => {
   const user = userEvent.setup()
   const onNavigate = vi.fn()
-  render(<AppShell profile={agentProfile} onNavigate={onNavigate} />)
+  const { container } = render(<AppShell profile={agentProfile} onNavigate={onNavigate} />)
 
   expect(screen.getByRole('navigation')).toHaveTextContent('What’s New / Updates')
   expect(screen.getByText(/Owner\s+Cjei A\./i)).toBeInTheDocument()
@@ -85,7 +85,7 @@ it('exposes What’s New and workspace ownership metadata to all agents', async 
 
   await user.click(screen.getByRole('button', { name: 'What’s New / Updates' }))
   expect(onNavigate).toHaveBeenCalledWith('updates')
-  expect(screen.queryByText(/Workspace v1\.0/i)).not.toBeInTheDocument()
+  expect(container.querySelector('.console-version-chip')).not.toBeInTheDocument()
 })
 
 it('exposes mobile navigation state and closes it after navigation', async () => {
