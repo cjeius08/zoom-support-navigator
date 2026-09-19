@@ -10,6 +10,19 @@
   },
   "updates": [
     {
+      "id": "readiness-resume-remaining-count",
+      "date": "2026-09-19",
+      "area": "Training / Readiness Validation",
+      "title": "Readiness Lab now makes resumed progress unmistakable",
+      "changed": "Improved the Readiness Lab reopen experience so an unfinished attempt clearly resumes instead of looking like a fresh five-question set. The lab already preserved checked answers in Supabase; the UI now lands on the first unanswered question, shows a Resuming Attempt banner, displays completed versus remaining counts, and labels the current question with the live remaining total while keeping checked questions available for review.",
+      "checks": [
+        "Check one or more Readiness questions, fully close the lab, then reopen it and confirm the same Attempt number is shown.",
+        "Confirm the lab opens on the first unanswered question rather than visually restarting at Question 1.",
+        "Confirm the resume banner shows how many questions are completed and how many remain.",
+        "Confirm previously checked questions remain saved and can still be reviewed with Previous."
+      ]
+    },
+    {
       "id": "avatar-selected-indicator",
       "date": "2026-09-19",
       "area": "Profile / Avatar",
