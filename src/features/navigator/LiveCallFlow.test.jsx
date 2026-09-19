@@ -8,7 +8,7 @@ it('keeps the summary card compact and uses the toggle only to request full work
   const onExpandedChange = vi.fn()
   render(<LiveCallFlow expanded={false} onExpandedChange={onExpandedChange} />)
 
-  const toggle = screen.getByRole('button', { name: /View full call flow/i })
+  const toggle = screen.getByRole('button', { name: /View approved call flow/i })
   expect(toggle).toHaveAttribute('aria-expanded', 'false')
   expect(toggle).toHaveTextContent('11 steps')
   expect(screen.queryByRole('table', { name: 'Live call flow' })).not.toBeInTheDocument()
@@ -68,35 +68,14 @@ it('keeps Locate Describe Guide Confirm inside the Troubleshooting stage', () =>
   }
 })
 
-it('captures device, caller role, hearing status, affected scope, and resolution status', async () => {
-  const user = userEvent.setup()
+it('shows only the approved collapsible call flow and removes the context controls', () => {
   render(<LiveCallFlow />)
 
-  await user.click(screen.getByRole('button', { name: 'Windows' }))
-  await user.click(screen.getByRole('button', { name: 'Participant' }))
-  await user.click(screen.getByRole('button', { name: 'Active hearing' }))
-  await user.click(screen.getByRole('button', { name: 'Others affected' }))
-  await user.click(screen.getByRole('button', { name: 'Resolved' }))
+  expect(screen.getByRole('heading', { name: 'Live Call Flow' })).toBeInTheDocument()
+  expect(screen.getByText('Approved call flow')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /View approved call flow/i })).toHaveTextContent('11 steps')
 
-  expect(screen.getByRole('button', { name: 'Windows' })).toHaveAttribute('aria-pressed', 'true')
-  expect(screen.getByRole('button', { name: 'Participant' })).toHaveAttribute('aria-pressed', 'true')
-  expect(screen.getByRole('button', { name: 'Active hearing' })).toHaveAttribute('aria-pressed', 'true')
-  expect(screen.getByRole('button', { name: 'Others affected' })).toHaveAttribute('aria-pressed', 'true')
-  expect(screen.getByRole('button', { name: 'Resolved' })).toHaveAttribute('aria-pressed', 'true')
-})
-
-it('resets the expanded live call context for the next caller', async () => {
-  const user = userEvent.setup()
-  render(<LiveCallFlow />)
-
-  await user.click(screen.getByRole('button', { name: 'Mac' }))
-  await user.click(screen.getByRole('button', { name: 'Host' }))
-  await user.click(screen.getByRole('button', { name: 'Preparing / not started' }))
-  await user.click(screen.getByRole('button', { name: 'Caller only' }))
-  await user.click(screen.getByRole('button', { name: 'Referral Needed' }))
-  await user.click(screen.getByRole('button', { name: 'Reset call' }))
-
-  for (const label of ['Mac', 'Host', 'Preparing / not started', 'Caller only', 'Referral Needed']) {
-    expect(screen.getByRole('button', { name: label })).toHaveAttribute('aria-pressed', 'false')
+  for (const removed of ['Device', 'Caller role', 'Hearing status', 'Who is affected', 'Resolution status', 'Reset call']) {
+    expect(screen.queryByText(removed)).not.toBeInTheDocument()
   }
 })

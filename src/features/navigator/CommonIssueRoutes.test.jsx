@@ -191,12 +191,12 @@ it('uses the Phase 1 device and role context inside a common issue route', async
   const user = userEvent.setup()
   render(<Navigator />)
 
-  await user.click(screen.getByRole('button', { name: 'Windows' }))
-  await user.click(screen.getByRole('button', { name: 'Participant' }))
   await user.click(screen.getByRole('button', { name: /They can’t hear me/i }))
 
   const dialog = screen.getByRole('dialog', { name: /They can’t hear me/i })
-  const context = within(dialog).getByLabelText('Selected call context')
+  await user.click(within(dialog).getByRole('button', { name: 'Windows' }))
+  await user.click(within(dialog).getByRole('button', { name: 'Participant' }))
+  const context = within(dialog).getByLabelText('Route context')
   expect(context).toHaveTextContent('Windows')
   expect(context).toHaveTextContent('Participant')
 })
@@ -262,10 +262,10 @@ it('does not show desktop-only audio settings to an iPhone caller', async () => 
   const user = userEvent.setup()
   render(<Navigator />)
 
-  await user.click(screen.getByRole('button', { name: 'iPhone' }))
   await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
 
   const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
+  await user.click(within(dialog).getByRole('button', { name: 'iPhone' }))
   expect(within(dialog).queryByRole('heading', { name: 'Test and select the Zoom speaker' })).not.toBeInTheDocument()
   expect(within(dialog).getByRole('heading', { name: 'Confirm they joined meeting audio' })).toBeInTheDocument()
 })
@@ -274,10 +274,10 @@ it('shows desktop-only audio settings when Windows is the selected device', asyn
   const user = userEvent.setup()
   render(<Navigator />)
 
-  await user.click(screen.getByRole('button', { name: 'Windows' }))
   await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
 
   const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
+  await user.click(within(dialog).getByRole('button', { name: 'Windows' }))
   expect(within(dialog).getByRole('heading', { name: 'Test and select the Zoom speaker' })).toBeInTheDocument()
 })
 
@@ -288,6 +288,6 @@ it('prompts for device context before exposing device-specific checks', async ()
   await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
   const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
 
-  expect(within(dialog).getByText(/Select the caller’s device in Live Call Flow/i)).toBeInTheDocument()
+  expect(within(dialog).getByText(/Select the caller’s device above/i)).toBeInTheDocument()
   expect(within(dialog).queryByRole('heading', { name: 'Test and select the Zoom speaker' })).not.toBeInTheDocument()
 })

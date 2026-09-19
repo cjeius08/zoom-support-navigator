@@ -476,3 +476,58 @@
     align-self: flex-start;
   }
 }
+
+
+.common-issue-context-editor {
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, .9fr) minmax(7rem, .45fr);
+  align-items: end;
+}
+
+.common-issue-context-field {
+  display: grid;
+  gap: .38rem;
+  min-width: 0;
+}
+
+.common-issue-context-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+}
+
+.common-issue-context-options button {
+  min-height: 1.9rem;
+  padding: .32rem .52rem;
+  border: 1px solid rgba(141, 178, 206, .22);
+  border-radius: .5rem;
+  color: #bdcfdb;
+  background: rgba(9, 17, 24, .52);
+  font-size: .72rem;
+}
+
+.common-issue-context-options button:hover,
+.common-issue-context-options button:focus-visible {
+  border-color: rgba(86, 176, 248, .58);
+}
+
+.common-issue-context-options button[aria-pressed="true"] {
+  border-color: rgba(73, 174, 255, .76);
+  color: #f4faff;
+  background: rgba(24, 126, 213, .24);
+}
+
+.common-issue-context-status {
+  align-self: stretch;
+  justify-content: center;
+  padding: .42rem .55rem;
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: .55rem;
+  background: rgba(5, 11, 17, .3);
+}
+
+@media (max-width: 700px) {
+  .common-issue-context-editor {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+}

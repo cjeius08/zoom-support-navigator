@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { cwd } from 'node:process'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
 import { AppShell } from './AppShell'
@@ -65,28 +65,18 @@ it('shows role-aware navigation and account controls', () => {
   expect(screen.getByRole('navigation')).toHaveTextContent('Readiness Lab')
   expect(screen.getByRole('button', { name: /ja_admin/i })).toBeInTheDocument()
   expect(screen.getAllByTestId('nav-icon').length).toBeGreaterThan(3)
-  expect(screen.getByRole('img', { name: 'Ozzie' })).toBeInTheDocument()
+  expect(screen.getByRole('img', { name: /Ozzie — Ogletree Support Workspace/i })).toBeInTheDocument()
 })
 
 
-it('collapses the Ozzie header brand after scrolling while keeping account controls available', async () => {
-  const originalScrollY = window.scrollY
-  Object.defineProperty(window, 'scrollY', { configurable: true, value: 0 })
-  try {
-    const { container } = render(<AppShell profile={agentProfile} />)
-    const header = container.querySelector('.app-header')
-    expect(header).not.toHaveClass('header-scrolled')
-    expect(screen.getByRole('img', { name: 'Ozzie' })).toBeInTheDocument()
+it('keeps Ozzie inside the scrollable sidebar without the old Tier 1 label', () => {
+  const { container } = render(<AppShell profile={agentProfile} />)
 
-    Object.defineProperty(window, 'scrollY', { configurable: true, value: 80 })
-    window.dispatchEvent(new Event('scroll'))
-
-    await waitFor(() => expect(header).toHaveClass('header-scrolled'))
-    expect(screen.getByRole('button', { name: /agent_1 account/i })).toBeInTheDocument()
-  } finally {
-    Object.defineProperty(window, 'scrollY', { configurable: true, value: originalScrollY })
-    window.dispatchEvent(new Event('scroll'))
-  }
+  const sidebar = container.querySelector('.sidebar')
+  expect(sidebar.querySelector('.sidebar-brand img')).toHaveAttribute('alt', 'Ozzie — Ogletree Support Workspace')
+  expect(sidebar.querySelector('.sidebar-scroll-region')).toBeInTheDocument()
+  expect(screen.queryByText('Tier 1 Zoom Support')).not.toBeInTheDocument()
+  expect(container.querySelector('.ozzie-header-brand')).not.toBeInTheDocument()
 })
 
 it('does not render admin navigation for agents', () => {

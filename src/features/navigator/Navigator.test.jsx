@@ -153,24 +153,24 @@ it('emits only identifier-based analytics events for support interactions', asyn
 it('keeps the top workspace compact and renders the expanded call workflow full-width below it', async () => {
   const user = userEvent.setup()
   render(<Navigator />)
-  const liveFlow = screen.getByRole('region', { name: 'Ogletree Tier 1 Live Call Flow' })
+  const liveFlow = screen.getByRole('region', { name: 'Approved Ogletree Live Call Flow' })
   const search = screen.getByRole('combobox', { name: 'Search support processes' })
   const searchCard = search.closest('.smart-search-card')
   const workspace = search.closest('.navigator-top-workspace')
   const library = screen.getByLabelText('Navigator library')
-  const toggle = screen.getByRole('button', { name: /View full call flow/i })
+  const toggle = screen.getByRole('button', { name: /View approved call flow/i })
 
   expect(searchCard).toBeInTheDocument()
   expect(workspace).toBeInTheDocument()
   expect(workspace).toContainElement(liveFlow)
   expect(searchCard?.parentElement).toBe(liveFlow.parentElement)
   expect(toggle).toHaveAttribute('aria-expanded', 'false')
-  expect(screen.queryByRole('region', { name: 'Detailed Ogletree Tier 1 Live Call Flow' })).not.toBeInTheDocument()
+  expect(screen.queryByRole('region', { name: 'Detailed Approved Ogletree Live Call Flow' })).not.toBeInTheDocument()
 
   await user.click(toggle)
 
-  const details = screen.getByRole('region', { name: 'Detailed Ogletree Tier 1 Live Call Flow' })
-  expect(screen.getByRole('button', { name: /Hide full call flow/i })).toHaveAttribute('aria-expanded', 'true')
+  const details = screen.getByRole('region', { name: 'Detailed Approved Ogletree Live Call Flow' })
+  expect(screen.getByRole('button', { name: /Hide approved call flow/i })).toHaveAttribute('aria-expanded', 'true')
   expect(workspace).not.toContainElement(details)
   expect(details.parentElement).toBe(workspace.parentElement)
   expect(workspace.compareDocumentPosition(details) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
@@ -183,12 +183,12 @@ it('publishes selected tab, device, caller role, and active Common Issue for glo
   const onReportContextChange = vi.fn()
   render(<Navigator onReportContextChange={onReportContextChange} />)
 
-  await user.click(screen.getByRole('button', { name: 'Windows' }))
-  await user.click(screen.getByRole('button', { name: 'Participant' }))
   await user.click(screen.getByRole('tab', { name: 'Common Issues' }))
   await user.click(screen.getByRole('button', { name: /My camera isn’t working/i }))
 
   const dialog = screen.getByRole('dialog', { name: /My camera isn’t working/i })
+  await user.click(within(dialog).getByRole('button', { name: 'Windows' }))
+  await user.click(within(dialog).getByRole('button', { name: 'Participant' }))
   await user.click(within(dialog).getByRole('tab', { name: 'Visual Guide' }))
 
   expect(onReportContextChange).toHaveBeenLastCalledWith(expect.objectContaining({

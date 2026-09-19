@@ -9,11 +9,12 @@ afterEach(() => cleanup())
 async function openRouteWithContext({ device, role, routeName }) {
   const user = userEvent.setup()
   render(<Navigator />)
-  if (device) await user.click(screen.getByRole('button', { name: device }))
-  if (role) await user.click(screen.getByRole('button', { name: role }))
   await user.click(screen.getByRole('tab', { name: 'Common Issues' }))
   await user.click(screen.getByRole('button', { name: routeName }))
-  return { user, dialog: screen.getByRole('dialog') }
+  const dialog = screen.getByRole('dialog')
+  if (device) await user.click(within(dialog).getByRole('button', { name: device }))
+  if (role) await user.click(within(dialog).getByRole('button', { name: role }))
+  return { user, dialog }
 }
 
 it('blocks the macOS secure-connection steps when Windows is selected', async () => {
@@ -148,7 +149,7 @@ it('asks for caller role before exposing participant-only screen-share guidance'
     routeName: /Can’t share my screen/i,
   })
 
-  expect(within(dialog).getByText(/Select Host or Participant in Live Call Flow/i)).toBeInTheDocument()
+  expect(within(dialog).getByText(/Select Host or Participant above/i)).toBeInTheDocument()
   expect(within(dialog).queryByRole('heading', { name: /host allows participant sharing/i })).not.toBeInTheDocument()
 })
 

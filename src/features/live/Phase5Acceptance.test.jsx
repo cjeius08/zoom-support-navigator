@@ -11,7 +11,7 @@ import {
   evaluateScope,
   getReferralGuidance,
 } from './ScopeCheck'
-import { LiveCallFlow } from '../navigator/LiveCallFlow'
+import { LiveCallFlow, LiveCallFlowDetails } from '../navigator/LiveCallFlow'
 
 const agentProfile = { username: 'agent_1', initials: 'AG', role: 'agent' }
 
@@ -141,11 +141,12 @@ it('keeps Documentation and Scope Check global, mutually visible, and preserves 
   expect(screen.getByLabelText('Caller name')).toHaveValue('Persistent Caller')
 })
 
-it('keeps referral wording in Live Call Flow aligned with Phase 5', () => {
-  render(<LiveCallFlow />)
+it('keeps referral wording in the approved detailed Call Flow aligned with Phase 5', () => {
+  render(<><LiveCallFlow /><LiveCallFlowDetails /></>)
 
-  expect(screen.getByRole('button', { name: 'Referral Needed' })).toBeInTheDocument()
-  expect(screen.queryByRole('button', { name: 'Escalation Needed' })).not.toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: 'Referral Needed' })).not.toBeInTheDocument()
+  expect(screen.getByText(/Use the current Scope Check \/ referral guidance/i)).toBeInTheDocument()
+  expect(screen.getByText(/Do not promise a handoff/i)).toBeInTheDocument()
 })
 
 it('keeps Phase 5 live tools responsive and below the global report control', () => {

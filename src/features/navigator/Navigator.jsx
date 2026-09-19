@@ -241,8 +241,6 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
       </section>
 
       <LiveCallFlow
-        value={callContext}
-        onChange={setCallContext}
         expanded={callFlowExpanded}
         onExpandedChange={setCallFlowExpanded}
       />
@@ -352,6 +350,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
       onOpenRoute={routeId=>openRoute(routeById(routeId),'redirect')}
       onOpenProcess={processId=>openProcess(PROCESSES.find(process=>process.id===processId),'common_issue_full_process')}
       onStatusChange={status=>setCallContext(current=>({...current,status}))}
+      onContextChange={patch=>setCallContext(current=>({...current,...patch}))}
       onTabChange={setCommonIssueTab}
       onTrackEvent={onTrackEvent}
     />}
