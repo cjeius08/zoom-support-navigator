@@ -129,7 +129,6 @@ export function CallDocumentation({ open = false, minimized = false, onMinimize 
       const saved = await saveOwnCallNote({
         id: activeNoteId,
         draft,
-        noteText: formatted,
       })
       setActiveNoteId(saved.id)
       setSavedNotes(current => [saved, ...current.filter(note => note.id !== saved.id)])
