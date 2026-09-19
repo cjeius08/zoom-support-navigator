@@ -56,7 +56,11 @@ it('keeps workspace metadata and update history complete and newest-first', () =
     expect(entry.changed).toBeTruthy()
     expect(['all', 'admin']).toContain(entry.audience)
     expect(Array.isArray(entry.checks)).toBe(true)
-    expect(entry.checks.length).toBeGreaterThan(0)
+    if (entry.status === 'historical') {
+      expect(entry.checks).toHaveLength(0)
+    } else {
+      expect(entry.checks.length).toBeGreaterThan(0)
+    }
     entry.checks.forEach((check) => expect(check).toBeTruthy())
   })
 
