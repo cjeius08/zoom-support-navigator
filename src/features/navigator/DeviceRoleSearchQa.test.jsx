@@ -149,7 +149,7 @@ it('asks for caller role before exposing participant-only screen-share guidance'
     routeName: /Can’t share my screen/i,
   })
 
-  expect(within(dialog).getByText(/Select Host or Participant in Live Call Flow/i)).toBeInTheDocument()
+  expect(within(dialog).getByText(/Select Host or Participant above/i)).toBeInTheDocument()
   expect(within(dialog).queryByRole('heading', { name: /host allows participant sharing/i })).not.toBeInTheDocument()
 })
 
