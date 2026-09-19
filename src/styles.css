@@ -3241,6 +3241,62 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   grid-template-columns: minmax(10rem, 1fr) minmax(0, 3fr);
   align-items: start;
 }
+.readiness-report-content {
+  display: grid;
+  gap: .65rem;
+  min-width: 0;
+}
+
+.readiness-summary-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: .5rem !important;
+  margin: 0 !important;
+}
+
+.readiness-summary-grid > div {
+  min-width: 0;
+  padding: .62rem .7rem;
+  border: 1px solid rgba(146, 187, 218, .15);
+  border-radius: .62rem;
+  background: rgba(10, 22, 31, .42);
+}
+
+.readiness-summary-grid dt {
+  color: #829bad !important;
+  font-size: .63rem !important;
+  font-weight: 750;
+  letter-spacing: .055em !important;
+  text-transform: uppercase;
+}
+
+.readiness-summary-grid dd {
+  margin: .18rem 0 0 !important;
+  overflow: visible !important;
+  color: #eef6fc !important;
+  font-size: .82rem !important;
+  font-weight: 750;
+  text-overflow: clip !important;
+  white-space: normal !important;
+}
+
+.readiness-summary-status.completed {
+  color: #9ce2ba !important;
+}
+
+.readiness-summary-status.in-progress {
+  color: #ffd391 !important;
+}
+
+.readiness-summary-status.not-started {
+  color: #a9bac7 !important;
+}
+
+.readiness-no-attempts {
+  margin: 0;
+  color: #92a8b8;
+  font-size: .78rem;
+}
 .readiness-report-attempts {
   display: grid;
   gap: .55rem;
@@ -3300,6 +3356,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   .readiness-report-user {
     grid-template-columns: 1fr;
   }
+  .readiness-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
   .readiness-report-attempts summary {
     align-items: flex-start;
     flex-direction: column;
@@ -3307,6 +3366,12 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   }
 }
 
+
+@media (max-width: 460px) {
+  .readiness-summary-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
 
 /* Readiness Lab · multi-part JA reporting */
 .readiness-report-parts {
