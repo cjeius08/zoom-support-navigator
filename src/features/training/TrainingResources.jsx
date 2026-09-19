@@ -83,7 +83,7 @@ export function TrainingResources({ initialVideoId = null, initialTarget = null,
       current_section: section === 'videos'
         ? (activeIndex !== null ? filteredVideos[activeIndex]?.title || 'Video Library' : category !== 'All' ? category : null)
         : section === 'roadmap'
-          ? 'Phase 6 learning path'
+          ? 'Structured learning path'
           : null,
       active_device: null,
       active_caller_role: null,
@@ -120,7 +120,7 @@ export function TrainingResources({ initialVideoId = null, initialTarget = null,
         <h1>Training &amp; Resources</h1>
         <p>Start with the roadmap, then open the visual walkthroughs, communication lessons, scenarios, and videos when you need them.</p>
       </div>
-      <span className="playlist-label">{section === 'roadmap' ? 'Phase 6 · Structured learning path' : section === 'lessons' ? 'Phase 6 · Guided visual lessons' : section === 'devices' ? 'Phase 3 · Windows + Mac + iPhone + Android + Browser' : section === 'scripts' ? 'Phase 4 · Call language + scenario scripts' : 'Getting Started with Zoom · ' + TRAINING_VIDEOS.length + ' videos'}</span>
+      <span className="playlist-label">{section === 'roadmap' ? 'Structured learning path' : section === 'lessons' ? 'Guided visual lessons' : section === 'devices' ? 'Windows + Mac + iPhone + Android + Browser' : section === 'scripts' ? 'Call language + scenario scripts' : 'Getting Started with Zoom · ' + TRAINING_VIDEOS.length + ' videos'}</span>
     </div>
 
     <div className="training-section-tabs" role="tablist" aria-label="Training resource sections">
