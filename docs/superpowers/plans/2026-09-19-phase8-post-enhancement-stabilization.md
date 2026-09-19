@@ -61,4 +61,18 @@ Scope:
 - Production deployment verification.
 - Record only stabilization defects; new feature ideas move to the next phase.
 
-**Current checkpoint:** Batch 1.
+## Batch 1 result — 2026-09-19
+
+Status: **PASS.**
+
+- Universal Back navigation remains protected by regression coverage.
+- Lead remains a title only and does not receive Admin Home, Team Management, or Usage Analytics navigation.
+- Feedback Queue refreshes after a status change through an explicit refresh key rather than a stale callback dependency.
+- Usage Analytics period loading depends on the complete memoized range object.
+- Ozzie first-login visibility follows the current profile object without an incomplete Hook dependency.
+- Readiness answer lookup now memoizes directly from the active attempt answer list.
+- Runtime React Hook lint warnings dropped from 4 to 0.
+- Remaining lint notices are 10 Fast Refresh structure warnings reserved for Batch 2.
+- CI: 55 test files / 393 tests passed; build passed; GitHub Pages deploy passed.
+
+**Next checkpoint:** Batch 2 — Component/Lint Cleanup.
