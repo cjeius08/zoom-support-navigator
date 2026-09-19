@@ -1,0 +1,61 @@
+/* Final Ozzie brand visibility pass.
+   Preserve the original light-blue owl accents, recolor the main wordmark
+   and subtitle to the approved more-visible blue, and keep the logo glow-free. */
+
+.ozzie-logo-stage::before {
+  content: none !important;
+}
+
+.access-brand-logo,
+.sidebar-brand img {
+  filter: none !important;
+}
+
+.ozzie-logo-stage-login,
+.sidebar-brand {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Recolor only the lower/main logo artwork. The upper owl accents remain
+   untouched from the original asset. */
+.ozzie-logo-stage-login::after,
+.sidebar-brand::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  background: #0759c2;
+  -webkit-mask-image: url("/zoom-support-navigator/assets/ozzie-login.webp");
+  mask-image: url("/zoom-support-navigator/assets/ozzie-login.webp");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  clip-path: inset(29% 0 0 0);
+}
+
+.ozzie-logo-stage-login::after {
+  inset: 0;
+}
+
+.sidebar-brand::before {
+  top: .35rem;
+  right: .35rem;
+  bottom: .95rem;
+  left: .35rem;
+}
+
+.access-brand-logo,
+.sidebar-brand img {
+  position: relative;
+  z-index: 0;
+}
+
+@media (max-width: 640px) {
+  .ozzie-logo-stage-login::after {
+    clip-path: inset(29% 0 0 0);
+  }
+}
