@@ -10,6 +10,19 @@
   },
   "updates": [
     {
+      "id": "phase8-batch2-component-copy-cleanup",
+      "date": "2026-09-19",
+      "area": "Admin / Stabilization",
+      "audience": "admin",
+      "title": "Phase 8 cleanup removes redundant QA copy and lint warnings",
+      "changed": "Completed the component and copy-hygiene pass. Shared data and formatting helpers were separated from React component files so Fast Refresh no longer raises structural warnings. User-facing Phase/Batch labels that no longer describe the live workspace were removed, admin terminology was standardized, outdated release-note verification steps were retired, historical entries are clearly labeled, and remaining verification notes were shortened and grammar-polished. Approved Zoom support instructions and scripts were left unchanged.",
+      "checks": [
+        "Open Navigator, Training & Resources, Readiness Lab, Scope Check, and Admin pages and verify that obsolete Phase/Batch labels are no longer shown in the live UI.",
+        "Open What’s New / Updates and verify that superseded entries are labeled Historical without obsolete verification lists.",
+        "Verify that current update entries use concise Verification notes and that admin terminology consistently uses Admin, Member, Lead, and user where appropriate."
+      ]
+    },
+    {
       "id": "phase8-batch1-runtime-stability",
       "date": "2026-09-19",
       "area": "Admin / Stabilization",
