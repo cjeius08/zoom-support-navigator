@@ -5,7 +5,6 @@ create table if not exists public.zoom_call_notes (
   device text,
   outcome text,
   call_started_at timestamptz,
-  note_text text not null,
   draft jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
@@ -13,7 +12,6 @@ create table if not exists public.zoom_call_notes (
   constraint zoom_call_notes_caller_ref_len check (caller_ref is null or char_length(caller_ref) <= 160),
   constraint zoom_call_notes_device_len check (device is null or char_length(device) <= 80),
   constraint zoom_call_notes_outcome_len check (outcome is null or char_length(outcome) <= 120),
-  constraint zoom_call_notes_note_text_len check (char_length(note_text) between 1 and 20000),
   constraint zoom_call_notes_draft_object check (jsonb_typeof(draft) = 'object'),
   constraint zoom_call_notes_draft_size check (pg_column_size(draft) <= 32768)
 );
