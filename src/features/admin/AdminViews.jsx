@@ -64,7 +64,7 @@ function readinessAttemptSummary(attempts = [], maxAttempts = 3) {
 export function AdminHome({ onNavigate }) {
   return (
     <section className="console-view">
-      <p className="eyebrow">JA workspace</p>
+      <p className="eyebrow">Admin workspace</p>
       <h1>Admin Home</h1>
       <p>
         Manage the real team, review privacy-safe usage, and respond to
@@ -404,7 +404,7 @@ export function TeamManagement() {
     <section className="console-view team-management">
       <div className="view-heading">
         <div>
-          <p className="eyebrow">JA only</p>
+          <p className="eyebrow">Admin only</p>
           <h1>Team Management</h1>
           <p>
             Manage accounts, pending invite slots, and secure lifecycle actions.
@@ -820,10 +820,10 @@ export function FeedbackQueue({ onOpenPage }) {
 
   return (
     <section className="console-view feedback-queue">
-      <p className="eyebrow">JA only</p>
+      <p className="eyebrow">Admin only</p>
       <h1>Feedback Queue</h1>
       <p>
-        Review agent reports, update their status, and jump back to the stored
+        Review user reports, update their status, and jump back to the stored
         safe page or process context.
       </p>
       {actionError && <p role="alert">{actionError}</p>}
@@ -897,7 +897,7 @@ export function FeedbackQueue({ onOpenPage }) {
           ) : (
             <div className="empty-state">
               <h2>No feedback yet</h2>
-              <p>Submitted agent reports will appear here.</p>
+              <p>Submitted user reports will appear here.</p>
             </div>
           )
         }
