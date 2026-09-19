@@ -64,11 +64,11 @@ export function LiveCallFlowDetails({ onClose }) {
   return <section
     id="live-call-workflow-details"
     className="live-call-workflow-panel"
-    aria-label="Detailed Ogletree Tier 1 Live Call Flow"
+    aria-label="Detailed Approved Ogletree Live Call Flow"
   >
     <div className="live-call-workflow-panel-heading">
       <div>
-        <p className="eyebrow">Official Tier 1 call workflow</p>
+        <p className="eyebrow">Approved Ogletree call workflow</p>
         <h2>Detailed Call Workflow</h2>
         <p>Follow the call stages in order, but keep the conversation natural. Listen before troubleshooting and confirm the caller’s result before closing.</p>
       </div>
