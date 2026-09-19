@@ -42,6 +42,7 @@ export default function App() {
   const [navigatorProcessId, setNavigatorProcessId] = useState(null)
   const [navigatorCommonIssueId, setNavigatorCommonIssueId] = useState(null)
   const [reportContext, setReportContext] = useState(EMPTY_REPORT_CONTEXT)
+  const [navigationHistory, setNavigationHistory] = useState([])
   const [showPassword, setShowPassword] = useState(false)
   const [ozzieIntroOpen, setOzzieIntroOpen] = useState(false)
   const [ozzieIntroReplay, setOzzieIntroReplay] = useState(false)
@@ -71,7 +72,45 @@ export default function App() {
     setReportContext(current => ({ ...current, ...nextContext }))
   }, [])
 
+  function currentNavigationSnapshot() {
+    return {
+      view,
+      trainingVideoId,
+      trainingTarget,
+      navigatorProcessId,
+      navigatorCommonIssueId,
+      reportContext: { ...reportContext },
+    }
+  }
+
+  function rememberCurrentPage() {
+    const snapshot = currentNavigationSnapshot()
+    setNavigationHistory(history => [...history.slice(-29), snapshot])
+  }
+
+  function restoreNavigationSnapshot(snapshot) {
+    setView(snapshot.view || 'navigator')
+    setTrainingVideoId(snapshot.trainingVideoId || null)
+    setTrainingTarget(snapshot.trainingTarget || null)
+    setNavigatorProcessId(snapshot.navigatorProcessId || null)
+    setNavigatorCommonIssueId(snapshot.navigatorCommonIssueId || null)
+    setReportContext(snapshot.reportContext || EMPTY_REPORT_CONTEXT)
+  }
+
+  function goBack() {
+    if (!navigationHistory.length) return
+    const previous = navigationHistory[navigationHistory.length - 1]
+    setNavigationHistory(history => history.slice(0, -1))
+    restoreNavigationSnapshot(previous)
+    trackEvent({ eventType: 'navigation', routeId: previous.view || 'navigator', toolId: 'back' })
+  }
+
   function navigate(nextView) {
+    const resetsTraining = nextView === 'training' && (trainingVideoId || trainingTarget)
+    const resetsNavigator = nextView === 'navigator' && (navigatorProcessId || navigatorCommonIssueId)
+    const changesPage = nextView !== view || resetsTraining || resetsNavigator
+    if (changesPage) rememberCurrentPage()
+
     trackEvent({ eventType: 'navigation', routeId: nextView, toolId: 'navigation' })
     if (nextView === 'training') {
       setTrainingVideoId(null)
@@ -86,6 +125,7 @@ export default function App() {
   }
 
   function openTraining(videoId) {
+    rememberCurrentPage()
     trackEvent({ eventType: 'training_open', routeId: 'training', toolId: typeof videoId === 'string' ? videoId : 'library' })
     setTrainingTarget(null)
     setTrainingVideoId(typeof videoId === 'string' ? videoId : null)
@@ -99,6 +139,7 @@ export default function App() {
 
   function openReadinessResource(target = {}) {
     if (target.view === 'training') {
+      rememberCurrentPage()
       setTrainingVideoId(null)
       setTrainingTarget({ ...target })
       setReportContext({
@@ -115,6 +156,7 @@ export default function App() {
     }
 
     if (target.view === 'navigator') {
+      rememberCurrentPage()
       setTrainingTarget(null)
       setNavigatorProcessId(target.processId || null)
       setNavigatorCommonIssueId(target.commonIssueId || null)
@@ -128,6 +170,7 @@ export default function App() {
   }
 
   function openFeedbackTarget(item) {
+    rememberCurrentPage()
     const safeRoutes = new Set(['navigator', 'training', 'updates', 'feedback'])
     if (item?.active_common_issue) {
       setNavigatorProcessId(null)
@@ -165,6 +208,7 @@ export default function App() {
   }
 
   function openFavoriteProcess(processId) {
+    rememberCurrentPage()
     trackEvent({ eventType: 'process_open', routeId: 'favorites', processId, toolId: 'favorites' })
     setNavigatorCommonIssueId(null)
     setNavigatorProcessId(processId)
@@ -176,6 +220,7 @@ export default function App() {
   }
 
   function openFavoriteCommonIssue(commonIssueId) {
+    rememberCurrentPage()
     trackEvent({ eventType: 'tool_open', routeId: 'favorites', toolId: `common_issue_${commonIssueId}_favorite` })
     setNavigatorProcessId(null)
     setNavigatorCommonIssueId(commonIssueId)
@@ -239,6 +284,7 @@ export default function App() {
     setError('')
     setErrorField('')
     try {
+      setNavigationHistory([])
       setProfile(await loginWithUsername(result.username, String(form.get('password'))))
     } catch (loginError) {
       setErrorField('username')
@@ -282,7 +328,7 @@ export default function App() {
           : view === 'updates'
             ? <UpdatesView isAdmin={profile.role === 'creator_admin'}/>
             : view === 'feedback'
-              ? <FeedbackPage onSubmit={submitFeedback} onCancel={()=>navigate('navigator')}/>
+              ? <FeedbackPage onSubmit={submitFeedback} onCancel={navigationHistory.length ? goBack : ()=>navigate('navigator')}/>
               : view === 'admin'
                 ? <AdminHome onNavigate={navigate}/>
                 : view === 'team'
@@ -295,6 +341,8 @@ export default function App() {
         profile={profile}
         currentView={view}
         onNavigate={navigate}
+        onBack={goBack}
+        canGoBack={navigationHistory.length > 0}
         onOpenReadinessResource={openReadinessResource}
         onFeedback={submitFeedback}
         reportContext={reportContext}
@@ -302,7 +350,7 @@ export default function App() {
         onAvatarChange={async avatarId=>{await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}}
         onMeetOzzie={replayOzzieIntro}
         canMeetOzzie
-        onLogout={async()=>{await signOut();setProfile(null);setOzzieIntroOpen(false);setOzzieIntroReplay(false)}}
+        onLogout={async()=>{await signOut();setProfile(null);setNavigationHistory([]);setOzzieIntroOpen(false);setOzzieIntroReplay(false)}}
       >{content}</AppShell>
       <OzzieWelcome
         open={ozzieIntroOpen}
