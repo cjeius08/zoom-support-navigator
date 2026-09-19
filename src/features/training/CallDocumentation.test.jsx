@@ -1,6 +1,13 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
+
+vi.mock('../../lib/callNotesApi', () => ({
+  loadOwnCallNotes: vi.fn().mockResolvedValue([]),
+  saveOwnCallNote: vi.fn().mockResolvedValue({ id: 'note-1', created_at: '2026-09-19T01:30:00Z', expires_at: '2026-12-18T01:30:00Z' }),
+  deleteOwnCallNote: vi.fn().mockResolvedValue(undefined),
+}))
+
 import { CallDocumentation } from './CallDocumentation'
 import { formatCallDocumentation } from './callDocumentationFormat'
 
@@ -107,8 +114,9 @@ it('clears the temporary draft only after confirmation', async () => {
 it('shows privacy and referral framing without claiming an internal escalation', () => {
   render(<CallDocumentation open />)
 
-  expect(screen.getByText('Not saved by the workspace')).toBeInTheDocument()
-  expect(screen.getByText(/Copy to the approved case system/i)).toBeInTheDocument()
+  expect(screen.getByText(/Protected workspace note · retained for 90 days/i)).toBeInTheDocument()
+  expect(screen.getByText(/Workspace Admin can read saved notes for reporting/i)).toBeInTheDocument()
+  expect(screen.getByText(/Do not enter passwords, full payment card numbers, government IDs/i)).toBeInTheDocument()
   expect(screen.getByText(/Zoom Basic Support Boundaries, Decision Path & Referral Process/i)).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Referred for Additional Assistance' })).toBeInTheDocument()
   expect(screen.queryByRole('button', { name: /Escalated/i })).not.toBeInTheDocument()
