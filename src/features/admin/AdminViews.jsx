@@ -669,16 +669,17 @@ export function UsageAnalytics() {
               </div>
 
               <p className="usage-privacy-note">
-                Analytics stores identifiers and timestamps only. Search text,
-                call notes, clipboard content, and customer-entered form values
-                are not captured.
+                Usage Analytics stores identifiers and timestamps only. Saved Call
+                Documentation is stored separately under protected note access rules.
               </p>
             </>
           );
         }}
       </State>
 
-      <CallNotesReport range={range} />\n\n      <section className="readiness-admin-report" aria-labelledby="readiness-report-title">
+      <CallNotesReport range={range} />
+
+      <section className="readiness-admin-report" aria-labelledby="readiness-report-title">
         <div className="view-heading">
           <div>
             <p className="eyebrow">Readiness validation</p>
