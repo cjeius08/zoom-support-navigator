@@ -74,6 +74,7 @@ export function ReadinessLab({
   const answer = question ? answersByQuestion.get(question.id) : null
   const selectedOptionId = answer?.selectedOptionId || (question ? selections[question.id] : null)
   const completedCount = activeAttempt?.answers?.length || 0
+  const remainingCount = Math.max(questions.length - completedCount, 0)
   const attemptComplete = Boolean(activeAttempt && questions.length > 0 && completedCount === questions.length)
   const submittedCount = attempts.filter(item => item.status === 'submitted').length
   const exhausted = submittedCount >= maxAttempts && !activeAttempt
@@ -211,12 +212,17 @@ export function ReadinessLab({
         <div className="readiness-progress" aria-label="Readiness Lab progress">
           <div>
             <span>{activeAttempt ? `Attempt ${activeAttempt.attemptNumber} of ${maxAttempts}` : `${submittedCount} of ${maxAttempts} attempts submitted`}</span>
-            <strong>{activeAttempt ? `${completedCount}/${questions.length} checked` : lastAttempt?.status === 'submitted' ? `Latest score ${lastAttempt.score}/${lastAttempt.totalQuestions}` : 'Ready'}</strong>
+            <strong>{activeAttempt ? `${completedCount}/${questions.length} checked · ${remainingCount} remaining` : lastAttempt?.status === 'submitted' ? `Latest score ${lastAttempt.score}/${lastAttempt.totalQuestions}` : 'Ready'}</strong>
           </div>
           <div className="readiness-progress-track" aria-hidden="true">
             <i style={{ width: `${activeAttempt && questions.length ? (completedCount / questions.length) * 100 : lastAttempt?.status === 'submitted' ? 100 : 0}%` }} />
           </div>
         </div>
+
+        {activeAttempt && completedCount > 0 && !attemptComplete && <aside className="readiness-resume-banner" aria-live="polite">
+          <strong>Resuming Attempt {activeAttempt.attemptNumber}</strong>
+          <span>{completedCount} completed · {remainingCount} remaining</span>
+        </aside>}
 
         <PartRail activePartId={activePartId} onSelect={(partId) => {
           setActivePartId(partId)
@@ -235,7 +241,9 @@ export function ReadinessLab({
           <header>
             <div>
               <span>{question.type || 'Scenario'}</span>
-              <small>Question {questionIndex + 1} of {questions.length}</small>
+              <small>{answer
+                ? `Question ${questionIndex + 1} of ${questions.length} · Checked`
+                : `Question ${questionIndex + 1} of ${questions.length} · ${remainingCount} remaining`}</small>
             </div>
             <ResultBadge answer={answer} />
           </header>
