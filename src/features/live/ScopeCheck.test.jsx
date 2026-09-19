@@ -1,13 +1,13 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
+import { ScopeCheck } from './ScopeCheck'
 import {
   REFERRAL_ROADBLOCKS,
-  ScopeCheck,
   evaluateScope,
   getReferralGuidance,
   getReferralRoadblocks,
-} from './ScopeCheck'
+} from './scopeCheckData'
 
 it('continues approved troubleshooting only when the issue stays inside scope', () => {
   expect(evaluateScope({
