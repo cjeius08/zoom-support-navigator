@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { cwd } from 'node:process'
 import { expect, it } from 'vitest'
 import { READINESS_PARTS } from '../readiness/readinessLabData'
-import { TRAINING_ROADMAP_MODULES } from './TrainingRoadmap'
+import { TRAINING_ROADMAP_MODULES } from './trainingRoadmapData'
 import { READINESS_QUESTION_SETS } from '../../lib/readinessQuestionSets'
 
 it('freezes the completed five-part Readiness Lab inventory', () => {
