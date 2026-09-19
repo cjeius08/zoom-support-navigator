@@ -26,7 +26,7 @@ create index if not exists zoom_call_notes_expires_idx
 
 alter table public.zoom_call_notes enable row level security;
 
-revoke all on table public.zoom_call_notes from anon;
+revoke all on table public.zoom_call_notes from anon, authenticated;
 grant select, insert, update, delete on table public.zoom_call_notes to authenticated;
 
 drop policy if exists "own or admin call notes read" on public.zoom_call_notes;
