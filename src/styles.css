@@ -3591,19 +3591,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 
 .ozzie-logo-stage::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: -16% -10%;
-  border-radius: 999px;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse at center,
-      rgba(236, 246, 255, .20) 0%,
-      rgba(149, 199, 242, .12) 42%,
-      rgba(58, 130, 199, .06) 58%,
-      transparent 76%);
-  filter: blur(.35rem);
+  content: none;
 }
 
 .ozzie-logo-stage-login {
