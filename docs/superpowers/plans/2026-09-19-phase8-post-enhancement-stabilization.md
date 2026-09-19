@@ -107,4 +107,16 @@ Status: **PASS for application/database boundaries.**
 - Performance advisor reports unused-index INFO notices only. No indexes were removed because the workspace is new/low-volume and those indexes support expected lookup, analytics, and foreign-key paths.
 - All mutation probes used transactions with rollback; no real account, role, Ozzie state, Favorite, or Recently Viewed record was altered by the audit.
 
-**Next checkpoint:** Batch 4 — Final Smoke & Freeze.
+## Batch 4 result — 2026-09-19
+
+Status: **PASS. Phase 8 closed.**
+
+- Added a dedicated final smoke gate for Member, Lead, and Admin navigation surfaces.
+- Confirmed Member and Lead retain the standard workspace only; Admin-only navigation remains creator-admin only.
+- Confirmed the universal Back control remains present at desktop and mobile widths and respects available history state.
+- Confirmed the production responsive shell still carries the 1100px, 920px, 800px, and 620px reflow protections plus horizontal-overflow safeguards.
+- Confirmed production profile/slot data has no missing workspace roles, invalid claimed/pending slot states, orphaned Favorites, or orphaned Recently Viewed rows.
+- Re-ran the Supabase security advisor; the only remaining security advisory is the project-level leaked-password-protection setting, which is outside the connected tooling available in this workflow.
+- Phase 8 is now frozen. New feature work should start in a new phase instead of expanding stabilization scope.
+
+**Phase 8 status:** CLOSED.
