@@ -79,6 +79,23 @@ it('keeps Ozzie inside the scrollable sidebar without the old Tier 1 label', () 
   expect(container.querySelector('.ozzie-header-brand')).not.toBeInTheDocument()
 })
 
+it('offers Meet Ozzie Again only when the intro video is available', async () => {
+  const user = userEvent.setup()
+  const onMeetOzzie = vi.fn()
+
+  const { rerender } = render(
+    <AppShell profile={agentProfile} onMeetOzzie={onMeetOzzie} canMeetOzzie />,
+  )
+
+  await user.click(screen.getByRole('button', { name: /agent_1 account/i }))
+  await user.click(screen.getByRole('button', { name: 'Meet Ozzie Again' }))
+  expect(onMeetOzzie).toHaveBeenCalledTimes(1)
+
+  rerender(<AppShell profile={agentProfile} onMeetOzzie={onMeetOzzie} canMeetOzzie={false} />)
+  await user.click(screen.getByRole('button', { name: /agent_1 account/i }))
+  expect(screen.queryByRole('button', { name: 'Meet Ozzie Again' })).not.toBeInTheDocument()
+})
+
 it('does not render admin navigation for agents', () => {
   render(<AppShell profile={agentProfile} />)
   expect(screen.queryByText('Team Management')).not.toBeInTheDocument()
