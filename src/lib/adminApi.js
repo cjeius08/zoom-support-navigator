@@ -85,7 +85,7 @@ export async function loadCallNotesReport({ start, end } = {}) {
   const noteRows = loadPaged(() => {
     let query = supabase
       .from('zoom_call_notes')
-      .select('id,user_id,caller_ref,device,outcome,call_started_at,note_text,created_at,updated_at,expires_at')
+      .select('id,user_id,caller_ref,device,outcome,call_started_at,draft,created_at,updated_at,expires_at')
       .order('created_at', { ascending: false })
     if (start) query = query.gte('created_at', start)
     if (end) query = query.lt('created_at', end)
