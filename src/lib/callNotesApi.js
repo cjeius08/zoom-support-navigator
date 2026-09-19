@@ -13,13 +13,12 @@ function callStartedAt(dateTime) {
   return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString()
 }
 
-function notePayload(draft, noteText) {
+function notePayload(draft) {
   return {
     caller_ref: draft.callerRef?.trim() || null,
     device: draft.device || null,
     outcome: draft.outcome || null,
     call_started_at: callStartedAt(draft.dateTime),
-    note_text: noteText,
     draft,
   }
 }
@@ -28,7 +27,7 @@ export async function loadOwnCallNotes(limit = 20) {
   const userId = await currentUserId()
   const { data, error } = await supabase
     .from('zoom_call_notes')
-    .select('id,user_id,caller_ref,device,outcome,call_started_at,note_text,draft,created_at,updated_at,expires_at')
+    .select('id,user_id,caller_ref,device,outcome,call_started_at,draft,created_at,updated_at,expires_at')
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
     .limit(limit)
@@ -37,9 +36,9 @@ export async function loadOwnCallNotes(limit = 20) {
   return data || []
 }
 
-export async function saveOwnCallNote({ id = null, draft, noteText }) {
+export async function saveOwnCallNote({ id = null, draft }) {
   const userId = await currentUserId()
-  const payload = notePayload(draft, noteText)
+  const payload = notePayload(draft)
 
   if (id) {
     const { data, error } = await supabase
@@ -47,7 +46,7 @@ export async function saveOwnCallNote({ id = null, draft, noteText }) {
       .update(payload)
       .eq('id', id)
       .eq('user_id', userId)
-      .select('id,user_id,caller_ref,device,outcome,call_started_at,note_text,draft,created_at,updated_at,expires_at')
+      .select('id,user_id,caller_ref,device,outcome,call_started_at,draft,created_at,updated_at,expires_at')
       .single()
 
     if (error) throw error
@@ -57,7 +56,7 @@ export async function saveOwnCallNote({ id = null, draft, noteText }) {
   const { data, error } = await supabase
     .from('zoom_call_notes')
     .insert({ ...payload, user_id: userId })
-    .select('id,user_id,caller_ref,device,outcome,call_started_at,note_text,draft,created_at,updated_at,expires_at')
+    .select('id,user_id,caller_ref,device,outcome,call_started_at,draft,created_at,updated_at,expires_at')
     .single()
 
   if (error) throw error
