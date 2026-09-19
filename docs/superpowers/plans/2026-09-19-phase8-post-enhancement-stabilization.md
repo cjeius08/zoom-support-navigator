@@ -75,4 +75,20 @@ Status: **PASS.**
 - Remaining lint notices are 10 Fast Refresh structure warnings reserved for Batch 2.
 - CI: 55 test files / 393 tests passed; build passed; GitHub Pages deploy passed.
 
-**Next checkpoint:** Batch 2 — Component/Lint Cleanup.
+## Batch 2 result — 2026-09-19
+
+Status: **PASS.**
+
+- Split Scope Check data/helpers out of the React component.
+- Split Call Documentation formatting logic out of the React component.
+- Split Guided Visual Lesson data out of the React component.
+- Split Training Roadmap data out of the React component.
+- Removed obsolete user-facing Phase/Batch labels from Navigator, Training & Resources, Readiness Lab, Scope Check, Guided Visual Lessons, and Training Roadmap.
+- Standardized admin-facing terminology from JA/agent wording to Admin/user wording where the UI is not specifically referring to a historical role.
+- Removed obsolete verification lists from superseded historical release notes and added a clear Historical label.
+- Reduced current release-note verification lists to concise, grammar-polished checks.
+- Corrected outdated Workspace Lead wording in release-note verification text.
+- Approved Zoom support instructions, scripts, and source-backed troubleshooting content were not rewritten.
+- CI: 55 test files / 394 tests passed; lint completed with zero warnings; build passed.
+
+**Next checkpoint:** Batch 3 — Data & Security Regression.
