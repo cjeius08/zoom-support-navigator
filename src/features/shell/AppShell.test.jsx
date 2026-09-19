@@ -120,6 +120,16 @@ it('shows a Back control on workspace pages and calls the previous-page handler'
   expect(screen.getByRole('button', { name: 'Back to previous page' })).toBeDisabled()
 })
 
+it('keeps Lead as a title without granting admin navigation', () => {
+  render(<AppShell profile={{ ...agentProfile, username: 'lead_1', workspace_role: 'lead' }} />)
+  expect(screen.getByRole('button', { name: /lead_1 account/i })).toHaveTextContent('Lead')
+  expect(screen.queryByText('Admin Home')).not.toBeInTheDocument()
+  expect(screen.queryByText('Team Management')).not.toBeInTheDocument()
+  expect(screen.queryByText('Usage Analytics')).not.toBeInTheDocument()
+  expect(screen.getByRole('navigation')).toHaveTextContent('Navigator')
+  expect(screen.getByRole('navigation')).toHaveTextContent('Training & Resources')
+})
+
 it('does not render admin navigation for agents', () => {
   render(<AppShell profile={agentProfile} />)
   expect(screen.queryByText('Team Management')).not.toBeInTheDocument()
