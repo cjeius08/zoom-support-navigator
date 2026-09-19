@@ -29,7 +29,14 @@ export async function getCurrentProfile() {
   if (!supabaseConfigured) return null
   const { data: sessionData } = await supabase.auth.getSession()
   if (!sessionData.session) return null
-  const { data, error } = await supabase.from('zoom_profiles').select('id,username,initials,role,status,must_change_password,avatar_id').eq('id', sessionData.session.user.id).maybeSingle()
+  const { data, error } = await supabase.from('zoom_profiles').select('id,username,initials,role,status,must_change_password,avatar_id,ozzie_intro_seen_at').eq('id', sessionData.session.user.id).maybeSingle()
+  if (error) throw error
+  return data
+}
+
+export async function markOzzieIntroSeen() {
+  if (!supabaseConfigured) throw new Error('Supabase is not configured.')
+  const { data, error } = await supabase.rpc('zoom_mark_ozzie_intro_seen')
   if (error) throw error
   return data
 }
