@@ -3467,6 +3467,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   height: auto;
   margin: 0 auto 1.4rem;
   object-fit: contain;
+  filter: none;
 }
 
 .activation-card {
@@ -3536,6 +3537,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   width: clamp(10.5rem, 19vw, 15rem);
   max-height: 3.45rem;
   object-fit: contain;
+  filter: none;
   object-position: left center;
 }
 
@@ -3612,12 +3614,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .access-brand-logo {
   width: min(100%, 25rem);
   margin: 0 auto;
-  filter:
-    brightness(1.38)
-    contrast(1.08)
-    saturate(1.06)
-    drop-shadow(0 .45rem .9rem rgba(0, 72, 150, .24))
-    drop-shadow(0 0 .22rem rgba(185, 222, 255, .20));
+  filter: none;
 }
 
 .app-header {
@@ -3642,12 +3639,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .ozzie-header-brand img {
   width: clamp(14.5rem, 22vw, 18rem);
   max-height: 4.15rem;
-  filter:
-    brightness(1.46)
-    contrast(1.08)
-    saturate(1.08)
-    drop-shadow(0 .35rem .8rem rgba(0, 68, 145, .28))
-    drop-shadow(0 0 .2rem rgba(196, 228, 255, .22));
+  filter: none;
 }
 
 .app-header.header-scrolled {
@@ -3759,10 +3751,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   width: min(100%, 12.75rem);
   height: auto;
   object-fit: contain;
-  filter:
-    brightness(1.16)
-    contrast(1.08)
-    saturate(1.05);
+  filter: none;
 }
 
 .live-call-flow-approved {
