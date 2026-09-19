@@ -9,11 +9,12 @@ afterEach(() => cleanup())
 async function openRouteWithContext({ device, role, routeName }) {
   const user = userEvent.setup()
   render(<Navigator />)
-  if (device) await user.click(screen.getByRole('button', { name: device }))
-  if (role) await user.click(screen.getByRole('button', { name: role }))
   await user.click(screen.getByRole('tab', { name: 'Common Issues' }))
   await user.click(screen.getByRole('button', { name: routeName }))
-  return { user, dialog: screen.getByRole('dialog') }
+  const dialog = screen.getByRole('dialog')
+  if (device) await user.click(within(dialog).getByRole('button', { name: device }))
+  if (role) await user.click(within(dialog).getByRole('button', { name: role }))
+  return { user, dialog }
 }
 
 it('blocks the macOS secure-connection steps when Windows is selected', async () => {
