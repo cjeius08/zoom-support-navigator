@@ -10,7 +10,7 @@ import {
   REFERRAL_ROADBLOCKS,
   evaluateScope,
   getReferralGuidance,
-} from './ScopeCheck'
+} from './scopeCheckData'
 import { LiveCallFlow, LiveCallFlowDetails } from '../navigator/LiveCallFlow'
 
 const agentProfile = { username: 'agent_1', initials: 'AG', role: 'agent' }
