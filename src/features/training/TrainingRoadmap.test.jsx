@@ -1,7 +1,8 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
-import { TRAINING_ROADMAP_MODULES, TrainingRoadmap } from './TrainingRoadmap'
+import { TrainingRoadmap } from './TrainingRoadmap'
+import { TRAINING_ROADMAP_MODULES } from './trainingRoadmapData'
 
 it('locks the Phase 6 Batch 1 roadmap to six ordered learning modules', () => {
   expect(TRAINING_ROADMAP_MODULES).toHaveLength(6)
