@@ -56,7 +56,7 @@ function Field({ label, hint, children }) {
   </label>
 }
 
-export function CallDocumentation({ open = false, minimized = false, onMinimize = () => {}, onClose = () => {} }) {
+export function CallDocumentation({ open = false, minimized = false, stackIndex = 0, onMinimize = () => {}, onClose = () => {} }) {
   const [draft, setDraft] = useState(createInitialDraft)
   const [copyState, setCopyState] = useState('idle')
   const [activeNoteId, setActiveNoteId] = useState(null)
@@ -176,7 +176,7 @@ export function CallDocumentation({ open = false, minimized = false, onMinimize 
   if (!open) return null
 
   if (minimized) {
-    return <aside className="documentation-dock documentation-dock-minimized" aria-label="Call Documentation minimized">
+    return <aside style={{ '--tool-stack-index': Math.max(0, stackIndex) }} className="documentation-dock documentation-dock-minimized" aria-label="Call Documentation minimized">
       <button type="button" className="documentation-dock-restore" aria-label="Restore Call Documentation" onClick={onMinimize}>
         <span>
           <strong>Call Documentation</strong>
