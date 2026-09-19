@@ -7,12 +7,6 @@ import {
 } from '../../data/ogletreeCallFlow'
 import './liveCallFlow.css'
 
-const DEVICES = ['Windows', 'Mac', 'iPhone', 'Android', 'Browser']
-const ROLES = ['Host', 'Participant']
-const HEARING_STATUSES = ['Preparing / not started', 'Active hearing']
-const IMPACT_OPTIONS = ['Caller only', 'Others affected']
-const STATUSES = ['Resolved', 'Unresolved', 'Referral Needed']
-
 const GUIDANCE_METHOD = [
   {
     name: 'Locate',
@@ -49,43 +43,10 @@ function ChoiceGroup({ label, options, value, onChange, className = '' }) {
   </div>
 }
 
-export function LiveCallFlow({ value, onChange, expanded: controlledExpanded, onExpandedChange }) {
-  const [internalDevice, setInternalDevice] = useState(null)
-  const [internalRole, setInternalRole] = useState(null)
-  const [internalHearingStatus, setInternalHearingStatus] = useState(null)
-  const [internalImpact, setInternalImpact] = useState(null)
-  const [internalStatus, setInternalStatus] = useState(null)
+export function LiveCallFlow({ expanded: controlledExpanded, onExpandedChange }) {
   const [internalExpanded, setInternalExpanded] = useState(false)
-  const controlled = value !== undefined
   const expandedControlled = controlledExpanded !== undefined
-  const device = controlled ? value.device : internalDevice
-  const role = controlled ? value.role : internalRole
-  const hearingStatus = controlled ? value.hearingStatus : internalHearingStatus
-  const impact = controlled ? value.impact : internalImpact
-  const status = controlled ? value.status : internalStatus
   const expanded = expandedControlled ? controlledExpanded : internalExpanded
-
-  function updateContext(field, nextValue) {
-    if (!controlled) {
-      if (field === 'device') setInternalDevice(nextValue)
-      if (field === 'role') setInternalRole(nextValue)
-      if (field === 'hearingStatus') setInternalHearingStatus(nextValue)
-      if (field === 'impact') setInternalImpact(nextValue)
-      if (field === 'status') setInternalStatus(nextValue)
-    }
-    onChange?.({ device, role, hearingStatus, impact, status, [field]: nextValue })
-  }
-
-  function resetCall() {
-    if (!controlled) {
-      setInternalDevice(null)
-      setInternalRole(null)
-      setInternalHearingStatus(null)
-      setInternalImpact(null)
-      setInternalStatus(null)
-    }
-    onChange?.({ device: null, role: null, hearingStatus: null, impact: null, status: null })
-  }
 
   function toggleExpanded() {
     const next = !expanded
@@ -93,31 +54,13 @@ export function LiveCallFlow({ value, onChange, expanded: controlledExpanded, on
     onExpandedChange?.(next)
   }
 
-  return <section className="live-call-flow" aria-label="Ogletree Tier 1 Live Call Flow">
-    <div className="live-call-flow-heading">
+  return <section className="live-call-flow live-call-flow-approved" aria-label="Approved Ogletree Live Call Flow">
+    <div className="live-call-flow-heading live-call-flow-heading-approved">
       <div>
-        <p className="eyebrow">Live call context · Official Ogletree flow</p>
+        <p className="eyebrow">Approved call flow</p>
         <h2>Live Call Flow</h2>
-        <p>Set the call context early. Hearing status matters because troubleshooting urgency can change once a hearing is already active.</p>
+        <p>Use the official Ogletree call sequence as your live reference. Expand only when you need the full approved workflow.</p>
       </div>
-      <button type="button" className="live-call-reset" onClick={resetCall}>Reset call</button>
-    </div>
-
-    <div className="live-call-context" aria-label="Call context">
-      <ChoiceGroup label="Device" options={DEVICES} value={device} onChange={next => updateContext('device', next)} />
-      <ChoiceGroup label="Caller role" options={ROLES} value={role} onChange={next => updateContext('role', next)} />
-      <ChoiceGroup label="Hearing status" options={HEARING_STATUSES} value={hearingStatus} onChange={next => updateContext('hearingStatus', next)} />
-      <ChoiceGroup label="Who is affected" options={IMPACT_OPTIONS} value={impact} onChange={next => updateContext('impact', next)} />
-    </div>
-
-    <div className="live-call-resolution">
-      <ChoiceGroup
-        label="Resolution status"
-        options={STATUSES}
-        value={status}
-        onChange={next => updateContext('status', next)}
-        className="live-call-status"
-      />
     </div>
 
     <button
@@ -127,7 +70,7 @@ export function LiveCallFlow({ value, onChange, expanded: controlledExpanded, on
       aria-controls="live-call-workflow-details"
       onClick={toggleExpanded}
     >
-      <span>{expanded ? 'Hide full call flow' : 'View full call flow'}</span>
+      <span>{expanded ? 'Hide approved call flow' : 'View approved call flow'}</span>
       <small>{OGLETREE_CALL_FLOW_STEPS.length} steps</small>
       <span className="live-call-toggle-icon" aria-hidden="true">{expanded ? '−' : '+'}</span>
     </button>
