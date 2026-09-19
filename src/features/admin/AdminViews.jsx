@@ -15,7 +15,7 @@ import {
 } from "../analytics/usageSummary";
 import { useDialogFocus } from "../../lib/useDialogFocus";
 
-function useData(loader) {
+function useData(loader, refreshKey = 0) {
   const [state, setState] = useState({ loading: true, data: null, error: "" });
   useEffect(() => {
     let live = true;
@@ -30,7 +30,7 @@ function useData(loader) {
     return () => {
       live = false;
     };
-  }, [loader]);
+  }, [loader, refreshKey]);
   return state;
 }
 function State({ state, children }) {
@@ -571,7 +571,7 @@ export function UsageAnalytics() {
   );
   const loader = useCallback(
     () => loadUsage(range),
-    [range.end, range.start],
+    [range],
   );
   const state = useData(loader);
   const readinessLoader = useCallback(() => loadReadinessReport(), []);
@@ -801,8 +801,8 @@ export function FeedbackQueue({ onOpenPage }) {
   const [refreshVersion, setRefreshVersion] = useState(0);
   const [updatingId, setUpdatingId] = useState("");
   const [actionError, setActionError] = useState("");
-  const loader = useCallback(() => loadFeedback(), [refreshVersion]);
-  const state = useData(loader);
+  const loader = useCallback(() => loadFeedback(), []);
+  const state = useData(loader, refreshVersion);
 
   async function changeStatus(item, status) {
     if (status === item.status || updatingId) return;
