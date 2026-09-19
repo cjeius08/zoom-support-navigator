@@ -3,9 +3,10 @@ import { hashInvite, normalizeInitials, validInitials, validPassword, validUsern
 import { json, options } from '../_shared/responses.ts'
 
 type AdminAction =
-  | { action: 'generate_invite'; initials: string }
+  | { action: 'generate_invite'; initials: string; workspace_role?: 'member' | 'lead' }
   | { action: 'rename_username'; user_id: string; username: string }
   | { action: 'rename_initials'; user_id: string; initials: string }
+  | { action: 'set_workspace_role'; user_id: string; workspace_role: 'member' | 'lead' }
   | { action: 'reset_password'; user_id: string; temporary_password: string }
   | { action: 'deactivate' | 'reactivate'; user_id: string }
   | { action: 'delete_permanently'; user_id: string; confirmation: string }
@@ -39,10 +40,12 @@ Deno.serve(async request => {
     const { admin, actor } = await requireCreator(request)
     if (payload.action === 'generate_invite') {
       if (!validInitials(payload.initials)) return badRequest('Initials must be 2–3 uppercase letters.', request)
+      const workspaceRole = payload.workspace_role === 'lead' ? 'lead' : payload.workspace_role === 'member' || payload.workspace_role == null ? 'member' : null
+      if (!workspaceRole) return badRequest('Role must be Member or Lead.', request)
       const code = inviteCode()
-      const { error } = await admin.rpc('zoom_service_admin_generate_invite', { actor, requested_initials: normalizeInitials(payload.initials), requested_hash: await hashInvite(code) })
+      const { error } = await admin.rpc('zoom_service_admin_generate_invite', { actor, requested_initials: normalizeInitials(payload.initials), requested_hash: await hashInvite(code), requested_workspace_role: workspaceRole })
       if (error) throw error
-      return json({ invite_code: code, initials: normalizeInitials(payload.initials) }, 200, request)
+      return json({ invite_code: code, initials: normalizeInitials(payload.initials), workspace_role: workspaceRole }, 200, request)
     }
     if (payload.action === 'rename_username') {
       if (!validUsername(payload.username)) return badRequest('Username must use at least 3 lowercase letters, numbers, or underscores.', request)
@@ -55,6 +58,16 @@ Deno.serve(async request => {
       const { error } = await admin.rpc('zoom_service_admin_rename_initials', { actor, target: payload.user_id, requested_initials: normalizeInitials(payload.initials) })
       if (error) throw error
       return json({ updated: true }, 200, request)
+    }
+    if (payload.action === 'set_workspace_role') {
+      if (payload.workspace_role !== 'member' && payload.workspace_role !== 'lead') return badRequest('Role must be Member or Lead.', request)
+      const { error } = await admin.rpc('zoom_service_admin_set_workspace_role', {
+        actor,
+        target: payload.user_id,
+        desired_workspace_role: payload.workspace_role,
+      })
+      if (error) throw error
+      return json({ updated: true, workspace_role: payload.workspace_role }, 200, request)
     }
     if (payload.action === 'reset_password') {
       if (!validPassword(payload.temporary_password)) return badRequest('Temporary password must be at least 8 characters.', request)
