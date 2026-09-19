@@ -175,7 +175,8 @@
   flex-wrap: wrap;
 }
 
-.update-audience-badge {
+.update-audience-badge,
+.update-history-badge {
   display: inline-flex;
   align-items: center;
   min-height: 1.25rem;
@@ -262,4 +263,10 @@
     flex-direction: column;
     gap: .45rem;
   }
+}
+
+.update-history-badge {
+  border-color: rgba(164, 176, 188, .24);
+  color: #c6d0d8;
+  background: rgba(116, 126, 136, .12);
 }
