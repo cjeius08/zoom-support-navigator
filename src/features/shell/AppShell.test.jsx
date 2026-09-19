@@ -310,3 +310,27 @@ it('keeps the workspace title horizontal and removes nonessential header text on
   expect(accessibilityCss).toMatch(/\.console-brand\s*\{[^}]*flex-direction:\s*row/)
   expect(responsiveCss).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.header-context,[\s\S]*?\.account-menu \.account-copy\s*\{[^}]*display:\s*none/)
 })
+
+
+it('keeps all opened live tools available and stacks minimized tools instead of closing them', async () => {
+  const user = userEvent.setup()
+  render(<AppShell profile={agentProfile}><div>Current page content</div></AppShell>)
+
+  await user.click(screen.getByRole('button', { name: 'Call Documentation' }))
+  await user.click(screen.getByRole('button', { name: 'Scope Check' }))
+
+  expect(screen.getByLabelText('Call Documentation minimized')).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Scope Check' })).toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: 'Readiness Lab' }))
+
+  expect(screen.getByLabelText('Call Documentation minimized')).toBeInTheDocument()
+  expect(screen.getByLabelText('Scope Check minimized')).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Readiness Lab' })).toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: 'Restore Call Documentation' }))
+
+  expect(screen.getByRole('heading', { name: 'Call Documentation' })).toBeInTheDocument()
+  expect(screen.getByLabelText('Scope Check minimized')).toBeInTheDocument()
+  expect(screen.getByLabelText('Readiness Lab minimized')).toBeInTheDocument()
+})
