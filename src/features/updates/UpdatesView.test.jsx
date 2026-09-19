@@ -14,3 +14,13 @@ it('shows admin-only release notes to administrators', () => {
   expect(screen.getAllByText('Admin only').length).toBeGreaterThan(0)
   expect(screen.getByText('Workspace Lead')).toBeInTheDocument()
 })
+
+
+it('labels historical updates without showing obsolete verification steps', () => {
+  render(<UpdatesView isAdmin />)
+  expect(screen.getAllByText('Historical').length).toBeGreaterThan(0)
+  const historicalHeading = screen.getByRole('heading', { name: 'Original Core Live Call Flow' })
+  const card = historicalHeading.closest('article')
+  expect(card).toHaveTextContent('Historical')
+  expect(card).not.toHaveTextContent('Verification')
+})
