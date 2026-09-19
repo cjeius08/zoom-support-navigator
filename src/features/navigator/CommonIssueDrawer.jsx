@@ -12,6 +12,8 @@ const TABS = [
 ]
 
 const STATUS_OPTIONS = ['Resolved', 'Unresolved', 'Escalation Needed']
+const DEVICE_OPTIONS = ['Windows', 'Mac', 'iPhone', 'Android', 'Browser']
+const ROLE_OPTIONS = ['Host', 'Participant']
 
 function visualSource(src) {
   if (/^https?:\/\//i.test(src)) return src
@@ -25,6 +27,7 @@ export function CommonIssueDrawer({
   onOpenProcess,
   onOpenRoute,
   onStatusChange,
+  onContextChange,
   onTabChange,
   onTrackEvent,
 }) {
@@ -117,10 +120,30 @@ export function CommonIssueDrawer({
         <button type="button" className="drawer-close" aria-label="Close common issue route" onClick={onClose}>×</button>
       </header>
 
-      <div className="common-issue-context" aria-label="Selected call context">
-        <span><small>Device</small><strong>{callContext?.device || 'Not selected'}</strong></span>
-        <span><small>Caller role</small><strong>{callContext?.role || 'Not selected'}</strong></span>
-        <span><small>Status</small><strong>{callContext?.status || 'In progress'}</strong></span>
+      <div className="common-issue-context common-issue-context-editor" aria-label="Route context">
+        <div className="common-issue-context-field">
+          <small>Device</small>
+          <div className="common-issue-context-options" role="group" aria-label="Device">
+            {DEVICE_OPTIONS.map(device => <button
+              type="button"
+              key={device}
+              aria-pressed={selectedDevice === device}
+              onClick={() => onContextChange?.({ device })}
+            >{device}</button>)}
+          </div>
+        </div>
+        <div className="common-issue-context-field">
+          <small>Caller role</small>
+          <div className="common-issue-context-options" role="group" aria-label="Caller role">
+            {ROLE_OPTIONS.map(role => <button
+              type="button"
+              key={role}
+              aria-pressed={selectedRole === role}
+              onClick={() => onContextChange?.({ role })}
+            >{role}</button>)}
+          </div>
+        </div>
+        <span className="common-issue-context-status"><small>Status</small><strong>{callContext?.status || 'In progress'}</strong></span>
       </div>
 
       <div className="process-tabs" role="tablist" aria-label="Common issue views">
@@ -185,7 +208,7 @@ export function CommonIssueDrawer({
 
           {(routeNeedsDeviceSelection || (hasDeviceScopedChecks && !selectedDevice)) && <section className="common-issue-section common-issue-device-prompt">
             <p className="eyebrow">Device needed</p>
-            <h3>Select the caller’s device in Live Call Flow</h3>
+            <h3>Select the caller’s device above</h3>
             <p>{routeHasDeviceBoundary
               ? `This route has platform-specific guidance. Supported in this approved path: ${route.supportedDevices.join(', ')}.`
               : 'The workspace is hiding device-specific app steps until the caller’s device is selected, so the agent does not give desktop-only instructions to a mobile or browser caller.'}</p>
@@ -199,7 +222,7 @@ export function CommonIssueDrawer({
 
           {hasRoleScopedChecks && !selectedRole && !routeDeviceMismatch && !routeNeedsDeviceSelection && <section className="common-issue-section common-issue-device-prompt">
             <p className="eyebrow">Caller role needed</p>
-            <h3>Select Host or Participant in Live Call Flow</h3>
+            <h3>Select Host or Participant above</h3>
             <p>The workspace is hiding role-specific steps until the caller’s role is selected, so participant-only permissions are not shown to a host.</p>
           </section>}
 
