@@ -168,7 +168,7 @@ export default function App() {
     return <AppShell profile={profile} currentView={view} onNavigate={navigate} onOpenReadinessResource={openReadinessResource} onFeedback={submitFeedback} reportContext={reportContext} onPasswordChange={changeOwnPassword} onAvatarChange={async avatarId=>{await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}} onLogout={async()=>{await signOut();setProfile(null)}}>{content}</AppShell>
   }
 
-  if (activationOpen) return <main className="access-shell" style={accessStyle}><section className="access-card"><ActivateAccountForm onActivate={activateAccount} onCancel={()=>setActivationOpen(false)}/></section></main>
+  if (activationOpen) return <main className="access-shell" style={accessStyle}><section className="access-card activation-card"><ActivateAccountForm onActivate={activateAccount} onCancel={()=>setActivationOpen(false)}/></section></main>
   return <main className="access-shell" style={accessStyle}>
     <section className="access-card" aria-label="Ozzie sign in">
       <img
