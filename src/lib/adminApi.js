@@ -152,3 +152,15 @@ export async function loadReadinessReport() {
     ],
   }
 }
+
+
+export async function loadStorageGuardrail() {
+  const { data, error } = await supabase
+    .from('zoom_storage_guardrail')
+    .select('database_bytes,limit_bytes,status,checked_at')
+    .eq('singleton_key', true)
+    .single()
+
+  if (error) throw error
+  return data
+}
