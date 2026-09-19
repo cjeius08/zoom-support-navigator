@@ -101,10 +101,9 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
       >
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
       </button>
-      <div className="console-brand console-brand-neutral" aria-label="Ogletree Support Workspace"><span className="console-brand-title">Ogletree Support Workspace</span></div>
-      <button className="console-version-chip" type="button" onClick={() => onNavigate('updates')}>
-        <span className="version-console-label">Workspace </span>v{CONSOLE_METADATA.version}<span className="version-updated-label"> · Updated {formatShortConsoleDate(LAST_UPDATED)}</span>
-      </button>
+      <div className="ozzie-header-brand" aria-label="Ozzie">
+        <img src={assetUrl('assets/ozzie-header.webp')} alt="Ozzie" />
+      </div>
       <button className="account-menu" aria-expanded={profileOpen} aria-label={`${profile.username} account`} onClick={() => { const next = !profileOpen; setProfileOpen(next); if (next) { setMessage(''); setProfileError(''); setProfileErrorField('') } }}>{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<span className="account-copy"><strong>{profile.username}</strong><small>{isAdmin ? 'JA Admin' : 'Agent'}</small></span><svg className="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></button>
     </header>
 

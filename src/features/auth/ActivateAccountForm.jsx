@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { validateActivation } from './credentials'
+import { assetUrl } from '../../lib/assetUrl'
 
 export function ActivateAccountForm({ onActivate, onCancel }) {
   const [error, setError] = useState('')
@@ -40,14 +41,22 @@ export function ActivateAccountForm({ onActivate, onCancel }) {
     }
   }
 
-  if (complete) return <section><h2>Account activated</h2><p>You can now sign in with your username and password.</p><button onClick={onCancel}>Return to sign in</button></section>
+  if (complete) return <section className="activation-success" aria-labelledby="activation-success-title">
+    <img className="activation-success-mascot" src={assetUrl('assets/ozzie-activation-success.webp')} alt="" />
+    <div>
+      <h2 id="activation-success-title">Account activated</h2>
+      <p>You can now sign in with your username and password.</p>
+      <button onClick={onCancel}>Return to sign in</button>
+    </div>
+  </section>
 
   const fieldErrorProps = field => ({
     'aria-invalid': errorField === field ? 'true' : undefined,
     'aria-describedby': errorField === field ? 'activation-error' : undefined,
   })
 
-  return <form onSubmit={submit} className="activation-form" noValidate>
+  return <div className="activation-experience">
+    <form onSubmit={submit} className="activation-form" noValidate>
     <h2>Activate Account</h2>
     <p>Use the initials and one-time invite code provided by JA.</p>
     <label>Initials<input name="initials" autoComplete="off" maxLength={3} required {...fieldErrorProps('initials')} /></label>
@@ -60,5 +69,9 @@ export function ActivateAccountForm({ onActivate, onCancel }) {
       <button type="button" onClick={onCancel}>Cancel</button>
       <button disabled={saving}>{saving ? 'Activating…' : 'Activate'}</button>
     </div>
-  </form>
+    </form>
+    <div className="activation-mascot-panel" aria-hidden="true">
+      <img className="activation-pointer-mascot" src={assetUrl('assets/ozzie-activation-pointer.webp')} alt="" />
+    </div>
+  </div>
 }

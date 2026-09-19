@@ -3458,3 +3458,123 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     flex-direction: column;
   }
 }
+
+
+/* Ozzie brand rollout */
+.access-brand-logo {
+  display: block;
+  width: min(100%, 22rem);
+  height: auto;
+  margin: 0 auto 1.4rem;
+  object-fit: contain;
+}
+
+.activation-card {
+  width: min(100%, 48rem);
+}
+
+.activation-experience {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 16rem);
+  align-items: center;
+  gap: clamp(1rem, 4vw, 2.5rem);
+}
+
+.activation-form {
+  min-width: 0;
+}
+
+.activation-mascot-panel {
+  display: grid;
+  place-items: center;
+  align-self: center;
+  min-width: 0;
+}
+
+.activation-pointer-mascot {
+  display: block;
+  width: min(100%, 15rem);
+  height: auto;
+  transform: scaleX(-1);
+  transform-origin: center;
+  filter: drop-shadow(0 1rem 1.8rem rgba(0,0,0,.26));
+}
+
+.activation-success {
+  display: grid;
+  grid-template-columns: minmax(9rem, 12rem) minmax(0, 1fr);
+  align-items: center;
+  gap: 1.5rem;
+  text-align: left;
+}
+
+.activation-success-mascot {
+  display: block;
+  width: min(100%, 12rem);
+  height: auto;
+  margin: 0 auto;
+  filter: drop-shadow(0 1rem 1.8rem rgba(0,0,0,.22));
+}
+
+.app-header {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+}
+
+.ozzie-header-brand {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  margin-right: auto;
+}
+
+.ozzie-header-brand img {
+  display: block;
+  width: clamp(10.5rem, 19vw, 15rem);
+  max-height: 3.45rem;
+  object-fit: contain;
+  object-position: left center;
+}
+
+@media (max-width: 800px) {
+  .ozzie-header-brand img {
+    width: clamp(8.5rem, 34vw, 11rem);
+    max-height: 2.9rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .access-brand-logo {
+    width: min(100%, 18rem);
+    margin-bottom: 1.1rem;
+  }
+
+  .activation-card {
+    width: min(100%, 30rem);
+  }
+
+  .activation-experience,
+  .activation-success {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .activation-mascot-panel {
+    order: -1;
+  }
+
+  .activation-pointer-mascot {
+    width: min(48vw, 10rem);
+  }
+
+  .activation-success-mascot {
+    width: min(48vw, 9rem);
+  }
+
+  .ozzie-header-brand {
+    margin-right: .5rem;
+  }
+}
