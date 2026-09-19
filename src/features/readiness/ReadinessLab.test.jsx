@@ -289,7 +289,7 @@ it('shows five readiness parts and the five-question general Zoom scenario set',
   expect(screen.getByRole('tab', { name: /Troubleshooting Available now/i })).toBeEnabled()
   expect(screen.getByRole('tab', { name: /Scope Available now/i })).toBeEnabled()
   expect(screen.getByRole('tab', { name: /Live Call Available now/i })).toBeEnabled()
-  expect(screen.getByText('Question 1 of 5')).toBeInTheDocument()
+  expect(screen.getByText(/Question 1 of 5/)).toBeInTheDocument()
   expect(screen.getByText(QUESTIONS[0].prompt)).toBeInTheDocument()
 })
 
@@ -298,14 +298,16 @@ it('resumes the same incomplete attempt after the lab is closed and reopened', a
   readinessMocks.getReadinessState.mockResolvedValue(persisted)
 
   const { rerender } = render(<ReadinessLab open />)
-  expect(await screen.findByText('Question 2 of 5')).toBeInTheDocument()
-  expect(screen.getByText('1/5 checked')).toBeInTheDocument()
+  expect(await screen.findByText(/Question 2 of 5/)).toBeInTheDocument()
+  expect(screen.getByText(/1\/5 checked · 4 remaining/)).toBeInTheDocument()
+  expect(screen.getByText('Resuming Attempt 1')).toBeInTheDocument()
+  expect(screen.getByText('1 completed · 4 remaining')).toBeInTheDocument()
 
   rerender(<ReadinessLab open={false} />)
   expect(screen.queryByRole('heading', { name: 'Readiness Lab' })).not.toBeInTheDocument()
 
   rerender(<ReadinessLab open />)
-  expect(await screen.findByText('Question 2 of 5')).toBeInTheDocument()
+  expect(await screen.findByText(/Question 2 of 5/)).toBeInTheDocument()
   expect(readinessMocks.getReadinessState).toHaveBeenCalledTimes(2)
 })
 
@@ -355,7 +357,7 @@ it('keeps resource discovery separate from the saved attempt', async () => {
   readinessMocks.getReadinessState.mockResolvedValue(activeState())
 
   render(<ReadinessLab open onOpenResource={onOpenResource} />)
-  await screen.findByText('Question 1 of 5')
+  await screen.findByText(/Question 1 of 5/)
   await user.click(screen.getByRole('button', { name: 'Open Training & Resources' }))
 
   expect(onOpenResource).toHaveBeenCalledWith({ view: 'training' })
@@ -439,7 +441,7 @@ it('loads Part 2 as its own persistent device-navigation attempt without reveali
   await user.click(screen.getByRole('tab', { name: /Devices Available now/i }))
 
   expect(await screen.findByRole('heading', { name: 'Device & Navigation Awareness' })).toBeInTheDocument()
-  expect(screen.getByText('Question 1 of 5')).toBeInTheDocument()
+  expect(screen.getByText(/Question 1 of 5/)).toBeInTheDocument()
   expect(screen.getByText(DEVICE_QUESTIONS[0].prompt)).toBeInTheDocument()
   expect(readinessMocks.getReadinessState).toHaveBeenCalledWith(DEVICE_QUESTION_SET)
 
@@ -475,7 +477,7 @@ it('loads Part 3 as a separate persistent troubleshooting-judgment attempt', asy
   await user.click(screen.getByRole('tab', { name: /Troubleshooting Available now/i }))
 
   expect(await screen.findByRole('heading', { name: 'Troubleshooting Judgment' })).toBeInTheDocument()
-  expect(screen.getByText('Question 1 of 5')).toBeInTheDocument()
+  expect(screen.getByText(/Question 1 of 5/)).toBeInTheDocument()
   expect(screen.getByText(TROUBLESHOOTING_QUESTIONS[0].prompt)).toBeInTheDocument()
   expect(readinessMocks.getReadinessState).toHaveBeenCalledWith(TROUBLESHOOTING_QUESTION_SET)
 
@@ -516,7 +518,7 @@ it('loads Part 4 as a separate persistent scope-and-referral judgment attempt', 
   await user.click(screen.getByRole('tab', { name: /Scope Available now/i }))
 
   expect(await screen.findByRole('heading', { name: 'Scope & Referral Judgment' })).toBeInTheDocument()
-  expect(screen.getByText('Question 1 of 5')).toBeInTheDocument()
+  expect(screen.getByText(/Question 1 of 5/)).toBeInTheDocument()
   expect(screen.getByText(SCOPE_QUESTIONS[0].prompt)).toBeInTheDocument()
   expect(readinessMocks.getReadinessState).toHaveBeenCalledWith(SCOPE_QUESTION_SET)
 
@@ -563,7 +565,7 @@ it('loads Part 5 as a separate persistent integrated live-call readiness attempt
   await user.click(screen.getByRole('tab', { name: /Live Call Available now/i }))
 
   expect(await screen.findByRole('heading', { name: 'Live Call Readiness' })).toBeInTheDocument()
-  expect(screen.getByText('Question 1 of 5')).toBeInTheDocument()
+  expect(screen.getByText(/Question 1 of 5/)).toBeInTheDocument()
   expect(screen.getByText(LIVE_CALL_QUESTIONS[0].prompt)).toBeInTheDocument()
   expect(readinessMocks.getReadinessState).toHaveBeenCalledWith(LIVE_CALL_QUESTION_SET)
 

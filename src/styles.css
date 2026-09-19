@@ -3431,3 +3431,30 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   border-radius: .72rem;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
 }
+
+
+/* Readiness resume state: make saved progress unmistakable after reopening. */
+.readiness-resume-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+  padding: .75rem .9rem;
+  border: 1px solid rgba(84, 168, 255, .32);
+  border-radius: .75rem;
+  background: rgba(31, 112, 194, .12);
+}
+.readiness-resume-banner strong {
+  color: #eef7ff;
+}
+.readiness-resume-banner span {
+  color: #9fc8ee;
+  font-size: .85rem;
+  font-weight: 700;
+}
+@media (max-width: 620px) {
+  .readiness-resume-banner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
