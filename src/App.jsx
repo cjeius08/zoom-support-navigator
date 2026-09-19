@@ -199,8 +199,10 @@ export default function App() {
     fetch(ozzieIntroVideoSrc, { method: 'HEAD' })
       .then(response => {
         if (!live) return
-        setOzzieIntroAvailable(response.ok)
-        if (response.ok && !profile.ozzie_intro_seen_at) {
+        const contentType = response.headers.get('content-type') || ''
+        const available = response.ok && contentType.toLowerCase().startsWith('video/')
+        setOzzieIntroAvailable(available)
+        if (available && !profile.ozzie_intro_seen_at) {
           setOzzieIntroReplay(false)
           setOzzieIntroError('')
           setOzzieIntroOpen(true)
