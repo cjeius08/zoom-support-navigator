@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { deleteOwnCallNote, loadOwnCallNotes, saveOwnCallNote } from '../../lib/callNotesApi'
 import { formatCallDocumentation } from './callDocumentationFormat'
 
 const SOURCE_TITLE = 'Zoom Basic Support Boundaries, Decision Path & Referral Process'
@@ -40,6 +41,13 @@ function createInitialDraft() {
   }
 }
 
+function restoredDraft(note) {
+  return {
+    ...createInitialDraft(),
+    ...(note?.draft || {}),
+  }
+}
+
 function Field({ label, hint, children }) {
   return <label className="documentation-dock-field">
     <span>{label}</span>
@@ -51,6 +59,11 @@ function Field({ label, hint, children }) {
 export function CallDocumentation({ open = false, minimized = false, onMinimize = () => {}, onClose = () => {} }) {
   const [draft, setDraft] = useState(createInitialDraft)
   const [copyState, setCopyState] = useState('idle')
+  const [activeNoteId, setActiveNoteId] = useState(null)
+  const [savedNotes, setSavedNotes] = useState([])
+  const [notesLoading, setNotesLoading] = useState(false)
+  const [noteState, setNoteState] = useState('idle')
+  const [noteError, setNoteError] = useState('')
   const formatted = useMemo(() => formatCallDocumentation(draft), [draft])
   const filledCount = useMemo(() => [
     draft.callerName,
@@ -65,9 +78,33 @@ export function CallDocumentation({ open = false, minimized = false, onMinimize 
     draft.outcome,
   ].filter(Boolean).length, [draft])
 
+  useEffect(() => {
+    if (!open) return undefined
+
+    let live = true
+    setNotesLoading(true)
+    setNoteError('')
+    loadOwnCallNotes()
+      .then(notes => {
+        if (live) setSavedNotes(notes)
+      })
+      .catch(error => {
+        if (live) setNoteError(error?.message || 'Could not load saved call notes.')
+      })
+      .finally(() => {
+        if (live) setNotesLoading(false)
+      })
+
+    return () => {
+      live = false
+    }
+  }, [open])
+
   function update(key, value) {
     setDraft(current => ({ ...current, [key]: value }))
     if (copyState !== 'idle') setCopyState('idle')
+    if (noteState !== 'idle') setNoteState('idle')
+    if (noteError) setNoteError('')
   }
 
   async function copyDocumentation() {
@@ -80,10 +117,61 @@ export function CallDocumentation({ open = false, minimized = false, onMinimize 
     }
   }
 
-  function clearDocumentation() {
-    if (!window.confirm('Clear this documentation draft for the next call?')) return
-    setDraft(createInitialDraft())
+  async function saveDocumentation() {
+    if (!filledCount) {
+      setNoteError('Add call details before saving this note.')
+      return
+    }
+
+    setNoteState('saving')
+    setNoteError('')
+    try {
+      const saved = await saveOwnCallNote({
+        id: activeNoteId,
+        draft,
+        noteText: formatted,
+      })
+      setActiveNoteId(saved.id)
+      setSavedNotes(current => [saved, ...current.filter(note => note.id !== saved.id)])
+      setNoteState('saved')
+      window.setTimeout(() => setNoteState(current => current === 'saved' ? 'idle' : current), 1800)
+    } catch (error) {
+      setNoteState('idle')
+      setNoteError(error?.message || 'Could not save this call note.')
+    }
+  }
+
+  function openSavedNote(note) {
+    setDraft(restoredDraft(note))
+    setActiveNoteId(note.id)
     setCopyState('idle')
+    setNoteState('idle')
+    setNoteError('')
+  }
+
+  async function removeSavedNote(note) {
+    if (!window.confirm('Delete this saved call note? This cannot be undone.')) return
+
+    setNoteError('')
+    try {
+      await deleteOwnCallNote(note.id)
+      setSavedNotes(current => current.filter(item => item.id !== note.id))
+      if (activeNoteId === note.id) {
+        setDraft(createInitialDraft())
+        setActiveNoteId(null)
+      }
+    } catch (error) {
+      setNoteError(error?.message || 'Could not delete this saved call note.')
+    }
+  }
+
+  function clearDocumentation() {
+    if (!window.confirm('Clear this documentation draft for the next call? Saved notes will not be deleted.')) return
+    setDraft(createInitialDraft())
+    setActiveNoteId(null)
+    setCopyState('idle')
+    setNoteState('idle')
+    setNoteError('')
   }
 
   if (!open) return null
@@ -104,7 +192,7 @@ export function CallDocumentation({ open = false, minimized = false, onMinimize 
   return <aside className="documentation-dock" aria-labelledby="call-documentation-dock-title">
     <header className="documentation-dock-header">
       <div>
-        <span className="documentation-dock-kicker">Live tool · local draft</span>
+        <span className="documentation-dock-kicker">Live tool · protected notes</span>
         <h2 id="call-documentation-dock-title">Call Documentation</h2>
       </div>
       <div className="documentation-dock-window-actions">
@@ -115,8 +203,9 @@ export function CallDocumentation({ open = false, minimized = false, onMinimize 
 
     <div className="documentation-dock-body">
       <aside className="documentation-dock-privacy">
-        <strong>Not saved by the workspace</strong>
-        <span>Copy to the approved case system, then clear the draft for the next call.</span>
+        <strong>Protected workspace note · retained for 90 days</strong>
+        <span>Your saved notes are limited to your account. Workspace Admin can read saved notes for reporting.</span>
+        <span>Do not enter passwords, full payment card numbers, government IDs, or other prohibited sensitive information.</span>
       </aside>
 
       <details className="documentation-dock-section" open>
@@ -187,13 +276,38 @@ export function CallDocumentation({ open = false, minimized = false, onMinimize 
         <pre>{formatted}</pre>
       </details>
 
+      <details className="documentation-dock-preview">
+        <summary>Saved notes ({savedNotes.length})</summary>
+        {notesLoading ? <p>Loading saved notes…</p> : savedNotes.length ? (
+          <div className="documentation-saved-notes">
+            {savedNotes.map(note => <article key={note.id} className={activeNoteId === note.id ? 'active' : ''}>
+              <div>
+                <strong>{note.caller_ref || note.device || 'Saved call note'}</strong>
+                <small>
+                  {new Date(note.created_at).toLocaleString()}
+                  {note.outcome ? ` · ${note.outcome}` : ''}
+                </small>
+              </div>
+              <div className="documentation-saved-note-actions">
+                <button type="button" onClick={() => openSavedNote(note)}>Open</button>
+                <button type="button" onClick={() => removeSavedNote(note)}>Delete</button>
+              </div>
+            </article>)}
+          </div>
+        ) : <p>No saved call notes yet.</p>}
+      </details>
+
       <footer className="documentation-dock-footer">
         <div className="documentation-dock-actions">
+          <button type="button" className="documentation-copy" disabled={noteState === 'saving'} onClick={saveDocumentation}>
+            {noteState === 'saving' ? 'Saving…' : noteState === 'saved' ? 'Saved securely' : activeNoteId ? 'Update saved note' : 'Save note'}
+          </button>
           <button type="button" className="documentation-copy" onClick={copyDocumentation}>
             {copyState === 'copied' ? 'Copied documentation' : 'Copy documentation'}
           </button>
           <button type="button" className="documentation-clear" onClick={clearDocumentation}>Clear</button>
         </div>
+        {noteError && <span role="alert">{noteError}</span>}
         {copyState === 'failed' && <span role="status">Copy failed. Open the preview and copy manually.</span>}
         <small>Source: {SOURCE_TITLE}</small>
       </footer>
