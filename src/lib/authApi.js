@@ -29,7 +29,7 @@ export async function getCurrentProfile() {
   if (!supabaseConfigured) return null
   const { data: sessionData } = await supabase.auth.getSession()
   if (!sessionData.session) return null
-  const { data, error } = await supabase.from('zoom_profiles').select('id,username,initials,role,status,must_change_password,avatar_id,ozzie_intro_seen_at').eq('id', sessionData.session.user.id).maybeSingle()
+  const { data, error } = await supabase.from('zoom_profiles').select('id,username,initials,role,status,must_change_password,avatar_id,ozzie_intro_seen_at,workspace_role').eq('id', sessionData.session.user.id).maybeSingle()
   if (error) throw error
   return data
 }
