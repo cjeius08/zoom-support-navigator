@@ -360,7 +360,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
           </section>
         </section> : <>
           {libraryTab === 'fastest' && <section aria-labelledby="fastest-routes-heading">
-            <p className="eyebrow">Live-call shortcuts · Phase 2</p>
+            <p className="eyebrow">Live-call shortcuts</p>
             <h2 id="fastest-routes-heading">Fastest Routes</h2>
             <p className="navigator-tab-intro">Keep the original high-frequency routes one click away. Start with the caller’s symptom, not a document title.</p>
             <div className="fastest-route-grid">
