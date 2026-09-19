@@ -24,8 +24,11 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   const [profileError, setProfileError] = useState('')
   const [profileErrorField, setProfileErrorField] = useState('')
   const [passwordSaving, setPasswordSaving] = useState(false)
-  const [activeLiveTool, setActiveLiveTool] = useState(null)
-  const [liveToolMinimized, setLiveToolMinimized] = useState(false)
+  const [liveTools, setLiveTools] = useState({
+    documentation: 'closed',
+    scope_check: 'closed',
+    readiness: 'closed',
+  })
   const [compactNav, setCompactNav] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 800)
   const profileDialogRef = useRef(null)
   const menuToggleRef = useRef(null)
@@ -34,6 +37,40 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   const visibleLinks = isAdmin ? [...agentLinks, ...adminLinks] : agentLinks
   const style = { '--workspace-image': `url(${assetUrl('assets/login-workspace-background.png')})` }
   const visibleLastUpdated = lastUpdatedForAudience(isAdmin)
+
+  const minimizedLiveTools = Object.entries(liveTools)
+    .filter(([, state]) => state === 'minimized')
+    .map(([id]) => id)
+
+  function openLiveTool(id) {
+    setLiveTools(current => {
+      const next = { ...current }
+      Object.keys(next).forEach(key => {
+        if (key === id) next[key] = 'open'
+        else if (next[key] === 'open') next[key] = 'minimized'
+      })
+      return next
+    })
+  }
+
+  function toggleLiveToolMinimized(id) {
+    setLiveTools(current => {
+      const next = { ...current }
+      if (current[id] === 'minimized') {
+        Object.keys(next).forEach(key => {
+          if (key === id) next[key] = 'open'
+          else if (next[key] === 'open') next[key] = 'minimized'
+        })
+      } else if (current[id] === 'open') {
+        next[id] = 'minimized'
+      }
+      return next
+    })
+  }
+
+  function closeLiveTool(id) {
+    setLiveTools(current => ({ ...current, [id]: 'closed' }))
+  }
 
   function closeProfile() {
     setProfileOpen(false)
@@ -130,11 +167,10 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           ? <button
               key={id}
               type="button"
-              aria-pressed={activeLiveTool === id}
-              className={activeLiveTool === id ? 'tool-open' : ''}
+              aria-pressed={liveTools[id] !== 'closed'}
+              className={liveTools[id] === 'open' ? 'tool-open' : liveTools[id] === 'minimized' ? 'tool-minimized' : ''}
               onClick={() => {
-                setActiveLiveTool(id)
-                setLiveToolMinimized(false)
+                openLiveTool(id)
                 closeNavigation()
               }}
             ><Icon type={id} /><span>{label}</span></button>
@@ -169,31 +205,25 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     </main>
 
     <CallDocumentation
-      open={activeLiveTool === 'documentation'}
-      minimized={liveToolMinimized}
-      onMinimize={() => setLiveToolMinimized(value => !value)}
-      onClose={() => {
-        setActiveLiveTool(null)
-        setLiveToolMinimized(false)
-      }}
+      open={liveTools.documentation !== 'closed'}
+      minimized={liveTools.documentation === 'minimized'}
+      stackIndex={minimizedLiveTools.indexOf('documentation')}
+      onMinimize={() => toggleLiveToolMinimized('documentation')}
+      onClose={() => closeLiveTool('documentation')}
     />
     <ScopeCheck
-      open={activeLiveTool === 'scope_check'}
-      minimized={liveToolMinimized}
-      onMinimize={() => setLiveToolMinimized(value => !value)}
-      onClose={() => {
-        setActiveLiveTool(null)
-        setLiveToolMinimized(false)
-      }}
+      open={liveTools.scope_check !== 'closed'}
+      minimized={liveTools.scope_check === 'minimized'}
+      stackIndex={minimizedLiveTools.indexOf('scope_check')}
+      onMinimize={() => toggleLiveToolMinimized('scope_check')}
+      onClose={() => closeLiveTool('scope_check')}
     />
     <ReadinessLab
-      open={activeLiveTool === 'readiness'}
-      minimized={liveToolMinimized}
-      onMinimize={() => setLiveToolMinimized(value => !value)}
-      onClose={() => {
-        setActiveLiveTool(null)
-        setLiveToolMinimized(false)
-      }}
+      open={liveTools.readiness !== 'closed'}
+      minimized={liveTools.readiness === 'minimized'}
+      stackIndex={minimizedLiveTools.indexOf('readiness')}
+      onMinimize={() => toggleLiveToolMinimized('readiness')}
+      onClose={() => closeLiveTool('readiness')}
       onOpenResource={onOpenReadinessResource}
     />
 
