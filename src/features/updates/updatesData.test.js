@@ -18,7 +18,8 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.metadata.updatePolicy).toMatch(/Admin-only operational changes/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
   expect(data.updates[0].date).toBe('2026-09-19')
-  expect(data.updates.slice(0, 26).map(entry => entry.id)).toEqual([
+  expect(data.updates.slice(0, 27).map(entry => entry.id)).toEqual([
+    'phase8-batch1-runtime-stability',
     'workspace-page-back-navigation',
     'admin-readiness-summary-polish',
     'ozzie-first-signin-role-labels',
