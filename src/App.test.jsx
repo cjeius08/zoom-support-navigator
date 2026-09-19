@@ -9,6 +9,7 @@ describe('application access gate', () => {
   it('uses the Ozzie brand on the sign-in page while keeping the internal document title', async () => {
     render(<App />)
     await waitFor(() => expect(screen.getByRole('img', { name: /Ozzie — Ogletree Support Workspace/i })).toBeInTheDocument())
+    expect(document.querySelector('.ozzie-logo-stage-login')).toBeInTheDocument()
     expect(screen.queryByText('Tier 1 Zoom Support · Sign in to continue.')).not.toBeInTheDocument()
     expect(readFileSync(join(cwd(), 'index.html'), 'utf8')).toContain('<title>Ogletree Support Workspace</title>')
   })
