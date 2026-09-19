@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { validateCredentials } from './features/auth/credentials'
 import { ForcePasswordChange } from './features/auth/ForcePasswordChange'
-import { activateAccount, changeOwnPassword, getCurrentProfile, loginWithUsername, signOut, updateOwnAvatar } from './lib/authApi'
+import { activateAccount, changeOwnPassword, getCurrentProfile, loginWithUsername, markOzzieIntroSeen, signOut, updateOwnAvatar } from './lib/authApi'
 import { ActivateAccountForm } from './features/auth/ActivateAccountForm'
 import { submitFeedback } from './lib/feedbackApi'
 import { Navigator } from './features/navigator/Navigator'
@@ -13,6 +13,7 @@ import { UpdatesView } from './features/updates/UpdatesView'
 import { FavoritesView } from './features/favorites/FavoritesView'
 import { useFavorites } from './features/favorites/useFavorites'
 import { useRecentlyViewed } from './features/favorites/useRecentlyViewed'
+import { OzzieWelcome } from './features/onboarding/OzzieWelcome'
 import { assetUrl } from './lib/assetUrl'
 import { useUsageTracking } from './features/analytics/usePresence'
 import './styles.css'
@@ -42,6 +43,10 @@ export default function App() {
   const [navigatorCommonIssueId, setNavigatorCommonIssueId] = useState(null)
   const [reportContext, setReportContext] = useState(EMPTY_REPORT_CONTEXT)
   const [showPassword, setShowPassword] = useState(false)
+  const [ozzieIntroOpen, setOzzieIntroOpen] = useState(false)
+  const [ozzieIntroReplay, setOzzieIntroReplay] = useState(false)
+  const [ozzieIntroSaving, setOzzieIntroSaving] = useState(false)
+  const [ozzieIntroError, setOzzieIntroError] = useState('')
   const { trackEvent } = useUsageTracking(profile?.id ?? null, profile ? view : null)
   const {
     favorites,
@@ -182,6 +187,44 @@ export default function App() {
 
   useEffect(() => { getCurrentProfile().then(setProfile).catch(() => signOut()).finally(() => setLoading(false)) }, [])
 
+  useEffect(() => {
+    if (profile && !profile.must_change_password && !profile.ozzie_intro_seen_at) {
+      setOzzieIntroReplay(false)
+      setOzzieIntroError('')
+      setOzzieIntroOpen(true)
+    }
+  }, [profile?.id, profile?.must_change_password, profile?.ozzie_intro_seen_at])
+
+  async function finishOzzieIntro() {
+    if (ozzieIntroReplay || profile?.ozzie_intro_seen_at) {
+      setOzzieIntroOpen(false)
+      setOzzieIntroReplay(false)
+      setOzzieIntroError('')
+      return
+    }
+
+    setOzzieIntroSaving(true)
+    setOzzieIntroError('')
+    try {
+      const seenAt = await markOzzieIntroSeen()
+      setProfile(current => ({
+        ...current,
+        ozzie_intro_seen_at: seenAt || new Date().toISOString(),
+      }))
+      setOzzieIntroOpen(false)
+    } catch (introError) {
+      setOzzieIntroError(introError?.message || 'Could not save the Ozzie introduction status.')
+    } finally {
+      setOzzieIntroSaving(false)
+    }
+  }
+
+  function replayOzzieIntro() {
+    setOzzieIntroReplay(true)
+    setOzzieIntroError('')
+    setOzzieIntroOpen(true)
+  }
+
   async function submit(event) {
     event.preventDefault()
     const form = new FormData(event.currentTarget)
@@ -246,7 +289,29 @@ export default function App() {
                   : view === 'usage'
                     ? <UsageAnalytics/>
                     : <FeedbackQueue onOpenPage={openFeedbackTarget}/>
-    return <AppShell profile={profile} currentView={view} onNavigate={navigate} onOpenReadinessResource={openReadinessResource} onFeedback={submitFeedback} reportContext={reportContext} onPasswordChange={changeOwnPassword} onAvatarChange={async avatarId=>{await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}} onLogout={async()=>{await signOut();setProfile(null)}}>{content}</AppShell>
+    return <>
+      <AppShell
+        profile={profile}
+        currentView={view}
+        onNavigate={navigate}
+        onOpenReadinessResource={openReadinessResource}
+        onFeedback={submitFeedback}
+        reportContext={reportContext}
+        onPasswordChange={changeOwnPassword}
+        onAvatarChange={async avatarId=>{await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}}
+        onMeetOzzie={replayOzzieIntro}
+        onLogout={async()=>{await signOut();setProfile(null);setOzzieIntroOpen(false);setOzzieIntroReplay(false)}}
+      >{content}</AppShell>
+      <OzzieWelcome
+        open={ozzieIntroOpen}
+        replay={ozzieIntroReplay}
+        videoSrc={assetUrl('assets/Ozzie2.mp4')}
+        busy={ozzieIntroSaving}
+        error={ozzieIntroError}
+        onContinue={finishOzzieIntro}
+        onClose={finishOzzieIntro}
+      />
+    </>
   }
 
   if (activationOpen) return <main className="access-shell" style={accessStyle}><section className="access-card activation-card"><ActivateAccountForm onActivate={activateAccount} onCancel={()=>setActivationOpen(false)}/></section></main>
