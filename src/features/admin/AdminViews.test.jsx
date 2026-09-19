@@ -16,7 +16,7 @@ beforeEach(() => {
   loadReadinessReport.mockReset()
   loadReadinessReport.mockResolvedValue({ parts: [] })
   updateFeedbackStatus.mockReset()
-  loadTeam.mockResolvedValue([{ id: 'agent-1', username: 'agent_one', initials: 'AO', role: 'agent', status: 'active', avatar_id: null, presence: 'active' }])
+  loadTeam.mockResolvedValue([{ id: 'agent-1', username: 'agent_one', initials: 'AO', role: 'agent', workspace_role: 'member', status: 'active', avatar_id: null, presence: 'active' }])
   runAdminAction.mockReset()
 })
 
@@ -27,6 +27,7 @@ it('shows creator-admin lifecycle controls through a compact action menu', async
   expect(await screen.findByText('agent_one')).toBeInTheDocument()
   await user.click(screen.getByRole('button', { name: 'Manage agent_one' }))
   expect(screen.getByRole('button', { name: 'Edit Username' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Edit Role' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Reset Password' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Deactivate Account' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Permanently Delete' })).toBeInTheDocument()
@@ -41,11 +42,11 @@ it('generates an invite one time from initials', async () => {
   await user.type(screen.getByLabelText('Initials'), 'AB')
   await user.click(screen.getByRole('button', { name: 'Generate Invite' }))
   expect(await screen.findByText('ABCDEF-012345')).toBeInTheDocument()
-  expect(runAdminAction).toHaveBeenCalledWith({ action: 'generate_invite', initials: 'AB' })
+  expect(runAdminAction).toHaveBeenCalledWith({ action: 'generate_invite', initials: 'AB', workspace_role: 'member' })
 })
 
 it('labels a pending member action as regeneration', async () => {
-  loadTeam.mockResolvedValueOnce([{ id: 'pending-AB', initials: 'AB', pending: true, status: 'pending', role: 'agent', avatar_id: null }])
+  loadTeam.mockResolvedValueOnce([{ id: 'pending-AB', initials: 'AB', pending: true, status: 'pending', role: 'agent', workspace_role: 'lead', avatar_id: null }])
   const { TeamManagement } = await import('./AdminViews')
   render(<TeamManagement />)
   expect(await screen.findByRole('button', { name: /regenerate invite for AB/i })).toBeInTheDocument()
