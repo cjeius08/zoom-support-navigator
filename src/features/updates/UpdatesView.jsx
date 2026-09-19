@@ -1,16 +1,17 @@
-import { CONSOLE_METADATA, LAST_UPDATED, UPDATES, formatConsoleDate } from './updatesData'
+import { CONSOLE_METADATA, formatConsoleDate, lastUpdatedForAudience, updatesForAudience } from './updatesData'
 import './updates.css'
 
-const metadataRows = [
-  ['Workspace Version', CONSOLE_METADATA.version],
-  ['Effective Date', formatConsoleDate(CONSOLE_METADATA.effectiveDate)],
-  ['Last Updated', formatConsoleDate(LAST_UPDATED)],
-  ['Owner', CONSOLE_METADATA.owner],
-  ['Collaborator', CONSOLE_METADATA.collaborator],
-  ['Next Review', formatConsoleDate(CONSOLE_METADATA.nextReview)],
-]
+export function UpdatesView({ isAdmin = false }) {
+  const visibleUpdates = updatesForAudience(isAdmin)
+  const metadataRows = [
+    ['Workspace Version', CONSOLE_METADATA.version],
+    ['Effective Date', formatConsoleDate(CONSOLE_METADATA.effectiveDate)],
+    ['Last Updated', formatConsoleDate(lastUpdatedForAudience(isAdmin))],
+    ['Workspace Lead', CONSOLE_METADATA.owner],
+    ['Collaborator', CONSOLE_METADATA.collaborator],
+    ['Next Review', formatConsoleDate(CONSOLE_METADATA.nextReview)],
+  ]
 
-export function UpdatesView() {
   return (
     <section className="console-view updates-view" aria-labelledby="updates-title">
       <header className="view-heading updates-heading">
@@ -40,11 +41,14 @@ export function UpdatesView() {
       </aside>}
 
       <div className="updates-list" aria-label="Update history">
-        {UPDATES.map((entry) => (
+        {visibleUpdates.map((entry) => (
           <article className="update-card" key={entry.id}>
             <header>
               <div>
-                <span className="update-area">{entry.area}</span>
+                <div className="update-card-meta">
+                  <span className="update-area">{entry.area}</span>
+                  {isAdmin && entry.audience === 'admin' && <span className="update-audience-badge">Admin only</span>}
+                </div>
                 <h2>{entry.title}</h2>
               </div>
               <time dateTime={entry.date}>{formatConsoleDate(entry.date, { short: true })}</time>
