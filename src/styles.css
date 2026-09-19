@@ -3578,3 +3578,130 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     margin-right: .5rem;
   }
 }
+
+
+/* Ozzie visibility pass: preserve the blue artwork, improve contrast through light and separation. */
+.ozzie-logo-stage {
+  position: relative;
+  isolation: isolate;
+  display: inline-grid;
+  place-items: center;
+}
+
+.ozzie-logo-stage::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -16% -10%;
+  border-radius: 999px;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center,
+      rgba(236, 246, 255, .20) 0%,
+      rgba(149, 199, 242, .12) 42%,
+      rgba(58, 130, 199, .06) 58%,
+      transparent 76%);
+  filter: blur(.35rem);
+}
+
+.ozzie-logo-stage-login {
+  width: 100%;
+  margin: -.2rem auto 1.45rem;
+}
+
+.access-brand-logo {
+  width: min(100%, 25rem);
+  margin: 0 auto;
+  filter:
+    brightness(1.38)
+    contrast(1.08)
+    saturate(1.06)
+    drop-shadow(0 .45rem .9rem rgba(0, 72, 150, .24))
+    drop-shadow(0 0 .22rem rgba(185, 222, 255, .20));
+}
+
+.app-header {
+  height: 5.25rem !important;
+  transition: height .2s ease, background .2s ease;
+}
+
+.ozzie-header-brand {
+  max-width: 21rem;
+  overflow: hidden;
+  transition:
+    max-width .22s ease,
+    opacity .18s ease,
+    transform .22s ease,
+    margin .22s ease;
+}
+
+.ozzie-logo-stage-header {
+  padding: .15rem .35rem .15rem 0;
+}
+
+.ozzie-header-brand img {
+  width: clamp(14.5rem, 22vw, 18rem);
+  max-height: 4.15rem;
+  filter:
+    brightness(1.46)
+    contrast(1.08)
+    saturate(1.08)
+    drop-shadow(0 .35rem .8rem rgba(0, 68, 145, .28))
+    drop-shadow(0 0 .2rem rgba(196, 228, 255, .22));
+}
+
+.app-header.header-scrolled {
+  height: 4.25rem !important;
+}
+
+.app-header.header-scrolled .ozzie-header-brand {
+  max-width: 0;
+  margin-right: 0;
+  opacity: 0;
+  transform: translateY(-.55rem) scale(.96);
+  pointer-events: none;
+}
+
+@media (max-width: 800px) {
+  .app-header {
+    height: 4.9rem !important;
+  }
+
+  .ozzie-header-brand {
+    max-width: 14rem;
+  }
+
+  .ozzie-header-brand img {
+    width: clamp(10.5rem, 38vw, 13rem);
+    max-height: 3.5rem;
+  }
+
+  .app-header.header-scrolled {
+    height: 4.25rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .ozzie-logo-stage-login {
+    margin-bottom: 1.2rem;
+  }
+
+  .access-brand-logo {
+    width: min(100%, 20rem);
+  }
+
+  .ozzie-logo-stage::before {
+    inset: -18% -8%;
+  }
+
+  .ozzie-header-brand img {
+    width: clamp(9.6rem, 42vw, 11.75rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-header,
+  .ozzie-header-brand {
+    transition: none;
+  }
+}
