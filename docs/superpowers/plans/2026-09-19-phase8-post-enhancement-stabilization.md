@@ -91,4 +91,20 @@ Status: **PASS.**
 - Approved Zoom support instructions, scripts, and source-backed troubleshooting content were not rewritten.
 - CI: 55 test files / 394 tests passed; lint completed with zero warnings; build passed.
 
-**Next checkpoint:** Batch 3 — Data & Security Regression.
+## Batch 3 result — 2026-09-19
+
+Status: **PASS for application/database boundaries.**
+
+- Confirmed Member and Lead remain non-admin roles; Lead is still title-only.
+- Confirmed Admin-only Readiness reporting remains denied to standard users and available to the creator-admin account.
+- Confirmed Favorites and Recently Viewed are scoped to the signed-in owner through RLS.
+- Converted Recently Viewed recording from SECURITY DEFINER to SECURITY INVOKER and removed anonymous RPC execution.
+- Restricted direct profile self-service updates to avatar and Ozzie onboarding state only. Role, status, workspace role, username, and other account fields are no longer directly writable by authenticated users.
+- Converted the Ozzie onboarding marker to SECURITY INVOKER while preserving idempotent first-seen behavior.
+- Confirmed all public workspace data tables in this audit have RLS enabled.
+- Confirmed user-owned Favorites, Recently Viewed, feedback, usage, presence, readiness data, and claimed agent slots retain ON DELETE CASCADE links to the profile.
+- Supabase security advisor now reports no exposed database-function privilege warnings. One project-level Auth advisory remains: leaked-password protection is disabled; the connected Supabase tooling does not expose that Auth configuration setting, so it was not changed here.
+- Performance advisor reports unused-index INFO notices only. No indexes were removed because the workspace is new/low-volume and those indexes support expected lookup, analytics, and foreign-key paths.
+- All mutation probes used transactions with rollback; no real account, role, Ozzie state, Favorite, or Recently Viewed record was altered by the audit.
+
+**Next checkpoint:** Batch 4 — Final Smoke & Freeze.
