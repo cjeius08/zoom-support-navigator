@@ -5,7 +5,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
 import { AppShell } from '../shell/AppShell'
-import { formatCallDocumentation } from '../training/CallDocumentation'
+import { formatCallDocumentation } from '../training/callDocumentationFormat'
 import {
   REFERRAL_ROADBLOCKS,
   evaluateScope,
