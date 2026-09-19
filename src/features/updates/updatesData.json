@@ -10,6 +10,36 @@
   },
   "updates": [
     {
+      "id": "workspace-page-back-navigation",
+      "date": "2026-09-19",
+      "area": "Workspace / Navigation",
+      "audience": "all",
+      "title": "Every workspace page now includes working Back navigation",
+      "changed": "Added a consistent Back control above authenticated workspace pages. It returns to the actual previous in-app page instead of forcing users back to a fixed destination, and restores the previous Navigator or Training context when the prior page was opened from Favorites, Readiness Lab, Feedback Queue, or another workspace route. The first workspace page keeps the Back control visible but disabled until there is a previous in-app page.",
+      "checks": [
+        "Open Training & Resources from Navigator, then use Back and confirm you return to the previous Navigator page.",
+        "Open a process from Favorites, then use Back and confirm you return to Favorites rather than the Navigator home.",
+        "Navigate across What’s New, Feedback, and other sidebar pages and confirm Back follows the page order you actually visited.",
+        "Confirm the first page after sign-in shows Back disabled until another workspace page has been visited.",
+        "Resize to tablet/mobile and confirm the Back control remains visible without covering page content."
+      ]
+    },
+    {
+      "id": "admin-readiness-summary-polish",
+      "date": "2026-09-19",
+      "area": "Admin / Readiness Analytics",
+      "audience": "admin",
+      "title": "Readiness Lab reporting adds scan-friendly per-agent summaries",
+      "changed": "Polished the existing admin Readiness Lab report without replacing the detailed Attempt 1–3 history. Each agent now has a top-level summary for every Readiness part showing First score, Latest score, Attempts used out of 3, and status as Completed, In progress, or Not started. The existing attempt accordions, timestamps, scores, and incorrect selected-versus-correct answers remain available underneath.",
+      "checks": [
+        "Open Usage Analytics → Readiness Lab Report and confirm each agent/part shows First score, Latest score, Attempts used, and Status before the attempt details.",
+        "Confirm an active unfinished attempt shows In progress while an untouched part shows Not started.",
+        "Confirm submitted attempts still show Attempt 1, Attempt 2, and Attempt 3 details underneath the summary.",
+        "Open a submitted attempt and confirm timestamps plus incorrect Selected and Correct answers are still present.",
+        "Confirm no CSV/export control was added."
+      ]
+    },
+    {
       "id": "ozzie-first-signin-role-labels",
       "date": "2026-09-19",
       "area": "Workspace / Onboarding",
