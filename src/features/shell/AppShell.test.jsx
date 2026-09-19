@@ -55,7 +55,7 @@ const shellReadinessState = {
 
 readinessApiMocks.getReadinessState.mockResolvedValue(shellReadinessState)
 
-const agentProfile = { username: 'agent_1', initials: 'AG', role: 'agent' }
+const agentProfile = { username: 'agent_1', initials: 'AG', role: 'agent', workspace_role: 'member' }
 
 it('shows role-aware navigation and account controls', () => {
   render(<AppShell profile={{ username: 'ja_admin', initials: 'JA', role: 'creator_admin', avatar_id: 'avatar_001' }} />)
@@ -64,6 +64,7 @@ it('shows role-aware navigation and account controls', () => {
   expect(screen.getByRole('navigation')).toHaveTextContent('Training & Resources')
   expect(screen.getByRole('navigation')).toHaveTextContent('Readiness Lab')
   expect(screen.getByRole('button', { name: /ja_admin/i })).toBeInTheDocument()
+  expect(screen.getByText('Admin')).toBeInTheDocument()
   expect(screen.getAllByTestId('nav-icon').length).toBeGreaterThan(3)
   expect(screen.getByRole('img', { name: /Ozzie — Ogletree Support Workspace/i })).toBeInTheDocument()
 })
@@ -108,7 +109,7 @@ it('exposes What’s New and workspace ownership metadata to all agents', async 
   const { container } = render(<AppShell profile={agentProfile} onNavigate={onNavigate} />)
 
   expect(screen.getByRole('navigation')).toHaveTextContent('What’s New / Updates')
-  expect(screen.getByText(/Owner\s+Cjei A\./i)).toBeInTheDocument()
+  expect(screen.getByText(/Workspace Lead\\s+Cjei A\\./i)).toBeInTheDocument()
   expect(screen.getByText(/Collaborator\s+Nina F\./i)).toBeInTheDocument()
 
   await user.click(screen.getByRole('button', { name: 'What’s New / Updates' }))
