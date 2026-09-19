@@ -81,6 +81,26 @@ export async function loadUsage({ start, end } = {}) {
   return { profiles, events, sessions, presence }
 }
 
+export async function loadCallNotesReport({ start, end } = {}) {
+  const noteRows = loadPaged(() => {
+    let query = supabase
+      .from('zoom_call_notes')
+      .select('id,user_id,caller_ref,device,outcome,call_started_at,note_text,created_at,updated_at,expires_at')
+      .order('created_at', { ascending: false })
+    if (start) query = query.gte('created_at', start)
+    if (end) query = query.lt('created_at', end)
+    return query
+  })
+
+  const profileRows = loadPaged(() => supabase
+    .from('zoom_profiles')
+    .select('id,username,initials,role,status,workspace_role')
+    .order('created_at'))
+
+  const [notes, profiles] = await Promise.all([noteRows, profileRows])
+  return { notes, profiles }
+}
+
 export async function loadFeedback() {
   const reportsPromise = loadPaged(() => supabase
     .from('zoom_feedback_reports')
