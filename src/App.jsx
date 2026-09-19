@@ -239,7 +239,7 @@ export default function App() {
       setOzzieIntroError('')
       setOzzieIntroOpen(true)
     }
-  }, [profile?.id, profile?.must_change_password, profile?.ozzie_intro_seen_at])
+  }, [profile])
 
   async function finishOzzieIntro() {
     if (ozzieIntroReplay || profile?.ozzie_intro_seen_at) {
