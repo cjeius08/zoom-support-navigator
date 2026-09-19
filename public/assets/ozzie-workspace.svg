@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 420" role="img" aria-labelledby="title desc">
+  <title id="title">Ozzie</title>
+  <desc id="desc">Ogletree Support Workspace</desc>
+  <g fill="none" stroke="#1EC8F4" stroke-width="96">
+    <circle cx="175" cy="215" r="105"/>
+  </g>
+  <ellipse cx="137" cy="66" rx="33" ry="60" fill="#1EC8F4" transform="rotate(-10 137 66)"/>
+  <ellipse cx="214" cy="68" rx="33" ry="60" fill="#1EC8F4" transform="rotate(28 214 68)"/>
+  <text x="315" y="285"
+        fill="#0B6BFF"
+        font-family="Arial Rounded MT Bold, Nunito Sans, Arial, sans-serif"
+        font-size="238"
+        font-weight="900"
+        letter-spacing="-10">zzie</text>
+  <text x="500" y="382"
+        fill="#0B6BFF"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="50"
+        font-weight="800"
+        text-anchor="middle"
+        letter-spacing="2.5">OGLETREE SUPPORT WORKSPACE</text>
+</svg>
