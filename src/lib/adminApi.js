@@ -23,9 +23,9 @@ export async function runAdminAction(payload) {
 
 export async function loadTeam() {
   const [{ data: profiles, error: profileError }, { data: presence, error: presenceError }, { data: slots, error: slotError }] = await Promise.all([
-    supabase.from('zoom_profiles').select('id,username,initials,role,status,avatar_id,created_at').order('created_at'),
+    supabase.from('zoom_profiles').select('id,username,initials,role,status,avatar_id,workspace_role,created_at').order('created_at'),
     supabase.from('zoom_presence').select('user_id,state,last_heartbeat,last_interaction'),
-    supabase.from('zoom_agent_slots').select('id,initials,status,claimed_by,created_at').order('created_at'),
+    supabase.from('zoom_agent_slots').select('id,initials,status,claimed_by,workspace_role,created_at').order('created_at'),
   ])
   if (profileError) throw profileError
   if (presenceError) throw presenceError
@@ -45,7 +45,7 @@ export async function loadTeam() {
 export async function loadUsage({ start, end } = {}) {
   const profileRows = loadPaged(() => supabase
     .from('zoom_profiles')
-    .select('id,username,initials,role,status,avatar_id,created_at')
+    .select('id,username,initials,role,status,avatar_id,workspace_role,created_at')
     .order('created_at'))
 
   const eventRows = loadPaged(() => {
