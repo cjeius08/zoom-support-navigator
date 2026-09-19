@@ -10,6 +10,19 @@
   },
   "updates": [
     {
+      "id": "phase8-batch3-data-security-regression",
+      "date": "2026-09-19",
+      "area": "Admin / Security",
+      "audience": "admin",
+      "title": "Data boundaries hardened after role and personalization updates",
+      "changed": "Completed the post-enhancement data and permission regression. Normal accounts can now directly update only their avatar and Ozzie onboarding state; sensitive profile fields such as Admin role, account status, workspace role, and username are no longer writable through self-service table access. Recently Viewed now runs under the signed-in user’s RLS permissions and is unavailable anonymously. Live rollback-only probes confirmed Member and Lead accounts remain non-admin, Favorites/Recently Viewed stay owner-scoped, Readiness admin reporting remains Admin-only, Ozzie marking is idempotent, and permanent-delete relationships still cascade to user-owned workspace data.",
+      "checks": [
+        "Verify that Member and Lead accounts still show their normal workspace access without Admin Home, Team Management, or Usage Analytics.",
+        "Verify that Favorites, Recently Viewed, Ozzie onboarding, and avatar changes still work normally for a signed-in user.",
+        "Verify that Admin Usage Analytics and Readiness Lab reporting still load all users."
+      ]
+    },
+    {
       "id": "phase8-batch2-component-copy-cleanup",
       "date": "2026-09-19",
       "area": "Admin / Stabilization",
