@@ -12,6 +12,7 @@ import { FeedbackPage } from './features/feedback/FeedbackPage'
 import { UpdatesView } from './features/updates/UpdatesView'
 import { FavoritesView } from './features/favorites/FavoritesView'
 import { useFavorites } from './features/favorites/useFavorites'
+import { useRecentlyViewed } from './features/favorites/useRecentlyViewed'
 import { assetUrl } from './lib/assetUrl'
 import { useUsageTracking } from './features/analytics/usePresence'
 import './styles.css'
@@ -50,6 +51,14 @@ export default function App() {
     isFavoriteBusy,
     toggleFavorite,
   } = useFavorites(profile?.id ?? null)
+  const {
+    recentlyViewed,
+    loading: recentLoading,
+    clearing: clearingRecent,
+    error: recentError,
+    rememberRecentView,
+    clearRecentViews,
+  } = useRecentlyViewed(profile?.id ?? null)
   const accessStyle = { '--login-workspace-image': `url(${assetUrl('assets/login-workspace-background.png')})` }
 
   const updateReportContext = useCallback((nextContext) => {
@@ -206,6 +215,7 @@ export default function App() {
           isFavorite={isFavorite}
           isFavoriteBusy={isFavoriteBusy}
           onToggleFavorite={toggleFavorite}
+          onResourceViewed={rememberRecentView}
         />
       : view === 'favorites'
         ? <FavoritesView
@@ -213,7 +223,13 @@ export default function App() {
             loading={favoritesLoading}
             error={favoritesError}
             busyFor={isFavoriteBusy}
+            isFavorite={isFavorite}
             onToggleFavorite={toggleFavorite}
+            recentlyViewed={recentlyViewed}
+            recentLoading={recentLoading}
+            recentError={recentError}
+            clearingRecent={clearingRecent}
+            onClearRecentlyViewed={clearRecentViews}
             onOpenProcess={openFavoriteProcess}
             onOpenCommonIssue={openFavoriteCommonIssue}
           />

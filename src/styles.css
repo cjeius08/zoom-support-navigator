@@ -4009,3 +4009,120 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     border-radius: 50%;
   }
 }
+
+
+/* Batch 2 · Recently Viewed */
+.quick-access-tabs {
+  display: flex;
+  gap: .4rem;
+  width: fit-content;
+  padding: .3rem;
+  border: 1px solid rgba(125, 169, 205, .2);
+  border-radius: .8rem;
+  background: rgba(9, 18, 27, .5);
+}
+.quick-access-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  min-height: 2.65rem;
+  padding: .6rem .85rem;
+  color: #aebfcc;
+  border: 1px solid transparent;
+  background: transparent;
+}
+.quick-access-tabs button[aria-selected="true"] {
+  color: #f5f9fd;
+  border-color: rgba(88, 169, 255, .3);
+  background: rgba(35, 119, 198, .18);
+}
+.quick-access-tabs button span {
+  min-width: 1.45rem;
+  height: 1.45rem;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 .35rem;
+  border-radius: 999px;
+  color: #a9d8ff;
+  background: rgba(51, 137, 214, .16);
+  font-size: .7rem;
+}
+.quick-access-tabs + [role="tabpanel"] {
+  display: grid;
+  gap: 1.35rem;
+}
+.recently-viewed-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: .3rem;
+}
+.recently-viewed-heading span {
+  color: #86a2b8;
+  font-size: .72rem;
+  font-weight: 750;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.recently-viewed-heading h2 {
+  margin: .2rem 0 .25rem;
+}
+.recently-viewed-heading p {
+  margin: 0;
+  color: #9fb3c4;
+}
+.clear-recent-button {
+  flex: 0 0 auto;
+  padding: .55rem .7rem;
+  color: #afc5d7;
+  border: 1px solid rgba(143, 175, 201, .22);
+  background: rgba(255,255,255,.035);
+}
+.clear-recent-button:hover,
+.clear-recent-button:focus-visible {
+  color: #fff;
+  border-color: rgba(88, 169, 255, .55);
+  background: rgba(35, 119, 198, .13);
+}
+.recent-empty-icon {
+  color: #70baff;
+  font-size: 2.8rem;
+  line-height: 1;
+}
+.recent-resource-wrap {
+  position: relative;
+  min-width: 0;
+}
+.recent-position {
+  position: absolute;
+  z-index: 3;
+  left: -.42rem;
+  top: -.42rem;
+  width: 1.7rem;
+  height: 1.7rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(88, 169, 255, .34);
+  border-radius: 999px;
+  color: #dff0ff;
+  background: #142a3d;
+  font-size: .7rem;
+  font-weight: 800;
+  box-shadow: 0 .35rem .85rem rgba(0,0,0,.25);
+}
+.recent-resource-wrap > .favorite-saved-card {
+  height: 100%;
+}
+@media (max-width: 700px) {
+  .quick-access-tabs {
+    width: 100%;
+  }
+  .quick-access-tabs button {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+  .recently-viewed-heading {
+    flex-direction: column;
+  }
+}

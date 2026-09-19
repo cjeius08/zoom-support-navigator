@@ -90,7 +90,7 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = null, initialCommonIssueId = null, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {} }) {
+export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = null, initialCommonIssueId = null, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -108,6 +108,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
     if (!process) return
     setSelectedRoute(null)
     setSelected(process)
+    onResourceViewed('process', process.id)
     onTrackEvent?.({
       eventType: 'process_open',
       routeId: 'navigator',
@@ -115,7 +116,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
       categoryId: process.category,
       toolId: 'feedback_queue',
     })
-  }, [initialProcessId, onTrackEvent])
+  }, [initialProcessId, onResourceViewed, onTrackEvent])
 
   useEffect(() => {
     if (!initialCommonIssueId) return
@@ -124,7 +125,8 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
     setSelected(null)
     setSelectedRoute(route)
     setCommonIssueTab('Quick Guide')
-  }, [initialCommonIssueId])
+    onResourceViewed('common_issue', route.id)
+  }, [initialCommonIssueId, onResourceViewed])
 
   useEffect(() => {
     const libraryTabLabels = { fastest: 'Fastest Routes', common: 'Common Issues', processes: 'Process Guides' }
@@ -179,6 +181,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
     setSelectedRoute(null)
     setCommonIssueTab('Quick Guide')
     setSelected(process)
+    onResourceViewed('process', process.id)
     onTrackEvent?.({
       eventType: 'process_open',
       routeId: 'navigator',
@@ -193,6 +196,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
     setSelected(null)
     setCommonIssueTab('Quick Guide')
     setSelectedRoute(route)
+    onResourceViewed('common_issue', route.id)
     onTrackEvent?.({
       eventType: 'tool_open',
       routeId: 'navigator',
