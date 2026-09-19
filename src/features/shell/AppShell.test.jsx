@@ -97,6 +97,29 @@ it('offers Meet Ozzie Again only when the intro video is available', async () =>
   expect(screen.queryByRole('button', { name: 'Meet Ozzie Again' })).not.toBeInTheDocument()
 })
 
+it('shows a Back control on workspace pages and calls the previous-page handler', async () => {
+  const user = userEvent.setup()
+  const onBack = vi.fn()
+
+  const { rerender } = render(
+    <AppShell profile={agentProfile} currentView="training" canGoBack onBack={onBack}>
+      <div>Training page</div>
+    </AppShell>,
+  )
+
+  const back = screen.getByRole('button', { name: 'Back to previous page' })
+  expect(back).toBeEnabled()
+  await user.click(back)
+  expect(onBack).toHaveBeenCalledTimes(1)
+
+  rerender(
+    <AppShell profile={agentProfile} currentView="navigator" canGoBack={false} onBack={onBack}>
+      <div>Navigator page</div>
+    </AppShell>,
+  )
+  expect(screen.getByRole('button', { name: 'Back to previous page' })).toBeDisabled()
+})
+
 it('does not render admin navigation for agents', () => {
   render(<AppShell profile={agentProfile} />)
   expect(screen.queryByText('Team Management')).not.toBeInTheDocument()
