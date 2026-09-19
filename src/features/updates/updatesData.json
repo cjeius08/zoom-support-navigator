@@ -17,7 +17,7 @@
       "title": "Phase 8 stabilization starts with runtime-state hardening",
       "changed": "Started Phase 8 as a post-enhancement stabilization phase. Batch 1 keeps the current UI and approved content unchanged while hardening Ozzie first-login state, Usage Analytics date-range loading, Feedback Queue refresh behavior, and Readiness answer lookup against stale React state. Regression coverage also protects the new Back navigation and confirms that Lead remains a title only without admin navigation.",
       "checks": [
-        "Confirm standard workspace pages and the Back control still behave exactly as before.",
+        "Verify standard workspace pages and the Back control still behave exactly as before.",
         "Change a feedback status in Feedback Queue and confirm the list refreshes with the new state.",
         "Switch Usage Analytics periods and confirm the selected date range still reloads correctly.",
         "Open Readiness Lab and confirm checked answers and resumed attempts still render correctly.",
@@ -35,7 +35,7 @@
         "Open Training & Resources from Navigator, then use Back and confirm you return to the previous Navigator page.",
         "Open a process from Favorites, then use Back and confirm you return to Favorites rather than the Navigator home.",
         "Navigate across What’s New, Feedback, and other sidebar pages and confirm Back follows the page order you actually visited.",
-        "Confirm the first page after sign-in shows Back disabled until another workspace page has been visited.",
+        "Verify the first page after sign-in shows Back disabled until another workspace page has been visited.",
         "Resize to tablet/mobile and confirm the Back control remains visible without covering page content."
       ]
     },
@@ -44,14 +44,12 @@
       "date": "2026-09-19",
       "area": "Admin / Readiness Analytics",
       "audience": "admin",
-      "title": "Readiness Lab reporting adds scan-friendly per-agent summaries",
-      "changed": "Polished the existing admin Readiness Lab report without replacing the detailed Attempt 1–3 history. Each agent now has a top-level summary for every Readiness part showing First score, Latest score, Attempts used out of 3, and status as Completed, In progress, or Not started. The existing attempt accordions, timestamps, scores, and incorrect selected-versus-correct answers remain available underneath.",
+      "title": "Readiness Lab reporting adds scan-friendly user summaries",
+      "changed": "Polished the existing admin Readiness Lab report without replacing the detailed Attempt 1–3 history. Each user now has a top-level summary for every Readiness part showing First score, Latest score, Attempts used out of 3, and status as Completed, In progress, or Not started. The existing attempt accordions, timestamps, scores, and incorrect selected-versus-correct answers remain available underneath.",
       "checks": [
-        "Open Usage Analytics → Readiness Lab Report and confirm each agent/part shows First score, Latest score, Attempts used, and Status before the attempt details.",
-        "Confirm an active unfinished attempt shows In progress while an untouched part shows Not started.",
-        "Confirm submitted attempts still show Attempt 1, Attempt 2, and Attempt 3 details underneath the summary.",
-        "Open a submitted attempt and confirm timestamps plus incorrect Selected and Correct answers are still present.",
-        "Confirm no CSV/export control was added."
+        "Open Usage Analytics → Readiness Lab Report and verify that each user and part shows First score, Latest score, Attempts used, and Status before the attempt details.",
+        "Verify that an active unfinished attempt shows In progress, while an untouched part shows Not started.",
+        "Open a submitted attempt and verify that timestamps plus incorrect Selected and Correct answers are still available."
       ]
     },
     {
@@ -65,7 +63,7 @@
         "Sign in with an account that has not completed the Ozzie introduction and confirm the video opens without refreshing the page.",
         "Choose Start Exploring or Skip, then refresh and confirm the introduction does not auto-open again.",
         "Open My Profile and confirm Meet Ozzie Again reopens the same introduction.",
-        "Confirm the account subtitle shows Admin, Member, or Lead instead of the generic Agent label."
+        "Verify the account subtitle shows Admin, Member, or Lead instead of the generic Agent label."
       ]
     },
     {
@@ -90,10 +88,10 @@
       "title": "Readiness Lab now makes resumed progress unmistakable",
       "changed": "Improved the Readiness Lab reopen experience so an unfinished attempt clearly resumes instead of looking like a fresh five-question set. The lab already preserved checked answers in Supabase; the UI now lands on the first unanswered question, shows a Resuming Attempt banner, displays completed versus remaining counts, and labels the current question with the live remaining total while keeping checked questions available for review.",
       "checks": [
-        "Check one or more Readiness questions, fully close the lab, then reopen it and confirm the same Attempt number is shown.",
-        "Confirm the lab opens on the first unanswered question rather than visually restarting at Question 1.",
-        "Confirm the resume banner shows how many questions are completed and how many remain.",
-        "Confirm previously checked questions remain saved and can still be reviewed with Previous."
+        "Verify one or more Readiness questions, fully close the lab, then reopen it and confirm the same Attempt number is shown.",
+        "Verify the lab opens on the first unanswered question rather than visually restarting at Question 1.",
+        "Verify the resume banner shows how many questions are completed and how many remain.",
+        "Verify previously checked questions remain saved and can still be reviewed with Previous."
       ],
       "audience": "all"
     },
@@ -106,7 +104,7 @@
       "checks": [
         "Open My Profile → Change Avatar and confirm the current avatar has a visible check badge and selected ring.",
         "Choose a different avatar and confirm the indicator moves immediately to the newly selected avatar.",
-        "Confirm only one avatar shows the selected indicator at a time."
+        "Verify only one avatar shows the selected indicator at a time."
       ],
       "audience": "all"
     },
@@ -119,8 +117,8 @@
       "checks": [
         "Choose an avatar, log out, sign back in, and confirm the same saved avatar appears immediately without choosing again.",
         "Open Change Avatar and scan several avatars; each image should stay centered inside its tile with consistent framing.",
-        "Confirm the selected avatar tile has a visible selected outline.",
-        "Confirm the top-right account avatar is slightly larger while the header remains balanced on desktop and mobile."
+        "Verify the selected avatar tile has a visible selected outline.",
+        "Verify the top-right account avatar is slightly larger while the header remains balanced on desktop and mobile."
       ],
       "audience": "all"
     },
@@ -133,7 +131,7 @@
       "checks": [
         "Open Readiness Lab and confirm all five tabs—Scenarios, Devices, Troubleshooting, Scope, and Live Call—show Available now.",
         "Open Live Call and confirm Part 5 of 5, Attempt 1 of 3, and Question 1 of 5.",
-        "Confirm the five questions combine call-flow, troubleshooting, confirmation, referral, and documentation judgment instead of repeating simple control-location questions.",
+        "Verify the five questions combine call-flow, troubleshooting, confirmation, referral, and documentation judgment instead of repeating simple control-location questions.",
         "Use Open Training & Resources and confirm the exact answer location is still not revealed.",
         "Open Training Roadmap and confirm Readiness Lab shows All 5 parts available.",
         "As JA, open Usage Analytics → Readiness Lab Report and confirm Live Call Readiness appears as a separate Part 5 report section."
@@ -149,8 +147,8 @@
       "checks": [
         "Open Readiness Lab and confirm Scenarios, Devices, Troubleshooting, and Scope show Available now while Live Call remains Coming next.",
         "Open Scope and confirm Part 4 of 5, Attempt 1 of 3, and Question 1 of 5.",
-        "Confirm the first scenario does not over-refer an in-scope basic issue when approved troubleshooting steps still remain.",
-        "Confirm the remaining scenarios test the correct next owner for host, account/admin, hardware/device, and privacy/proceeding boundaries.",
+        "Verify the first scenario does not over-refer an in-scope basic issue when approved troubleshooting steps still remain.",
+        "Verify the remaining scenarios test the correct next owner for host, account/admin, hardware/device, and privacy/proceeding boundaries.",
         "As JA, open Usage Analytics → Readiness Lab Report and confirm Scope & Referral Judgment appears as a separate Part 4 report section."
       ],
       "audience": "all"
@@ -164,7 +162,7 @@
       "checks": [
         "Open Readiness Lab and confirm Scenarios, Devices, and Troubleshooting show Available now while Scope and Live Call remain Coming next.",
         "Open Troubleshooting and confirm Part 3 of 5, Attempt 1 of 3, and Question 1 of 5.",
-        "Confirm the five questions ask what to do after an observed result rather than only asking where a Zoom control is located.",
+        "Verify the five questions ask what to do after an observed result rather than only asking where a Zoom control is located.",
         "Use Open Training & Resources and confirm the exact answer location is still not revealed.",
         "As JA, open Usage Analytics → Readiness Lab Report and confirm Troubleshooting Judgment appears as a separate Part 3 report section."
       ],
@@ -178,7 +176,7 @@
       "changed": "Refined the open-book Readiness Lab so it still encourages agents to verify answers in Training & Resources without revealing the exact breadcrumb or answer location. The resource card now opens the Training & Resources home only, while the current question, selection, and attempt progress remain preserved. This keeps the lab open-book but turns resource lookup into part of the readiness exercise.",
       "checks": [
         "Open any Readiness Lab question and confirm the card no longer shows an exact path such as Device Walkthroughs → Windows → In-meeting map.",
-        "Confirm the resource button says Open Training & Resources rather than Find in Workspace.",
+        "Verify the resource button says Open Training & Resources rather than Find in Workspace.",
         "Use the button and confirm Training & Resources opens at its general home instead of jumping directly to the answer.",
         "Return to Readiness Lab and confirm the same question, selection, and attempt progress are still preserved."
       ],
@@ -207,7 +205,7 @@
       "changed": "Reworked Readiness Lab Part 1 into five general Zoom scenarios backed by persistent attempt records. An unfinished attempt now resumes after the lab is closed or reopened, checked answers stay locked, Next cannot skip an unchecked question, Reset stays disabled until the current attempt is fully checked and submitted, and no fourth attempt can be created. JA Usage Analytics now includes a separate Readiness Lab Report that keeps Attempt 1, Attempt 2, and Attempt 3 with scores, progress, and incorrect-answer details.",
       "checks": [
         "Start Readiness Lab, answer only part of the five questions, close it, reopen it, and confirm the same attempt resumes at the first unanswered question.",
-        "Confirm Next stays disabled until the current question has been checked and Reset for next attempt stays disabled while the current attempt is incomplete or unsubmitted.",
+        "Verify Next stays disabled until the current question has been checked and Reset for next attempt stays disabled while the current attempt is incomplete or unsubmitted.",
         "Complete and submit an attempt, then confirm its score remains recorded before starting Attempt 2.",
         "Complete three attempts and confirm a fourth attempt cannot be started.",
         "As JA, open Usage Analytics and confirm Readiness Lab Report lists each agent's attempts separately with scores and incorrect answers."
@@ -218,17 +216,11 @@
       "id": "phase6-readiness-lab-part1",
       "date": "2026-09-19",
       "area": "Training / Readiness Validation",
-      "title": "Readiness Lab opens as a persistent five-part validation tool",
-      "changed": "Added the Phase 6 Batch 3A Readiness Lab as a global live tool instead of another Training & Resources tab. The five-part path is Foundation & Call Flow, Device & Navigation Awareness, Troubleshooting Judgment, Scope & Referral Judgment, and Live Call Readiness. Part 1 is fully interactive with four scenario-based, first-attempt questions. The lab is open-book by design: each question shows exactly where the answer lives in the workspace, and Find in Workspace opens that resource while preserving the current question, selected answer, and progress. The lab can be minimized, restored, closed, and reopened without losing its in-session state. Parts 2–5 remain intentionally locked until this checkpoint is approved.",
-      "checks": [
-        "Open Readiness Lab from the sidebar and confirm it appears as a docked live tool without navigating away from the current page.",
-        "Confirm five readiness parts are visible and only Foundation & Call Flow is active in this checkpoint.",
-        "Answer a Part 1 question, use Find in Workspace, and confirm the underlying Training & Resources page opens to the exact answer location while Readiness Lab stays open with the same question and selection.",
-        "Check an answer and confirm first-attempt feedback appears and the progress counter advances.",
-        "Minimize and restore Readiness Lab and confirm the current Part 1 progress remains.",
-        "Open Training Roadmap and confirm Readiness Lab replaces the old Practice Lab placeholder and says Part 1 is available from the sidebar."
-      ],
-      "audience": "all"
+      "title": "Initial Readiness Lab Part 1 rollout",
+      "changed": "This entry records the initial Part 1 rollout of the persistent Readiness Lab. The lab later expanded to all five parts, changed its resource-discovery behavior, and received additional persistence and resume safeguards. Refer to the newer Readiness Lab updates for current behavior.",
+      "checks": [],
+      "audience": "all",
+      "status": "historical"
     },
     {
       "id": "ogletree-call-flow-alignment",
@@ -239,7 +231,7 @@
       "checks": [
         "Open Navigator → View full call flow and confirm the detailed table now contains 11 stages, beginning with Opening / Greeting and ending with Closing Spiel.",
         "In Live Call Context, confirm Hearing Status includes Preparing / not started and Active hearing, and Who is affected includes Caller only and Others affected.",
-        "Confirm the full flow shows the simple formula Greet → Listen → Empathize → Assure → Probe → Troubleshoot → Confirm → Close.",
+        "Verify the full flow shows the simple formula Greet → Listen → Empathize → Assure → Probe → Troubleshoot → Confirm → Close.",
         "After Confirmation of Resolution, confirm the resolved path shows Recap → Final Check → Closing and the unresolved path shows Explain Next Step → Escalate / Document → Recap → Closing.",
         "Open Training & Resources → Scripts & Communication → Call Language and confirm the stage tabs follow the new call-flow order before troubleshooting.",
         "Open Guided Visual Lessons and confirm Lesson 1 now teaches the official Ogletree call-flow pattern before the device and symptom lessons."
@@ -255,9 +247,9 @@
       "checks": [
         "Open the sign-in page and confirm the title is Ogletree Support Workspace with Tier 1 Zoom Support shown once as supporting context.",
         "Sign in and confirm the header says Ogletree Support Workspace while the sidebar label says Tier 1 Zoom Support instead of repeating the full product name.",
-        "Confirm the version chip and What’s New metadata use Workspace v1.0 / Workspace Version instead of Console wording.",
+        "Verify the version chip and What’s New metadata use Workspace v1.0 / Workspace Version instead of Console wording.",
         "Open Scope Check, Live Call Flow, Call Documentation, Common Issue guidance, and Scripts & Communication and confirm no current guidance refers to OGCon.",
-        "Confirm the existing GitHub Pages URL and repository name are unchanged."
+        "Verify the existing GitHub Pages URL and repository name are unchanged."
       ],
       "audience": "all"
     },
@@ -266,14 +258,11 @@
       "date": "2026-09-19",
       "area": "Training / Visual Learning",
       "title": "Guided Visual Lessons turn core support concepts into visual patterns",
-      "changed": "Added five short, source-backed Guided Visual Lessons inside Training & Resources: the official Ogletree call flow, device-first orientation, speaker-versus-microphone symptom direction, Waiting for host versus Waiting Room, and the basic-support stop/referral boundary. Each lesson uses a compact visual flow or side-by-side comparison, shows three call-ready takeaways, and links to the exact existing approved resource instead of duplicating the full workflow. The Training Roadmap now marks Guided Visual Lessons as available; Practice Lab remains reserved for Phase 6 Batch 3.",
+      "changed": "Added five short, source-backed Guided Visual Lessons inside Training & Resources: the official Ogletree call flow, device-first orientation, speaker-versus-microphone symptom direction, Waiting for host versus Waiting Room, and the basic-support stop/referral boundary. Each lesson uses a compact visual flow or side-by-side comparison, shows three call-ready takeaways, and links to the exact existing approved resource instead of duplicating the full workflow.",
       "checks": [
-        "Open Training & Resources → Guided Visual Lessons and confirm five lesson tabs are available.",
-        "Open Follow the Ogletree call flow before troubleshooting and confirm the visual sequence follows Greet → Listen → Empathize → Assure → Probe → Troubleshoot → Confirm → Close.",
-        "Open Separate speaker problems from microphone problems and confirm I can’t hear anyone maps to OUTPUT / Speaker while They can’t hear me maps to INPUT / Microphone.",
-        "Open A waiting screen is not automatically a failed join and confirm Waiting for host is kept separate from Waiting Room.",
-        "Open Know when basic support should stop and confirm the visual sequence ends in Stop → Refer when the remaining action needs outside authority.",
-        "Use a lesson’s resource button and confirm it opens the exact existing Device Walkthrough, Call Language section, or Scenario Script rather than a duplicate copy."
+        "Open Training & Resources → Guided Visual Lessons and verify that all five lesson tabs are available.",
+        "Verify that the audio lesson keeps output/speaker separate from input/microphone and that the waiting-state lesson keeps Waiting for host separate from Waiting Room.",
+        "Use a lesson’s resource button and verify that it opens the existing approved resource rather than a duplicate copy."
       ],
       "audience": "all"
     },
@@ -281,31 +270,22 @@
       "id": "phase6-training-roadmap",
       "date": "2026-09-19",
       "area": "Training / Learning Path",
-      "title": "Training Roadmap now organizes how agents learn the workspace",
-      "changed": "Added a visual Training Roadmap as the default home inside Training & Resources. The roadmap gives agents one progressive learning path instead of presenting every resource at once: official Ogletree call flow, device orientation, communication guardrails, common-issue scenario routing, then guided visual lessons and the upcoming Practice Lab. Available modules open the exact existing resource without duplicating content, while unfinished Phase 6 modules are clearly marked as coming in later batches.",
-      "checks": [
-        "Open Training & Resources and confirm Training Roadmap is the default selected tab.",
-        "Select Open call flow language and confirm Scripts & Communication opens directly to Call Language → Opening / Greeting.",
-        "Return to Training Roadmap and select Open scenario scripts; confirm Scenario Scripts opens directly.",
-        "Select Open device walkthroughs and confirm the existing Device Walkthroughs resource opens without duplicated roadmap content.",
-        "Confirm Guided Visual Lessons is available and Practice Lab remains the next planned step.",
-        "Select Open Video Library under Reinforce anytime and confirm the existing video library opens."
-      ],
-      "audience": "all"
+      "title": "Initial Training Roadmap rollout",
+      "changed": "This entry records the first Training Roadmap rollout. The roadmap later expanded to include Guided Visual Lessons and the completed five-part Readiness Lab. Refer to the current Training & Resources page for the active six-step learning path.",
+      "checks": [],
+      "audience": "all",
+      "status": "historical"
     },
     {
       "id": "phase5-referral-handoff",
       "date": "2026-09-19",
       "area": "Live Tools / Referral Guidance",
       "title": "Scope Check now completes the referral handoff",
-      "changed": "Extended Scope Check with the approved referral / roadblock matrix. When a case reaches Stop + Refer, agents now choose the exact roadblock and the workspace identifies who owns the next step, shows the agent boundary, provides source-backed handoff wording, and lets the agent copy that wording. The tool covers Waiting Room admission, host-controlled permissions, incorrect meeting details, unresolved joining issues, account/admin access, device-level hardware detection, organization-managed permissions, network/security restrictions, possible Zoom product issues after basic troubleshooting, proceeding decisions, and privacy/recording/confidentiality/AI-policy questions. the workspace does not invent a person, phone number, email address, or promise an internal escalation.",
+      "changed": "Extended Scope Check with the approved referral / roadblock matrix. When a case reaches Stop + Refer, agents now choose the exact roadblock and the workspace identifies who owns the next step, shows the agent boundary, provides source-backed handoff wording, and lets the agent copy that wording. The tool covers Waiting Room admission, host-controlled permissions, incorrect meeting details, unresolved joining issues, account/admin access, device-level hardware detection, organization-managed permissions, network/security restrictions, possible Zoom product issues after basic troubleshooting, proceeding decisions, and privacy/recording/confidentiality/AI-policy questions. The workspace does not invent a person, phone number, email address, or promise an internal escalation.",
       "checks": [
-        "Open Scope Check and create a Stop + Refer decision using Host action or meeting-owner permission.",
-        "Choose Waiting Room admission and confirm Who owns the next step shows the meeting host / organizer / invitation contact and the approved Waiting Room handoff wording appears.",
-        "Choose Zoom account, sign-in, license, role, or administrative permission and confirm the contact changes to organization IT / help desk or Zoom administrator.",
-        "Choose Network, firewall, VPN, or managed security restriction and confirm the contact changes to organization IT / network support.",
-        "Use Copy handoff wording and confirm only the approved caller-facing referral sentence is copied.",
-        "Change any earlier Scope Check answer and confirm the previously selected referral roadblock and handoff guidance reset instead of carrying into the new decision."
+        "Create a Stop + Refer decision in Scope Check and verify that selecting a roadblock shows the correct next owner and approved handoff wording.",
+        "Test an account/admin roadblock and a network/security roadblock and verify that each routes to the appropriate support owner.",
+        "Change an earlier Scope Check answer and verify that the previous roadblock and handoff guidance are cleared."
       ],
       "audience": "all"
     },
@@ -314,14 +294,11 @@
       "date": "2026-09-19",
       "area": "Live Tools / Support Boundaries",
       "title": "Scope Check now tells agents when to continue or stop",
-      "changed": "Added a global Scope Check live tool beside Call Documentation. Agents can classify the remaining action, indicate how far approved troubleshooting has progressed, and confirm whether the next step stays within approved authority. the workspace then returns Continue Approved Troubleshooting, Stop + Refer, Resolved — Document & Close, or More Information Needed. The decision path follows the approved Zoom Basic Support Boundaries resource and does not invent referral contacts or promise internal escalation. The Navigator resolution status was also renamed from Escalation Needed to Referral Needed to match the approved handoff model.",
+      "changed": "Added a global Scope Check live tool beside Call Documentation. Agents can classify the remaining action, indicate how far approved troubleshooting has progressed, and confirm whether the next step stays within approved authority. The workspace then returns Continue Approved Troubleshooting, Stop + Refer, Resolved — Document & Close, or More Information Needed. The decision path follows the approved Zoom Basic Support Boundaries resource and does not invent referral contacts or promise internal escalation. The Navigator resolution status was also renamed from Escalation Needed to Referral Needed to match the approved handoff model.",
       "checks": [
-        "From Navigator, open Scope Check from the sidebar and confirm the current troubleshooting page does not change.",
-        "Select Basic Zoom setup → Approved troubleshooting steps still remain → No, next step stays inside approved scope; confirm the workspace returns Continue Approved Troubleshooting.",
-        "Change the issue type to Host action or meeting-owner permission and confirm the workspace switches to Stop + Refer.",
-        "Select All approved troubleshooting completed; issue remains and confirm Stop + Refer appears even when the issue began as a basic Zoom concern.",
-        "Switch from Scope Check back to Call Documentation and confirm the existing documentation draft is still present.",
-        "In Live Call Flow, confirm the resolution-status choice now says Referral Needed instead of Escalation Needed."
+        "From Navigator, open Scope Check and verify that the current workspace page stays in place.",
+        "Verify that an in-scope basic issue can return Continue Approved Troubleshooting, while a host-controlled action returns Stop + Refer.",
+        "Switch between Scope Check and Call Documentation and verify that the existing documentation draft remains intact."
       ],
       "audience": "all"
     },
@@ -344,14 +321,11 @@
       "id": "phase5-documentation-workspace",
       "date": "2026-09-19",
       "area": "Training / Documentation",
-      "title": "Phase 5 call documentation workspace added",
-      "changed": "Introduced the Phase 5 call documentation fields and copy-ready summary. The workspace is now accessed globally from the sidebar as a docked live tool rather than as a Training & Resources tab; see the newer global documentation dock update for the current workflow.",
-      "checks": [
-        "Use the newer Call Documentation sidebar tool for the current workflow.",
-        "Confirm the same approved fields and copy-ready summary remain available in the global dock.",
-        "Confirm caller-entered text remains local to the active browser session and is not included in the workspace analytics or feedback context."
-      ],
-      "audience": "all"
+      "title": "Initial call documentation workspace rollout",
+      "changed": "This entry records the original call-documentation rollout. Call Documentation is now a global sidebar tool with a local draft and copy-ready summary; refer to the newer global documentation update for current behavior.",
+      "checks": [],
+      "audience": "all",
+      "status": "historical"
     },
     {
       "id": "interactive-guided-discovery",
@@ -402,8 +376,8 @@
       "changed": "Defined the What’s New page as the user-facing release log for the workspace. Every shipped user-facing feature, support-content change, or bug fix must receive an update entry. Test-only changes, CI maintenance, and invisible internal refactors stay out of the user-facing log so the page remains useful instead of becoming raw commit history.",
       "checks": [
         "Open What’s New / Updates and confirm September 19 entries appear above the September 18 history.",
-        "Confirm the Update policy note explains which shipped changes are listed.",
-        "Confirm the header/version chip now shows the latest update date from the newest change-log entry."
+        "Verify the Update policy note explains which shipped changes are listed.",
+        "Verify the header/version chip now shows the latest update date from the newest change-log entry."
       ],
       "audience": "all"
     },
@@ -426,15 +400,11 @@
       "id": "uiux-phase1-core-live-call-flow",
       "date": "2026-09-18",
       "area": "Live Support / UI UX Phase 1",
-      "title": "Original Phase 1 Core Live Call Flow (superseded Sep 19)",
-      "changed": "Added the Phase 1 live-call foundation at the top of Navigator: Opening → Acknowledgment → Identify → Resolution → Recap → Adjacent Issues → Closing. The flow uses Step / Agent Action / Suggested Script columns, includes device selection for Windows, Mac, iPhone, Android, and Browser, identifies Host vs Participant, and records Resolved / Unresolved / Escalation Needed status. The previous four-step workflow banner was removed so agents see one clear call journey. Existing search and process tools remain available below the flow. This original seven-stage flow was superseded on September 19 by the new Ogletree Tier 1 standard call flow; see the newer Call Flow Alignment entry for the current workflow.",
-      "checks": [
-        "Historical entry only: use the September 19 Call Flow Alignment entry for the current Live Call Flow.",
-        "Select a device, Host or Participant, and a resolution status; each selected option should remain visibly pressed.",
-        "Use Reset call and confirm all call-context selections clear for the next caller.",
-        "Resize to mobile width and confirm each call-flow row remains readable as Step, Agent Action, and Suggested Script without horizontal clipping."
-      ],
-      "audience": "all"
+      "title": "Original Core Live Call Flow",
+      "changed": "This entry records the original seven-stage live-call foundation. It was superseded on September 19 by the current Ogletree Tier 1 standard call flow. Refer to the newer Call Flow Alignment entry for current behavior.",
+      "checks": [],
+      "audience": "all",
+      "status": "historical"
     },
     {
       "id": "strict-qa-remediation",
@@ -500,9 +470,9 @@
       "title": "Sidebar footer stays visible in wide but short windows",
       "changed": "Extended the sidebar vertical-space protection to every browser width. When the window is wide but vertically short, the navigation list now owns the scrolling space while the console metadata and Logout remain anchored and readable instead of being pushed below the viewport.",
       "checks": [
-        "Keep the browser fairly wide, then reduce only its height and confirm the sidebar does not clip the bottom metadata.",
-        "Confirm the navigation list scrolls when needed while Workspace v1.0, Owner Cjei A., Collaborator Nina F., and Logout remain visible.",
-        "Repeat with the admin account, where the navigation list is longest, and confirm the footer remains readable."
+        "Keep the browser fairly wide, reduce only its height, and verify that the sidebar footer remains visible.",
+        "Verify that the navigation list scrolls when needed while Workspace v1.0, Workspace Lead Cjei A., Collaborator Nina F., and Logout remain visible.",
+        "Repeat with the admin account, where the navigation list is longest."
       ],
       "audience": "all"
     },
@@ -511,11 +481,11 @@
       "date": "2026-09-18",
       "area": "Responsive Navigation",
       "title": "Mobile admin drawer keeps console metadata visible",
-      "changed": "Adjusted the short-window mobile and tablet drawer so the navigation list scrolls inside its own area instead of pushing the console metadata off-screen. Workspace version, update and review dates, Owner Cjei A., Collaborator Nina F., and Logout remain readable at the bottom, and the drawer width adapts to the available screen width.",
+      "changed": "Adjusted the short-window mobile and tablet drawer so the navigation list scrolls inside its own area instead of pushing the console metadata off-screen. Workspace version, update and review dates, Workspace Lead Cjei A., Collaborator Nina F., and Logout remain readable at the bottom, and the drawer width adapts to the available screen width.",
       "checks": [
-        "Open the hamburger menu while the browser is narrow and vertically short, especially while signed in as an admin.",
-        "Confirm the navigation list can scroll without pushing the workspace metadata below the screen.",
-        "Confirm Workspace v1.0, Owner Cjei A., Collaborator Nina F., and Logout remain fully visible and readable at the bottom of the open drawer."
+        "Open the hamburger menu in a narrow, vertically short window while signed in as an admin.",
+        "Verify that the navigation list scrolls without pushing the workspace metadata off-screen.",
+        "Verify that Workspace v1.0, Workspace Lead Cjei A., Collaborator Nina F., and Logout remain readable at the bottom."
       ],
       "audience": "admin"
     },
@@ -538,11 +508,10 @@
       "date": "2026-09-18",
       "area": "Support Workspace",
       "title": "What’s New / Updates and console metadata",
-      "changed": "Added a shared update history for user-facing changes, plus visible workspace version, effective date, last updated date, owner, collaborator, and next review information.",
+      "changed": "Added a shared update history for user-facing changes, plus visible workspace version, effective date, last updated date, workspace lead, collaborator, and next review information.",
       "checks": [
-        "Open What’s New / Updates from the sidebar or the version chip in the header.",
-        "Confirm Workspace Version 1.0, Owner Cjei A., Collaborator Nina F., and the review dates are visible.",
-        "Confirm update entries show both What changed and What to check."
+        "Open What’s New / Updates from the sidebar.",
+        "Verify that Workspace Version 1.0, Workspace Lead Cjei A., Collaborator Nina F., and the review dates are visible."
       ],
       "audience": "all"
     },
@@ -554,7 +523,7 @@
       "changed": "Removed the long combined Suggested Script block that repeated scripts already shown under individual steps. Per-step scripts remain where they are needed, while source-level scripts are shown once as Additional Source Script.",
       "checks": [
         "Open a process with multiple scripted steps and confirm the giant duplicate script block is gone.",
-        "Confirm each relevant step still has its own Suggested Script and Copy Script control.",
+        "Verify each relevant step still has its own Suggested Script and Copy Script control.",
         "If a process has a source-level script, confirm it appears once as Additional Source Script."
       ],
       "audience": "all"
@@ -567,7 +536,7 @@
       "changed": "Search now normalizes case, apostrophes, punctuation, and spacing; understands controlled support aliases and synonyms; tolerates close typos; shows suggestions from short prefixes; keeps the list to six results; keeps the dropdown fully visible; and opens the exact process selected.",
       "checks": [
         "Search cant jion, camra, bluetooh, and meeting control and confirm useful suggestions appear while typing.",
-        "Confirm the suggestions are fully visible over the content below the search field.",
+        "Verify the suggestions are fully visible over the content below the search field.",
         "Click a suggestion and confirm the process that opens has the same title as the selected suggestion."
       ],
       "audience": "all"
@@ -581,7 +550,7 @@
       "checks": [
         "At desktop width, confirm the sidebar remains normally visible.",
         "At 768px or mobile width, confirm the hamburger opens the drawer and the backdrop closes it.",
-        "Confirm the closed drawer leaves no strip on the left edge and the header brand does not stack or collide."
+        "Verify the closed drawer leaves no strip on the left edge and the header brand does not stack or collide."
       ],
       "audience": "all"
     },
@@ -592,7 +561,7 @@
       "title": "Accessible category icons and keyboard search controls",
       "changed": "Added distinct visual icons to support category cards and retained keyboard-friendly search suggestion controls so agents can move through suggestions with the keyboard.",
       "checks": [
-        "Confirm every support category card has a distinct visible icon.",
+        "Verify every support category card has a distinct visible icon.",
         "In search, use Arrow Up or Arrow Down, Enter, and Escape and confirm the suggestion list responds correctly."
       ],
       "audience": "all"
