@@ -66,10 +66,9 @@ export function ReadinessLab({
   const maxAttempts = state?.maxAttempts || 3
   const lastAttempt = attempts.length ? attempts[attempts.length - 1] : null
   const question = questions[questionIndex] ?? questions[0]
-  const answers = activeAttempt?.answers || []
   const answersByQuestion = useMemo(
-    () => new Map(answers.map(answer => [answer.questionId, answer])),
-    [answers],
+    () => new Map((activeAttempt?.answers || []).map(answer => [answer.questionId, answer])),
+    [activeAttempt?.answers],
   )
   const answer = question ? answersByQuestion.get(question.id) : null
   const selectedOptionId = answer?.selectedOptionId || (question ? selections[question.id] : null)
