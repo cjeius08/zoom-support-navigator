@@ -170,9 +170,12 @@ export default function App() {
 
   if (activationOpen) return <main className="access-shell" style={accessStyle}><section className="access-card"><ActivateAccountForm onActivate={activateAccount} onCancel={()=>setActivationOpen(false)}/></section></main>
   return <main className="access-shell" style={accessStyle}>
-    <section className="access-card" aria-labelledby="app-title">
-      <h1 id="app-title">Ogletree Support Workspace</h1>
-      <p>Tier 1 Zoom Support · Sign in to continue.</p>
+    <section className="access-card" aria-label="Ozzie sign in">
+      <img
+        className="access-brand-logo"
+        src={assetUrl('assets/ozzie-login.webp')}
+        alt="Ozzie — Ogletree Support Workspace"
+      />
       <form onSubmit={submit} noValidate>
         <label>Username<span className="access-input"><svg data-testid="username-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z" /></svg><input name="username" autoComplete="username" placeholder="Enter your username" required aria-invalid={errorField === 'username' ? 'true' : undefined} aria-describedby={errorField === 'username' ? 'login-error' : undefined} /></span></label>
         <label>Password<span className="access-input"><svg data-testid="password-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 10V7a6 6 0 0 1 12 0v3M5 10h14a2 2 0 0 1 2 2v9H3v-9a2 2 0 0 1 2-2Z" /></svg><input name="password" type={showPassword?'text':'password'} autoComplete="current-password" placeholder="Enter your password" required aria-invalid={errorField === 'password' ? 'true' : undefined} aria-describedby={errorField === 'password' ? 'login-error' : undefined} /><button className="password-toggle" type="button" aria-label={showPassword?'Hide password':'Show password'} onClick={()=>setShowPassword(value=>!value)}><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></span></label>
