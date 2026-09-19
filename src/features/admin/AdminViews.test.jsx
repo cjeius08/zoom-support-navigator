@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, expect, it, vi } from 'vitest'
 
@@ -246,6 +246,11 @@ it('shows Readiness Lab attempt history separately with scores and incorrect ans
   expect(screen.getByRole('heading', { name: 'Troubleshooting Judgment' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Scope & Referral Judgment' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Live Call Readiness' })).toBeInTheDocument()
+  const summary = screen.getByLabelText('agent_one General Zoom Scenarios summary')
+  expect(within(summary).getByText('First score')).toBeInTheDocument()
+  expect(within(summary).getAllByText('3/5')).toHaveLength(2)
+  expect(within(summary).getByText('2/3')).toBeInTheDocument()
+  expect(within(summary).getByText('In progress')).toBeInTheDocument()
   expect(screen.getByText('Attempt 1')).toBeInTheDocument()
   expect(screen.getByText('Score 3/5')).toBeInTheDocument()
   expect(screen.getByText('Attempt 2')).toBeInTheDocument()
