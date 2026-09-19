@@ -26,23 +26,6 @@ const GUIDANCE_METHOD = [
   },
 ]
 
-function ChoiceGroup({ label, options, value, onChange, className = '' }) {
-  return <div className={`live-call-choice-group ${className}`}>
-    <span className="live-call-choice-label">{label}</span>
-    <div className="live-call-choice-options" role="group" aria-label={label}>
-      {options.map(option => <button
-        type="button"
-        key={option}
-        aria-pressed={value === option}
-        className={value === option ? 'selected' : ''}
-        onClick={() => onChange(option)}
-      >
-        {option}
-      </button>)}
-    </div>
-  </div>
-}
-
 export function LiveCallFlow({ expanded: controlledExpanded, onExpandedChange }) {
   const [internalExpanded, setInternalExpanded] = useState(false)
   const expandedControlled = controlledExpanded !== undefined
