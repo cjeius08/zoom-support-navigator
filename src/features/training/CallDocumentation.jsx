@@ -176,7 +176,7 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
   if (!open) return null
 
   if (minimized) {
-    return <aside style={{ '--tool-stack-index': Math.max(0, stackIndex) }} className="documentation-dock documentation-dock-minimized" aria-label="Call Documentation minimized">
+    return <aside style={{ '--tool-stack-offset': `${Math.max(0, stackIndex) * 4.25}rem` }} className="documentation-dock documentation-dock-minimized" aria-label="Call Documentation minimized">
       <button type="button" className="documentation-dock-restore" aria-label="Restore Call Documentation" onClick={onMinimize}>
         <span>
           <strong>Call Documentation</strong>
