@@ -81,7 +81,7 @@ it('keeps Ozzie standalone at the top-left instead of inside a sidebar', () => {
   const brand = container.querySelector('.ozzie-brand-dock')
   expect(brand).toBeInTheDocument()
   expect(brand.querySelector('img')).toHaveAttribute('alt', 'Ozzie — Ogletree Support Workspace')
-  expect(brand.querySelector('img').getAttribute('src')).toContain('ozzie-mascot-logo.webp')
+  expect(brand.querySelector('img').getAttribute('src')).toContain('ozzie-hq.png')
   expect(container.querySelector('.sidebar')).not.toBeInTheDocument()
   expect(screen.queryByText('Tier 1 Zoom Support')).not.toBeInTheDocument()
 })
