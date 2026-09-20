@@ -167,12 +167,12 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   }
 
   return <div className="app-shell app-shell-horizontal" style={style}>
-    <div className="ozzie-brand-dock" aria-label="Ozzie — Ogletree Support Workspace">
-      <img src={assetUrl('assets/ozzie-mascot-logo.webp')} alt="Ozzie — Ogletree Support Workspace" />
-    </div>
-
     <header className="app-header app-header-horizontal">
-      <div className="app-header-account-row">
+      <div className="app-header-brand-row">
+        <div className="ozzie-brand-dock" aria-label="Ozzie — Ogletree Support Workspace">
+          <img src={assetUrl('assets/ozzie-mascot-logo.webp')} alt="Ozzie — Ogletree Support Workspace" />
+        </div>
+
         <button
           ref={menuToggleRef}
           className="menu-toggle"
@@ -185,7 +185,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
           <span>Menu</span>
         </button>
-        <div className="app-header-spacer" aria-hidden="true" />
+
         <button className="account-menu" aria-expanded={profileOpen} aria-label={`${profile.username} account`} onClick={() => { const next = !profileOpen; setProfileOpen(next); if (next) { setMessage(''); setProfileError(''); setProfileErrorField('') } }}>
           {avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}
           <span className="account-copy"><strong>{profile.username}</strong><small>{accountRoleLabel}</small></span>
@@ -247,7 +247,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     {open && <button type="button" className="nav-backdrop" aria-label="Close navigation" onClick={() => closeNavigation({ restoreFocus: true })} />}
 
     <main className="app-main app-main-horizontal">
-      <div className="workspace-page-nav">
+      {currentView !== 'navigator' && <div className="workspace-page-nav">
         <button
           type="button"
           className="workspace-back-button"
@@ -259,7 +259,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6M8 12h10" /></svg>
           <span>Back</span>
         </button>
-      </div>
+      </div>}
       {children}
 
       <footer className="workspace-meta-footer" aria-label="Console metadata">
