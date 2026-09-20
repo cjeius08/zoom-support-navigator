@@ -5,6 +5,16 @@ export function AvatarPicker({ selectedId, onSave, onCancel }) {
   const [selected, setSelected] = useState(AVATAR_IDS.includes(selectedId) ? selectedId : AVATAR_IDS[0])
   const optionRefs = useRef([])
 
+  if (!AVATAR_IDS.length) {
+    return <section className="avatar-picker" aria-labelledby="avatar-picker-title">
+      <h2 id="avatar-picker-title">Choose an avatar</h2>
+      <p role="status">No avatars are currently available. A new avatar library will be added soon.</p>
+      <div className="dialog-actions">
+        <button type="button" onClick={onCancel}>Close</button>
+      </div>
+    </section>
+  }
+
   function selectAt(index, { focus = false } = {}) {
     const normalizedIndex = (index + AVATAR_IDS.length) % AVATAR_IDS.length
     const id = AVATAR_IDS[normalizedIndex]
