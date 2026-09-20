@@ -25,9 +25,9 @@
 }
 
 .app-header-brand-row {
-  display: flex !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: flex-start !important;
-  justify-content: space-between !important;
   gap: 1rem;
   width: 100%;
   min-width: 0;
@@ -37,7 +37,8 @@
   position: relative;
   z-index: 22;
   flex: 0 0 auto;
-  width: clamp(10.5rem, 13vw, 12rem);
+  justify-self: start;
+  width: clamp(8.75rem, 10vw, 10.5rem);
   min-width: 0;
   pointer-events: none;
 }
@@ -60,6 +61,7 @@
 
 .app-header-horizontal .account-menu {
   align-self: flex-start;
+  justify-self: end;
   flex: 0 0 auto;
   min-height: 2.55rem;
   margin: 0 0 0 auto !important;
@@ -527,7 +529,7 @@
 @media (min-width: 1121px) {
   .app-header.app-header-horizontal {
     gap: 0 !important;
-    padding: .85rem 4.15rem 0 !important;
+    padding: .85rem clamp(1.5rem, 4vw, 4.15rem) 0 !important;
   }
 
   .app-header-brand-row {
@@ -535,14 +537,14 @@
   }
 
   .ozzie-brand-dock {
-    width: 11.25rem;
+    width: 10.5rem;
   }
 
   .top-navigation {
-    width: 100%;
-    max-width: none;
-    margin: -2.55rem 0 0;
-    padding: .25rem 0 .72rem;
+    width: min(100%, 56rem);
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: .2rem 1rem .8rem;
   }
 
   .app-main.app-main-horizontal {

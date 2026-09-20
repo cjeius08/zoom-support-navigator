@@ -283,11 +283,17 @@ it('opens Readiness Lab as a global live tool and keeps it open while the agent 
 it('uses the standalone brand and horizontal header on desktop', () => {
   const css = readFileSync(join(cwd(), 'src/features/shell/headerNavRevamp.css'), 'utf8')
 
-  expect(css).toMatch(/\.app-header-brand-row\s*\{[^}]*grid-template-columns:/)
+  expect(css).toMatch(/\.app-header-brand-row\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+auto\s+minmax\(0,\s*1fr\)/)
   expect(css).toMatch(/\.ozzie-brand-dock\s*\{[^}]*position:\s*relative/)
   expect(css).not.toMatch(/\.ozzie-brand-dock\s*\{[^}]*position:\s*fixed/)
   expect(css).toMatch(/\.top-navigation\s*\{[^}]*display:\s*flex[^}]*justify-content:\s*center[^}]*border-bottom:/)
+  expect(css).not.toMatch(/\.top-navigation\s*\{[^}]*margin:\s*-[^;}]+/)
   expect(css).toMatch(/\.app-main\.app-main-horizontal\s*\{[^}]*margin-left:\s*0/)
+})
+
+it('keeps the approved Ozzie artwork as a decodable PNG at the canonical asset path', () => {
+  const logo = readFileSync(join(cwd(), 'public/assets/ozzie-hq.png'))
+  expect([...logo.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10])
 })
 
 it('turns the horizontal navigation into a compact mobile drawer', () => {
