@@ -55,7 +55,7 @@ export function LiveCallFlow({ expanded: controlledExpanded, onExpandedChange })
     >
       <span>{expanded ? 'Hide approved call flow' : 'View approved call flow'}</span>
       <small>{OGLETREE_CALL_FLOW_STEPS.length} steps</small>
-      <span className="live-call-toggle-icon" aria-hidden="true">{expanded ? '−' : '+'}</span>
+      <span className="live-call-toggle-icon" aria-hidden="true">{expanded ? '−' : '→'}</span>
     </button>
   </section>
 }
