@@ -42,7 +42,7 @@ it('supports single upload, multiple upload, and batch deletion for admins', asy
 
   const oneFile = new File(['one'], 'one.webp', { type: 'image/webp' })
   await user.upload(screen.getByLabelText('Upload one avatar'), oneFile)
-  await waitFor(() => expect(uploadAvatarFiles).toHaveBeenCalledWith(expect.any(FileList)))
+  await waitFor(() => expect(uploadAvatarFiles).toHaveBeenCalledWith(expect.any(Array)))
 
   const first = new File(['first'], 'first.png', { type: 'image/png' })
   const second = new File(['second'], 'second.jpg', { type: 'image/jpeg' })
