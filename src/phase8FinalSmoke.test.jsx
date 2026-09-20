@@ -87,22 +87,29 @@ it('keeps the creator-admin surface complete', () => {
   expect(screen.getByRole('navigation')).toHaveTextContent('Feedback Queue')
 })
 
-it('keeps Back visible on desktop and mobile while respecting history state', async () => {
+it('hides Back on Home and keeps it available on inner pages across desktop and mobile', async () => {
   const user = userEvent.setup()
   const onBack = () => {}
 
   setWidth(1280)
   const { rerender } = render(
-    <AppShell profile={member} canGoBack={false} onBack={onBack}>
-      <div>Desktop page</div>
+    <AppShell profile={member} currentView="navigator" canGoBack={false} onBack={onBack}>
+      <div>Home page</div>
     </AppShell>,
   )
 
+  expect(screen.queryByRole('button', { name: 'Back to previous page' })).not.toBeInTheDocument()
+
+  rerender(
+    <AppShell profile={member} currentView="training" canGoBack={false} onBack={onBack}>
+      <div>Training page</div>
+    </AppShell>,
+  )
   expect(screen.getByRole('button', { name: 'Back to previous page' })).toBeDisabled()
 
   rerender(
-    <AppShell profile={member} canGoBack onBack={onBack}>
-      <div>Desktop page</div>
+    <AppShell profile={member} currentView="training" canGoBack onBack={onBack}>
+      <div>Training page</div>
     </AppShell>,
   )
   expect(screen.getByRole('button', { name: 'Back to previous page' })).toBeEnabled()
