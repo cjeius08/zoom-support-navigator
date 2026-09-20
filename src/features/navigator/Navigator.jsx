@@ -237,12 +237,16 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
     <section className="navigator-top-workspace" aria-label="Live support workspace">
       <section className="smart-search-card" aria-labelledby="smart-search-title">
         <div className="smart-search-heading">
-          <p className="eyebrow">Support search</p>
+          <p className="eyebrow">Support workspace</p>
           <h1 id="smart-search-title">Find the next step</h1>
           <p>Search by caller symptom or approved process name.</p>
         </div>
 
         <div className="search-combobox" onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) { setSuggestionsOpen(false); setActiveSuggestion(-1) } }}>
+          <svg className="smart-search-icon" aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m16.2 16.2 4.3 4.3" />
+          </svg>
           <input
             role="combobox"
             aria-label="Search support processes"
