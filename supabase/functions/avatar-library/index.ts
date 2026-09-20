@@ -4,6 +4,7 @@ import { json, options } from '../_shared/responses.ts'
 const BUCKET = 'zoom-avatars'
 const TABLE = 'zoom_avatar_catalog'
 const MAX_FILE_BYTES = 5 * 1024 * 1024
+const MAX_DELETE_COUNT = 500
 const ALLOWED_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp'])
 
 function sessionId(token: string) {
@@ -74,7 +75,7 @@ async function uploadFiles(admin: ReturnType<typeof adminClient>, actor: string,
 
 async function deleteAvatars(admin: ReturnType<typeof adminClient>, ids: string[]) {
   const uniqueIds = [...new Set(ids)]
-  if (!uniqueIds.length || uniqueIds.length > 100) throw new Error('Select between 1 and 100 avatars.')
+  if (!uniqueIds.length || uniqueIds.length > MAX_DELETE_COUNT) throw new Error(`Select between 1 and ${MAX_DELETE_COUNT} avatars.`)
 
   const { data: rows, error: loadError } = await admin
     .from(TABLE)

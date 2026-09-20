@@ -90,6 +90,27 @@ it('selects all, shows the count, and deletes only after confirmation', async ()
   expect(await screen.findByRole('status')).toHaveTextContent(/deleted successfully/i)
 })
 
+it('sends the full Select All batch when the library has more than 100 avatars', async () => {
+  const user = userEvent.setup()
+  const largeAvatarList = Array.from({ length: 160 }, (_, index) => ({
+    id: `avatar_${String(index + 1).padStart(3, '0')}`,
+    source: 'bundled',
+    src: `/avatars/avatar_${String(index + 1).padStart(3, '0')}.png`,
+  }))
+  loadAvatarLibrary.mockResolvedValue(largeAvatarList)
+  deleteAvatarIds.mockResolvedValue({ deleted: largeAvatarList.map(avatar => avatar.id), failed: [] })
+  const { AvatarLibraryManagement } = await import('./AvatarLibraryManagement')
+  render(<AvatarLibraryManagement isAdmin />)
+
+  await waitFor(() => expect(screen.getByText('160 avatars available')).toBeInTheDocument())
+  await user.click(screen.getByRole('button', { name: 'Select All' }))
+  expect(screen.getByText('160 avatars selected')).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Delete Selected (160)' }))
+  await user.click(screen.getByRole('button', { name: 'Delete 160 Avatars' }))
+
+  expect(deleteAvatarIds).toHaveBeenCalledWith(largeAvatarList.map(avatar => avatar.id))
+})
+
 it('confirms a single avatar deletion separately', async () => {
   const user = userEvent.setup()
   const { AvatarLibraryManagement } = await import('./AvatarLibraryManagement')

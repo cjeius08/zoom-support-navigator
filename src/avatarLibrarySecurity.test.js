@@ -18,3 +18,10 @@ it('requires the existing creator-admin authorization path for mutations', () =>
   expect(source).toMatch(/SUPABASE_SERVICE_ROLE_KEY|adminClient/i)
   expect(source).toMatch(/avatar_ids/i)
 })
+
+it('allows Select All to delete the current library size in one protected request', () => {
+  const source = edgeFunction()
+  expect(source).toMatch(/MAX_DELETE_COUNT\s*=\s*500/)
+  expect(source).toMatch(/uniqueIds\.length\s*>\s*MAX_DELETE_COUNT/)
+  expect(source).not.toMatch(/uniqueIds\.length\s*>\s*100/)
+})
