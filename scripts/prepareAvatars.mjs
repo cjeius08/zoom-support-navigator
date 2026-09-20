@@ -6,7 +6,7 @@ const root = process.cwd()
 const chunkDir = join(root, 'avatar-payload')
 const outputDir = join(root, 'public', 'avatars')
 const chunks = readdirSync(chunkDir)
-  .filter(name => /^chunk_\\d+\\.txt$/.test(name))
+  .filter(name => /^chunk_\d+\.txt$/.test(name))
   .sort()
 
 if (!chunks.length) throw new Error('Avatar payload chunks are missing.')

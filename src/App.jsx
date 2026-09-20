@@ -7,6 +7,7 @@ import { submitFeedback } from './lib/feedbackApi'
 import { Navigator } from './features/navigator/Navigator'
 import { AppShell } from './features/shell/AppShell'
 import { AdminHome, FeedbackQueue, TeamManagement, UsageAnalytics } from './features/admin/AdminViews'
+import { AvatarLibrary } from './features/admin/AvatarLibrary'
 import { TrainingResources } from './features/training/TrainingResources'
 import { FeedbackPage } from './features/feedback/FeedbackPage'
 import { UpdatesView } from './features/updates/UpdatesView'
@@ -333,9 +334,11 @@ export default function App() {
                 ? <AdminHome onNavigate={navigate}/>
                 : view === 'team'
                   ? <TeamManagement/>
-                  : view === 'usage'
-                    ? <UsageAnalytics/>
-                    : <FeedbackQueue onOpenPage={openFeedbackTarget}/>
+                  : view === 'avatars'
+                    ? <AvatarLibrary isAdmin={profile.role === 'creator_admin'}/>
+                    : view === 'usage'
+                      ? <UsageAnalytics/>
+                      : <FeedbackQueue onOpenPage={openFeedbackTarget}/>
     return <>
       <AppShell
         profile={profile}
