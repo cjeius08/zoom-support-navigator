@@ -53,7 +53,7 @@ it('keeps Member and Lead on the standard workspace surface', () => {
   )
 
   expect(screen.getByRole('button', { name: /member_1 account/i })).toHaveTextContent('Member')
-  expect(screen.getByRole('navigation')).toHaveTextContent('Navigator')
+  expect(screen.getByRole('navigation')).toHaveTextContent('Home')
   expect(screen.getByRole('navigation')).toHaveTextContent('Favorites')
   expect(screen.getByRole('navigation')).toHaveTextContent('Training & Resources')
   expect(screen.getByRole('navigation')).toHaveTextContent('Readiness Lab')
@@ -112,17 +112,17 @@ it('keeps Back visible on desktop and mobile while respecting history state', as
   expect(screen.getByRole('button', { name: 'Toggle navigation' })).toBeVisible()
 
   await user.click(screen.getByRole('button', { name: 'Toggle navigation' }))
-  expect(screen.getByRole('complementary')).toHaveAttribute('aria-hidden', 'false')
+  expect(screen.getByRole('navigation', { name: 'Primary navigation' })).toHaveAttribute('aria-hidden', 'false')
 })
 
 it('keeps the responsive breakpoints and overflow protections used by the production shell', () => {
-  const css = readFileSync(join(cwd(), 'src/features/shell/responsiveShell.css'), 'utf8')
+  const css = `${readFileSync(join(cwd(), 'src/features/shell/responsiveShell.css'), 'utf8')}\n${readFileSync(join(cwd(), 'src/features/shell/headerNavRevamp.css'), 'utf8')}`
 
   expect(css).toMatch(/@media\s*\(max-width:\s*1100px\)/)
   expect(css).toMatch(/@media\s*\(max-width:\s*920px\)/)
   expect(css).toMatch(/@media\s*\(max-width:\s*800px\)/)
   expect(css).toMatch(/@media\s*\(max-width:\s*620px\)/)
   expect(css).toMatch(/\.app-main\s*\{[^}]*overflow-x:\s*clip/)
-  expect(css).toMatch(/\.sidebar\s*\{[^}]*overflow:\s*hidden/)
+  expect(css).toMatch(/\.top-navigation\s*\{[^}]*display:\s*flex/)
   expect(css).toMatch(/\.feedback-fab\s*\{[^}]*max-width:\s*calc\(100vw\s*-\s*1\.5rem\)/)
 })
