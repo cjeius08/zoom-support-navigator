@@ -136,7 +136,7 @@ it('shows a Back control on workspace pages and calls the previous-page handler'
       <div>Home page</div>
     </AppShell>,
   )
-  expect(screen.getByRole('button', { name: 'Back to previous page' })).toBeDisabled()
+  expect(screen.queryByRole('button', { name: 'Back to previous page' })).not.toBeInTheDocument()
 })
 
 it('keeps Lead as a title without granting admin navigation', () => {
@@ -283,10 +283,11 @@ it('opens Readiness Lab as a global live tool and keeps it open while the agent 
 it('uses the standalone brand and horizontal header on desktop', () => {
   const css = readFileSync(join(cwd(), 'src/features/shell/headerNavRevamp.css'), 'utf8')
 
-  expect(css).toMatch(/\.ozzie-brand-dock\s*\{[^}]*position:\s*absolute/)
+  expect(css).toMatch(/\.app-header-brand-row\s*\{[^}]*grid-template-columns:/)
+  expect(css).toMatch(/\.ozzie-brand-dock\s*\{[^}]*position:\s*relative/)
   expect(css).not.toMatch(/\.ozzie-brand-dock\s*\{[^}]*position:\s*fixed/)
-  expect(css).toMatch(/\.top-navigation\s*\{[^}]*display:\s*flex[^}]*border-bottom:/)
-  expect(css).toMatch(/\.app-main\.app-main-horizontal\s*\{[^}]*margin-left:/)
+  expect(css).toMatch(/\.top-navigation\s*\{[^}]*display:\s*flex[^}]*justify-content:\s*center[^}]*border-bottom:/)
+  expect(css).toMatch(/\.app-main\.app-main-horizontal\s*\{[^}]*margin-left:\s*0/)
 })
 
 it('turns the horizontal navigation into a compact mobile drawer', () => {
