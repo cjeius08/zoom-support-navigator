@@ -100,6 +100,37 @@ it('renames Navigator to Home without changing the navigator route', async () =>
   expect(onNavigate).toHaveBeenCalledWith('navigator')
 })
 
+it('keeps exactly one primary-navigation dropdown open and closes it on the required interactions', async () => {
+  const user = userEvent.setup()
+  render(<AppShell profile={{ username: 'ja_admin', initials: 'JA', role: 'creator_admin', avatar_id: 'avatar_001' }} />)
+
+  const callFlow = screen.getByText('Call Flow')
+  const knowledge = screen.getByText('Knowledge')
+
+  await user.click(callFlow)
+  expect(callFlow.closest('details')).toHaveAttribute('open')
+
+  await user.click(knowledge)
+  expect(callFlow.closest('details')).not.toHaveAttribute('open')
+  expect(knowledge.closest('details')).toHaveAttribute('open')
+
+  await user.keyboard('{Escape}')
+  expect(knowledge.closest('details')).not.toHaveAttribute('open')
+
+  await user.click(screen.getByText('Reports'))
+  expect(screen.getByText('Reports').closest('details')).toHaveAttribute('open')
+  await user.click(screen.getByRole('button', { name: /ja_admin account/i }))
+  expect(screen.getByText('Reports').closest('details')).not.toHaveAttribute('open')
+
+  await user.click(screen.getByText('Reports'))
+  await user.click(screen.getByRole('button', { name: 'Home' }))
+  expect(screen.getByText('Reports').closest('details')).not.toHaveAttribute('open')
+
+  await user.click(knowledge)
+  await user.click(screen.getByRole('button', { name: /Favorites/i }))
+  expect(knowledge.closest('details')).not.toHaveAttribute('open')
+})
+
 it('offers Meet Ozzie Again only when the intro video is available', async () => {
   const user = userEvent.setup()
   const onMeetOzzie = vi.fn()
@@ -298,7 +329,7 @@ it('anchors the desktop account at the far right and keeps navigation low in the
   expect(css).toMatch(/@media \(min-width: 1121px\)[\s\S]*?\.app-header\.app-header-horizontal\s*\{[^}]*min-height:\s*8\.5rem/)
   expect(css).toMatch(/@media \(min-width: 1121px\)[\s\S]*?\.ozzie-brand-dock\s*\{[^}]*position:\s*absolute[^}]*top:/)
   expect(css).toMatch(/@media \(min-width: 1121px\)[\s\S]*?\.app-header-horizontal \.account-menu\s*\{[^}]*position:\s*absolute[^}]*right:/)
-  expect(css).toMatch(/@media \(min-width: 1121px\)[\s\S]*?\.top-navigation\s*\{[^}]*position:\s*absolute[^}]*bottom:[^}]*left:\s*50%/)
+  expect(css).toMatch(/@media \(min-width: 1121px\)[\s\S]*?\.top-navigation\s*\{[^}]*position:\s*absolute[^}]*display:\s*flex\s*!important[^}]*bottom:[^}]*left:\s*50%/)
 })
 
 it('keeps the approved Ozzie artwork as a decodable PNG at the canonical asset path', () => {

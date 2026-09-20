@@ -28,15 +28,16 @@ function Icon({ type }) {
   return <svg data-testid="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d={paths[type] || paths.feedback} /></svg>
 }
 
-function NavDropdown({ label, active = false, children }) {
-  return <details className={`topnav-dropdown ${active ? 'active' : ''}`}>
-    <summary>{label}<svg className="topnav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></summary>
+function NavDropdown({ label, active = false, open = false, onToggle, children }) {
+  return <details className={`topnav-dropdown ${active ? 'active' : ''}`} open={open}>
+    <summary aria-expanded={open} onClick={event => { event.preventDefault(); onToggle() }}>{label}<svg className="topnav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></summary>
     <div className="topnav-menu" role="group" aria-label={`${label} menu`}>{children}</div>
   </details>
 }
 
 export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onFeedback, reportContext = {} }) {
   const [open, setOpen] = useState(false)
+  const [openDropdown, setOpenDropdown] = useState(null)
   const [profileOpen, setProfileOpen] = useState(false)
   const [avatarOpen, setAvatarOpen] = useState(false)
   const [passwordOpen, setPasswordOpen] = useState(false)
@@ -52,6 +53,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   const [compactNav, setCompactNav] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 800)
   const profileDialogRef = useRef(null)
   const menuToggleRef = useRef(null)
+  const navigationRef = useRef(null)
   const isAdmin = profile.role === 'creator_admin'
   const accountRoleLabel = isAdmin ? 'Admin' : profile.workspace_role === 'lead' ? 'Lead' : 'Member'
   const style = { '--workspace-image': `url(${assetUrl('assets/login-workspace-background.png')})` }
@@ -106,12 +108,17 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
 
   function closeNavigation({ restoreFocus = false } = {}) {
     setOpen(false)
+    setOpenDropdown(null)
     if (restoreFocus) window.requestAnimationFrame(() => menuToggleRef.current?.focus())
   }
 
-  function finishNav(event) {
-    event.currentTarget.closest('details')?.removeAttribute('open')
+  function finishNav() {
+    setOpenDropdown(null)
     closeNavigation()
+  }
+
+  function toggleDropdown(label) {
+    setOpenDropdown(current => current === label ? null : label)
   }
 
   function navigateFromHeader(event, view) {
@@ -133,6 +140,21 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     window.addEventListener('resize', updateCompactNav)
     updateCompactNav()
     return () => window.removeEventListener('resize', updateCompactNav)
+  }, [])
+
+  useEffect(() => {
+    const closeDropdownOnOutsidePointer = event => {
+      if (navigationRef.current && !navigationRef.current.contains(event.target)) setOpenDropdown(null)
+    }
+    const closeDropdownOnEscape = event => {
+      if (event.key === 'Escape') setOpenDropdown(null)
+    }
+    document.addEventListener('pointerdown', closeDropdownOnOutsidePointer)
+    window.addEventListener('keydown', closeDropdownOnEscape)
+    return () => {
+      document.removeEventListener('pointerdown', closeDropdownOnOutsidePointer)
+      window.removeEventListener('keydown', closeDropdownOnEscape)
+    }
   }, [])
 
   useDialogFocus(profileDialogRef, profileOpen, closeProfile)
@@ -194,6 +216,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
       </div>
 
       <nav
+        ref={navigationRef}
         id="primary-navigation"
         className={`top-navigation ${open ? 'open' : ''}`}
         aria-label="Primary navigation"
@@ -213,12 +236,12 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           onClick={event => navigateFromHeader(event, 'navigator')}
         >Home</button>
 
-        <NavDropdown label="Call Flow" active={callFlowActive}>
+        <NavDropdown label="Call Flow" active={callFlowActive} open={openDropdown === 'call-flow'} onToggle={() => toggleDropdown('call-flow')}>
           <button type="button" aria-label="Call Documentation" aria-pressed={liveTools.documentation !== 'closed'} onClick={event => openToolFromHeader(event, 'documentation')}><Icon type="documentation" /><span><strong>Call Documentation</strong><small>Capture notes without leaving your current page.</small></span></button>
           <button type="button" aria-label="Scope Check" aria-pressed={liveTools.scope_check !== 'closed'} onClick={event => openToolFromHeader(event, 'scope_check')}><Icon type="scope_check" /><span><strong>Scope Check</strong><small>Confirm the correct support boundary and next step.</small></span></button>
         </NavDropdown>
 
-        <NavDropdown label="Knowledge" active={knowledgeActive}>
+        <NavDropdown label="Knowledge" active={knowledgeActive} open={openDropdown === 'knowledge'} onToggle={() => toggleDropdown('knowledge')}>
           <button type="button" aria-label="Favorites" onClick={event => navigateFromHeader(event, 'favorites')}><Icon type="favorites" /><span><strong>Favorites</strong><small>Your saved support references.</small></span></button>
           <button type="button" aria-label="Training & Resources" onClick={event => navigateFromHeader(event, 'training')}><Icon type="training" /><span><strong>Training & Resources</strong><small>Guides, scripts, visual lessons, and training.</small></span></button>
           <button type="button" aria-label="What’s New / Updates" onClick={event => navigateFromHeader(event, 'updates')}><Icon type="updates" /><span><strong>What’s New / Updates</strong><small>Recent workspace changes and release notes.</small></span></button>
@@ -228,16 +251,16 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           type="button"
           className={`topnav-link ${liveTools.readiness !== 'closed' ? 'active' : ''}`}
           aria-pressed={liveTools.readiness !== 'closed'}
-          onClick={event => openToolFromHeader(event, 'readiness')}
+          onClick={event => { setOpenDropdown(null); openToolFromHeader(event, 'readiness') }}
         >Readiness Lab</button>
 
-        <NavDropdown label="Reports" active={reportsActive}>
+        <NavDropdown label="Reports" active={reportsActive} open={openDropdown === 'reports'} onToggle={() => toggleDropdown('reports')}>
           <button type="button" aria-label="Feedback" onClick={event => navigateFromHeader(event, 'feedback')}><Icon type="feedback" /><span><strong>Feedback</strong><small>Send an issue, suggestion, or workspace report.</small></span></button>
           {isAdmin && <button type="button" aria-label="Usage Analytics" onClick={event => navigateFromHeader(event, 'usage')}><Icon type="usage" /><span><strong>Usage Analytics</strong><small>Review workspace usage and activity.</small></span></button>}
           {isAdmin && <button type="button" aria-label="Feedback Queue" onClick={event => navigateFromHeader(event, 'feedback_queue')}><Icon type="feedback_queue" /><span><strong>Feedback Queue</strong><small>Review and manage submitted feedback.</small></span></button>}
         </NavDropdown>
 
-        {isAdmin && <NavDropdown label="Admin" active={adminActive}>
+        {isAdmin && <NavDropdown label="Admin" active={adminActive} open={openDropdown === 'admin'} onToggle={() => toggleDropdown('admin')}>
           <button type="button" aria-label="Admin Home" onClick={event => navigateFromHeader(event, 'admin')}><Icon type="admin" /><span><strong>Admin Home</strong><small>Workspace administration overview.</small></span></button>
           <button type="button" aria-label="Team Management" onClick={event => navigateFromHeader(event, 'team')}><Icon type="team" /><span><strong>Team Management</strong><small>Manage users, access, and accounts.</small></span></button>
         </NavDropdown>}

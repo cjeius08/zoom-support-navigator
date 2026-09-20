@@ -554,6 +554,10 @@
 
   .top-navigation {
     position: absolute;
+    z-index: 30;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
     bottom: 0;
     left: 50%;
     width: min(calc(100% - 3rem), 56rem);
