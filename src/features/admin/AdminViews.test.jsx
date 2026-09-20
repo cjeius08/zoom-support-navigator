@@ -22,6 +22,7 @@ beforeEach(() => {
   loadStorageGuardrail.mockReset()
   loadStorageGuardrail.mockResolvedValue({ database_bytes: 13631488, limit_bytes: 524288000, status: 'safe', checked_at: '2026-09-19T09:00:00Z' })
   updateFeedbackStatus.mockReset()
+  loadTeam.mockReset()
   loadTeam.mockResolvedValue([{ id: 'agent-1', username: 'agent_one', initials: 'AO', role: 'agent', workspace_role: 'member', status: 'active', avatar_id: null, presence: 'active' }])
   runAdminAction.mockReset()
 })
@@ -267,6 +268,18 @@ it('shows Readiness Lab attempt history separately with scores and incorrect ans
   expect(screen.getByText(/Check speaker output/i)).toBeInTheDocument()
 })
 
+
+it('shows existing accounts on Admin Home', async () => {
+  const onNavigate = vi.fn()
+  const { AdminHome } = await import('./AdminViews')
+  render(<AdminHome onNavigate={onNavigate} />)
+
+  expect(await screen.findByRole('heading', { name: 'Existing Accounts' })).toBeInTheDocument()
+  expect(screen.getByText('agent_one')).toBeInTheDocument()
+  expect(screen.getByText(/AO · Member/i)).toBeInTheDocument()
+  expect(screen.getByText('active', { selector: '.presence-badge' })).toBeInTheDocument()
+  expect(loadTeam).toHaveBeenCalled()
+})
 
 it('shows the database storage guardrail on Admin Home', async () => {
   const { AdminHome } = await import('./AdminViews')
