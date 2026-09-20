@@ -1,40 +1,19 @@
-/* Ozzie header navigation revamp
-   Desktop: standalone brand at top-left + horizontal navigation.
-   Mobile: compact brand + accessible drawer navigation. */
+/* Ozzie workspace shell
+   Desktop: Ozzie at the far left, account at the far right, navigation centered below.
+   Mobile/tablet: compact brand row + accessible navigation drawer. */
 
 .app-shell-horizontal {
-  --ozzie-brand-column: 14.6rem;
   position: relative;
-}
-
-.ozzie-brand-dock {
-  position: absolute;
-  top: .85rem;
-  left: 1rem;
-  z-index: 22;
-  width: var(--ozzie-brand-column);
-  min-width: 0;
-  pointer-events: none;
-}
-
-.ozzie-brand-dock img {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: 11.8rem;
-  object-fit: contain;
-  object-position: top left;
-  filter: none !important;
 }
 
 .app-header.app-header-horizontal {
   display: grid;
-  grid-template-rows: 2.55rem minmax(3.4rem, auto);
-  gap: .18rem;
-  height: auto;
-  min-height: 6.7rem;
-  margin: .8rem 1.25rem 0 calc(var(--ozzie-brand-column) + 2rem);
-  padding: 0;
+  grid-template-rows: auto auto;
+  gap: .25rem;
+  width: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: .75rem clamp(1rem, 2.2vw, 2.5rem) 0;
   border: 0;
   border-radius: 0;
   background: transparent;
@@ -42,22 +21,45 @@
   backdrop-filter: none;
 }
 
-.app-header-account-row {
-  display: flex;
-  align-items: center;
+.app-header-brand-row {
+  display: grid;
+  grid-template-columns: minmax(10rem, 13.5rem) 1fr auto;
+  align-items: start;
+  gap: 1rem;
   min-width: 0;
 }
 
-.app-header-horizontal .app-header-spacer {
-  flex: 1 1 auto;
+.ozzie-brand-dock {
+  position: relative;
+  z-index: 22;
+  width: min(100%, 13.5rem);
+  min-width: 0;
+  justify-self: start;
+  pointer-events: none;
+}
+
+.ozzie-brand-dock img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 8.65rem;
+  object-fit: contain;
+  object-position: top left;
+  filter: none !important;
+}
+
+.app-header-horizontal .menu-toggle {
+  display: none;
 }
 
 .app-header-horizontal .account-menu {
-  min-height: 2.35rem;
-  margin-left: auto;
-  padding: .32rem .55rem;
+  align-self: start;
+  justify-self: end;
+  min-height: 2.55rem;
+  margin: 0;
+  padding: .36rem .58rem;
   border: 1px solid rgba(183, 208, 228, .14);
-  border-radius: .7rem;
+  border-radius: .72rem;
   background: rgba(7, 15, 22, .3);
   box-shadow: none;
 }
@@ -73,9 +75,12 @@
   z-index: 24;
   display: flex;
   align-items: flex-end;
-  gap: .16rem;
+  justify-content: center;
+  gap: .22rem;
+  width: min(100%, 56rem);
   min-width: 0;
-  padding: .2rem 0 .72rem;
+  margin: -.35rem auto 0;
+  padding: .2rem 1rem .8rem;
   border-bottom: 1px solid rgba(181, 203, 220, .2);
 }
 
@@ -92,7 +97,7 @@
   justify-content: center;
   gap: .28rem;
   min-height: 2.45rem;
-  padding: .48rem .72rem;
+  padding: .48rem .78rem;
   border: 0;
   border-radius: .6rem;
   color: #c7d4df;
@@ -110,7 +115,7 @@
   content: "";
   position: absolute;
   right: .72rem;
-  bottom: -.74rem;
+  bottom: -.82rem;
   left: .72rem;
   height: 2px;
   border-radius: 999px;
@@ -249,8 +254,8 @@
 }
 
 .app-main.app-main-horizontal {
-  margin-left: calc(var(--ozzie-brand-column) + 1.3rem);
-  padding: 1rem 1.5rem 2.5rem;
+  margin-left: 0;
+  padding: 1rem clamp(1rem, 2.4vw, 2.75rem) 2.5rem;
 }
 
 .workspace-meta-footer {
@@ -275,7 +280,7 @@
   color: #536675;
 }
 
-/* New mascot + wordmark asset on the sign-in card. */
+/* High-quality mascot + wordmark on the sign-in card. */
 .ozzie-logo-stage-login {
   min-height: 0;
   margin-bottom: .2rem;
@@ -291,25 +296,30 @@
   filter: none !important;
 }
 
-/* Tight desktop / resized windows: retain the same composition without crowding. */
+/* Tight desktop / resized windows: keep the edge alignment and centered nav. */
 @media (max-width: 1120px) and (min-width: 801px) {
-  .app-shell-horizontal {
-    --ozzie-brand-column: 11.6rem;
+  .app-header.app-header-horizontal {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  .app-header-brand-row {
+    grid-template-columns: minmax(8.5rem, 11rem) 1fr auto;
   }
 
   .ozzie-brand-dock {
-    left: .7rem;
+    width: min(100%, 11rem);
   }
 
-  .app-header.app-header-horizontal {
-    margin-right: .9rem;
-    margin-left: calc(var(--ozzie-brand-column) + 1.35rem);
+  .ozzie-brand-dock img {
+    max-height: 7.1rem;
   }
 
-  .app-main.app-main-horizontal {
-    margin-left: calc(var(--ozzie-brand-column) + .8rem);
-    padding-right: 1rem;
-    padding-left: 1rem;
+  .top-navigation {
+    width: min(100%, 50rem);
+    margin-top: -.25rem;
+    padding-right: .45rem;
+    padding-left: .45rem;
   }
 
   .topnav-link,
@@ -318,27 +328,17 @@
     padding-left: .5rem;
     font-size: .79rem;
   }
+
+  .app-main.app-main-horizontal {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
 }
 
-/* Mobile/tablet: logo stays visible, navigation becomes a compact drawer. */
+/* Mobile/tablet: logo and account stay on opposite sides, navigation becomes a drawer. */
 @media (max-width: 800px) {
   .app-shell-horizontal {
-    --ozzie-brand-column: 8.2rem;
-    padding-top: 4.75rem;
-  }
-
-  .ozzie-brand-dock {
-    position: absolute;
-    top: .42rem;
-    left: .62rem;
-    width: var(--ozzie-brand-column);
-    z-index: 42;
-  }
-
-  .ozzie-brand-dock img {
-    max-height: 4.1rem;
-    object-fit: contain;
-    object-position: left center;
+    padding-top: 5rem;
   }
 
   .app-header.app-header-horizontal {
@@ -348,23 +348,34 @@
     left: 0;
     z-index: 41;
     display: block;
-    min-height: 4.75rem;
     margin: 0;
-    padding: .68rem .72rem .58rem calc(var(--ozzie-brand-column) + 1rem);
-    border: 0;
+    padding: .55rem .7rem;
     border-bottom: 1px solid rgba(177, 201, 220, .16);
     background: rgba(8, 14, 20, .86);
     box-shadow: 0 .5rem 1.4rem rgba(0, 0, 0, .18);
     backdrop-filter: blur(16px);
   }
 
-  .app-header-account-row {
-    min-height: 3.45rem;
+  .app-header-brand-row {
+    display: grid;
+    grid-template-columns: minmax(5.4rem, 7rem) auto minmax(0, auto);
+    align-items: center;
+    gap: .55rem;
+  }
+
+  .ozzie-brand-dock {
+    width: min(100%, 7rem);
+  }
+
+  .ozzie-brand-dock img {
+    max-height: 4rem;
+    object-position: left center;
   }
 
   .app-header-horizontal .menu-toggle {
     display: inline-flex;
     align-items: center;
+    justify-self: center;
     gap: .35rem;
     min-height: 2.35rem;
     padding: .38rem .5rem;
@@ -382,19 +393,22 @@
   }
 
   .app-header-horizontal .account-menu {
+    justify-self: end;
     min-height: 2.35rem;
   }
 
   .top-navigation {
     position: fixed;
-    top: 4.95rem;
+    top: 5rem;
     right: .65rem;
     left: .65rem;
     z-index: 60;
     display: none;
-    max-height: calc(100dvh - 5.6rem);
+    width: auto;
+    max-height: calc(100dvh - 5.7rem);
     overflow-y: auto;
     overscroll-behavior: contain;
+    margin: 0;
     padding: .7rem;
     border: 1px solid rgba(170, 199, 222, .2);
     border-radius: .9rem;
@@ -475,16 +489,16 @@
 }
 
 @media (max-width: 470px) {
-  .app-shell-horizontal {
-    --ozzie-brand-column: 6.5rem;
+  .app-header-brand-row {
+    grid-template-columns: 5.2rem auto auto;
   }
 
-  .app-header.app-header-horizontal {
-    padding-left: calc(var(--ozzie-brand-column) + .8rem);
+  .ozzie-brand-dock {
+    width: 5.2rem;
   }
 
   .ozzie-brand-dock img {
-    max-height: 3.8rem;
+    max-height: 3.6rem;
   }
 
   .app-header-horizontal .menu-toggle span {
