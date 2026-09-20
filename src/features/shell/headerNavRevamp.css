@@ -526,7 +526,7 @@
 /* Screenshot reference alignment · 2026-09-20 */
 /* Desktop workspace: logo at the far left, account at the far right, and
    the navigation centered on the same compact header band shown in the approved reference. */
-@media (min-width: 1121px) {
+@media (min-width: 801px) {
   .app-header.app-header-horizontal {
     display: block !important;
     min-height: 8.5rem;
