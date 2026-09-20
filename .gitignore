@@ -7,3 +7,4 @@ coverage/
 supabase/.temp/
 supabase/functions/.env
 *.log
+public/avatars/
