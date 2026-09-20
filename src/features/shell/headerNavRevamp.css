@@ -528,23 +528,39 @@
    the navigation centered on the same compact header band shown in the approved reference. */
 @media (min-width: 1121px) {
   .app-header.app-header-horizontal {
-    gap: 0 !important;
-    padding: .85rem clamp(1.5rem, 4vw, 4.15rem) 0 !important;
+    display: block !important;
+    min-height: 8.5rem;
+    padding: 0 !important;
   }
 
   .app-header-brand-row {
-    align-items: flex-start !important;
+    display: block !important;
   }
 
   .ozzie-brand-dock {
+    position: absolute;
+    top: .55rem;
+    left: clamp(1.5rem, 4vw, 4.15rem);
     width: 10.5rem;
   }
 
+  .app-header-horizontal .account-menu {
+    position: absolute;
+    top: 2.35rem;
+    right: clamp(1.5rem, 4vw, 4.15rem);
+    z-index: 25;
+    margin: 0 !important;
+  }
+
   .top-navigation {
-    width: min(100%, 56rem);
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: min(calc(100% - 3rem), 56rem);
     max-width: 56rem;
-    margin: 0 auto;
+    margin: 0;
     padding: .2rem 1rem .8rem;
+    transform: translateX(-50%);
   }
 
   .app-main.app-main-horizontal {

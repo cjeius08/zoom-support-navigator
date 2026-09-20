@@ -292,6 +292,15 @@ it('uses the standalone brand and horizontal header on desktop', () => {
   expect(css).toMatch(/\.app-main\.app-main-horizontal\s*\{[^}]*margin-left:\s*0/)
 })
 
+it('anchors the desktop account at the far right and keeps navigation low in the compact header', () => {
+  const css = readFileSync(join(cwd(), 'src/features/shell/headerNavRevamp.css'), 'utf8')
+
+  expect(css).toMatch(/@media \(min-width: 1121px\)[\s\S]*?\.app-header\.app-header-horizontal\s*\{[^}]*min-height:\s*8\.5rem/)
+  expect(css).toMatch(/@media \(min-width: 1121px\)[\s\S]*?\.ozzie-brand-dock\s*\{[^}]*position:\s*absolute[^}]*top:/)
+  expect(css).toMatch(/@media \(min-width: 1121px\)[\s\S]*?\.app-header-horizontal \.account-menu\s*\{[^}]*position:\s*absolute[^}]*right:/)
+  expect(css).toMatch(/@media \(min-width: 1121px\)[\s\S]*?\.top-navigation\s*\{[^}]*position:\s*absolute[^}]*bottom:[^}]*left:\s*50%/)
+})
+
 it('keeps the approved Ozzie artwork as a decodable PNG at the canonical asset path', () => {
   const logo = readFileSync(join(cwd(), 'public/assets/ozzie-hq.png'))
   expect([...logo.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10])
