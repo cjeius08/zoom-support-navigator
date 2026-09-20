@@ -1,14 +1,33 @@
-import { useRef, useState } from 'react'
-import { AVATAR_IDS, avatarUrl } from './avatarCatalog'
+import { useEffect, useRef, useState } from 'react'
+import { AVATAR_IDS, avatarUrl, loadAvailableAvatarIds } from './avatarCatalog'
 
 export function AvatarPicker({ selectedId, onSave, onCancel }) {
+  const [avatarIds, setAvatarIds] = useState(AVATAR_IDS)
   const [selected, setSelected] = useState(AVATAR_IDS.includes(selectedId) ? selectedId : AVATAR_IDS[0])
+  const [catalogError, setCatalogError] = useState('')
   const optionRefs = useRef([])
 
-  if (!AVATAR_IDS.length) {
+  useEffect(() => {
+    let live = true
+    loadAvailableAvatarIds()
+      .then(ids => {
+        if (!live) return
+        setAvatarIds(ids)
+        setSelected(current => ids.includes(selectedId) ? selectedId : ids.includes(current) ? current : ids[0] || null)
+        setCatalogError('')
+      })
+      .catch(error => {
+        if (live) setCatalogError(error?.message || 'Could not refresh the avatar library.')
+      })
+    return () => {
+      live = false
+    }
+  }, [selectedId])
+
+  if (!avatarIds.length) {
     return <section className="avatar-picker" aria-labelledby="avatar-picker-title">
       <h2 id="avatar-picker-title">Choose an avatar</h2>
-      <p role="status">No avatars are currently available. A new avatar library will be added soon.</p>
+      <p role="status">No avatars are currently available. Ask an admin to upload avatars to the library.</p>
       <div className="dialog-actions">
         <button type="button" onClick={onCancel}>Close</button>
       </div>
@@ -16,8 +35,8 @@ export function AvatarPicker({ selectedId, onSave, onCancel }) {
   }
 
   function selectAt(index, { focus = false } = {}) {
-    const normalizedIndex = (index + AVATAR_IDS.length) % AVATAR_IDS.length
-    const id = AVATAR_IDS[normalizedIndex]
+    const normalizedIndex = (index + avatarIds.length) % avatarIds.length
+    const id = avatarIds[normalizedIndex]
     setSelected(id)
     if (focus) optionRefs.current[normalizedIndex]?.focus()
   }
@@ -27,7 +46,7 @@ export function AvatarPicker({ selectedId, onSave, onCancel }) {
     if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = index + 1
     if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = index - 1
     if (event.key === 'Home') nextIndex = 0
-    if (event.key === 'End') nextIndex = AVATAR_IDS.length - 1
+    if (event.key === 'End') nextIndex = avatarIds.length - 1
     if (nextIndex === null) return
     event.preventDefault()
     selectAt(nextIndex, { focus: true })
@@ -35,8 +54,9 @@ export function AvatarPicker({ selectedId, onSave, onCancel }) {
 
   return <section className="avatar-picker" aria-labelledby="avatar-picker-title">
     <h2 id="avatar-picker-title">Choose an avatar</h2>
+    {catalogError && <p role="alert">{catalogError}</p>}
     <div className="avatar-grid" role="radiogroup" aria-label="Choose an avatar">
-      {AVATAR_IDS.map((id, index) => {
+      {avatarIds.map((id, index) => {
         const active = selected === id
         return <button
           key={id}
@@ -56,7 +76,7 @@ export function AvatarPicker({ selectedId, onSave, onCancel }) {
     </div>
     <div className="dialog-actions">
       <button type="button" onClick={onCancel}>Cancel</button>
-      <button type="button" onClick={() => onSave(selected)}>Save Avatar</button>
+      <button type="button" disabled={!selected} onClick={() => selected && onSave(selected)}>Save Avatar</button>
     </div>
   </section>
 }
