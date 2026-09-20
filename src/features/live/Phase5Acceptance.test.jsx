@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { cwd } from 'node:process'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
 import { AppShell } from '../shell/AppShell'
@@ -128,16 +128,21 @@ it('keeps Documentation and Scope Check global, mutually visible, and preserves 
 
   render(<AppShell profile={agentProfile} onNavigate={onNavigate}><div>Navigator stays here</div></AppShell>)
 
-  await user.click(screen.getByRole('button', { name: 'Call Documentation' }))
+  const navigation = screen.getByRole('navigation', { name: 'Primary navigation' })
+
+  await user.click(screen.getByText('Call Flow'))
+  await user.click(within(navigation).getByRole('button', { name: 'Call Documentation' }))
   await user.type(screen.getByLabelText('Caller name'), 'Persistent Caller')
   expect(onNavigate).not.toHaveBeenCalled()
 
-  await user.click(screen.getByRole('button', { name: 'Scope Check' }))
+  await user.click(screen.getByText('Call Flow'))
+  await user.click(within(navigation).getByRole('button', { name: 'Scope Check' }))
   expect(screen.getByRole('heading', { name: 'Scope Check' })).toBeInTheDocument()
   expect(screen.queryByLabelText('Caller name')).not.toBeInTheDocument()
   expect(onNavigate).not.toHaveBeenCalled()
 
-  await user.click(screen.getByRole('button', { name: 'Call Documentation' }))
+  await user.click(screen.getByText('Call Flow'))
+  await user.click(within(navigation).getByRole('button', { name: 'Call Documentation' }))
   expect(screen.getByLabelText('Caller name')).toHaveValue('Persistent Caller')
 })
 
