@@ -113,7 +113,9 @@ function readinessAttemptSummary(attempts = [], maxAttempts = 3) {
 
 export function AdminHome({ onNavigate }) {
   const storageLoader = useCallback(() => loadStorageGuardrail(), []);
+  const teamLoader = useCallback(() => loadTeam(), []);
   const storageState = useData(storageLoader);
+  const teamState = useData(teamLoader);
 
   return (
     <section className="console-view">
@@ -124,6 +126,47 @@ export function AdminHome({ onNavigate }) {
         submitted feedback.
       </p>
       <StorageGuardrailCard state={storageState} />
+
+      <section className="admin-account-overview" aria-labelledby="admin-existing-accounts-title">
+        <div className="view-heading">
+          <div>
+            <p className="eyebrow">Account overview</p>
+            <h2 id="admin-existing-accounts-title">Existing Accounts</h2>
+            <p>Current workspace accounts are shown here. Use Team Management for account changes and invites.</p>
+          </div>
+          <button className="primary-action" onClick={() => onNavigate("team")}>
+            Manage Team
+          </button>
+        </div>
+        <State state={teamState}>{team => {
+          const existingAccounts = (team || []).filter(person => !person.pending);
+          if (!existingAccounts.length) {
+            return <p role="status">No existing accounts are visible. Open Team Management or refresh the page to retry.</p>;
+          }
+          return <div className="team-list admin-home-team-list">
+            {existingAccounts.map(person => (
+              <article key={person.id}>
+                {avatarUrl(person.avatar_id) ? (
+                  <img src={avatarUrl(person.avatar_id)} alt="" />
+                ) : (
+                  <span className="avatar-fallback">{person.initials}</span>
+                )}
+                <div>
+                  <strong>{person.username}</strong>
+                  <small>{person.initials} · {workspaceRoleLabel(person)}</small>
+                </div>
+                <span className={`presence-badge ${person.presence || "offline"}`}>
+                  {person.presence || "offline"}
+                </span>
+                <span className={`status-badge ${person.status}`}>
+                  {person.status}
+                </span>
+              </article>
+            ))}
+          </div>;
+        }}</State>
+      </section>
+
       <div className="admin-shortcuts">
         <button onClick={() => onNavigate("team")}>
           <strong>Team Management</strong>

@@ -396,7 +396,7 @@ export default function App() {
       <div className="ozzie-logo-stage ozzie-logo-stage-login">
         <img
           className="access-brand-logo"
-          src={assetUrl('assets/ozzie-hq.png')}
+          src={assetUrl('assets/ozzie-hq.png?v=8071125')}
           alt="Ozzie — Ogletree Support Workspace"
         />
       </div>
