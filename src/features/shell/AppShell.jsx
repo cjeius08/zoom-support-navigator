@@ -20,6 +20,7 @@ function Icon({ type }) {
     feedback: 'M5 5h14v10H9l-4 4z',
     admin: 'M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7z',
     team: 'M16 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M17 11a3 3 0 0 0-1-5.8M21 20v-2a4 4 0 0 0-2.7-3.8',
+    avatars: 'M5 5h14v14H5zM8 14l2.8-3 2.4 2.4 1.8-2 3 3.6M9 9h.01',
     usage: 'M5 20V10M12 20V4M19 20v-7',
     feedback_queue: 'M5 4h14v16H5zM8 9h8M8 13h6',
     documentation: 'M6 3h9l3 3v15H6zM9 10h6M9 14h6M9 18h4M15 3v4h4',
@@ -73,7 +74,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   const callFlowActive = liveTools.documentation !== 'closed' || liveTools.scope_check !== 'closed'
   const knowledgeActive = ['favorites', 'training', 'updates'].includes(currentView)
   const reportsActive = ['feedback', 'usage', 'feedback_queue'].includes(currentView)
-  const adminActive = ['admin', 'team'].includes(currentView)
+  const adminActive = ['admin', 'team', 'avatars'].includes(currentView)
 
   function openLiveTool(id) {
     setLiveTools(current => {
@@ -270,6 +271,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
         {isAdmin && <NavDropdown label="Admin" active={adminActive} open={openDropdown === 'admin'} onToggle={() => toggleDropdown('admin')}>
           <button type="button" aria-label="Admin Home" onClick={event => navigateFromHeader(event, 'admin')}><Icon type="admin" /><span><strong>Admin Home</strong><small>Workspace administration overview.</small></span></button>
           <button type="button" aria-label="Team Management" onClick={event => navigateFromHeader(event, 'team')}><Icon type="team" /><span><strong>Team Management</strong><small>Manage users, access, and accounts.</small></span></button>
+          <button type="button" aria-label="Avatar Library" onClick={event => navigateFromHeader(event, 'avatars')}><Icon type="avatars" /><span><strong>Avatar Library</strong><small>Upload and delete avatars individually or in batches.</small></span></button>
         </NavDropdown>}
       </nav>
     </header>
