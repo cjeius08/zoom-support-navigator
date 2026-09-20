@@ -8,7 +8,12 @@
     "build": "vite build",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepare:avatars": "node scripts/prepareAvatars.mjs",
+    "predev": "npm run prepare:avatars",
+    "prebuild": "npm run prepare:avatars",
+    "pretest": "npm run prepare:avatars",
+    "pretest:watch": "npm run prepare:avatars"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.0",
