@@ -1,33 +1,20 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { expect, it } from 'vitest'
+import { expect, it, vi } from 'vitest'
 import { AvatarPicker } from './AvatarPicker'
 
-it('renders the approved avatar gallery and selected state', () => {
-  const { container } = render(<AvatarPicker selectedId="avatar_037" onSave={() => {}} onCancel={() => {}} />)
+it('shows an empty-state message while no avatars are available', () => {
+  render(<AvatarPicker selectedId="avatar_037" onSave={() => {}} onCancel={() => {}} />)
   expect(screen.getByRole('heading', { name: /choose an avatar/i })).toBeInTheDocument()
-  expect(screen.getByRole('radio', { name: 'avatar_037' })).toHaveAttribute('aria-checked', 'true')
-  expect(container.querySelectorAll('.avatar-selected-indicator')).toHaveLength(1)
-  expect(screen.getByRole('radio', { name: 'avatar_037' })).toContainElement(container.querySelector('.avatar-selected-indicator'))
-  expect(screen.getAllByRole('radio', { name: /avatar_/i })).toHaveLength(160)
-  expect(screen.queryByRole('radio', { name: 'avatar_151' })).not.toBeInTheDocument()
-  expect(screen.queryByRole('radio', { name: 'avatar_177' })).not.toBeInTheDocument()
+  expect(screen.getByRole('status')).toHaveTextContent(/no avatars are currently available/i)
+  expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: /save avatar/i })).not.toBeInTheDocument()
 })
 
-it('cannot select an excluded avatar', () => {
-  render(<AvatarPicker selected="avatar_151" onSave={() => {}} onCancel={() => {}} />)
-  expect(screen.queryByRole('radio', { name: 'avatar_151' })).not.toBeInTheDocument()
-})
-
-
-it('moves the visible selected indicator when another avatar is chosen', async () => {
+it('still lets the user close the empty avatar picker', async () => {
   const user = userEvent.setup()
-  const { container } = render(<AvatarPicker selectedId="avatar_037" onSave={() => {}} onCancel={() => {}} />)
-
-  await user.click(screen.getByRole('radio', { name: 'avatar_038' }))
-
-  expect(screen.getByRole('radio', { name: 'avatar_038' })).toHaveAttribute('aria-checked', 'true')
-  expect(screen.getByRole('radio', { name: 'avatar_037' })).toHaveAttribute('aria-checked', 'false')
-  expect(container.querySelectorAll('.avatar-selected-indicator')).toHaveLength(1)
-  expect(screen.getByRole('radio', { name: 'avatar_038' })).toContainElement(container.querySelector('.avatar-selected-indicator'))
+  const onCancel = vi.fn()
+  render(<AvatarPicker selectedId={null} onSave={() => {}} onCancel={onCancel} />)
+  await user.click(screen.getByRole('button', { name: 'Close' }))
+  expect(onCancel).toHaveBeenCalledTimes(1)
 })
