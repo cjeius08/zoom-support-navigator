@@ -170,7 +170,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     <header className="app-header app-header-horizontal">
       <div className="app-header-brand-row">
         <div className="ozzie-brand-dock" aria-label="Ozzie — Ogletree Support Workspace">
-          <img src={assetUrl('assets/ozzie-hq.png')} alt="Ozzie — Ogletree Support Workspace" />
+          <img src={assetUrl('assets/ozzie-hq.png?v=8071125')} alt="Ozzie — Ogletree Support Workspace" />
         </div>
 
         <button
