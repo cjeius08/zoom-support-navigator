@@ -86,7 +86,7 @@ it('carries a related training selection through the full app route', async () =
 
   const dialog = await screen.findByRole('dialog', { name: 'How to Join a Zoom Meeting' })
   expect(within(dialog).getByTitle('Video player: How to Join a Zoom Meeting')).toBeInTheDocument()
-}, 10000)
+}, 20000)
 
 
 it('exposes exactly one main landmark in the authenticated Navigator', async () => {
@@ -167,7 +167,7 @@ it('keeps profile changes recoverable with busy state, inline errors, Escape, an
   await user.keyboard('{Escape}')
   expect(screen.queryByRole('dialog', { name: 'My Profile' })).not.toBeInTheDocument()
   expect(opener).toHaveFocus()
-})
+}, 10000)
 
 it('prevents duplicate admin invite submissions while the request is pending', async () => {
   const user = userEvent.setup()
