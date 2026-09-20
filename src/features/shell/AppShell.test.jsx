@@ -323,13 +323,13 @@ it('uses the standalone brand and horizontal header on desktop', () => {
   expect(css).toMatch(/\.app-main\.app-main-horizontal\s*\{[^}]*margin-left:\s*0/)
 })
 
-it('anchors the account at the far right and keeps navigation centered below it from tablet widths upward', () => {
+it('anchors the account at the far right and keeps navigation centered below it on desktop pointers', () => {
   const css = readFileSync(join(cwd(), 'src/features/shell/headerNavRevamp.css'), 'utf8')
 
-  expect(css).toMatch(/@media \(min-width: 801px\)[\s\S]*?\.app-header\.app-header-horizontal\s*\{[^}]*min-height:\s*8\.5rem/)
-  expect(css).toMatch(/@media \(min-width: 801px\)[\s\S]*?\.ozzie-brand-dock\s*\{[^}]*position:\s*absolute[^}]*top:/)
-  expect(css).toMatch(/@media \(min-width: 801px\)[\s\S]*?\.app-header-horizontal \.account-menu\s*\{[^}]*position:\s*absolute[^}]*right:/)
-  expect(css).toMatch(/@media \(min-width: 801px\)[\s\S]*?\.top-navigation\s*\{[^}]*position:\s*absolute[^}]*display:\s*flex\s*!important[^}]*bottom:[^}]*left:\s*50%/)
+  expect(css).toMatch(/@media \(min-width: 801px\) and \(hover: hover\) and \(pointer: fine\)[\s\S]*?\.app-header\.app-header-horizontal\s*\{[^}]*min-height:\s*8\.5rem/)
+  expect(css).toMatch(/@media \(min-width: 801px\) and \(hover: hover\) and \(pointer: fine\)[\s\S]*?\.ozzie-brand-dock\s*\{[^}]*position:\s*absolute[^}]*top:/)
+  expect(css).toMatch(/@media \(min-width: 801px\) and \(hover: hover\) and \(pointer: fine\)[\s\S]*?\.app-header-horizontal \.account-menu\s*\{[^}]*position:\s*absolute[^}]*right:/)
+  expect(css).toMatch(/@media \(min-width: 801px\) and \(hover: hover\) and \(pointer: fine\)[\s\S]*?\.top-navigation\s*\{[^}]*position:\s*absolute[^}]*display:\s*flex\s*!important[^}]*bottom:[^}]*left:\s*50%/)
 })
 
 it('keeps the approved Ozzie artwork as a decodable PNG at the canonical asset path', () => {
@@ -340,7 +340,7 @@ it('keeps the approved Ozzie artwork as a decodable PNG at the canonical asset p
 it('turns the horizontal navigation into a compact mobile drawer', () => {
   const css = readFileSync(join(cwd(), 'src/features/shell/headerNavRevamp.css'), 'utf8')
 
-  expect(css).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.top-navigation\s*\{[^}]*position:\s*fixed[^}]*display:\s*none/)
+  expect(css).toMatch(/@media\s*\(max-width:\s*800px\),\s*\(hover:\s*none\) and \(pointer:\s*coarse\)[\s\S]*?\.top-navigation\s*\{[^}]*position:\s*fixed[^}]*display:\s*none/)
   expect(css).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.top-navigation\.open\s*\{[^}]*display:\s*grid/)
   expect(css).toMatch(/@media\s*\(max-width:\s*800px\)[\s\S]*?\.app-main\.app-main-horizontal\s*\{[^}]*margin-left:\s*0/)
 })

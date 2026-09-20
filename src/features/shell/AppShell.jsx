@@ -35,6 +35,13 @@ function NavDropdown({ label, active = false, open = false, onToggle, children }
   </details>
 }
 
+function usesCompactNavigation() {
+  if (typeof window === 'undefined') return false
+  const touchDevice = window.matchMedia?.('(hover: none) and (pointer: coarse)')?.matches
+  const mobileUserAgent = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(window.navigator.userAgent)
+  return window.innerWidth <= 800 || touchDevice || mobileUserAgent
+}
+
 export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onFeedback, reportContext = {} }) {
   const [open, setOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState(null)
@@ -50,7 +57,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     scope_check: 'closed',
     readiness: 'closed',
   })
-  const [compactNav, setCompactNav] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 800)
+  const [compactNav, setCompactNav] = useState(usesCompactNavigation)
   const profileDialogRef = useRef(null)
   const menuToggleRef = useRef(null)
   const navigationRef = useRef(null)
@@ -133,7 +140,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
 
   useEffect(() => {
     const updateCompactNav = () => {
-      const compact = window.innerWidth <= 800
+      const compact = usesCompactNavigation()
       setCompactNav(compact)
       if (!compact) setOpen(false)
     }
