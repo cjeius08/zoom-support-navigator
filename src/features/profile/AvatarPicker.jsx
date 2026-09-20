@@ -1,23 +1,13 @@
 import { useRef, useState } from 'react'
-import { AVATAR_IDS, avatarUrl } from './avatarCatalog'
+import { getBundledAvatarRecords } from './avatarCatalog'
 
-export function AvatarPicker({ selectedId, onSave, onCancel }) {
-  const [selected, setSelected] = useState(AVATAR_IDS.includes(selectedId) ? selectedId : AVATAR_IDS[0])
+export function AvatarPicker({ selectedId, onSave, onCancel, avatars = getBundledAvatarRecords() }) {
+  const [selected, setSelected] = useState(avatars.some(avatar => avatar.id === selectedId) ? selectedId : avatars[0]?.id)
   const optionRefs = useRef([])
 
-  if (!AVATAR_IDS.length) {
-    return <section className="avatar-picker" aria-labelledby="avatar-picker-title">
-      <h2 id="avatar-picker-title">Choose an avatar</h2>
-      <p role="status">No avatars are currently available. A new avatar library will be added soon.</p>
-      <div className="dialog-actions">
-        <button type="button" onClick={onCancel}>Close</button>
-      </div>
-    </section>
-  }
-
   function selectAt(index, { focus = false } = {}) {
-    const normalizedIndex = (index + AVATAR_IDS.length) % AVATAR_IDS.length
-    const id = AVATAR_IDS[normalizedIndex]
+    const normalizedIndex = (index + avatars.length) % avatars.length
+    const id = avatars[normalizedIndex]?.id
     setSelected(id)
     if (focus) optionRefs.current[normalizedIndex]?.focus()
   }
@@ -27,36 +17,37 @@ export function AvatarPicker({ selectedId, onSave, onCancel }) {
     if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = index + 1
     if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = index - 1
     if (event.key === 'Home') nextIndex = 0
-    if (event.key === 'End') nextIndex = AVATAR_IDS.length - 1
-    if (nextIndex === null) return
+    if (event.key === 'End') nextIndex = avatars.length - 1
+    if (nextIndex === null || !avatars.length) return
     event.preventDefault()
     selectAt(nextIndex, { focus: true })
   }
 
   return <section className="avatar-picker" aria-labelledby="avatar-picker-title">
     <h2 id="avatar-picker-title">Choose an avatar</h2>
+    {!avatars.length && <p role="status">No avatars are currently available.</p>}
     <div className="avatar-grid" role="radiogroup" aria-label="Choose an avatar">
-      {AVATAR_IDS.map((id, index) => {
-        const active = selected === id
+      {avatars.map((avatar, index) => {
+        const active = selected === avatar.id
         return <button
-          key={id}
+          key={avatar.id}
           ref={element => { optionRefs.current[index] = element }}
           type="button"
           role="radio"
-          aria-label={id}
+          aria-label={avatar.id}
           aria-checked={active}
           tabIndex={active ? 0 : -1}
           onKeyDown={event => handleKeyDown(event, index)}
-          onClick={() => setSelected(id)}
+          onClick={() => setSelected(avatar.id)}
         >
-          <img loading="lazy" src={avatarUrl(id)} alt="" />
+          <img loading="lazy" src={avatar.src} alt="" />
           {active && <span className="avatar-selected-indicator" aria-hidden="true">✓</span>}
         </button>
       })}
     </div>
     <div className="dialog-actions">
       <button type="button" onClick={onCancel}>Cancel</button>
-      <button type="button" onClick={() => onSave(selected)}>Save Avatar</button>
+      <button type="button" onClick={() => onSave(selected)} disabled={!selected}>Save Avatar</button>
     </div>
   </section>
 }

@@ -2,11 +2,14 @@ import { useCallback, useEffect, useState } from 'react'
 import { validateCredentials } from './features/auth/credentials'
 import { ForcePasswordChange } from './features/auth/ForcePasswordChange'
 import { activateAccount, changeOwnPassword, getCurrentProfile, loginWithUsername, markOzzieIntroSeen, signOut, updateOwnAvatar } from './lib/authApi'
+import { getBundledAvatarRecords } from './features/profile/avatarCatalog'
+import { loadAvatarLibrary } from './lib/avatarLibraryApi'
 import { ActivateAccountForm } from './features/auth/ActivateAccountForm'
 import { submitFeedback } from './lib/feedbackApi'
 import { Navigator } from './features/navigator/Navigator'
 import { AppShell } from './features/shell/AppShell'
 import { AdminHome, FeedbackQueue, TeamManagement, UsageAnalytics } from './features/admin/AdminViews'
+import { AvatarLibraryManagement } from './features/admin/AvatarLibraryManagement'
 import { TrainingResources } from './features/training/TrainingResources'
 import { FeedbackPage } from './features/feedback/FeedbackPage'
 import { UpdatesView } from './features/updates/UpdatesView'
@@ -35,6 +38,7 @@ export default function App() {
   const [error, setError] = useState('')
   const [errorField, setErrorField] = useState('')
   const [profile, setProfile] = useState(null)
+  const [avatarLibrary, setAvatarLibrary] = useState(() => getBundledAvatarRecords())
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState('navigator')
   const [trainingVideoId, setTrainingVideoId] = useState(null)
@@ -67,6 +71,16 @@ export default function App() {
   } = useRecentlyViewed(profile?.id ?? null)
   const accessStyle = { '--login-workspace-image': `url(${assetUrl('assets/login-workspace-background.png')})` }
   const ozzieIntroVideoSrc = assetUrl('assets/Ozzie2.mp4')
+
+  const refreshAvatarLibrary = useCallback(async () => {
+    try {
+      setAvatarLibrary(await loadAvatarLibrary())
+    } catch {
+      // Keep the bundled catalog available if a deployment has not applied the
+      // avatar-library migration yet.
+      setAvatarLibrary(getBundledAvatarRecords())
+    }
+  }, [])
 
   const updateReportContext = useCallback((nextContext) => {
     setReportContext(current => ({ ...current, ...nextContext }))
@@ -234,6 +248,15 @@ export default function App() {
   useEffect(() => { getCurrentProfile().then(setProfile).catch(() => signOut()).finally(() => setLoading(false)) }, [])
 
   useEffect(() => {
+    if (!profile) {
+      setAvatarLibrary(getBundledAvatarRecords())
+      return undefined
+    }
+    refreshAvatarLibrary()
+    return undefined
+  }, [profile, refreshAvatarLibrary])
+
+  useEffect(() => {
     if (profile && !profile.must_change_password && !profile.ozzie_intro_seen_at) {
       setOzzieIntroReplay(false)
       setOzzieIntroError('')
@@ -331,8 +354,10 @@ export default function App() {
               ? <FeedbackPage onSubmit={submitFeedback} onCancel={navigationHistory.length ? goBack : ()=>navigate('navigator')}/>
               : view === 'admin'
                 ? <AdminHome onNavigate={navigate}/>
+                : view === 'avatar_library'
+                  ? <AvatarLibraryManagement isAdmin={profile.role === 'creator_admin'} onChanged={refreshAvatarLibrary}/>
                 : view === 'team'
-                  ? <TeamManagement/>
+                  ? <TeamManagement avatars={avatarLibrary}/>
                   : view === 'usage'
                     ? <UsageAnalytics/>
                     : <FeedbackQueue onOpenPage={openFeedbackTarget}/>
@@ -346,6 +371,7 @@ export default function App() {
         onOpenReadinessResource={openReadinessResource}
         onFeedback={submitFeedback}
         reportContext={reportContext}
+        avatars={avatarLibrary}
         onPasswordChange={changeOwnPassword}
         onAvatarChange={async avatarId=>{await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}}
         onMeetOzzie={replayOzzieIntro}
@@ -370,7 +396,7 @@ export default function App() {
       <div className="ozzie-logo-stage ozzie-logo-stage-login">
         <img
           className="access-brand-logo"
-          src={assetUrl('assets/ozzie-hq.png?v=8071125')}
+          src={assetUrl('assets/ozzie-hq.png')}
           alt="Ozzie — Ogletree Support Workspace"
         />
       </div>

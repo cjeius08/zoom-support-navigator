@@ -22,29 +22,22 @@ function Icon({ type }) {
     team: 'M16 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M17 11a3 3 0 0 0-1-5.8M21 20v-2a4 4 0 0 0-2.7-3.8',
     usage: 'M5 20V10M12 20V4M19 20v-7',
     feedback_queue: 'M5 4h14v16H5zM8 9h8M8 13h6',
+    avatars: 'M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM4 21a8 8 0 0 1 16 0M4 13a3 3 0 1 0 0 6M20 13a3 3 0 1 1 0 6',
     documentation: 'M6 3h9l3 3v15H6zM9 10h6M9 14h6M9 18h4M15 3v4h4',
     scope_check: 'M12 3l7 4v5c0 4.5-3 7.2-7 8-4-.8-7-3.5-7-8V7zM9 12l2 2 4-5',
   }
   return <svg data-testid="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d={paths[type] || paths.feedback} /></svg>
 }
 
-function NavDropdown({ label, active = false, open = false, onToggle, children }) {
-  return <details className={`topnav-dropdown ${active ? 'active' : ''}`} open={open}>
-    <summary aria-expanded={open} onClick={event => { event.preventDefault(); onToggle() }}>{label}<svg className="topnav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></summary>
+function NavDropdown({ label, active = false, children }) {
+  return <details className={`topnav-dropdown ${active ? 'active' : ''}`}>
+    <summary>{label}<svg className="topnav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></summary>
     <div className="topnav-menu" role="group" aria-label={`${label} menu`}>{children}</div>
   </details>
 }
 
-function usesCompactNavigation() {
-  if (typeof window === 'undefined') return false
-  const touchDevice = window.matchMedia?.('(hover: none) and (pointer: coarse)')?.matches
-  const mobileUserAgent = /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(window.navigator.userAgent)
-  return window.innerWidth <= 800 || touchDevice || mobileUserAgent
-}
-
-export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onFeedback, reportContext = {} }) {
+export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onFeedback, reportContext = {}, avatars }) {
   const [open, setOpen] = useState(false)
-  const [openDropdown, setOpenDropdown] = useState(null)
   const [profileOpen, setProfileOpen] = useState(false)
   const [avatarOpen, setAvatarOpen] = useState(false)
   const [passwordOpen, setPasswordOpen] = useState(false)
@@ -57,10 +50,9 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     scope_check: 'closed',
     readiness: 'closed',
   })
-  const [compactNav, setCompactNav] = useState(usesCompactNavigation)
+  const [compactNav, setCompactNav] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 800)
   const profileDialogRef = useRef(null)
   const menuToggleRef = useRef(null)
-  const navigationRef = useRef(null)
   const isAdmin = profile.role === 'creator_admin'
   const accountRoleLabel = isAdmin ? 'Admin' : profile.workspace_role === 'lead' ? 'Lead' : 'Member'
   const style = { '--workspace-image': `url(${assetUrl('assets/login-workspace-background.png')})` }
@@ -73,7 +65,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   const callFlowActive = liveTools.documentation !== 'closed' || liveTools.scope_check !== 'closed'
   const knowledgeActive = ['favorites', 'training', 'updates'].includes(currentView)
   const reportsActive = ['feedback', 'usage', 'feedback_queue'].includes(currentView)
-  const adminActive = ['admin', 'team'].includes(currentView)
+  const adminActive = ['admin', 'team', 'avatar_library'].includes(currentView)
 
   function openLiveTool(id) {
     setLiveTools(current => {
@@ -115,17 +107,12 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
 
   function closeNavigation({ restoreFocus = false } = {}) {
     setOpen(false)
-    setOpenDropdown(null)
     if (restoreFocus) window.requestAnimationFrame(() => menuToggleRef.current?.focus())
   }
 
-  function finishNav() {
-    setOpenDropdown(null)
+  function finishNav(event) {
+    event.currentTarget.closest('details')?.removeAttribute('open')
     closeNavigation()
-  }
-
-  function toggleDropdown(label) {
-    setOpenDropdown(current => current === label ? null : label)
   }
 
   function navigateFromHeader(event, view) {
@@ -140,28 +127,13 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
 
   useEffect(() => {
     const updateCompactNav = () => {
-      const compact = usesCompactNavigation()
+      const compact = window.innerWidth <= 800
       setCompactNav(compact)
       if (!compact) setOpen(false)
     }
     window.addEventListener('resize', updateCompactNav)
     updateCompactNav()
     return () => window.removeEventListener('resize', updateCompactNav)
-  }, [])
-
-  useEffect(() => {
-    const closeDropdownOnOutsidePointer = event => {
-      if (navigationRef.current && !navigationRef.current.contains(event.target)) setOpenDropdown(null)
-    }
-    const closeDropdownOnEscape = event => {
-      if (event.key === 'Escape') setOpenDropdown(null)
-    }
-    document.addEventListener('pointerdown', closeDropdownOnOutsidePointer)
-    window.addEventListener('keydown', closeDropdownOnEscape)
-    return () => {
-      document.removeEventListener('pointerdown', closeDropdownOnOutsidePointer)
-      window.removeEventListener('keydown', closeDropdownOnEscape)
-    }
   }, [])
 
   useDialogFocus(profileDialogRef, profileOpen, closeProfile)
@@ -199,7 +171,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     <header className="app-header app-header-horizontal">
       <div className="app-header-brand-row">
         <div className="ozzie-brand-dock" aria-label="Ozzie — Ogletree Support Workspace">
-          <img src={assetUrl('assets/ozzie-hq.png?v=8071125')} alt="Ozzie — Ogletree Support Workspace" />
+          <img src={assetUrl('assets/ozzie-hq.png')} alt="Ozzie — Ogletree Support Workspace" />
         </div>
 
         <button
@@ -216,14 +188,13 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
         </button>
 
         <button className="account-menu" aria-expanded={profileOpen} aria-label={`${profile.username} account`} onClick={() => { const next = !profileOpen; setProfileOpen(next); if (next) { setMessage(''); setProfileError(''); setProfileErrorField('') } }}>
-          {avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}
+          {avatarUrl(profile.avatar_id, avatars) ? <img src={avatarUrl(profile.avatar_id, avatars)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}
           <span className="account-copy"><strong>{profile.username}</strong><small>{accountRoleLabel}</small></span>
           <svg className="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg>
         </button>
       </div>
 
       <nav
-        ref={navigationRef}
         id="primary-navigation"
         className={`top-navigation ${open ? 'open' : ''}`}
         aria-label="Primary navigation"
@@ -243,12 +214,12 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           onClick={event => navigateFromHeader(event, 'navigator')}
         >Home</button>
 
-        <NavDropdown label="Call Flow" active={callFlowActive} open={openDropdown === 'call-flow'} onToggle={() => toggleDropdown('call-flow')}>
+        <NavDropdown label="Call Flow" active={callFlowActive}>
           <button type="button" aria-label="Call Documentation" aria-pressed={liveTools.documentation !== 'closed'} onClick={event => openToolFromHeader(event, 'documentation')}><Icon type="documentation" /><span><strong>Call Documentation</strong><small>Capture notes without leaving your current page.</small></span></button>
           <button type="button" aria-label="Scope Check" aria-pressed={liveTools.scope_check !== 'closed'} onClick={event => openToolFromHeader(event, 'scope_check')}><Icon type="scope_check" /><span><strong>Scope Check</strong><small>Confirm the correct support boundary and next step.</small></span></button>
         </NavDropdown>
 
-        <NavDropdown label="Knowledge" active={knowledgeActive} open={openDropdown === 'knowledge'} onToggle={() => toggleDropdown('knowledge')}>
+        <NavDropdown label="Knowledge" active={knowledgeActive}>
           <button type="button" aria-label="Favorites" onClick={event => navigateFromHeader(event, 'favorites')}><Icon type="favorites" /><span><strong>Favorites</strong><small>Your saved support references.</small></span></button>
           <button type="button" aria-label="Training & Resources" onClick={event => navigateFromHeader(event, 'training')}><Icon type="training" /><span><strong>Training & Resources</strong><small>Guides, scripts, visual lessons, and training.</small></span></button>
           <button type="button" aria-label="What’s New / Updates" onClick={event => navigateFromHeader(event, 'updates')}><Icon type="updates" /><span><strong>What’s New / Updates</strong><small>Recent workspace changes and release notes.</small></span></button>
@@ -258,18 +229,19 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           type="button"
           className={`topnav-link ${liveTools.readiness !== 'closed' ? 'active' : ''}`}
           aria-pressed={liveTools.readiness !== 'closed'}
-          onClick={event => { setOpenDropdown(null); openToolFromHeader(event, 'readiness') }}
+          onClick={event => openToolFromHeader(event, 'readiness')}
         >Readiness Lab</button>
 
-        <NavDropdown label="Reports" active={reportsActive} open={openDropdown === 'reports'} onToggle={() => toggleDropdown('reports')}>
+        <NavDropdown label="Reports" active={reportsActive}>
           <button type="button" aria-label="Feedback" onClick={event => navigateFromHeader(event, 'feedback')}><Icon type="feedback" /><span><strong>Feedback</strong><small>Send an issue, suggestion, or workspace report.</small></span></button>
           {isAdmin && <button type="button" aria-label="Usage Analytics" onClick={event => navigateFromHeader(event, 'usage')}><Icon type="usage" /><span><strong>Usage Analytics</strong><small>Review workspace usage and activity.</small></span></button>}
           {isAdmin && <button type="button" aria-label="Feedback Queue" onClick={event => navigateFromHeader(event, 'feedback_queue')}><Icon type="feedback_queue" /><span><strong>Feedback Queue</strong><small>Review and manage submitted feedback.</small></span></button>}
         </NavDropdown>
 
-        {isAdmin && <NavDropdown label="Admin" active={adminActive} open={openDropdown === 'admin'} onToggle={() => toggleDropdown('admin')}>
+        {isAdmin && <NavDropdown label="Admin" active={adminActive}>
           <button type="button" aria-label="Admin Home" onClick={event => navigateFromHeader(event, 'admin')}><Icon type="admin" /><span><strong>Admin Home</strong><small>Workspace administration overview.</small></span></button>
           <button type="button" aria-label="Team Management" onClick={event => navigateFromHeader(event, 'team')}><Icon type="team" /><span><strong>Team Management</strong><small>Manage users, access, and accounts.</small></span></button>
+          <button type="button" aria-label="Avatar Library" onClick={event => navigateFromHeader(event, 'avatar_library')}><Icon type="avatars" /><span><strong>Avatar Library</strong><small>Add or remove available profile avatars.</small></span></button>
         </NavDropdown>}
       </nav>
     </header>
@@ -325,6 +297,6 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
 
     <GlobalFeedbackButton currentView={currentView} reportContext={reportContext} onSubmit={onFeedback} />
 
-    {profileOpen && <div className="modal-backdrop" role="presentation" onClick={event => event.target === event.currentTarget && closeProfile()}><div ref={profileDialogRef} tabIndex={-1} className="profile-panel" role="dialog" aria-modal="true" aria-labelledby="profile-title"><div className="profile-summary">{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<div><h2 id="profile-title">My Profile</h2><strong>{profile.username}</strong><p>{profile.initials} · {accountRoleLabel}</p></div></div>{message && <p className="success-message" role="status">{message}</p>}{profileError && <p id="profile-error" role="alert">{profileError}</p>}{avatarOpen ? <AvatarPicker selectedId={profile.avatar_id} onCancel={() => setAvatarOpen(false)} onSave={async id => { setMessage(''); setProfileError(''); setProfileErrorField(''); try { await onAvatarChange?.(id); setAvatarOpen(false); setMessage('Avatar updated.') } catch (avatarError) { setProfileError(avatarError?.message || 'Could not update avatar.') } }} /> : passwordOpen ? <form onSubmit={submitPassword} noValidate><h3>Change Password</h3><label>New password<input name="password" type="password" autoComplete="new-password" disabled={passwordSaving} aria-invalid={profileErrorField === 'password' ? 'true' : undefined} aria-describedby={profileErrorField === 'password' ? 'profile-error' : undefined} /></label><label>Confirm password<input name="confirm" type="password" autoComplete="new-password" disabled={passwordSaving} aria-invalid={profileErrorField === 'confirm' ? 'true' : undefined} aria-describedby={profileErrorField === 'confirm' ? 'profile-error' : undefined} /></label><div className="dialog-actions"><button type="button" disabled={passwordSaving} onClick={() => setPasswordOpen(false)}>Cancel</button><button disabled={passwordSaving}>{passwordSaving ? 'Saving…' : 'Save Password'}</button></div></form> : <div className="profile-actions">{canMeetOzzie && <button onClick={() => { closeProfile(); onMeetOzzie?.() }}>Meet Ozzie Again</button>}<button onClick={() => { setMessage(''); setProfileError(''); setProfileErrorField(''); setAvatarOpen(true) }}>Change Avatar</button><button onClick={() => { setMessage(''); setProfileError(''); setProfileErrorField(''); setPasswordOpen(true) }}>Change Password</button><button onClick={onLogout}>Logout</button></div>}</div></div>}
+    {profileOpen && <div className="modal-backdrop" role="presentation" onClick={event => event.target === event.currentTarget && closeProfile()}><div ref={profileDialogRef} tabIndex={-1} className="profile-panel" role="dialog" aria-modal="true" aria-labelledby="profile-title"><div className="profile-summary">{avatarUrl(profile.avatar_id, avatars) ? <img src={avatarUrl(profile.avatar_id, avatars)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<div><h2 id="profile-title">My Profile</h2><strong>{profile.username}</strong><p>{profile.initials} · {accountRoleLabel}</p></div></div>{message && <p className="success-message" role="status">{message}</p>}{profileError && <p id="profile-error" role="alert">{profileError}</p>}{avatarOpen ? <AvatarPicker selectedId={profile.avatar_id} avatars={avatars} onCancel={() => setAvatarOpen(false)} onSave={async id => { setMessage(''); setProfileError(''); setProfileErrorField(''); try { await onAvatarChange?.(id); setAvatarOpen(false); setMessage('Avatar updated.') } catch (avatarError) { setProfileError(avatarError?.message || 'Could not update avatar.') } }} /> : passwordOpen ? <form onSubmit={submitPassword} noValidate><h3>Change Password</h3><label>New password<input name="password" type="password" autoComplete="new-password" disabled={passwordSaving} aria-invalid={profileErrorField === 'password' ? 'true' : undefined} aria-describedby={profileErrorField === 'password' ? 'profile-error' : undefined} /></label><label>Confirm password<input name="confirm" type="password" autoComplete="new-password" disabled={passwordSaving} aria-invalid={profileErrorField === 'confirm' ? 'true' : undefined} aria-describedby={profileErrorField === 'confirm' ? 'profile-error' : undefined} /></label><div className="dialog-actions"><button type="button" disabled={passwordSaving} onClick={() => setPasswordOpen(false)}>Cancel</button><button disabled={passwordSaving}>{passwordSaving ? 'Saving…' : 'Save Password'}</button></div></form> : <div className="profile-actions">{canMeetOzzie && <button onClick={() => { closeProfile(); onMeetOzzie?.() }}>Meet Ozzie Again</button>}<button onClick={() => { setMessage(''); setProfileError(''); setProfileErrorField(''); setAvatarOpen(true) }}>Change Avatar</button><button onClick={() => { setMessage(''); setProfileError(''); setProfileErrorField(''); setPasswordOpen(true) }}>Change Password</button><button onClick={onLogout}>Logout</button></div>}</div></div>}
   </div>
 }

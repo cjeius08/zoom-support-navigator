@@ -4326,6 +4326,192 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   }
 }
 
+/* Admin Avatar Library: compact management controls that follow the existing
+   console cards and stay usable on narrow screens. */
+.avatar-library-upload-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0;
+}
+.avatar-library-upload-group,
+.avatar-library-panel {
+  display: grid;
+  gap: .75rem;
+  padding: 1rem;
+  border: 1px solid rgba(243,226,206,.18);
+  border-radius: 1rem;
+  background: linear-gradient(145deg,rgba(30,34,38,.74),rgba(18,24,30,.64));
+  box-shadow: 0 .9rem 2.2rem rgba(0,0,0,.18);
+}
+.avatar-library-upload-group h2,
+.avatar-library-panel h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.avatar-file-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .65rem .75rem;
+  border: 1px dashed rgba(117,188,246,.4);
+  border-radius: .65rem;
+  color: #dff1ff;
+  background: rgba(24,114,191,.12);
+  cursor: pointer;
+}
+.avatar-file-picker input {
+  width: min(13rem, 52%);
+  padding: 0;
+  border: 0;
+  color: #b9cbd8;
+  background: transparent;
+}
+.avatar-upload-preview {
+  display: grid;
+  gap: .5rem;
+}
+.avatar-upload-preview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  max-height: 8.5rem;
+  overflow: auto;
+}
+.avatar-upload-preview-grid article {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  align-items: center;
+  gap: .45rem;
+  min-width: 10rem;
+  padding: .35rem;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: .55rem;
+  color: #b8c7d2;
+  font-size: .75rem;
+}
+.avatar-upload-preview-grid img,
+.avatar-upload-preview-fallback {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: .45rem;
+  object-fit: cover;
+  background: #182431;
+}
+.avatar-upload-preview-fallback {
+  display: grid;
+  place-items: center;
+  color: #8ecbff;
+  font-size: .62rem;
+  font-weight: 800;
+}
+.avatar-library-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.avatar-library-toolbar > div:first-child {
+  display: grid;
+  gap: .2rem;
+}
+.avatar-library-toolbar span,
+.avatar-selection-count {
+  color: #9fb3c4;
+  font-size: .82rem;
+}
+.avatar-library-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: .5rem;
+}
+.avatar-library-actions button {
+  padding: .5rem .7rem;
+  font-size: .78rem;
+}
+.avatar-library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+  gap: .65rem;
+  max-height: 58vh;
+  overflow: auto;
+  padding: .15rem;
+}
+.avatar-library-card {
+  position: relative;
+  display: grid;
+  gap: .45rem;
+  min-width: 0;
+  padding: .45rem;
+  border: 1px solid rgba(255,255,255,.11);
+  border-radius: .75rem;
+  background: rgba(5,11,17,.32);
+}
+.avatar-library-card img {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: .55rem;
+  object-fit: cover;
+  background: #182431;
+}
+.avatar-library-card-id {
+  overflow: hidden;
+  color: #c8d6df;
+  font-size: .7rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.avatar-library-checkbox {
+  position: absolute;
+  top: .55rem;
+  left: .55rem;
+  z-index: 1;
+  display: block;
+  margin: 0;
+  padding: .15rem;
+  border-radius: .35rem;
+  background: rgba(0,0,0,.62);
+}
+.avatar-library-checkbox input {
+  width: 1.05rem;
+  height: 1.05rem;
+  margin: 0;
+  padding: 0;
+}
+.avatar-library-card .danger-action {
+  width: 100%;
+  padding: .4rem .5rem;
+  font-size: .72rem;
+}
+.avatar-delete-dialog p {
+  color: #cad6df;
+}
+@media (max-width: 700px) {
+  .avatar-library-upload-panel {
+    grid-template-columns: 1fr;
+  }
+  .avatar-library-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .avatar-library-actions {
+    justify-content: flex-start;
+  }
+  .avatar-library-actions button {
+    flex: 1 1 8rem;
+  }
+  .avatar-file-picker {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .avatar-file-picker input {
+    width: 100%;
+  }
+}
+
 
 /* 2026-09-19 polish pass: compact cards + multi-tool minimized dock */
 .sidebar nav button.tool-minimized {
