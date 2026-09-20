@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { AvatarLibrary } from './AvatarLibrary'
 import { deleteAvatarIds, loadAvatarLibrary, uploadAvatarFiles } from '../../lib/avatarAdminApi'
 
@@ -25,6 +25,10 @@ beforeEach(() => {
   vi.spyOn(window, 'confirm').mockReturnValue(true)
 })
 
+afterEach(() => {
+  vi.restoreAllMocks()
+})
+
 it('blocks the avatar library when the viewer is not an admin', () => {
   render(<AvatarLibrary isAdmin={false} />)
   expect(screen.getByRole('heading', { name: 'Avatar Library' })).toBeInTheDocument()
@@ -43,11 +47,13 @@ it('supports single upload, multiple upload, and batch deletion for admins', asy
   const oneFile = new File(['one'], 'one.webp', { type: 'image/webp' })
   await user.upload(screen.getByLabelText('Upload one avatar'), oneFile)
   await waitFor(() => expect(uploadAvatarFiles).toHaveBeenCalledWith(expect.any(Array)))
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Upload One' })).toBeEnabled())
 
   const first = new File(['first'], 'first.png', { type: 'image/png' })
   const second = new File(['second'], 'second.jpg', { type: 'image/jpeg' })
   await user.upload(screen.getByLabelText('Upload multiple avatars'), [first, second])
   await waitFor(() => expect(uploadAvatarFiles).toHaveBeenCalledTimes(2))
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Upload Multiple' })).toBeEnabled())
 
   await user.click(screen.getByRole('checkbox', { name: /select all/i }))
   expect(screen.getByRole('button', { name: /delete selected \(2\)/i })).toBeEnabled()
