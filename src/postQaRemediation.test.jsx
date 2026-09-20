@@ -29,13 +29,13 @@ describe('post-QA remediation gate', () => {
     const user = userEvent.setup()
     render(<AppShell profile={profile}><div>Content</div></AppShell>)
 
-    const sidebar = document.getElementById('primary-sidebar')
-    expect(sidebar).toHaveAttribute('inert')
-    expect(sidebar).toHaveAttribute('aria-hidden', 'true')
+    const navigation = document.getElementById('primary-navigation')
+    expect(navigation).toHaveAttribute('inert')
+    expect(navigation).toHaveAttribute('aria-hidden', 'true')
 
     await user.click(screen.getByRole('button', { name: 'Toggle navigation' }))
-    expect(sidebar).not.toHaveAttribute('inert')
-    expect(sidebar).toHaveAttribute('aria-hidden', 'false')
+    expect(navigation).not.toHaveAttribute('inert')
+    expect(navigation).toHaveAttribute('aria-hidden', 'false')
 
     Object.defineProperty(window, 'innerWidth', { configurable: true, value: originalWidth })
     window.dispatchEvent(new Event('resize'))
@@ -169,9 +169,9 @@ describe('post-QA remediation gate', () => {
     expect(document.documentElement).toHaveStyle({ overflow: 'hidden' })
   })
 
-  it('marks the active sidebar destination for assistive technology', () => {
+  it('marks the active Home destination for assistive technology', () => {
     render(<AppShell profile={profile} currentView="navigator"><div>Content</div></AppShell>)
-    expect(screen.getByRole('button', { name: 'Navigator' })).toHaveAttribute('aria-current', 'page')
+    expect(screen.getByRole('button', { name: 'Home' })).toHaveAttribute('aria-current', 'page')
   })
 
   it('contains a migration that revokes client execution of rls_auto_enable and adds foreign-key indexes', () => {
