@@ -519,3 +519,134 @@
     display: none;
   }
 }
+
+
+/* Screenshot reference alignment · 2026-09-20 */
+/* Desktop workspace: logo at the far left, account at the far right, and
+   the navigation centered on the same compact header band shown in the approved reference. */
+@media (min-width: 1121px) {
+  .app-header.app-header-horizontal {
+    gap: 0 !important;
+    padding: .85rem 4.15rem 0 !important;
+  }
+
+  .app-header-brand-row {
+    align-items: flex-start !important;
+  }
+
+  .ozzie-brand-dock {
+    width: 11.25rem;
+  }
+
+  .top-navigation {
+    width: 100%;
+    max-width: none;
+    margin: -2.55rem 0 0;
+    padding: .25rem 0 .72rem;
+  }
+
+  .app-main.app-main-horizontal {
+    padding-top: 1.15rem !important;
+  }
+
+  .app-main-horizontal .navigator {
+    width: 100%;
+    max-width: 80rem;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .navigator-top-workspace {
+    grid-template-columns: minmax(0, 1.34fr) minmax(0, 1fr);
+    gap: .9rem;
+  }
+}
+
+/* The approved sign-in reference uses a centered 37rem × 63rem glass panel
+   at desktop size, with the Ozzie artwork filling the top of the card. */
+@media (min-width: 701px) {
+  .access-shell > .access-card:not(.activation-card) {
+    justify-self: center;
+    width: min(100%, 37rem);
+    min-height: min(63rem, calc(100svh - 2.5rem));
+    margin-left: 0 !important;
+    padding: 2.5rem 3.5rem 2.6rem;
+    border-radius: 1.45rem;
+  }
+
+  .ozzie-logo-stage-login {
+    margin: 0 auto .85rem !important;
+  }
+
+  .ozzie-logo-stage-login .access-brand-logo {
+    width: min(100%, 29rem) !important;
+    max-width: 29rem !important;
+  }
+
+  .access-shell > .access-card:not(.activation-card) .access-input {
+    height: 4.65rem;
+  }
+
+  .access-shell > .access-card:not(.activation-card) .sign-in-button {
+    min-height: 4.5rem;
+  }
+
+  .access-shell > .access-card:not(.activation-card) label {
+    font-size: 1.05rem;
+  }
+}
+
+/* Home workspace details from the approved reference. */
+.smart-search-heading .eyebrow {
+  color: #57b9ff;
+}
+
+.smart-search-card .search-combobox {
+  position: relative;
+}
+
+.smart-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  z-index: 2;
+  width: 1.35rem;
+  height: 1.35rem;
+  pointer-events: none;
+  transform: translateY(-50%);
+  fill: none;
+  stroke: #dcebf6;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.smart-search-card .search-combobox input {
+  min-height: 3.35rem;
+  padding-left: 3.2rem;
+}
+
+.live-call-toggle {
+  min-height: 3.35rem;
+}
+
+.live-call-toggle-icon {
+  width: 2.15rem;
+  height: 2.15rem;
+  border: 1px solid rgba(73, 171, 246, .34);
+  background: rgba(33, 125, 202, .18);
+  font-size: 1.05rem;
+}
+
+.route-card-fast {
+  min-height: 8.35rem;
+}
+
+/* Keep the screenshot composition graceful on medium desktop windows. */
+@media (min-width: 801px) and (max-width: 1120px) {
+  .app-main-horizontal .navigator {
+    max-width: 80rem;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
