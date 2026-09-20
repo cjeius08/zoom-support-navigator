@@ -3,18 +3,23 @@ import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
 import { AvatarPicker } from './AvatarPicker'
 
-it('shows an empty-state message while no avatars are available', () => {
-  render(<AvatarPicker selectedId="avatar_037" onSave={() => {}} onCancel={() => {}} />)
+it('renders all 103 new avatars and keeps the selected state', () => {
+  const { container } = render(<AvatarPicker selectedId="avatar_037" onSave={() => {}} onCancel={() => {}} />)
   expect(screen.getByRole('heading', { name: /choose an avatar/i })).toBeInTheDocument()
-  expect(screen.getByRole('status')).toHaveTextContent(/no avatars are currently available/i)
-  expect(screen.queryByRole('radio')).not.toBeInTheDocument()
-  expect(screen.queryByRole('button', { name: /save avatar/i })).not.toBeInTheDocument()
+  expect(screen.getAllByRole('radio', { name: /avatar_/i })).toHaveLength(103)
+  expect(screen.getByRole('radio', { name: 'avatar_001' })).toBeInTheDocument()
+  expect(screen.getByRole('radio', { name: 'avatar_103' })).toBeInTheDocument()
+  expect(screen.queryByRole('radio', { name: 'avatar_104' })).not.toBeInTheDocument()
+  expect(screen.getByRole('radio', { name: 'avatar_037' })).toHaveAttribute('aria-checked', 'true')
+  expect(container.querySelectorAll('.avatar-selected-indicator')).toHaveLength(1)
 })
 
-it('still lets the user close the empty avatar picker', async () => {
+it('moves the selected avatar and saves it', async () => {
   const user = userEvent.setup()
-  const onCancel = vi.fn()
-  render(<AvatarPicker selectedId={null} onSave={() => {}} onCancel={onCancel} />)
-  await user.click(screen.getByRole('button', { name: 'Close' }))
-  expect(onCancel).toHaveBeenCalledTimes(1)
+  const onSave = vi.fn()
+  render(<AvatarPicker selectedId="avatar_037" onSave={onSave} onCancel={() => {}} />)
+  await user.click(screen.getByRole('radio', { name: 'avatar_038' }))
+  expect(screen.getByRole('radio', { name: 'avatar_038' })).toHaveAttribute('aria-checked', 'true')
+  await user.click(screen.getByRole('button', { name: 'Save Avatar' }))
+  expect(onSave).toHaveBeenCalledWith('avatar_038')
 })
