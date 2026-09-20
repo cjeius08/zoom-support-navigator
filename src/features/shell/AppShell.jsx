@@ -10,10 +10,30 @@ import { CallDocumentation } from '../training/CallDocumentation'
 import { ScopeCheck } from '../live/ScopeCheck'
 import { ReadinessLab } from '../readiness/ReadinessLab'
 
-const agentLinks = [['navigator', 'Navigator', 'page'], ['favorites', 'Favorites', 'page'], ['documentation', 'Call Documentation', 'tool'], ['scope_check', 'Scope Check', 'tool'], ['training', 'Training & Resources', 'page'], ['readiness', 'Readiness Lab', 'tool'], ['updates', 'What’s New / Updates', 'page'], ['feedback', 'Feedback', 'page']]
-const adminLinks = [['admin', 'Admin Home', 'page'], ['team', 'Team Management', 'page'], ['usage', 'Usage Analytics', 'page'], ['feedback_queue', 'Feedback Queue', 'page']]
+function Icon({ type }) {
+  const paths = {
+    navigator: 'M4 11.5 12 4l8 7.5v8.5H4z',
+    favorites: 'M12 3.4 14.6 8.7l5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.2-4.1 5.8-.8L12 3.4Z',
+    training: 'M4 5h6a3 3 0 0 1 2 3v12a3 3 0 0 0-2-1H4zM20 5h-6a3 3 0 0 0-2 3v12a3 3 0 0 1 2-1h6z',
+    readiness: 'M5 4h14v16H5zM8 8h8M8 12h5M8 16h3M15 15l1.5 1.5L20 13',
+    updates: 'M12 4v8l4 2M4 12a8 8 0 1 0 2.3-5.7L4 8M4 4v4h4',
+    feedback: 'M5 5h14v10H9l-4 4z',
+    admin: 'M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7z',
+    team: 'M16 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M17 11a3 3 0 0 0-1-5.8M21 20v-2a4 4 0 0 0-2.7-3.8',
+    usage: 'M5 20V10M12 20V4M19 20v-7',
+    feedback_queue: 'M5 4h14v16H5zM8 9h8M8 13h6',
+    documentation: 'M6 3h9l3 3v15H6zM9 10h6M9 14h6M9 18h4M15 3v4h4',
+    scope_check: 'M12 3l7 4v5c0 4.5-3 7.2-7 8-4-.8-7-3.5-7-8V7zM9 12l2 2 4-5',
+  }
+  return <svg data-testid="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d={paths[type] || paths.feedback} /></svg>
+}
 
-function Icon({ type }) { const paths = { navigator: 'M4 11.5 12 4l8 7.5v8.5H4z', favorites: 'M12 3.4 14.6 8.7l5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.2-4.1 5.8-.8L12 3.4Z', training: 'M4 5h6a3 3 0 0 1 2 3v12a3 3 0 0 0-2-1H4zM20 5h-6a3 3 0 0 0-2 3v12a3 3 0 0 1 2-1h6z', readiness: 'M5 4h14v16H5zM8 8h8M8 12h5M8 16h3M15 15l1.5 1.5L20 13', updates: 'M12 4v8l4 2M4 12a8 8 0 1 0 2.3-5.7L4 8M4 4v4h4', feedback: 'M5 5h14v10H9l-4 4z', admin: 'M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7z', team: 'M16 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M17 11a3 3 0 0 0-1-5.8M21 20v-2a4 4 0 0 0-2.7-3.8', usage: 'M5 20V10M12 20V4M19 20v-7', feedback_queue: 'M5 4h14v16H5zM8 9h8M8 13h6', documentation: 'M6 3h9l3 3v15H6zM9 10h6M9 14h6M9 18h4M15 3v4h4', scope_check: 'M12 3l7 4v5c0 4.5-3 7.2-7 8-4-.8-7-3.5-7-8V7zM9 12l2 2 4-5' }; return <svg data-testid="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d={paths[type] || paths.feedback} /></svg> }
+function NavDropdown({ label, active = false, children }) {
+  return <details className={`topnav-dropdown ${active ? 'active' : ''}`}>
+    <summary>{label}<svg className="topnav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></summary>
+    <div className="topnav-menu" role="group" aria-label={`${label} menu`}>{children}</div>
+  </details>
+}
 
 export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onFeedback, reportContext = {} }) {
   const [open, setOpen] = useState(false)
@@ -34,13 +54,17 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   const menuToggleRef = useRef(null)
   const isAdmin = profile.role === 'creator_admin'
   const accountRoleLabel = isAdmin ? 'Admin' : profile.workspace_role === 'lead' ? 'Lead' : 'Member'
-  const visibleLinks = isAdmin ? [...agentLinks, ...adminLinks] : agentLinks
   const style = { '--workspace-image': `url(${assetUrl('assets/login-workspace-background.png')})` }
   const visibleLastUpdated = lastUpdatedForAudience(isAdmin)
 
   const minimizedLiveTools = Object.entries(liveTools)
     .filter(([, state]) => state === 'minimized')
     .map(([id]) => id)
+
+  const callFlowActive = liveTools.documentation !== 'closed' || liveTools.scope_check !== 'closed'
+  const knowledgeActive = ['favorites', 'training', 'updates'].includes(currentView)
+  const reportsActive = ['feedback', 'usage', 'feedback_queue'].includes(currentView)
+  const adminActive = ['admin', 'team'].includes(currentView)
 
   function openLiveTool(id) {
     setLiveTools(current => {
@@ -85,6 +109,21 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     if (restoreFocus) window.requestAnimationFrame(() => menuToggleRef.current?.focus())
   }
 
+  function finishNav(event) {
+    event.currentTarget.closest('details')?.removeAttribute('open')
+    closeNavigation()
+  }
+
+  function navigateFromHeader(event, view) {
+    finishNav(event)
+    onNavigate(view)
+  }
+
+  function openToolFromHeader(event, id) {
+    finishNav(event)
+    openLiveTool(id)
+  }
+
   useEffect(() => {
     const updateCompactNav = () => {
       const compact = window.innerWidth <= 800
@@ -95,7 +134,6 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     updateCompactNav()
     return () => window.removeEventListener('resize', updateCompactNav)
   }, [])
-
 
   useDialogFocus(profileDialogRef, profileOpen, closeProfile)
 
@@ -128,66 +166,87 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     }
   }
 
-  return <div className="app-shell" style={style}>
-    <header className="app-header app-header-utility">
-      <button
-        ref={menuToggleRef}
-        className="menu-toggle"
-        type="button"
-        aria-label="Toggle navigation"
-        aria-expanded={open}
-        aria-controls="primary-sidebar"
-        onClick={() => setOpen(value => !value)}
+  return <div className="app-shell app-shell-horizontal" style={style}>
+    <div className="ozzie-brand-dock" aria-label="Ozzie — Ogletree Support Workspace">
+      <img src={assetUrl('assets/ozzie-mascot-logo.webp')} alt="Ozzie — Ogletree Support Workspace" />
+    </div>
+
+    <header className="app-header app-header-horizontal">
+      <div className="app-header-account-row">
+        <button
+          ref={menuToggleRef}
+          className="menu-toggle"
+          type="button"
+          aria-label="Toggle navigation"
+          aria-expanded={open}
+          aria-controls="primary-navigation"
+          onClick={() => setOpen(value => !value)}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+          <span>Menu</span>
+        </button>
+        <div className="app-header-spacer" aria-hidden="true" />
+        <button className="account-menu" aria-expanded={profileOpen} aria-label={`${profile.username} account`} onClick={() => { const next = !profileOpen; setProfileOpen(next); if (next) { setMessage(''); setProfileError(''); setProfileErrorField('') } }}>
+          {avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}
+          <span className="account-copy"><strong>{profile.username}</strong><small>{accountRoleLabel}</small></span>
+          <svg className="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg>
+        </button>
+      </div>
+
+      <nav
+        id="primary-navigation"
+        className={`top-navigation ${open ? 'open' : ''}`}
+        aria-label="Primary navigation"
+        aria-hidden={compactNav ? String(!open) : undefined}
+        inert={compactNav && !open ? true : undefined}
+        onKeyDown={event => {
+          if (compactNav && open && event.key === 'Escape') {
+            event.preventDefault()
+            closeNavigation({ restoreFocus: true })
+          }
+        }}
       >
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
-      </button>
-      <div className="app-header-spacer" aria-hidden="true" />
-      <button className="account-menu" aria-expanded={profileOpen} aria-label={`${profile.username} account`} onClick={() => { const next = !profileOpen; setProfileOpen(next); if (next) { setMessage(''); setProfileError(''); setProfileErrorField('') } }}>{avatarUrl(profile.avatar_id) ? <img src={avatarUrl(profile.avatar_id)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<span className="account-copy"><strong>{profile.username}</strong><small>{accountRoleLabel}</small></span><svg className="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></button>
+        <button
+          type="button"
+          className={`topnav-link ${currentView === 'navigator' ? 'active' : ''}`}
+          aria-current={currentView === 'navigator' ? 'page' : undefined}
+          onClick={event => navigateFromHeader(event, 'navigator')}
+        >Home</button>
+
+        <NavDropdown label="Call Flow" active={callFlowActive}>
+          <button type="button" aria-pressed={liveTools.documentation !== 'closed'} onClick={event => openToolFromHeader(event, 'documentation')}><Icon type="documentation" /><span><strong>Call Documentation</strong><small>Capture notes without leaving your current page.</small></span></button>
+          <button type="button" aria-pressed={liveTools.scope_check !== 'closed'} onClick={event => openToolFromHeader(event, 'scope_check')}><Icon type="scope_check" /><span><strong>Scope Check</strong><small>Confirm the correct support boundary and next step.</small></span></button>
+        </NavDropdown>
+
+        <NavDropdown label="Knowledge" active={knowledgeActive}>
+          <button type="button" onClick={event => navigateFromHeader(event, 'favorites')}><Icon type="favorites" /><span><strong>Favorites</strong><small>Your saved support references.</small></span></button>
+          <button type="button" onClick={event => navigateFromHeader(event, 'training')}><Icon type="training" /><span><strong>Training & Resources</strong><small>Guides, scripts, visual lessons, and training.</small></span></button>
+          <button type="button" onClick={event => navigateFromHeader(event, 'updates')}><Icon type="updates" /><span><strong>What’s New / Updates</strong><small>Recent workspace changes and release notes.</small></span></button>
+        </NavDropdown>
+
+        <button
+          type="button"
+          className={`topnav-link ${liveTools.readiness !== 'closed' ? 'active' : ''}`}
+          aria-pressed={liveTools.readiness !== 'closed'}
+          onClick={event => openToolFromHeader(event, 'readiness')}
+        >Readiness Lab</button>
+
+        <NavDropdown label="Reports" active={reportsActive}>
+          <button type="button" onClick={event => navigateFromHeader(event, 'feedback')}><Icon type="feedback" /><span><strong>Feedback</strong><small>Send an issue, suggestion, or workspace report.</small></span></button>
+          {isAdmin && <button type="button" onClick={event => navigateFromHeader(event, 'usage')}><Icon type="usage" /><span><strong>Usage Analytics</strong><small>Review workspace usage and activity.</small></span></button>}
+          {isAdmin && <button type="button" onClick={event => navigateFromHeader(event, 'feedback_queue')}><Icon type="feedback_queue" /><span><strong>Feedback Queue</strong><small>Review and manage submitted feedback.</small></span></button>}
+        </NavDropdown>
+
+        {isAdmin && <NavDropdown label="Admin" active={adminActive}>
+          <button type="button" onClick={event => navigateFromHeader(event, 'admin')}><Icon type="admin" /><span><strong>Admin Home</strong><small>Workspace administration overview.</small></span></button>
+          <button type="button" onClick={event => navigateFromHeader(event, 'team')}><Icon type="team" /><span><strong>Team Management</strong><small>Manage users, access, and accounts.</small></span></button>
+        </NavDropdown>}
+      </nav>
     </header>
 
-    {open && <button type="button" className="sidebar-backdrop" aria-label="Close navigation" onClick={() => closeNavigation({ restoreFocus: true })} />}
+    {open && <button type="button" className="nav-backdrop" aria-label="Close navigation" onClick={() => closeNavigation({ restoreFocus: true })} />}
 
-    <aside
-      id="primary-sidebar"
-      className={`sidebar ${open ? 'open' : ''}`}
-      aria-hidden={compactNav ? String(!open) : undefined}
-      inert={compactNav && !open ? true : undefined}
-      onKeyDown={event => {
-        if (compactNav && open && event.key === 'Escape') {
-          event.preventDefault()
-          closeNavigation({ restoreFocus: true })
-        }
-      }}
-    >
-      <div className="sidebar-scroll-region">
-        <div className="sidebar-brand" aria-label="Ozzie — Ogletree Support Workspace">
-          <img src={assetUrl('assets/ozzie-approved-exact.png')} alt="Ozzie — Ogletree Support Workspace" />
-        </div>
-        <nav aria-label="Primary navigation">{visibleLinks.map(([id, label, kind]) => kind === 'tool'
-          ? <button
-              key={id}
-              type="button"
-              aria-pressed={liveTools[id] !== 'closed'}
-              className={liveTools[id] === 'open' ? 'tool-open' : liveTools[id] === 'minimized' ? 'tool-minimized' : ''}
-              onClick={() => {
-                openLiveTool(id)
-                closeNavigation()
-              }}
-            ><Icon type={id} /><span>{label}</span></button>
-          : <button key={id} aria-current={currentView === id ? 'page' : undefined} className={currentView === id ? 'active' : ''} onClick={() => { onNavigate(id); closeNavigation() }}><Icon type={id} /><span>{label}</span></button>)}</nav>
-      </div>
-      <div className="sidebar-footer">
-        <div className="console-meta-mini" aria-label="Console metadata">
-          <strong>Workspace v{CONSOLE_METADATA.version}</strong>
-          <span>Updated {formatShortConsoleDate(visibleLastUpdated)} · Next review {formatShortConsoleDate(CONSOLE_METADATA.nextReview)}</span>
-          <span>Workspace Lead {CONSOLE_METADATA.owner}</span>
-          <span>Collaborator {CONSOLE_METADATA.collaborator}</span>
-        </div>
-        <button className="logout-button" onClick={onLogout}>Logout</button>
-      </div>
-    </aside>
-
-    <main className="app-main">
+    <main className="app-main app-main-horizontal">
       <div className="workspace-page-nav">
         <button
           type="button"
@@ -195,13 +254,20 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           onClick={onBack}
           disabled={!canGoBack}
           aria-label="Back to previous page"
-          title={canGoBack ? "Back to previous page" : "No previous page"}
+          title={canGoBack ? 'Back to previous page' : 'No previous page'}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6M8 12h10" /></svg>
           <span>Back</span>
         </button>
       </div>
       {children}
+
+      <footer className="workspace-meta-footer" aria-label="Console metadata">
+        <strong>Workspace v{CONSOLE_METADATA.version}</strong>
+        <span>Updated {formatShortConsoleDate(visibleLastUpdated)} · Next review {formatShortConsoleDate(CONSOLE_METADATA.nextReview)}</span>
+        <span>Workspace Lead {CONSOLE_METADATA.owner}</span>
+        <span>Collaborator {CONSOLE_METADATA.collaborator}</span>
+      </footer>
     </main>
 
     <CallDocumentation
