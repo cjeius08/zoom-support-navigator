@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { cwd } from 'node:process'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
 import { AppShell } from './AppShell'
@@ -70,7 +70,7 @@ it('shows the planned horizontal navigation and role-aware account controls', ()
   expect(navigation).toHaveTextContent('Team Management')
   expect(navigation).toHaveTextContent('Usage Analytics')
   expect(screen.getByRole('button', { name: /ja_admin account/i })).toBeInTheDocument()
-  expect(screen.getByText('Admin')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /ja_admin account/i })).toHaveTextContent('Admin')
   expect(screen.getAllByTestId('nav-icon').length).toBeGreaterThan(3)
   expect(screen.getByRole('img', { name: /Ozzie — Ogletree Support Workspace/i })).toBeInTheDocument()
 })
@@ -196,7 +196,7 @@ it('opens Call Documentation from Call Flow without navigating away and preserve
   render(<AppShell profile={agentProfile} onNavigate={onNavigate}><div>Current page content</div></AppShell>)
 
   await user.click(screen.getByText('Call Flow'))
-  const toolButton = screen.getByRole('button', { name: /Call Documentation/i })
+  const toolButton = within(screen.getByRole('navigation', { name: 'Primary navigation' })).getByRole('button', { name: 'Call Documentation' })
   expect(toolButton).toHaveAttribute('aria-pressed', 'false')
 
   await user.click(toolButton)
@@ -214,7 +214,7 @@ it('opens Call Documentation from Call Flow without navigating away and preserve
   expect(screen.queryByLabelText('Caller name')).not.toBeInTheDocument()
 
   await user.click(screen.getByText('Call Flow'))
-  await user.click(screen.getByRole('button', { name: /Call Documentation/i }))
+  await user.click(within(screen.getByRole('navigation', { name: 'Primary navigation' })).getByRole('button', { name: 'Call Documentation' }))
   expect(screen.getByLabelText('Caller name')).toHaveValue('Persistent Caller')
 
   await user.click(screen.getByText('Knowledge'))
@@ -229,11 +229,11 @@ it('opens Scope Check as a global live tool and preserves the Documentation draf
   render(<AppShell profile={agentProfile} onNavigate={onNavigate}><div>Current page content</div></AppShell>)
 
   await user.click(screen.getByText('Call Flow'))
-  await user.click(screen.getByRole('button', { name: /Call Documentation/i }))
+  await user.click(within(screen.getByRole('navigation', { name: 'Primary navigation' })).getByRole('button', { name: 'Call Documentation' }))
   await user.type(screen.getByLabelText('Caller name'), 'Persistent Caller')
 
   await user.click(screen.getByText('Call Flow'))
-  await user.click(screen.getByRole('button', { name: /Scope Check/i }))
+  await user.click(within(screen.getByRole('navigation', { name: 'Primary navigation' })).getByRole('button', { name: 'Scope Check' }))
   expect(onNavigate).not.toHaveBeenCalled()
   expect(screen.getByRole('heading', { name: 'Scope Check' })).toBeInTheDocument()
   expect(screen.queryByLabelText('Caller name')).not.toBeInTheDocument()
@@ -244,7 +244,7 @@ it('opens Scope Check as a global live tool and preserves the Documentation draf
   expect(screen.getByText('STOP + REFER')).toBeInTheDocument()
 
   await user.click(screen.getByText('Call Flow'))
-  await user.click(screen.getByRole('button', { name: /Call Documentation/i }))
+  await user.click(within(screen.getByRole('navigation', { name: 'Primary navigation' })).getByRole('button', { name: 'Call Documentation' }))
   expect(screen.getByLabelText('Caller name')).toHaveValue('Persistent Caller')
 })
 
@@ -320,10 +320,10 @@ it('keeps all opened live tools available and stacks minimized tools instead of 
   render(<AppShell profile={agentProfile}><div>Current page content</div></AppShell>)
 
   await user.click(screen.getByText('Call Flow'))
-  await user.click(screen.getByRole('button', { name: /Call Documentation/i }))
+  await user.click(within(screen.getByRole('navigation', { name: 'Primary navigation' })).getByRole('button', { name: 'Call Documentation' }))
 
   await user.click(screen.getByText('Call Flow'))
-  await user.click(screen.getByRole('button', { name: /Scope Check/i }))
+  await user.click(within(screen.getByRole('navigation', { name: 'Primary navigation' })).getByRole('button', { name: 'Scope Check' }))
 
   expect(screen.getByLabelText('Call Documentation minimized')).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Scope Check' })).toBeInTheDocument()
