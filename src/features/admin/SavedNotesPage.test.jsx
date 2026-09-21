@@ -55,11 +55,11 @@ const notes = [
 ]
 
 beforeEach(() => {
+  vi.restoreAllMocks()
   loadCallNotesReport.mockReset()
   loadCallNotesReport.mockResolvedValue({ notes, profiles })
   deleteCallNoteAsAdmin.mockReset()
   deleteCallNoteAsAdmin.mockResolvedValue(undefined)
-  vi.restoreAllMocks()
 })
 
 it('puts follow-up-required notes in an easy dedicated filter', async () => {
