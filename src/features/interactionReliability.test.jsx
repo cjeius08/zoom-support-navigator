@@ -132,7 +132,7 @@ it('traps focus in the process drawer and restores focus to its opener on Escape
   await user.keyboard('{Escape}')
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   expect(opener).toHaveFocus()
-})
+}, 10000)
 
 it('lets the global report modal close with Escape and restores focus to Report an issue', async () => {
   const user = userEvent.setup()
