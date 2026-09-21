@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDialogFocus } from '../../lib/useDialogFocus'
 import './OzzieWelcome.css'
 
@@ -21,19 +21,19 @@ export function OzzieWelcome({
   const [videoPlaying, setVideoPlaying] = useState(false)
   useDialogFocus(dialogRef, open, replay ? onClose : undefined)
 
-  const cancelSyncFrame = () => {
+  const cancelSyncFrame = useCallback(() => {
     if (syncFrameRef.current) {
       cancelAnimationFrame(syncFrameRef.current)
       syncFrameRef.current = null
     }
-  }
+  }, [])
 
-  const pauseIntro = () => {
+  const pauseIntro = useCallback(() => {
     cancelSyncFrame()
     videoRef.current?.pause()
     audioRef.current?.pause()
     setVideoPlaying(false)
-  }
+  }, [cancelSyncFrame])
 
   useEffect(() => {
     if (!open) {
@@ -47,7 +47,7 @@ export function OzzieWelcome({
       videoRef.current?.pause()
       audioRef.current?.pause()
     }
-  }, [open, videoSrc])
+  }, [open, videoSrc, pauseIntro, cancelSyncFrame])
 
   if (!open) return null
 
@@ -162,7 +162,6 @@ export function OzzieWelcome({
             >
               {videoPlaying ? 'Pause' : 'Play Ozzie'}
             </button>
-            <small>Audio is synchronized to Ozzie’s animation.</small>
           </div>
         </div>
 
