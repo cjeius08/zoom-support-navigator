@@ -4231,6 +4231,35 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   gap: .4rem;
 }
 
+.call-note-person-link {
+  display: grid;
+  gap: .08rem;
+  width: 100%;
+  min-width: 0;
+  padding: .3rem .4rem;
+  border: 1px solid transparent;
+  border-radius: .55rem;
+  color: inherit;
+  background: transparent;
+  text-align: left;
+}
+
+.call-note-person-link:hover,
+.call-note-person-link:focus-visible {
+  border-color: rgba(91, 177, 243, .38);
+  background: rgba(31, 107, 166, .16);
+}
+
+.call-note-person-link strong,
+.call-note-person-link small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.call-note-person-link small {
+  color: #9dafbf;
+}
+
 .call-note-report-details {
   margin-top: .75rem;
 }

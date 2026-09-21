@@ -101,6 +101,15 @@ export async function loadCallNotesReport({ start, end } = {}) {
   return { notes, profiles }
 }
 
+export async function deleteCallNoteAsAdmin(noteId) {
+  const { error } = await supabase
+    .from('zoom_call_notes')
+    .delete()
+    .eq('id', noteId)
+
+  if (error) throw error
+}
+
 export async function loadFeedback() {
   const reportsPromise = loadPaged(() => supabase
     .from('zoom_feedback_reports')

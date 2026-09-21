@@ -10,6 +10,7 @@ import { Navigator } from './features/navigator/Navigator'
 import { AppShell } from './features/shell/AppShell'
 import { AdminHome, FeedbackQueue, TeamManagement, UsageAnalytics } from './features/admin/AdminViews'
 import { AvatarLibraryManagement } from './features/admin/AvatarLibraryManagement'
+import { SavedNotesPage } from './features/admin/SavedNotesPage'
 import { TrainingResources } from './features/training/TrainingResources'
 import { FeedbackPage } from './features/feedback/FeedbackPage'
 import { UpdatesView } from './features/updates/UpdatesView'
@@ -48,6 +49,7 @@ export default function App() {
   const [navigatorProcessId, setNavigatorProcessId] = useState(null)
   const [navigatorCommonIssueId, setNavigatorCommonIssueId] = useState(null)
   const [reportContext, setReportContext] = useState(EMPTY_REPORT_CONTEXT)
+  const [savedNotesUserId, setSavedNotesUserId] = useState('')
   const [navigationHistory, setNavigationHistory] = useState([])
   const [showPassword, setShowPassword] = useState(false)
   const [ozzieIntroOpen, setOzzieIntroOpen] = useState(false)
@@ -95,6 +97,7 @@ export default function App() {
       trainingTarget,
       navigatorProcessId,
       navigatorCommonIssueId,
+      savedNotesUserId,
       reportContext: { ...reportContext },
     }
   }
@@ -110,6 +113,7 @@ export default function App() {
     setTrainingTarget(snapshot.trainingTarget || null)
     setNavigatorProcessId(snapshot.navigatorProcessId || null)
     setNavigatorCommonIssueId(snapshot.navigatorCommonIssueId || null)
+    setSavedNotesUserId(snapshot.savedNotesUserId || '')
     setReportContext(snapshot.reportContext || EMPTY_REPORT_CONTEXT)
   }
 
@@ -136,8 +140,19 @@ export default function App() {
       setNavigatorProcessId(null)
       setNavigatorCommonIssueId(null)
     }
+    if (nextView === 'saved_notes') {
+      setSavedNotesUserId('')
+    }
     setReportContext(EMPTY_REPORT_CONTEXT)
     setView(nextView)
+  }
+
+  function openSavedNotes(userId = '') {
+    rememberCurrentPage()
+    trackEvent({ eventType: 'navigation', routeId: 'saved_notes', toolId: userId ? 'saved_notes_user' : 'saved_notes' })
+    setSavedNotesUserId(userId || '')
+    setReportContext(EMPTY_REPORT_CONTEXT)
+    setView('saved_notes')
   }
 
   function openTraining(videoId) {
@@ -361,8 +376,10 @@ export default function App() {
                 : view === 'team'
                   ? <TeamManagement avatars={avatarLibrary}/>
                   : view === 'usage'
-                    ? <UsageAnalytics/>
-                    : <FeedbackQueue onOpenPage={openFeedbackTarget}/>
+                    ? <UsageAnalytics onOpenSavedNotes={openSavedNotes}/>
+                    : view === 'saved_notes'
+                      ? <SavedNotesPage initialUserId={savedNotesUserId}/>
+                      : <FeedbackQueue onOpenPage={openFeedbackTarget}/>
     return <>
       <AppShell
         profile={profile}

@@ -23,6 +23,7 @@ function Icon({ type }) {
     usage: 'M5 20V10M12 20V4M19 20v-7',
     feedback_queue: 'M5 4h14v16H5zM8 9h8M8 13h6',
     avatars: 'M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM4 21a8 8 0 0 1 16 0M4 13a3 3 0 1 0 0 6M20 13a3 3 0 1 1 0 6',
+    notes: 'M6 3h9l3 3v15H6zM9 10h6M9 14h6M9 18h4M15 3v4h4',
     documentation: 'M6 3h9l3 3v15H6zM9 10h6M9 14h6M9 18h4M15 3v4h4',
     scope_check: 'M12 3l7 4v5c0 4.5-3 7.2-7 8-4-.8-7-3.5-7-8V7zM9 12l2 2 4-5',
   }
@@ -30,7 +31,17 @@ function Icon({ type }) {
 }
 
 function NavDropdown({ label, active = false, children }) {
-  return <details className={`topnav-dropdown ${active ? 'active' : ''}`}>
+  return <details
+    name="ozzie-primary-navigation"
+    className={`topnav-dropdown ${active ? 'active' : ''}`}
+    onToggle={event => {
+      if (!event.currentTarget.open) return
+      const navigation = event.currentTarget.closest('nav')
+      navigation?.querySelectorAll('details.topnav-dropdown[open]').forEach(detail => {
+        if (detail !== event.currentTarget) detail.removeAttribute('open')
+      })
+    }}
+  >
     <summary>{label}<svg className="topnav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></summary>
     <div className="topnav-menu" role="group" aria-label={`${label} menu`}>{children}</div>
   </details>
@@ -65,7 +76,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   const callFlowActive = liveTools.documentation !== 'closed' || liveTools.scope_check !== 'closed'
   const knowledgeActive = ['favorites', 'training', 'updates'].includes(currentView)
   const reportsActive = ['feedback', 'usage', 'feedback_queue'].includes(currentView)
-  const adminActive = ['admin', 'team', 'avatar_library'].includes(currentView)
+  const adminActive = ['admin', 'team', 'avatar_library', 'saved_notes'].includes(currentView)
 
   function openLiveTool(id) {
     setLiveTools(current => {
@@ -240,6 +251,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
 
         {isAdmin && <NavDropdown label="Admin" active={adminActive}>
           <button type="button" aria-label="Admin Home" onClick={event => navigateFromHeader(event, 'admin')}><Icon type="admin" /><span><strong>Admin Home</strong><small>Workspace administration overview.</small></span></button>
+          <button type="button" aria-label="Saved Notes" onClick={event => navigateFromHeader(event, 'saved_notes')}><Icon type="notes" /><span><strong>Saved Notes</strong><small>Review protected notes and follow-ups.</small></span></button>
           <button type="button" aria-label="Team Management" onClick={event => navigateFromHeader(event, 'team')}><Icon type="team" /><span><strong>Team Management</strong><small>Manage users, access, and accounts.</small></span></button>
           <button type="button" aria-label="Avatar Library" onClick={event => navigateFromHeader(event, 'avatar_library')}><Icon type="avatars" /><span><strong>Avatar Library</strong><small>Add or remove available profile avatars.</small></span></button>
         </NavDropdown>}
