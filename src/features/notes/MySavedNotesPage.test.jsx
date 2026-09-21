@@ -39,19 +39,19 @@ it('shows a member only their saved notes with a prominent follow-up filter', as
   render(<MySavedNotesPage />)
 
   expect(await screen.findByRole('heading', { name: 'My Saved Notes & Follow-Ups' })).toBeInTheDocument()
-  expect(screen.getByText('CASE-FOLLOW')).toBeInTheDocument()
-  expect(screen.getByText('CASE-DONE')).toBeInTheDocument()
+  expect(screen.getAllByText('CASE-FOLLOW').length).toBeGreaterThan(0)
+  expect(screen.getAllByText('CASE-DONE').length).toBeGreaterThan(0)
 
   await user.click(screen.getByRole('button', { name: /Follow-Up Required/i }))
   expect(screen.getByText('CASE-FOLLOW')).toBeInTheDocument()
-  expect(screen.queryByText('CASE-DONE')).not.toBeInTheDocument()
+  expect(screen.queryAllByText('CASE-DONE')).toHaveLength(0)
 })
 
 it('opens the selected note documentation when arriving from the saved-note card', async () => {
   const { MySavedNotesPage } = await import('./MySavedNotesPage')
   render(<MySavedNotesPage initialNoteId="follow-1" />)
 
-  await screen.findByText('CASE-FOLLOW')
+  await screen.findAllByText('CASE-FOLLOW')
   const summary = screen.getAllByText('Open saved documentation')[0]
   expect(summary.closest('details')).toHaveAttribute('open')
   expect(screen.getByText(/Needs a callback/i)).toBeInTheDocument()
