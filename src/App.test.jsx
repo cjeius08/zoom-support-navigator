@@ -9,7 +9,10 @@ describe('application access gate', () => {
   it('uses the Ozzie brand on the sign-in page while keeping the internal document title', async () => {
     render(<App />)
     await waitFor(() => expect(screen.getByRole('img', { name: /Ozzie — Ogletree Support Workspace/i })).toBeInTheDocument())
-    expect(document.querySelector('.ozzie-logo-stage-login')).toBeInTheDocument()
+    expect(document.querySelector('.login-layout')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Welcome Back!' })).toBeInTheDocument()
+    expect(screen.getByText('Sign in to your Ozzie account')).toBeInTheDocument()
+    expect(screen.getByText(/One workspace\./)).toBeInTheDocument()
     expect(screen.queryByText('Tier 1 Zoom Support · Sign in to continue.')).not.toBeInTheDocument()
     expect(readFileSync(join(cwd(), 'index.html'), 'utf8')).toContain('<title>Ogletree Support Workspace</title>')
   })
@@ -18,9 +21,12 @@ describe('application access gate', () => {
     const source = readFileSync(join(cwd(), 'src/App.jsx'), 'utf8')
     const responsiveImport = "import './features/shell/responsiveShell.css'"
     const headerImport = "import './features/shell/headerNavRevamp.css'"
+    const loginImport = "import './features/shell/loginRevamp.css'"
     expect(source).toContain(responsiveImport)
     expect(source).toContain(headerImport)
+    expect(source).toContain(loginImport)
     expect(source.indexOf(responsiveImport)).toBeLessThan(source.indexOf(headerImport))
+    expect(source.indexOf(headerImport)).toBeLessThan(source.indexOf(loginImport))
   })
 
   it('shows username-only sign in with activation instead of public registration', async () => {
