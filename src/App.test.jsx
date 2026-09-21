@@ -14,6 +14,15 @@ describe('application access gate', () => {
     expect(readFileSync(join(cwd(), 'index.html'), 'utf8')).toContain('<title>Ogletree Support Workspace</title>')
   })
 
+  it('loads the responsive horizontal shell stylesheet after the base responsive rules', () => {
+    const source = readFileSync(join(cwd(), 'src/App.jsx'), 'utf8')
+    const responsiveImport = "import './features/shell/responsiveShell.css'"
+    const headerImport = "import './features/shell/headerNavRevamp.css'"
+    expect(source).toContain(responsiveImport)
+    expect(source).toContain(headerImport)
+    expect(source.indexOf(responsiveImport)).toBeLessThan(source.indexOf(headerImport))
+  })
+
   it('shows username-only sign in with activation instead of public registration', async () => {
     render(<App />)
     await waitFor(() => expect(screen.getByLabelText('Username')).toBeInTheDocument())
