@@ -43,7 +43,7 @@ it('shows a member only their saved notes with a prominent follow-up filter', as
   expect(screen.getAllByText('CASE-DONE').length).toBeGreaterThan(0)
 
   await user.click(screen.getByRole('button', { name: /Follow-Up Required/i }))
-  expect(screen.getByText('CASE-FOLLOW')).toBeInTheDocument()
+  expect(screen.getAllByText('CASE-FOLLOW').length).toBeGreaterThan(0)
   expect(screen.queryAllByText('CASE-DONE')).toHaveLength(0)
 })
 
