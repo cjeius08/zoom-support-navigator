@@ -76,6 +76,16 @@ it('shows the planned horizontal navigation and role-aware account controls', ()
   expect(screen.getByRole('img', { name: /Ozzie — Ogletree Support Workspace/i })).toBeInTheDocument()
 })
 
+it('keeps top navigation dropdowns in one exclusive group so menus cannot overlap', () => {
+  const { container } = render(<AppShell profile={{ username: 'ja_admin', initials: 'JA', role: 'creator_admin' }} />)
+  const dropdowns = [...container.querySelectorAll('details.topnav-dropdown')]
+
+  expect(dropdowns.length).toBeGreaterThanOrEqual(3)
+  dropdowns.forEach(dropdown => {
+    expect(dropdown).toHaveAttribute('name', 'ozzie-primary-navigation')
+  })
+})
+
 it('keeps Ozzie standalone at the top-left instead of inside a sidebar', () => {
   const { container } = render(<AppShell profile={agentProfile} />)
 
