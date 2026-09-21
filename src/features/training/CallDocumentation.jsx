@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { deleteOwnCallNote, loadOwnCallNotes, saveOwnCallNote } from '../../lib/callNotesApi'
+import { loadOwnCallNotes, saveOwnCallNote } from '../../lib/callNotesApi'
 import { formatCallDocumentation } from './callDocumentationFormat'
 
 const SOURCE_TITLE = 'Zoom Basic Support Boundaries, Decision Path & Referral Process'
@@ -148,22 +148,6 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
     setNoteError('')
   }
 
-  async function removeSavedNote(note) {
-    if (!window.confirm('Delete this saved call note? This cannot be undone.')) return
-
-    setNoteError('')
-    try {
-      await deleteOwnCallNote(note.id)
-      setSavedNotes(current => current.filter(item => item.id !== note.id))
-      if (activeNoteId === note.id) {
-        setDraft(createInitialDraft())
-        setActiveNoteId(null)
-      }
-    } catch (error) {
-      setNoteError(error?.message || 'Could not delete this saved call note.')
-    }
-  }
-
   function clearDocumentation() {
     if (!window.confirm('Clear this documentation draft for the next call? Saved notes will not be deleted.')) return
     setDraft(createInitialDraft())
@@ -203,7 +187,7 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
     <div className="documentation-dock-body">
       <aside className="documentation-dock-privacy">
         <strong>Protected workspace note · retained for 90 days</strong>
-        <span>Your saved notes are limited to your account. Workspace Admin can read saved notes for reporting.</span>
+        <span>Your saved notes are limited to your account. Workspace Admin can review, manage, and delete saved notes for reporting and follow-up.</span>
         <span>Do not enter passwords, full payment card numbers, government IDs, or other prohibited sensitive information.</span>
       </aside>
 
@@ -289,7 +273,6 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
               </div>
               <div className="documentation-saved-note-actions">
                 <button type="button" onClick={() => openSavedNote(note)}>Open</button>
-                <button type="button" onClick={() => removeSavedNote(note)}>Delete</button>
               </div>
             </article>)}
           </div>

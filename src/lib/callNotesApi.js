@@ -63,13 +63,3 @@ export async function saveOwnCallNote({ id = null, draft }) {
   return data
 }
 
-export async function deleteOwnCallNote(id) {
-  const userId = await currentUserId()
-  const { error } = await supabase
-    .from('zoom_call_notes')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', userId)
-
-  if (error) throw error
-}
