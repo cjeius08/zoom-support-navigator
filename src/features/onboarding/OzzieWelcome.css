@@ -41,6 +41,30 @@
   box-shadow: 0 .8rem 2rem rgba(0, 0, 0, .3);
 }
 
+.ozzie-video-controls {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-top: .75rem;
+}
+
+.ozzie-video-play {
+  min-height: 2.45rem;
+  padding: .55rem .9rem;
+  border: 1px solid rgba(121, 178, 221, .28);
+  border-radius: .7rem;
+  color: #eaf6ff;
+  background: rgba(34, 139, 230, .18);
+  cursor: pointer;
+}
+
+.ozzie-video-controls small {
+  color: #9fb6c8;
+  text-align: right;
+}
+
 .ozzie-welcome-copy {
   min-width: 0;
   align-self: center;
@@ -100,6 +124,17 @@
 
   .ozzie-welcome-media video {
     max-height: 44vh;
+  }
+}
+
+@media (max-width: 560px) {
+  .ozzie-video-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ozzie-video-controls small {
+    text-align: left;
   }
 }
 
