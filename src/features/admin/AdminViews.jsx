@@ -180,6 +180,10 @@ export function AdminHome({ onNavigate }) {
           <strong>Feedback Queue</strong>
           <span>User reports and context →</span>
         </button>
+        <button onClick={() => onNavigate("saved_notes")}>
+          <strong>Saved Notes & Follow-Ups</strong>
+          <span>Protected call notes and follow-up queue →</span>
+        </button>
         <button onClick={() => onNavigate("avatar_library")}>
           <strong>Avatar Library</strong>
           <span>Add or remove profile avatars →</span>
@@ -662,7 +666,7 @@ const USAGE_PERIODS = [
   ["custom", "Custom"],
 ];
 
-export function UsageAnalytics() {
+export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
   const [period, setPeriod] = useState("daily");
   const [customStart, setCustomStart] = useState("");
   const [customEnd, setCustomEnd] = useState("");
@@ -777,7 +781,7 @@ export function UsageAnalytics() {
         }}
       </State>
 
-      <CallNotesReport range={range} />
+      <CallNotesReport range={range} onOpenNotes={onOpenSavedNotes} />
 
       <section className="readiness-admin-report" aria-labelledby="readiness-report-title">
         <div className="view-heading">
