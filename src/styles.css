@@ -4790,3 +4790,20 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     padding: .62rem .68rem;
   }
 }
+
+
+.staging-environment-badge {
+  position: fixed;
+  right: 0.8rem;
+  bottom: 0.8rem;
+  z-index: 3000;
+  padding: 0.48rem 0.7rem;
+  border: 1px solid rgba(255, 205, 92, 0.55);
+  border-radius: 999px;
+  background: rgba(50, 35, 8, 0.92);
+  color: #ffe7a3;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  box-shadow: 0 0.55rem 1.5rem rgba(0, 0, 0, 0.3);
+}
