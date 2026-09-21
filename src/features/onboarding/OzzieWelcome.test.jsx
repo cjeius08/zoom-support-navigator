@@ -16,7 +16,9 @@ it('shows the first-login Ozzie introduction and completes from either action', 
   )
 
   expect(screen.getByRole('heading', { name: 'Meet Ozzie' })).toBeInTheDocument()
-  expect(screen.getByLabelText('Meet Ozzie introduction video')).toHaveAttribute('src', '/assets/Ozzie2.mp4')
+  const video = screen.getByLabelText('Meet Ozzie introduction video')
+  expect(video).toHaveAttribute('src', '/assets/Ozzie2.mp4')
+  expect(video).toHaveAttribute('preload', 'auto')
 
   await user.click(screen.getByRole('button', { name: 'Start Exploring' }))
   expect(onContinue).toHaveBeenCalledTimes(1)
