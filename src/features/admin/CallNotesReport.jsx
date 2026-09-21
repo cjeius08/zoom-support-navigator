@@ -7,7 +7,7 @@ function personLabel(person) {
   return person.username || person.initials || 'Unknown user'
 }
 
-export function CallNotesReport({ range }) {
+export function CallNotesReport({ range, onOpenNotes = () => {} }) {
   const [state, setState] = useState({ loading: true, data: null, error: '' })
 
   useEffect(() => {
@@ -41,9 +41,10 @@ export function CallNotesReport({ range }) {
         <p className="eyebrow">Protected documentation</p>
         <h2 id="call-notes-report-title">Call Notes Report</h2>
         <p>
-          Saved Call Documentation is retained for 90 days. Admin access is read-only and intended for reporting and quality review.
+          Saved Call Documentation is retained for 90 days. Open the dedicated Saved Notes page for follow-up filtering, full search, and admin-only deletion.
         </p>
       </div>
+      <button type="button" className="primary-action" onClick={() => onOpenNotes('')}>Open Saved Notes</button>
     </div>
 
     {state.loading ? <p>Loading protected call notes…</p> : state.error ? <p role="alert">{state.error}</p> : <>
@@ -63,8 +64,10 @@ export function CallNotesReport({ range }) {
           const person = report.people.get(note.user_id)
           return <article className="usage-user-row call-note-report-row" key={note.id}>
             <div className="usage-user-identity">
-              <strong>{personLabel(person)}</strong>
-              <small>{person?.initials || '—'} · {new Date(note.created_at).toLocaleString()}</small>
+              <button type="button" className="call-note-person-link" onClick={() => onOpenNotes(note.user_id)}>
+                <strong>{personLabel(person)}</strong>
+                <small>{person?.initials || '—'} · {new Date(note.created_at).toLocaleString()}</small>
+              </button>
             </div>
             <dl>
               <div><dt>Caller ref</dt><dd>{note.caller_ref || '—'}</dd></div>
