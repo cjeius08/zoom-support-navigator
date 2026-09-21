@@ -45,8 +45,7 @@
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: .75rem;
+  justify-content: flex-start;
   margin-top: .75rem;
 }
 
@@ -58,11 +57,6 @@
   color: #eaf6ff;
   background: rgba(34, 139, 230, .18);
   cursor: pointer;
-}
-
-.ozzie-video-controls small {
-  color: #9fb6c8;
-  text-align: right;
 }
 
 .ozzie-welcome-copy {
@@ -124,17 +118,6 @@
 
   .ozzie-welcome-media video {
     max-height: 44vh;
-  }
-}
-
-@media (max-width: 560px) {
-  .ozzie-video-controls {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .ozzie-video-controls small {
-    text-align: left;
   }
 }
 
