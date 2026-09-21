@@ -39,13 +39,26 @@ const EMPTY_REPORT_CONTEXT = {
   category_id: null,
 }
 
+const STAGING_MODE = import.meta.env.VITE_STAGING_MODE === 'true'
+const STAGING_PROFILE = {
+  id: 'ozzie-staging-user',
+  username: 'STAGING_ADMIN',
+  initials: 'ST',
+  role: 'creator_admin',
+  workspace_role: 'admin',
+  status: 'active',
+  avatar_id: null,
+  must_change_password: false,
+  ozzie_intro_seen_at: 'staging',
+}
+
 export default function App() {
   const [activationOpen, setActivationOpen] = useState(false)
   const [error, setError] = useState('')
   const [errorField, setErrorField] = useState('')
-  const [profile, setProfile] = useState(null)
+  const [profile, setProfile] = useState(STAGING_MODE ? STAGING_PROFILE : null)
   const [avatarLibrary, setAvatarLibrary] = useState(() => getBundledAvatarRecords())
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!STAGING_MODE)
   const [view, setView] = useState('navigator')
   const [trainingVideoId, setTrainingVideoId] = useState(null)
   const [trainingTarget, setTrainingTarget] = useState(null)
@@ -61,7 +74,8 @@ export default function App() {
   const [ozzieIntroSaving, setOzzieIntroSaving] = useState(false)
   const [ozzieIntroError, setOzzieIntroError] = useState('')
   const [theme, setTheme] = useState(readStoredTheme)
-  const { trackEvent } = useUsageTracking(profile?.id ?? null, profile ? view : null)
+  const dataUserId = STAGING_MODE ? null : (profile?.id ?? null)
+  const { trackEvent } = useUsageTracking(dataUserId, profile ? view : null)
   const {
     favorites,
     loading: favoritesLoading,
@@ -69,7 +83,7 @@ export default function App() {
     isFavorite,
     isFavoriteBusy,
     toggleFavorite,
-  } = useFavorites(profile?.id ?? null)
+  } = useFavorites(dataUserId)
   const {
     recentlyViewed,
     loading: recentLoading,
@@ -77,11 +91,15 @@ export default function App() {
     error: recentError,
     rememberRecentView,
     clearRecentViews,
-  } = useRecentlyViewed(profile?.id ?? null)
+  } = useRecentlyViewed(dataUserId)
   const accessStyle = { '--login-workspace-image': `url(${assetUrl('assets/login-workspace-background.png')})` }
   const ozzieIntroVideoSrc = assetUrl('assets/Ozzie2.mp4')
 
   const refreshAvatarLibrary = useCallback(async () => {
+    if (STAGING_MODE) {
+      setAvatarLibrary(getBundledAvatarRecords())
+      return
+    }
     try {
       setAvatarLibrary(await loadAvatarLibrary())
     } catch {
@@ -284,7 +302,14 @@ export default function App() {
     applyTheme(theme)
   }, [theme])
 
-  useEffect(() => { getCurrentProfile().then(setProfile).catch(() => signOut()).finally(() => setLoading(false)) }, [])
+  useEffect(() => {
+    if (STAGING_MODE) {
+      setProfile(STAGING_PROFILE)
+      setLoading(false)
+      return
+    }
+    getCurrentProfile().then(setProfile).catch(() => signOut()).finally(() => setLoading(false))
+  }, [])
 
   useEffect(() => {
     if (!profile) {
@@ -395,7 +420,7 @@ export default function App() {
           : view === 'updates'
             ? <UpdatesView isAdmin={profile.role === 'creator_admin'}/>
             : view === 'feedback'
-              ? <FeedbackPage onSubmit={submitFeedback} onCancel={navigationHistory.length ? goBack : ()=>navigate('navigator')}/>
+              ? <FeedbackPage onSubmit={STAGING_MODE ? async () => {} : submitFeedback} onCancel={navigationHistory.length ? goBack : ()=>navigate('navigator')}/>
               : view === 'admin'
                 ? <AdminHome onNavigate={navigate} avatars={avatarLibrary}/>
                 : view === 'avatar_library'
@@ -410,6 +435,7 @@ export default function App() {
                         ? <MySavedNotesPage initialNoteId={mySavedNoteId}/>
                         : <FeedbackQueue onOpenPage={openFeedbackTarget}/>
     return <>
+      {STAGING_MODE && <div className="staging-environment-badge">STAGING / TEST ENVIRONMENT</div>}
       <AppShell
         profile={profile}
         currentView={view}
@@ -420,14 +446,14 @@ export default function App() {
         theme={theme}
         onThemeChange={changeTheme}
         onOpenMySavedNotes={openMySavedNotes}
-        onFeedback={submitFeedback}
+        onFeedback={STAGING_MODE ? async () => {} : submitFeedback}
         reportContext={reportContext}
         avatars={avatarLibrary}
-        onPasswordChange={changeOwnPassword}
-        onAvatarChange={async avatarId=>{await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}}
+        onPasswordChange={STAGING_MODE ? async () => {} : changeOwnPassword}
+        onAvatarChange={async avatarId=>{if (!STAGING_MODE) await updateOwnAvatar(avatarId);setProfile(current=>({...current,avatar_id:avatarId}))}}
         onMeetOzzie={replayOzzieIntro}
         canMeetOzzie
-        onLogout={async()=>{await signOut();setProfile(null);setNavigationHistory([]);setOzzieIntroOpen(false);setOzzieIntroReplay(false)}}
+        onLogout={async()=>{if (STAGING_MODE) return;await signOut();setProfile(null);setNavigationHistory([]);setOzzieIntroOpen(false);setOzzieIntroReplay(false)}}
       >{content}</AppShell>
       <OzzieWelcome
         open={ozzieIntroOpen}
