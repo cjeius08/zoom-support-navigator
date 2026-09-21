@@ -281,6 +281,25 @@ it('shows existing accounts on Admin Home', async () => {
   expect(loadTeam).toHaveBeenCalled()
 })
 
+it('shows selected avatars on Admin Home when the avatar library is provided', async () => {
+  loadTeam.mockResolvedValueOnce([
+    { id: 'agent-avatar', username: 'avatar_user', initials: 'AU', role: 'agent', workspace_role: 'member', status: 'active', avatar_id: 'custom-avatar', presence: 'active' },
+  ])
+  const { AdminHome } = await import('./AdminViews')
+  const { container } = render(
+    <AdminHome
+      onNavigate={vi.fn()}
+      avatars={[{ id: 'custom-avatar', src: 'https://example.com/custom-avatar.png' }]}
+    />,
+  )
+
+  expect(await screen.findByText('avatar_user')).toBeInTheDocument()
+  expect(container.querySelector('.admin-home-team-list img')).toHaveAttribute(
+    'src',
+    'https://example.com/custom-avatar.png',
+  )
+})
+
 it('shows the database storage guardrail on Admin Home', async () => {
   const { AdminHome } = await import('./AdminViews')
   render(<AdminHome onNavigate={vi.fn()} />)
