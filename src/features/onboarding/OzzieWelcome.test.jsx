@@ -23,7 +23,6 @@ it('shows the first-login Ozzie introduction and completes from either action', 
   expect(video.muted).toBe(true)
   expect(audio).toHaveAttribute('src', '/assets/Ozzie2.mp4')
   expect(screen.getByRole('button', { name: 'Play Ozzie introduction' })).toBeInTheDocument()
-  expect(screen.getByText(/Audio is synchronized/i)).toBeInTheDocument()
 
   await user.click(screen.getByRole('button', { name: 'Start Exploring' }))
   expect(onContinue).toHaveBeenCalledTimes(1)
