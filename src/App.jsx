@@ -397,7 +397,7 @@ export default function App() {
             : view === 'feedback'
               ? <FeedbackPage onSubmit={submitFeedback} onCancel={navigationHistory.length ? goBack : ()=>navigate('navigator')}/>
               : view === 'admin'
-                ? <AdminHome onNavigate={navigate}/>
+                ? <AdminHome onNavigate={navigate} avatars={avatarLibrary}/>
                 : view === 'avatar_library'
                   ? <AvatarLibraryManagement isAdmin={profile.role === 'creator_admin'} onChanged={refreshAvatarLibrary}/>
                 : view === 'team'
