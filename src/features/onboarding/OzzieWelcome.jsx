@@ -33,7 +33,7 @@ export function OzzieWelcome({
           <video
             controls
             playsInline
-            preload="metadata"
+            preload="auto"
             src={videoSrc}
             aria-label="Meet Ozzie introduction video"
           >
