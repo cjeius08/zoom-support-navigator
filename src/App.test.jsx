@@ -22,11 +22,14 @@ describe('application access gate', () => {
     const responsiveImport = "import './features/shell/responsiveShell.css'"
     const headerImport = "import './features/shell/headerNavRevamp.css'"
     const loginImport = "import './features/shell/loginRevamp.css'"
+    const themeImport = "import './features/theme/themeSystem.css'"
     expect(source).toContain(responsiveImport)
     expect(source).toContain(headerImport)
     expect(source).toContain(loginImport)
+    expect(source).toContain(themeImport)
     expect(source.indexOf(responsiveImport)).toBeLessThan(source.indexOf(headerImport))
     expect(source.indexOf(headerImport)).toBeLessThan(source.indexOf(loginImport))
+    expect(source.indexOf(loginImport)).toBeLessThan(source.indexOf(themeImport))
   })
 
   it('shows username-only sign in with activation instead of public registration', async () => {
