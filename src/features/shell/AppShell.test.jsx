@@ -161,6 +161,16 @@ it('keeps Lead as a title without granting admin navigation', () => {
   expect(screen.getByRole('navigation')).toHaveTextContent('Training & Resources')
 })
 
+it('gives regular members direct access to My Saved Notes from Call Flow', async () => {
+  const user = userEvent.setup()
+  const onOpenMySavedNotes = vi.fn()
+  render(<AppShell profile={agentProfile} onOpenMySavedNotes={onOpenMySavedNotes} />)
+
+  await user.click(screen.getByText('Call Flow'))
+  await user.click(within(screen.getByRole('navigation', { name: 'Primary navigation' })).getByRole('button', { name: 'My Saved Notes' }))
+  expect(onOpenMySavedNotes).toHaveBeenCalledWith('')
+})
+
 it('keeps updates and workspace ownership metadata available after the shell revamp', async () => {
   const user = userEvent.setup()
   const onNavigate = vi.fn()
