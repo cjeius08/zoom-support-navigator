@@ -775,3 +775,181 @@ html[data-theme="alaga"] .documentation-dock-preview pre {
   color: #d4c0be;
   background: rgba(20, 10, 12, .54);
 }
+
+
+/* Alaga · Navigator routes + Common Issue drawer
+   These surfaces use their own legacy blue palette, so they need explicit theme coverage. */
+html[data-theme="alaga"] .navigator-library {
+  border-color: rgba(242, 147, 139, .18);
+  background: linear-gradient(145deg, rgba(45, 27, 31, .76), rgba(27, 19, 22, .70));
+}
+html[data-theme="alaga"] .navigator-library-tabs {
+  border-bottom-color: rgba(242, 147, 139, .14);
+}
+html[data-theme="alaga"] .navigator-library-tabs button {
+  color: #cdb9b7;
+}
+html[data-theme="alaga"] .navigator-library-tabs button:hover {
+  color: #fff7f5;
+  background: rgba(159, 47, 53, .10);
+}
+html[data-theme="alaga"] .navigator-library-tabs button[aria-selected="true"] {
+  color: #fff8f6;
+  border-color: rgba(242, 122, 112, .30);
+  border-bottom-color: var(--alaga-red);
+  background: rgba(159, 47, 53, .18);
+}
+html[data-theme="alaga"] .navigator-tab-intro,
+html[data-theme="alaga"] .search-results-heading > p:last-child {
+  color: var(--alaga-muted);
+}
+html[data-theme="alaga"] .route-card {
+  color: #fff7f5;
+  border-color: rgba(242, 147, 139, .20);
+  background: linear-gradient(145deg, rgba(48, 29, 33, .86), rgba(29, 20, 23, .80));
+}
+html[data-theme="alaga"] .route-card:hover,
+html[data-theme="alaga"] .route-card:focus-visible {
+  border-color: var(--alaga-coral);
+  background: linear-gradient(145deg, rgba(91, 35, 40, .88), rgba(47, 24, 28, .84));
+}
+html[data-theme="alaga"] .route-card > span:first-child {
+  color: #ffaaa0;
+}
+html[data-theme="alaga"] .route-card small {
+  color: #cfbbb9;
+}
+html[data-theme="alaga"] .route-card b {
+  color: #ff9f96;
+}
+html[data-theme="alaga"] .route-group > h3 {
+  color: #bfa6a4;
+}
+html[data-theme="alaga"] .favorite-card-shell .favorite-toggle {
+  border-color: rgba(242, 147, 139, .22);
+  color: #d6c2c0;
+  background: rgba(38, 21, 24, .66);
+}
+html[data-theme="alaga"] .favorite-card-shell .favorite-toggle:hover,
+html[data-theme="alaga"] .favorite-card-shell .favorite-toggle:focus-visible,
+html[data-theme="alaga"] .favorite-card-shell .favorite-toggle[aria-pressed="true"] {
+  border-color: rgba(242, 122, 112, .48);
+  color: #fff2ef;
+  background: rgba(159, 47, 53, .22);
+}
+
+/* Common Issue drawer neutral interaction chrome */
+html[data-theme="alaga"] .common-issue-context {
+  border-bottom-color: rgba(242, 147, 139, .12);
+  background: rgba(27, 14, 17, .42);
+}
+html[data-theme="alaga"] .common-issue-context small,
+html[data-theme="alaga"] .common-issue-source-card > span,
+html[data-theme="alaga"] .common-issue-verified,
+html[data-theme="alaga"] .phase-two-route-group > span {
+  color: var(--alaga-muted-2);
+}
+html[data-theme="alaga"] .common-issue-context strong,
+html[data-theme="alaga"] .common-issue-classification strong,
+html[data-theme="alaga"] .common-issue-section h3,
+html[data-theme="alaga"] .common-issue-outcome h3,
+html[data-theme="alaga"] .common-issue-step-list h3,
+html[data-theme="alaga"] .phase-two-route-group button {
+  color: #fff7f5;
+}
+html[data-theme="alaga"] .common-issue-classification,
+html[data-theme="alaga"] .common-issue-section,
+html[data-theme="alaga"] .common-issue-outcome > div,
+html[data-theme="alaga"] .common-issue-status,
+html[data-theme="alaga"] .common-issue-source-card,
+html[data-theme="alaga"] .common-issue-discrepancy,
+html[data-theme="alaga"] .common-issue-empty,
+html[data-theme="alaga"] .common-issue-step-list article,
+html[data-theme="alaga"] .waiting-state-grid article,
+html[data-theme="alaga"] .common-issue-visual-grid figure,
+html[data-theme="alaga"] .common-issue-process-list article,
+html[data-theme="alaga"] .phase-two-route-group button,
+html[data-theme="alaga"] .common-issue-context-status {
+  border-color: rgba(242, 147, 139, .14);
+  background-color: rgba(46, 27, 31, .44);
+}
+html[data-theme="alaga"] .common-issue-classification {
+  border-left-color: var(--alaga-coral);
+  background: rgba(159, 47, 53, .11);
+}
+html[data-theme="alaga"] .common-issue-classification p:last-child,
+html[data-theme="alaga"] .common-issue-section > p:last-child,
+html[data-theme="alaga"] .common-issue-outcome p,
+html[data-theme="alaga"] .common-issue-source-card p,
+html[data-theme="alaga"] .common-issue-discrepancy p,
+html[data-theme="alaga"] .common-issue-empty p,
+html[data-theme="alaga"] .common-issue-confirm-list li,
+html[data-theme="alaga"] .common-issue-step-list p,
+html[data-theme="alaga"] .waiting-state-grid p,
+html[data-theme="alaga"] .common-issue-process-list p,
+html[data-theme="alaga"] .phase-two-route-group button small,
+html[data-theme="alaga"] .route-switches button span {
+  color: #cfbbb9;
+}
+html[data-theme="alaga"] .route-switches button,
+html[data-theme="alaga"] .common-issue-status button,
+html[data-theme="alaga"] .common-issue-context-options button,
+html[data-theme="alaga"] .common-issue-process-list button {
+  border-color: rgba(242, 147, 139, .24);
+  color: #ead8d6;
+  background: rgba(51, 27, 31, .58);
+}
+html[data-theme="alaga"] .route-switches button:hover,
+html[data-theme="alaga"] .route-switches button:focus-visible,
+html[data-theme="alaga"] .common-issue-context-options button:hover,
+html[data-theme="alaga"] .common-issue-context-options button:focus-visible,
+html[data-theme="alaga"] .common-issue-process-list button:hover,
+html[data-theme="alaga"] .common-issue-process-list button:focus-visible {
+  border-color: rgba(242, 122, 112, .55);
+  background: rgba(159, 47, 53, .18);
+}
+html[data-theme="alaga"] .common-issue-status button[aria-pressed="true"],
+html[data-theme="alaga"] .common-issue-context-options button[aria-pressed="true"] {
+  border-color: rgba(242, 122, 112, .64);
+  color: #fff8f6;
+  background: rgba(159, 47, 53, .25);
+}
+html[data-theme="alaga"] .common-issue-step-number {
+  border-color: rgba(242, 122, 112, .50);
+  color: #ffb1a9;
+  background: rgba(159, 47, 53, .18);
+}
+html[data-theme="alaga"] .common-issue-expected {
+  border-left-color: rgba(242, 122, 112, .62);
+  background: rgba(159, 47, 53, .08);
+}
+html[data-theme="alaga"] .common-issue-expected strong,
+html[data-theme="alaga"] .waiting-state-grid article > span,
+html[data-theme="alaga"] .common-issue-visual-grid figcaption a,
+html[data-theme="alaga"] .common-issue-empty a,
+html[data-theme="alaga"] .common-issue-source-card a,
+html[data-theme="alaga"] .common-issue-source-list a,
+html[data-theme="alaga"] .phase-two-route-group button > span {
+  color: #ffaaa0;
+}
+html[data-theme="alaga"] .waiting-state-grid article > span {
+  background: rgba(159, 47, 53, .14);
+}
+html[data-theme="alaga"] .waiting-state-grid article > div {
+  border-top-color: rgba(242, 147, 139, .10);
+}
+html[data-theme="alaga"] .common-issue-visual-frame {
+  background: rgba(255, 226, 222, .035);
+}
+html[data-theme="alaga"] .common-issue-visual-grid figcaption span {
+  color: #bda8a6;
+}
+html[data-theme="alaga"] .phase-two-route-group button:hover,
+html[data-theme="alaga"] .phase-two-route-group button:focus-visible {
+  border-color: rgba(242, 122, 112, .48);
+  background: rgba(159, 47, 53, .16);
+}
+html[data-theme="alaga"] .search-suggestion-route {
+  border-color: rgba(242, 122, 112, .20);
+  background: rgba(159, 47, 53, .09);
+}
