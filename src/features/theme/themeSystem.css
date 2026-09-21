@@ -1,0 +1,449 @@
+/* Ozzie theme system
+   Ozzie Original is the unchanged base stylesheet.
+   Alaga Theme is color-only: no logo, wording, layout, spacing, or component changes. */
+
+html[data-theme="alaga"] {
+  --alaga-red: #ef5653;
+  --alaga-red-strong: #d94343;
+  --alaga-red-deep: #9f2f35;
+  --alaga-coral: #f27a70;
+  --alaga-rose: #ffaaa0;
+  --alaga-ink: #171214;
+  --alaga-surface: #21181a;
+  --alaga-surface-2: #291c1f;
+  --alaga-border: rgba(242, 122, 112, .24);
+  --alaga-border-strong: rgba(242, 122, 112, .46);
+  --alaga-text: #fff7f4;
+  --alaga-muted: #cbb6b5;
+  --alaga-muted-2: #a99595;
+  --alaga-focus: #ff8a80;
+  color-scheme: dark;
+}
+
+html[data-theme="alaga"],
+html[data-theme="alaga"] body {
+  color: var(--alaga-text);
+  background:
+    radial-gradient(58rem 34rem at 92% -8%, rgba(239, 86, 83, .18), transparent 62%),
+    radial-gradient(42rem 26rem at 4% 100%, rgba(159, 47, 53, .11), transparent 68%),
+    #120f10;
+}
+
+html[data-theme="alaga"] body {
+  background:
+    radial-gradient(70rem 40rem at 92% -12%, rgba(239, 86, 83, .18), transparent 62%),
+    radial-gradient(45rem 30rem at 0 100%, rgba(159, 47, 53, .10), transparent 65%),
+    #120f10;
+}
+
+html[data-theme="alaga"] button:focus-visible,
+html[data-theme="alaga"] input:focus-visible,
+html[data-theme="alaga"] select:focus-visible,
+html[data-theme="alaga"] textarea:focus-visible,
+html[data-theme="alaga"] a:focus-visible {
+  outline-color: var(--alaga-focus);
+}
+
+/* Keep all Ozzie brand art exactly as supplied. */
+html[data-theme="alaga"] .ozzie-brand-dock img,
+html[data-theme="alaga"] .login-brand-logo,
+html[data-theme="alaga"] .access-brand-logo {
+  filter: none !important;
+}
+
+/* Login */
+html[data-theme="alaga"] .access-shell {
+  background:
+    linear-gradient(115deg, rgba(21, 13, 15, .94), rgba(40, 19, 22, .78)),
+    radial-gradient(circle at 83% 20%, rgba(239, 86, 83, .25), transparent 30%),
+    linear-gradient(135deg, #151113, #352023 55%, #170f11);
+}
+
+html[data-theme="alaga"] .access-card {
+  border-color: rgba(255, 194, 188, .26);
+  background: linear-gradient(140deg, rgba(45, 27, 31, .90), rgba(28, 19, 22, .82));
+  box-shadow: 0 2rem 6rem rgba(38, 4, 8, .42);
+}
+
+html[data-theme="alaga"] .access-card input {
+  color: var(--alaga-text);
+  border-color: rgba(244, 173, 167, .30);
+  background: rgba(20, 11, 13, .48);
+}
+
+html[data-theme="alaga"] .access-card input:focus {
+  border-color: var(--alaga-coral);
+  box-shadow: 0 0 0 .2rem rgba(239, 86, 83, .18);
+}
+
+html[data-theme="alaga"] .access-card button[type="submit"],
+html[data-theme="alaga"] .sign-in-button {
+  background: linear-gradient(135deg, var(--alaga-red), var(--alaga-red-strong));
+  box-shadow: 0 .65rem 1.25rem rgba(171, 38, 44, .30);
+}
+
+html[data-theme="alaga"] .access-card button[type="submit"]:hover,
+html[data-theme="alaga"] .sign-in-button:hover {
+  background: linear-gradient(135deg, #f36b65, #e34a49);
+}
+
+html[data-theme="alaga"] .access-card .link-button,
+html[data-theme="alaga"] .login-card a {
+  color: #ffaaa0;
+}
+
+html[data-theme="alaga"] .login-brand-script::after {
+  background: var(--alaga-red);
+  box-shadow: 0 0 .65rem rgba(239, 86, 83, .25);
+}
+
+/* Workspace shell + navigation */
+html[data-theme="alaga"] .app-shell {
+  background: transparent;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .account-menu {
+  border-color: rgba(244, 166, 160, .18);
+  background: rgba(34, 15, 18, .34);
+}
+
+html[data-theme="alaga"] .app-header-horizontal .account-menu:hover,
+html[data-theme="alaga"] .app-header-horizontal .account-menu:focus-visible {
+  border-color: var(--alaga-border-strong);
+  background: rgba(114, 33, 38, .24);
+}
+
+html[data-theme="alaga"] .top-navigation {
+  border-bottom-color: rgba(238, 180, 175, .18);
+}
+
+html[data-theme="alaga"] .topnav-link,
+html[data-theme="alaga"] .topnav-dropdown > summary {
+  color: #dbcaca;
+}
+
+html[data-theme="alaga"] .topnav-link:hover,
+html[data-theme="alaga"] .topnav-link:focus-visible,
+html[data-theme="alaga"] .topnav-dropdown > summary:hover,
+html[data-theme="alaga"] .topnav-dropdown > summary:focus-visible,
+html[data-theme="alaga"] .topnav-dropdown[open] > summary {
+  color: #fff;
+  background: rgba(239, 86, 83, .08);
+}
+
+html[data-theme="alaga"] .topnav-link.active::after,
+html[data-theme="alaga"] .topnav-dropdown.active > summary::after {
+  background: var(--alaga-red);
+}
+
+html[data-theme="alaga"] .topnav-menu {
+  border-color: rgba(242, 147, 139, .20);
+  background: linear-gradient(150deg, rgba(43, 26, 30, .99), rgba(24, 16, 19, .99));
+  box-shadow: 0 1.1rem 2.7rem rgba(38, 4, 8, .32);
+}
+
+html[data-theme="alaga"] .topnav-menu > button {
+  color: #f5e8e7;
+}
+
+html[data-theme="alaga"] .topnav-menu > button:hover,
+html[data-theme="alaga"] .topnav-menu > button:focus-visible,
+html[data-theme="alaga"] .topnav-menu > button[aria-pressed="true"] {
+  border-color: rgba(242, 122, 112, .30);
+  background: rgba(159, 47, 53, .18);
+}
+
+html[data-theme="alaga"] .topnav-menu svg {
+  stroke: #ff9e95;
+}
+
+html[data-theme="alaga"] .topnav-menu strong {
+  color: #fff7f5;
+}
+
+html[data-theme="alaga"] .topnav-menu small,
+html[data-theme="alaga"] .workspace-meta-footer,
+html[data-theme="alaga"] .workspace-meta-footer strong {
+  color: var(--alaga-muted);
+}
+
+html[data-theme="alaga"] .workspace-meta-footer {
+  border-top-color: rgba(242, 147, 139, .14);
+}
+
+/* Core cards, search, process and common issue surfaces */
+html[data-theme="alaga"] .hero,
+html[data-theme="alaga"] .smart-search-card,
+html[data-theme="alaga"] .live-call-flow-card,
+html[data-theme="alaga"] .common-issues,
+html[data-theme="alaga"] .process-card,
+html[data-theme="alaga"] .category-grid button,
+html[data-theme="alaga"] .agent-workflow,
+html[data-theme="alaga"] .console-card,
+html[data-theme="alaga"] .admin-shortcuts button,
+html[data-theme="alaga"] .real-summary > div,
+html[data-theme="alaga"] .team-list article,
+html[data-theme="alaga"] .feedback-list article {
+  border-color: var(--alaga-border);
+  background-color: rgba(42, 27, 30, .72);
+}
+
+html[data-theme="alaga"] .hero {
+  background: linear-gradient(120deg, rgba(92, 39, 43, .58), rgba(29, 22, 24, .76));
+}
+
+html[data-theme="alaga"] .agent-workflow {
+  background: linear-gradient(110deg, rgba(50, 26, 30, .86), rgba(33, 27, 29, .74));
+}
+
+html[data-theme="alaga"] .common-issues {
+  background: rgba(37, 25, 28, .78);
+}
+
+html[data-theme="alaga"] .category-grid button,
+html[data-theme="alaga"] .process-card {
+  background: rgba(50, 31, 35, .72);
+}
+
+html[data-theme="alaga"] .category-grid button:hover,
+html[data-theme="alaga"] .process-card:hover,
+html[data-theme="alaga"] .common-issues button:hover {
+  border-color: var(--alaga-coral);
+  background: rgba(102, 40, 45, .44);
+}
+
+html[data-theme="alaga"] .hero em,
+html[data-theme="alaga"] .eyebrow,
+html[data-theme="alaga"] .process-card b,
+html[data-theme="alaga"] .process-category,
+html[data-theme="alaga"] .full-process h3 {
+  color: #ff9f96;
+}
+
+html[data-theme="alaga"] .hero input,
+html[data-theme="alaga"] .smart-search-card input,
+html[data-theme="alaga"] .console-view input,
+html[data-theme="alaga"] .console-view select,
+html[data-theme="alaga"] .console-view textarea {
+  border-color: rgba(242, 147, 139, .28);
+  color: var(--alaga-text);
+  background: rgba(18, 11, 13, .50);
+}
+
+html[data-theme="alaga"] .search-suggestions {
+  border-color: rgba(242, 122, 112, .42);
+  background: rgba(30, 18, 21, .985);
+  box-shadow: 0 20px 50px rgba(38, 4, 8, .38);
+}
+
+html[data-theme="alaga"] .search-suggestion:hover,
+html[data-theme="alaga"] .search-suggestion[aria-selected="true"] {
+  border-color: rgba(242, 122, 112, .44);
+  background: rgba(159, 47, 53, .22);
+}
+
+html[data-theme="alaga"] .search-suggestion-category,
+html[data-theme="alaga"] .result-type-badge,
+html[data-theme="alaga"] .search-result-block-heading > span {
+  border-color: rgba(242, 122, 112, .30);
+  color: #ffb0a8 !important;
+  background: rgba(159, 47, 53, .18);
+}
+
+html[data-theme="alaga"] .agent-workflow li > span,
+html[data-theme="alaga"] .quick-steps li > span,
+html[data-theme="alaga"] .section-heading button {
+  background: var(--alaga-red-strong);
+}
+
+html[data-theme="alaga"] .common-issues button:hover {
+  border-color: var(--alaga-red);
+  background: rgba(159, 47, 53, .18);
+}
+
+html[data-theme="alaga"] .process-meta span {
+  color: #edcdca;
+  border-color: rgba(242, 122, 112, .28);
+}
+
+/* Drawers, floating tools and modal surfaces */
+html[data-theme="alaga"] .process-drawer,
+html[data-theme="alaga"] .profile-panel,
+html[data-theme="alaga"] .documentation-dock,
+html[data-theme="alaga"] .scope-check-dock,
+html[data-theme="alaga"] .readiness-dock {
+  border-color: rgba(242, 147, 139, .24);
+  color: var(--alaga-text);
+  background: linear-gradient(150deg, #23171a, #1b1517 58%, #2d181c);
+}
+
+html[data-theme="alaga"] .process-tabs button[aria-selected="true"] {
+  border-bottom-color: var(--alaga-red);
+}
+
+html[data-theme="alaga"] .process-category,
+html[data-theme="alaga"] .visual-guidance b,
+html[data-theme="alaga"] .visual-card a,
+html[data-theme="alaga"] .source-pages a,
+html[data-theme="alaga"] .saved-note-details summary,
+html[data-theme="alaga"] .call-note-person-link {
+  color: #ff9f96;
+}
+
+html[data-theme="alaga"] .refer-card,
+html[data-theme="alaga"] .script-section {
+  border-left-color: var(--alaga-coral);
+  background: rgba(239, 86, 83, .06);
+}
+
+html[data-theme="alaga"] .visual-card,
+html[data-theme="alaga"] .quick-steps li,
+html[data-theme="alaga"] .source-pages figure,
+html[data-theme="alaga"] .full-process > section {
+  border-color: rgba(242, 147, 139, .15);
+}
+
+/* Admin, reports, notes, readiness */
+html[data-theme="alaga"] .saved-notes-filter-card,
+html[data-theme="alaga"] .saved-note-card,
+html[data-theme="alaga"] .saved-notes-summary > button,
+html[data-theme="alaga"] .saved-notes-summary > div,
+html[data-theme="alaga"] .usage-user-row,
+html[data-theme="alaga"] .readiness-admin-report,
+html[data-theme="alaga"] .feedback-card {
+  border-color: var(--alaga-border);
+  background: linear-gradient(145deg, rgba(48, 30, 34, .80), rgba(29, 21, 24, .74));
+}
+
+html[data-theme="alaga"] .saved-notes-summary > button:hover,
+html[data-theme="alaga"] .saved-notes-summary > button:focus-visible,
+html[data-theme="alaga"] .saved-notes-summary > button.active {
+  border-color: var(--alaga-border-strong);
+  background: linear-gradient(145deg, rgba(105, 38, 43, .58), rgba(47, 25, 29, .82));
+}
+
+html[data-theme="alaga"] .saved-note-card.follow-up,
+html[data-theme="alaga"] .saved-notes-summary > button.follow-up.active {
+  border-color: rgba(255, 183, 112, .52);
+  background: linear-gradient(145deg, rgba(83, 49, 33, .65), rgba(42, 28, 27, .80));
+}
+
+html[data-theme="alaga"] .saved-note-person > button,
+html[data-theme="alaga"] .call-note-person-link {
+  border-color: rgba(242, 122, 112, .24);
+  background: rgba(159, 47, 53, .13);
+}
+
+html[data-theme="alaga"] .saved-note-person > button:hover,
+html[data-theme="alaga"] .saved-note-person > button:focus-visible,
+html[data-theme="alaga"] .call-note-person-link:hover,
+html[data-theme="alaga"] .call-note-person-link:focus-visible {
+  border-color: rgba(242, 122, 112, .52);
+  background: rgba(159, 47, 53, .22);
+}
+
+/* Generic actions and selection states. Destructive/success semantics remain unchanged. */
+html[data-theme="alaga"] .primary-action,
+html[data-theme="alaga"] .documentation-copy,
+html[data-theme="alaga"] button.active:not(.danger-action):not(.status-badge),
+html[data-theme="alaga"] [aria-pressed="true"]:not(.danger-action) {
+  border-color: rgba(242, 122, 112, .40);
+}
+
+html[data-theme="alaga"] .feedback-fab {
+  color: #fff;
+  background: linear-gradient(135deg, var(--alaga-red), var(--alaga-red-strong));
+}
+
+/* Profile appearance control */
+.theme-picker {
+  display: grid;
+  gap: .8rem;
+  margin-top: 1rem;
+}
+
+.theme-picker-copy h3 {
+  margin: 0;
+}
+
+.theme-picker-copy p {
+  margin: .3rem 0 0;
+  color: #9dafbf;
+  line-height: 1.5;
+}
+
+.theme-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .7rem;
+}
+
+.theme-option {
+  display: grid;
+  gap: .35rem;
+  min-height: 7rem;
+  padding: .85rem;
+  border: 1px solid rgba(255,255,255,.11);
+  border-radius: .8rem;
+  color: #eef6fc;
+  background: rgba(255,255,255,.045);
+  text-align: left;
+}
+
+.theme-option strong,
+.theme-option small {
+  display: block;
+}
+
+.theme-option small {
+  color: #9dafbf;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.theme-option[aria-pressed="true"] {
+  border-color: rgba(87, 174, 242, .55);
+  background: rgba(28, 112, 181, .18);
+  box-shadow: inset 0 0 0 1px rgba(87, 174, 242, .16);
+}
+
+html[data-theme="alaga"] .theme-option[aria-pressed="true"] {
+  border-color: rgba(242, 122, 112, .60);
+  background: rgba(159, 47, 53, .22);
+  box-shadow: inset 0 0 0 1px rgba(242, 122, 112, .16);
+}
+
+.theme-preview-swatch {
+  display: flex;
+  gap: .32rem;
+  margin-bottom: .15rem;
+}
+
+.theme-preview-swatch span {
+  width: 1.45rem;
+  height: .55rem;
+  border-radius: 999px;
+}
+
+.theme-option[data-theme-option="ozzie"] .theme-preview-swatch span:nth-child(1) { background: #2f9af4; }
+.theme-option[data-theme-option="ozzie"] .theme-preview-swatch span:nth-child(2) { background: #59cfff; }
+.theme-option[data-theme-option="ozzie"] .theme-preview-swatch span:nth-child(3) { background: #18232d; }
+.theme-option[data-theme-option="alaga"] .theme-preview-swatch span:nth-child(1) { background: #ef5653; }
+.theme-option[data-theme-option="alaga"] .theme-preview-swatch span:nth-child(2) { background: #f27a70; }
+.theme-option[data-theme-option="alaga"] .theme-preview-swatch span:nth-child(3) { background: #21181a; }
+
+.theme-picker-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.theme-picker-actions button {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+}
+
+@media (max-width: 560px) {
+  .theme-options {
+    grid-template-columns: 1fr;
+  }
+}

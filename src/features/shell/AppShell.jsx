@@ -47,11 +47,12 @@ function NavDropdown({ label, active = false, children }) {
   </details>
 }
 
-export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onOpenMySavedNotes = () => {}, onFeedback, reportContext = {}, avatars }) {
+export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onOpenMySavedNotes = () => {}, theme = 'ozzie', onThemeChange = () => {}, onFeedback, reportContext = {}, avatars }) {
   const [open, setOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [avatarOpen, setAvatarOpen] = useState(false)
   const [passwordOpen, setPasswordOpen] = useState(false)
+  const [appearanceOpen, setAppearanceOpen] = useState(false)
   const [message, setMessage] = useState('')
   const [profileError, setProfileError] = useState('')
   const [profileErrorField, setProfileErrorField] = useState('')
@@ -112,6 +113,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     setProfileOpen(false)
     setAvatarOpen(false)
     setPasswordOpen(false)
+    setAppearanceOpen(false)
     setProfileError('')
     setProfileErrorField('')
   }
@@ -311,6 +313,24 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
 
     <GlobalFeedbackButton currentView={currentView} reportContext={reportContext} onSubmit={onFeedback} />
 
-    {profileOpen && <div className="modal-backdrop" role="presentation" onClick={event => event.target === event.currentTarget && closeProfile()}><div ref={profileDialogRef} tabIndex={-1} className="profile-panel" role="dialog" aria-modal="true" aria-labelledby="profile-title"><div className="profile-summary">{avatarUrl(profile.avatar_id, avatars) ? <img src={avatarUrl(profile.avatar_id, avatars)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<div><h2 id="profile-title">My Profile</h2><strong>{profile.username}</strong><p>{profile.initials} · {accountRoleLabel}</p></div></div>{message && <p className="success-message" role="status">{message}</p>}{profileError && <p id="profile-error" role="alert">{profileError}</p>}{avatarOpen ? <AvatarPicker selectedId={profile.avatar_id} avatars={avatars} onCancel={() => setAvatarOpen(false)} onSave={async id => { setMessage(''); setProfileError(''); setProfileErrorField(''); try { await onAvatarChange?.(id); setAvatarOpen(false); setMessage('Avatar updated.') } catch (avatarError) { setProfileError(avatarError?.message || 'Could not update avatar.') } }} /> : passwordOpen ? <form onSubmit={submitPassword} noValidate><h3>Change Password</h3><label>New password<input name="password" type="password" autoComplete="new-password" disabled={passwordSaving} aria-invalid={profileErrorField === 'password' ? 'true' : undefined} aria-describedby={profileErrorField === 'password' ? 'profile-error' : undefined} /></label><label>Confirm password<input name="confirm" type="password" autoComplete="new-password" disabled={passwordSaving} aria-invalid={profileErrorField === 'confirm' ? 'true' : undefined} aria-describedby={profileErrorField === 'confirm' ? 'profile-error' : undefined} /></label><div className="dialog-actions"><button type="button" disabled={passwordSaving} onClick={() => setPasswordOpen(false)}>Cancel</button><button disabled={passwordSaving}>{passwordSaving ? 'Saving…' : 'Save Password'}</button></div></form> : <div className="profile-actions">{canMeetOzzie && <button onClick={() => { closeProfile(); onMeetOzzie?.() }}>Meet Ozzie Again</button>}<button onClick={() => { setMessage(''); setProfileError(''); setProfileErrorField(''); setAvatarOpen(true) }}>Change Avatar</button><button onClick={() => { setMessage(''); setProfileError(''); setProfileErrorField(''); setPasswordOpen(true) }}>Change Password</button><button onClick={onLogout}>Logout</button></div>}</div></div>}
+    {profileOpen && <div className="modal-backdrop" role="presentation" onClick={event => event.target === event.currentTarget && closeProfile()}><div ref={profileDialogRef} tabIndex={-1} className="profile-panel" role="dialog" aria-modal="true" aria-labelledby="profile-title"><div className="profile-summary">{avatarUrl(profile.avatar_id, avatars) ? <img src={avatarUrl(profile.avatar_id, avatars)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<div><h2 id="profile-title">My Profile</h2><strong>{profile.username}</strong><p>{profile.initials} · {accountRoleLabel}</p></div></div>{message && <p className="success-message" role="status">{message}</p>}{profileError && <p id="profile-error" role="alert">{profileError}</p>}{avatarOpen ? <AvatarPicker selectedId={profile.avatar_id} avatars={avatars} onCancel={() => setAvatarOpen(false)} onSave={async id => { setMessage(''); setProfileError(''); setProfileErrorField(''); try { await onAvatarChange?.(id); setAvatarOpen(false); setMessage('Avatar updated.') } catch (avatarError) { setProfileError(avatarError?.message || 'Could not update avatar.') } }} /> : passwordOpen ? <form onSubmit={submitPassword} noValidate><h3>Change Password</h3><label>New password<input name="password" type="password" autoComplete="new-password" disabled={passwordSaving} aria-invalid={profileErrorField === 'password' ? 'true' : undefined} aria-describedby={profileErrorField === 'password' ? 'profile-error' : undefined} /></label><label>Confirm password<input name="confirm" type="password" autoComplete="new-password" disabled={passwordSaving} aria-invalid={profileErrorField === 'confirm' ? 'true' : undefined} aria-describedby={profileErrorField === 'confirm' ? 'profile-error' : undefined} /></label><div className="dialog-actions"><button type="button" disabled={passwordSaving} onClick={() => setPasswordOpen(false)}>Cancel</button><button disabled={passwordSaving}>{passwordSaving ? 'Saving…' : 'Save Password'}</button></div></form> : appearanceOpen ? <section className="theme-picker" aria-labelledby="appearance-title">
+      <div className="theme-picker-copy">
+        <h3 id="appearance-title">Appearance</h3>
+        <p>Choose a color theme. Ozzie branding, logo, layout, content, and features stay unchanged.</p>
+      </div>
+      <div className="theme-options" role="group" aria-label="Workspace theme">
+        <button type="button" className="theme-option" data-theme-option="ozzie" aria-pressed={theme === 'ozzie'} onClick={() => onThemeChange('ozzie')}>
+          <span className="theme-preview-swatch" aria-hidden="true"><span></span><span></span><span></span></span>
+          <strong>Ozzie Original</strong>
+          <small>The original Ozzie navy, cyan, and blue workspace colors.</small>
+        </button>
+        <button type="button" className="theme-option" data-theme-option="alaga" aria-pressed={theme === 'alaga'} onClick={() => onThemeChange('alaga')}>
+          <span className="theme-preview-swatch" aria-hidden="true"><span></span><span></span><span></span></span>
+          <strong>Alaga Theme</strong>
+          <small>Ozzie with the Alaga red and coral color palette only.</small>
+        </button>
+      </div>
+      <div className="theme-picker-actions"><button type="button" onClick={() => setAppearanceOpen(false)}>Back to Profile</button></div>
+    </section> : <div className="profile-actions">{canMeetOzzie && <button onClick={() => { closeProfile(); onMeetOzzie?.() }}>Meet Ozzie Again</button>}<button onClick={() => { setMessage(''); setProfileError(''); setProfileErrorField(''); setAvatarOpen(true) }}>Change Avatar</button><button onClick={() => { setMessage(''); setProfileError(''); setProfileErrorField(''); setPasswordOpen(true) }}>Change Password</button><button onClick={() => { setMessage(''); setProfileError(''); setProfileErrorField(''); setAppearanceOpen(true) }}>Appearance</button><button onClick={onLogout}>Logout</button></div>}</div></div>}
   </div>
 }

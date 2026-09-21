@@ -21,11 +21,13 @@ import { useRecentlyViewed } from './features/favorites/useRecentlyViewed'
 import { OzzieWelcome } from './features/onboarding/OzzieWelcome'
 import { assetUrl } from './lib/assetUrl'
 import { useUsageTracking } from './features/analytics/usePresence'
+import { applyTheme, readStoredTheme, storeTheme } from './features/theme/theme'
 import './styles.css'
 import './accessibility-ui.css'
 import './features/shell/responsiveShell.css'
 import './features/shell/headerNavRevamp.css'
 import './features/shell/loginRevamp.css'
+import './features/theme/themeSystem.css'
 
 const EMPTY_REPORT_CONTEXT = {
   selected_tab: null,
@@ -58,6 +60,7 @@ export default function App() {
   const [ozzieIntroReplay, setOzzieIntroReplay] = useState(false)
   const [ozzieIntroSaving, setOzzieIntroSaving] = useState(false)
   const [ozzieIntroError, setOzzieIntroError] = useState('')
+  const [theme, setTheme] = useState(readStoredTheme)
   const { trackEvent } = useUsageTracking(profile?.id ?? null, profile ? view : null)
   const {
     favorites,
@@ -277,6 +280,10 @@ export default function App() {
     setView('navigator')
   }
 
+  useEffect(() => {
+    applyTheme(theme)
+  }, [theme])
+
   useEffect(() => { getCurrentProfile().then(setProfile).catch(() => signOut()).finally(() => setLoading(false)) }, [])
 
   useEffect(() => {
@@ -295,6 +302,11 @@ export default function App() {
       setOzzieIntroOpen(true)
     }
   }, [profile])
+
+  function changeTheme(nextTheme) {
+    const savedTheme = storeTheme(nextTheme)
+    setTheme(savedTheme)
+  }
 
   async function finishOzzieIntro() {
     if (ozzieIntroReplay || profile?.ozzie_intro_seen_at) {
@@ -405,6 +417,8 @@ export default function App() {
         onBack={goBack}
         canGoBack={navigationHistory.length > 0}
         onOpenReadinessResource={openReadinessResource}
+        theme={theme}
+        onThemeChange={changeTheme}
         onOpenMySavedNotes={openMySavedNotes}
         onFeedback={submitFeedback}
         reportContext={reportContext}
