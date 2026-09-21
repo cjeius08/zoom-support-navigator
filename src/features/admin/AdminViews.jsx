@@ -111,7 +111,7 @@ function readinessAttemptSummary(attempts = [], maxAttempts = 3) {
   };
 }
 
-export function AdminHome({ onNavigate }) {
+export function AdminHome({ onNavigate, avatars = [] }) {
   const storageLoader = useCallback(() => loadStorageGuardrail(), []);
   const teamLoader = useCallback(() => loadTeam(), []);
   const storageState = useData(storageLoader);
@@ -146,8 +146,8 @@ export function AdminHome({ onNavigate }) {
           return <div className="team-list admin-home-team-list">
             {existingAccounts.map(person => (
               <article key={person.id}>
-                {avatarUrl(person.avatar_id) ? (
-                  <img src={avatarUrl(person.avatar_id)} alt="" />
+                {avatarUrl(person.avatar_id, avatars) ? (
+                  <img src={avatarUrl(person.avatar_id, avatars)} alt="" />
                 ) : (
                   <span className="avatar-fallback">{person.initials}</span>
                 )}
