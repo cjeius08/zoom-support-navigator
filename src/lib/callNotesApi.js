@@ -36,6 +36,25 @@ export async function loadOwnCallNotes(limit = 20) {
   return data || []
 }
 
+export async function loadAllOwnCallNotes() {
+  const userId = await currentUserId()
+  const rows = []
+  const pageSize = 1000
+
+  for (let from = 0; ; from += pageSize) {
+    const { data, error } = await supabase
+      .from('zoom_call_notes')
+      .select('id,user_id,caller_ref,device,outcome,call_started_at,draft,created_at,updated_at,expires_at')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .range(from, from + pageSize - 1)
+
+    if (error) throw error
+    rows.push(...(data || []))
+    if (!data || data.length < pageSize) return rows
+  }
+}
+
 export async function saveOwnCallNote({ id = null, draft }) {
   const userId = await currentUserId()
   const payload = notePayload(draft)

@@ -47,7 +47,7 @@ function NavDropdown({ label, active = false, children }) {
   </details>
 }
 
-export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onFeedback, reportContext = {}, avatars }) {
+export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onOpenMySavedNotes = () => {}, onFeedback, reportContext = {}, avatars }) {
   const [open, setOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [avatarOpen, setAvatarOpen] = useState(false)
@@ -73,7 +73,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     .filter(([, state]) => state === 'minimized')
     .map(([id]) => id)
 
-  const callFlowActive = liveTools.documentation !== 'closed' || liveTools.scope_check !== 'closed'
+  const callFlowActive = currentView === 'my_saved_notes' || liveTools.documentation !== 'closed' || liveTools.scope_check !== 'closed'
   const knowledgeActive = ['favorites', 'training', 'updates'].includes(currentView)
   const reportsActive = ['feedback', 'usage', 'feedback_queue'].includes(currentView)
   const adminActive = ['admin', 'team', 'avatar_library', 'saved_notes'].includes(currentView)
@@ -227,6 +227,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
 
         <NavDropdown label="Call Flow" active={callFlowActive}>
           <button type="button" aria-label="Call Documentation" aria-pressed={liveTools.documentation !== 'closed'} onClick={event => openToolFromHeader(event, 'documentation')}><Icon type="documentation" /><span><strong>Call Documentation</strong><small>Capture notes without leaving your current page.</small></span></button>
+          <button type="button" aria-label="My Saved Notes" onClick={event => { finishNav(event); onOpenMySavedNotes('') }}><Icon type="notes" /><span><strong>My Saved Notes</strong><small>Review your saved notes and follow-ups.</small></span></button>
           <button type="button" aria-label="Scope Check" aria-pressed={liveTools.scope_check !== 'closed'} onClick={event => openToolFromHeader(event, 'scope_check')}><Icon type="scope_check" /><span><strong>Scope Check</strong><small>Confirm the correct support boundary and next step.</small></span></button>
         </NavDropdown>
 
@@ -286,6 +287,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
 
     <CallDocumentation
       open={liveTools.documentation !== 'closed'}
+      onOpenSavedNotes={noteId => onOpenMySavedNotes(noteId)}
       minimized={liveTools.documentation === 'minimized'}
       stackIndex={minimizedLiveTools.indexOf('documentation')}
       onMinimize={() => toggleLiveToolMinimized('documentation')}

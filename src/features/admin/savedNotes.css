@@ -321,3 +321,19 @@
     width: 100%;
   }
 }
+
+
+.my-saved-notes-page .saved-notes-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.saved-note-card.selected {
+  outline: 2px solid rgba(91, 177, 243, .72);
+  outline-offset: 2px;
+}
+
+@media (max-width: 620px) {
+  .my-saved-notes-page .saved-notes-summary {
+    grid-template-columns: 1fr;
+  }
+}

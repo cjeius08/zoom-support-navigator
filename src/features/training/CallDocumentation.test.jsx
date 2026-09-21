@@ -110,6 +110,26 @@ it('clears the temporary draft only after confirmation', async () => {
   confirm.mockRestore()
 })
 
+it('sends a saved-note Open action to the dedicated saved notes page', async () => {
+  const callNotesApi = await import('../../lib/callNotesApi')
+  callNotesApi.loadOwnCallNotes.mockResolvedValueOnce([{
+    id: 'note-follow',
+    caller_ref: 'CASE-OPEN',
+    device: 'Windows',
+    outcome: 'Follow-Up Required',
+    created_at: '2026-09-22T02:30:00Z',
+    expires_at: '2026-12-21T02:30:00Z',
+    draft: { callerRef: 'CASE-OPEN', outcome: 'Follow-Up Required' },
+  }])
+  const user = userEvent.setup()
+  const onOpenSavedNotes = vi.fn()
+  render(<CallDocumentation open onOpenSavedNotes={onOpenSavedNotes} />)
+
+  await user.click(await screen.findByText(/Saved notes \(1\)/i))
+  await user.click(screen.getByRole('button', { name: 'Open' }))
+  expect(onOpenSavedNotes).toHaveBeenCalledWith('note-follow')
+})
+
 it('shows privacy and referral framing without claiming an internal escalation', () => {
   render(<CallDocumentation open />)
 

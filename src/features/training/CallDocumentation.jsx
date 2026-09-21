@@ -56,7 +56,7 @@ function Field({ label, hint, children }) {
   </label>
 }
 
-export function CallDocumentation({ open = false, minimized = false, stackIndex = 0, onMinimize = () => {}, onClose = () => {} }) {
+export function CallDocumentation({ open = false, minimized = false, stackIndex = 0, onMinimize = () => {}, onClose = () => {}, onOpenSavedNotes = null }) {
   const [draft, setDraft] = useState(createInitialDraft)
   const [copyState, setCopyState] = useState('idle')
   const [activeNoteId, setActiveNoteId] = useState(null)
@@ -141,6 +141,10 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
   }
 
   function openSavedNote(note) {
+    if (onOpenSavedNotes) {
+      onOpenSavedNotes(note.id)
+      return
+    }
     setDraft(restoredDraft(note))
     setActiveNoteId(note.id)
     setCopyState('idle')
