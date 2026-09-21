@@ -53,10 +53,9 @@ html[data-theme="alaga"] .access-brand-logo {
 
 /* Login */
 html[data-theme="alaga"] .access-shell {
-  background:
-    linear-gradient(115deg, rgba(21, 13, 15, .94), rgba(40, 19, 22, .78)),
-    radial-gradient(circle at 83% 20%, rgba(239, 86, 83, .25), transparent 30%),
-    linear-gradient(135deg, #151113, #352023 55%, #170f11);
+  background-image:
+    linear-gradient(90deg, rgba(30, 8, 12, .58), rgba(38, 11, 14, .22) 48%, rgba(24, 7, 10, .42)),
+    var(--login-workspace-image);
 }
 
 html[data-theme="alaga"] .access-card {
@@ -446,4 +445,333 @@ html[data-theme="alaga"] .theme-option[aria-pressed="true"] {
   .theme-options {
     grid-template-columns: 1fr;
   }
+}
+
+
+/* Alaga coverage polish
+   Color overrides only. Existing Ozzie layout, imagery, spacing, content and semantics stay intact. */
+
+/* Preserve the approved photographic workspace while adding an Alaga tint. */
+html[data-theme="alaga"] .access-shell::before {
+  background: radial-gradient(circle at 45% 42%, transparent 0 18rem, rgba(74, 10, 16, .16) 50rem);
+}
+html[data-theme="alaga"] .access-shell::after {
+  background: rgba(42, 8, 12, .18);
+}
+html[data-theme="alaga"] .access-input {
+  border-color: rgba(255, 190, 184, .48);
+  background: rgba(45, 15, 19, .30);
+}
+html[data-theme="alaga"] .access-input:focus-within {
+  border-color: var(--alaga-coral);
+  background: rgba(52, 17, 21, .40);
+  box-shadow: 0 0 0 .2rem rgba(239, 86, 83, .18);
+}
+html[data-theme="alaga"] .access-card .sign-in-button {
+  border-color: rgba(255, 166, 157, .72);
+}
+html[data-theme="alaga"] .access-input > svg,
+html[data-theme="alaga"] .password-toggle {
+  color: #fff4f1;
+  stroke: currentColor;
+}
+
+/* Keep the authenticated workspace image and only shift its overlays toward Alaga. */
+html[data-theme="alaga"] .app-shell::before {
+  background:
+    linear-gradient(90deg, rgba(26, 7, 10, .78), rgba(25, 10, 12, .46)),
+    var(--workspace-image) center/cover;
+}
+html[data-theme="alaga"] .app-shell::after {
+  background:
+    radial-gradient(55rem 35rem at 86% 12%, rgba(239, 86, 83, .17), transparent 60%),
+    rgba(19, 6, 8, .30);
+}
+html[data-theme="alaga"] .app-header-horizontal {
+  border-color: rgba(242, 147, 139, .18);
+  background: rgba(28, 15, 18, .70);
+}
+
+/* Shared headings, secondary copy and primary actions. */
+html[data-theme="alaga"] .view-heading {
+  border-bottom-color: rgba(242, 147, 139, .16);
+}
+html[data-theme="alaga"] .console-view > p,
+html[data-theme="alaga"] .view-heading p,
+html[data-theme="alaga"] .library-count,
+html[data-theme="alaga"] .training-controls label,
+html[data-theme="alaga"] .feedback-page > p {
+  color: var(--alaga-muted);
+}
+html[data-theme="alaga"] .playlist-label {
+  border-color: rgba(242, 122, 112, .34);
+  color: #ffc1bb;
+  background: rgba(159, 47, 53, .10);
+}
+html[data-theme="alaga"] .primary-action,
+html[data-theme="alaga"] .training-card button,
+html[data-theme="alaga"] .readiness-check-answer {
+  border-color: rgba(255, 166, 157, .34);
+  color: #fff;
+  background: linear-gradient(135deg, var(--alaga-red), var(--alaga-red-strong));
+  box-shadow: 0 .5rem 1rem rgba(126, 24, 31, .23);
+}
+html[data-theme="alaga"] .primary-action:hover,
+html[data-theme="alaga"] .training-card button:hover,
+html[data-theme="alaga"] .readiness-check-answer:hover:not(:disabled) {
+  background: linear-gradient(135deg, #f36b65, #e34a49);
+}
+
+/* Training & Knowledge resources. */
+html[data-theme="alaga"] .training-section-tabs button,
+html[data-theme="alaga"] .quick-access-tabs button,
+html[data-theme="alaga"] .communication-mode-tabs button {
+  border-color: rgba(242, 147, 139, .16);
+  color: #d8c4c3;
+  background: rgba(39, 22, 25, .62);
+}
+html[data-theme="alaga"] .training-section-tabs button[aria-selected="true"],
+html[data-theme="alaga"] .quick-access-tabs button[aria-selected="true"],
+html[data-theme="alaga"] .communication-mode-tabs button[aria-selected="true"] {
+  border-color: rgba(242, 122, 112, .45);
+  color: #fff8f6;
+  background: rgba(159, 47, 53, .22);
+}
+html[data-theme="alaga"] .training-controls input,
+html[data-theme="alaga"] .training-controls select {
+  border-color: rgba(242, 147, 139, .24);
+  color: var(--alaga-text);
+  background: rgba(23, 12, 15, .72);
+}
+html[data-theme="alaga"] .training-card,
+html[data-theme="alaga"] .training-viewer,
+html[data-theme="alaga"] .training-roadmap-intro,
+html[data-theme="alaga"] .training-roadmap-key,
+html[data-theme="alaga"] .roadmap-objective,
+html[data-theme="alaga"] .roadmap-skills,
+html[data-theme="alaga"] .training-roadmap-reinforcement,
+html[data-theme="alaga"] .device-walkthrough-panel,
+html[data-theme="alaga"] .device-walkthrough-section,
+html[data-theme="alaga"] .communication-panel,
+html[data-theme="alaga"] .communication-framework-card,
+html[data-theme="alaga"] .communication-phrase-card,
+html[data-theme="alaga"] .scenario-script-card,
+html[data-theme="alaga"] .guided-lesson-panel,
+html[data-theme="alaga"] .guided-lesson-split,
+html[data-theme="alaga"] .guided-remember,
+html[data-theme="alaga"] .guided-practice-note {
+  border-color: rgba(242, 147, 139, .18);
+  background: linear-gradient(145deg, rgba(48, 28, 32, .82), rgba(27, 19, 22, .76));
+}
+html[data-theme="alaga"] .training-card p,
+html[data-theme="alaga"] .device-walkthrough-copy li,
+html[data-theme="alaga"] .device-walkthrough-intro > div > p:last-child,
+html[data-theme="alaga"] .device-walkthrough-header > div > p:last-child {
+  color: #d2bfbd;
+}
+html[data-theme="alaga"] .training-tags span,
+html[data-theme="alaga"] .device-verified,
+html[data-theme="alaga"] .device-quick-facts span,
+html[data-theme="alaga"] .communication-source-stamp {
+  border-color: rgba(242, 122, 112, .30);
+  color: #ffb7b0;
+  background: rgba(159, 47, 53, .14);
+}
+html[data-theme="alaga"] .device-expected,
+html[data-theme="alaga"] .scenario-call-flow-note,
+html[data-theme="alaga"] .guided-remember {
+  border-left-color: var(--alaga-coral);
+  background-color: rgba(159, 47, 53, .10);
+}
+html[data-theme="alaga"] .device-expected strong,
+html[data-theme="alaga"] .scenario-route-anchor,
+html[data-theme="alaga"] .training-viewer a {
+  color: #ffaaa0;
+}
+
+/* Favorites and recently viewed. */
+html[data-theme="alaga"] .favorite-saved-card,
+html[data-theme="alaga"] .favorites-empty,
+html[data-theme="alaga"] .favorites-group,
+html[data-theme="alaga"] .recent-resource-wrap {
+  border-color: rgba(242, 147, 139, .18);
+}
+html[data-theme="alaga"] .favorite-saved-card,
+html[data-theme="alaga"] .favorites-empty {
+  background: linear-gradient(145deg, rgba(46, 28, 31, .80), rgba(28, 20, 23, .74));
+}
+html[data-theme="alaga"] .favorite-open-button,
+html[data-theme="alaga"] .clear-recent-button {
+  border-color: rgba(242, 122, 112, .28);
+  color: #ffd0cb;
+  background: rgba(159, 47, 53, .14);
+}
+html[data-theme="alaga"] .recent-position,
+html[data-theme="alaga"] .favorites-empty-star {
+  color: #ff9f96;
+}
+
+/* Readiness Lab keeps correctness/warning semantics; neutral interaction chrome follows Alaga. */
+html[data-theme="alaga"] .readiness-open-book,
+html[data-theme="alaga"] .readiness-progress,
+html[data-theme="alaga"] .readiness-resume-banner,
+html[data-theme="alaga"] .readiness-part-summary,
+html[data-theme="alaga"] .readiness-question,
+html[data-theme="alaga"] .readiness-find-card,
+html[data-theme="alaga"] .readiness-part-result,
+html[data-theme="alaga"] .readiness-next-parts {
+  border-color: rgba(242, 147, 139, .17);
+  background: rgba(53, 29, 33, .42);
+}
+html[data-theme="alaga"] .readiness-open-book strong,
+html[data-theme="alaga"] .readiness-find-card > div > span {
+  color: #ffaaa0;
+}
+html[data-theme="alaga"] .readiness-open-book span,
+html[data-theme="alaga"] .readiness-progress span,
+html[data-theme="alaga"] .readiness-part-summary p,
+html[data-theme="alaga"] .readiness-find-card small {
+  color: var(--alaga-muted);
+}
+html[data-theme="alaga"] .readiness-progress strong {
+  color: #f7e8e6;
+}
+html[data-theme="alaga"] .readiness-progress-track {
+  background: rgba(255, 220, 216, .08);
+}
+html[data-theme="alaga"] .readiness-progress-track i {
+  background: linear-gradient(90deg, var(--alaga-red-strong), var(--alaga-coral));
+}
+html[data-theme="alaga"] .readiness-part-rail button {
+  border-color: rgba(242, 147, 139, .13);
+  color: #bfa8a6;
+  background: rgba(29, 16, 19, .52);
+}
+html[data-theme="alaga"] .readiness-part-rail button > span {
+  background: rgba(159, 47, 53, .18);
+  color: #ffb0a8;
+}
+html[data-theme="alaga"] .readiness-part-rail small {
+  color: #8f7676;
+}
+html[data-theme="alaga"] .readiness-part-rail button[aria-selected="true"] {
+  border-color: rgba(242, 122, 112, .48);
+  color: #fff7f5;
+  background: rgba(159, 47, 53, .22);
+}
+html[data-theme="alaga"] .readiness-answer-options button {
+  border-color: rgba(242, 147, 139, .15);
+  color: #e7d6d4;
+  background: rgba(27, 15, 18, .54);
+}
+html[data-theme="alaga"] .readiness-answer-options button[aria-checked="true"] {
+  border-color: rgba(242, 122, 112, .50);
+  background: rgba(159, 47, 53, .20);
+}
+html[data-theme="alaga"] .readiness-answer-options button > span {
+  color: #ffaaa0;
+  background: rgba(159, 47, 53, .16);
+}
+
+/* Admin, reports, avatar library and feedback surfaces. */
+html[data-theme="alaga"] .admin-account-overview,
+html[data-theme="alaga"] .storage-guardrail-card.safe,
+html[data-theme="alaga"] .usage-user-row,
+html[data-theme="alaga"] .readiness-report-part,
+html[data-theme="alaga"] .avatar-library-upload-panel,
+html[data-theme="alaga"] .avatar-library-panel,
+html[data-theme="alaga"] .avatar-library-card,
+html[data-theme="alaga"] .feedback-form-panel {
+  border-color: rgba(242, 147, 139, .18);
+  background: linear-gradient(145deg, rgba(47, 29, 33, .78), rgba(28, 20, 23, .72));
+}
+html[data-theme="alaga"] .usage-period-controls button,
+html[data-theme="alaga"] .avatar-library-toolbar button,
+html[data-theme="alaga"] .avatar-library-actions button,
+html[data-theme="alaga"] .row-menu button {
+  border-color: rgba(242, 147, 139, .17);
+  color: #eadad8;
+  background: rgba(48, 27, 31, .64);
+}
+html[data-theme="alaga"] .usage-period-controls button[aria-pressed="true"],
+html[data-theme="alaga"] .avatar-library-checkbox:checked + span {
+  border-color: rgba(242, 122, 112, .45);
+  background: rgba(159, 47, 53, .22);
+}
+html[data-theme="alaga"] .storage-guardrail-card.safe .storage-guardrail-meter > span {
+  background: linear-gradient(90deg, var(--alaga-red-strong), var(--alaga-coral));
+}
+
+/* What’s New / Updates. */
+html[data-theme="alaga"] .updates-version-pill {
+  border-color: rgba(242, 122, 112, .32);
+  color: #ffc4be;
+  background: rgba(159, 47, 53, .14);
+}
+html[data-theme="alaga"] .console-metadata > div,
+html[data-theme="alaga"] .update-card {
+  border-color: rgba(242, 147, 139, .18);
+  background: linear-gradient(145deg, rgba(47, 29, 33, .80), rgba(27, 19, 22, .74));
+}
+html[data-theme="alaga"] .console-metadata dt,
+html[data-theme="alaga"] .update-card time {
+  color: var(--alaga-muted-2);
+}
+html[data-theme="alaga"] .console-metadata dd,
+html[data-theme="alaga"] .update-card h2 {
+  color: #fff7f5;
+}
+html[data-theme="alaga"] .updates-policy {
+  border-color: rgba(242, 122, 112, .24);
+  background: rgba(159, 47, 53, .11);
+}
+html[data-theme="alaga"] .updates-policy span,
+html[data-theme="alaga"] .update-area {
+  color: #ffaaa0;
+}
+html[data-theme="alaga"] .updates-policy strong {
+  color: #fff7f5;
+}
+html[data-theme="alaga"] .updates-policy p {
+  color: var(--alaga-muted);
+}
+html[data-theme="alaga"] .update-card > header {
+  border-bottom-color: rgba(242, 147, 139, .10);
+}
+
+/* Floating Call Documentation / Scope Check chrome. */
+html[data-theme="alaga"] .documentation-dock-header,
+html[data-theme="alaga"] .documentation-dock-footer {
+  border-color: rgba(242, 147, 139, .14);
+  background: rgba(35, 20, 23, .96);
+}
+html[data-theme="alaga"] .documentation-dock-section > summary span {
+  background: rgba(159, 47, 53, .18);
+  color: #ffaaa0;
+}
+html[data-theme="alaga"] .documentation-dock-field > span,
+html[data-theme="alaga"] .documentation-dock-restore {
+  color: #f0dfdd;
+}
+html[data-theme="alaga"] .documentation-dock-field > small,
+html[data-theme="alaga"] .documentation-dock-restore small,
+html[data-theme="alaga"] .documentation-dock-footer > small {
+  color: #9f8786;
+}
+html[data-theme="alaga"] .documentation-dock-field input,
+html[data-theme="alaga"] .documentation-dock-field select,
+html[data-theme="alaga"] .documentation-dock-field textarea {
+  border-color: rgba(242, 147, 139, .18);
+  color: #f7e9e7;
+  background: rgba(22, 11, 14, .58);
+}
+html[data-theme="alaga"] .documentation-dock .documentation-copy {
+  border-color: rgba(242, 122, 112, .36);
+  color: #ffd0cb;
+  background: rgba(159, 47, 53, .20);
+}
+html[data-theme="alaga"] .documentation-dock-preview pre {
+  border-color: rgba(242, 147, 139, .10);
+  color: #d4c0be;
+  background: rgba(20, 10, 12, .54);
 }
