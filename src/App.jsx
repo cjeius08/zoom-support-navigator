@@ -22,6 +22,7 @@ import { useUsageTracking } from './features/analytics/usePresence'
 import './styles.css'
 import './accessibility-ui.css'
 import './features/shell/responsiveShell.css'
+import './features/shell/headerNavRevamp.css'
 
 const EMPTY_REPORT_CONTEXT = {
   selected_tab: null,
