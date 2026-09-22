@@ -1112,3 +1112,281 @@
     width: 70%;
   }
 }
+
+
+/* Windows fidelity pass — Zoom Workplace 7.2.x training reference */
+.zoom-sim-device.windows .zoom-sim-device-chrome {
+  min-height: 38px;
+  justify-content: space-between;
+  padding: 0 .45rem 0 .7rem;
+  background: #f8f9fb;
+  border-bottom-color: #e2e5e9;
+  color: #40464d;
+}
+
+.zoom-sim-window-app {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font-size: .74rem;
+}
+
+.zoom-sim-window-app b {
+  display: grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: .35rem;
+  background: #2d8cff;
+  color: white;
+  font-size: .7rem;
+}
+
+.zoom-sim-window-controls {
+  display: flex;
+  align-self: stretch;
+}
+
+.zoom-sim-window-controls i {
+  width: 2.5rem;
+  display: grid;
+  place-items: center;
+  font-style: normal;
+  color: #5a6067;
+}
+
+.zoom-sim-window-controls i:last-child:hover {
+  background: #e81123;
+  color: white;
+}
+
+.zoom-sim-device.windows .zoom-sim-desktop-app {
+  grid-template-columns: 168px minmax(0, 1fr);
+}
+
+.zoom-sim-device.windows .zoom-sim-rail {
+  padding: .45rem .5rem;
+  background: #f5f7fa;
+  border-right-color: #e2e5e9;
+}
+
+.zoom-sim-device.windows .zoom-sim-brand {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: .5rem;
+  padding: .45rem .55rem .8rem;
+}
+
+.zoom-sim-device.windows .zoom-sim-brand strong {
+  font-size: .72rem;
+  white-space: nowrap;
+}
+
+.zoom-sim-device.windows .zoom-sim-rail-nav {
+  gap: .14rem;
+}
+
+.zoom-sim-device.windows .zoom-sim-rail button {
+  grid-template-columns: 1.35rem minmax(0,1fr);
+  justify-items: start;
+  align-items: center;
+  gap: .5rem;
+  padding: .52rem .58rem;
+  border-radius: .5rem;
+  text-align: left;
+}
+
+.zoom-sim-device.windows .zoom-sim-rail button span {
+  justify-self: center;
+  font-size: .9rem;
+}
+
+.zoom-sim-device.windows .zoom-sim-rail button small {
+  font-size: .7rem;
+  white-space: nowrap;
+}
+
+.zoom-sim-device.windows .zoom-sim-desktop-content {
+  grid-template-rows: 56px 1fr;
+}
+
+.zoom-sim-device.windows .zoom-sim-global-header {
+  grid-template-columns: auto minmax(220px, 1fr) repeat(5, auto);
+  gap: .35rem;
+  padding: .55rem .7rem;
+  background: #fff;
+}
+
+.zoom-sim-history-controls {
+  display: flex;
+  gap: .12rem;
+}
+
+.zoom-sim-history-controls button,
+.zoom-sim-header-icon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: .45rem;
+  background: transparent;
+  color: #5f6670;
+}
+
+.zoom-sim-history-controls button:hover,
+.zoom-sim-header-icon:hover {
+  background: #f0f2f5;
+  color: #262b31;
+}
+
+.zoom-sim-global-search {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  height: 2rem;
+  box-sizing: border-box;
+  padding: 0 .65rem;
+  border: 1px solid #d8dce2;
+  border-radius: .55rem;
+  background: #f7f8fa;
+}
+
+.zoom-sim-global-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #343a40;
+}
+
+.zoom-sim-create-plus {
+  background: #2d8cff;
+  color: white;
+}
+
+.zoom-sim-create-plus:hover {
+  background: #1f7be8;
+  color: white;
+}
+
+.zoom-sim-create-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: .55rem;
+}
+
+.zoom-sim-create-menu-grid button {
+  display: grid;
+  justify-items: start;
+  gap: .2rem;
+  min-height: 92px;
+  padding: .8rem;
+  border: 1px solid #e0e3e7;
+  border-radius: .65rem;
+  background: #fafbfc;
+  color: #31363c;
+  text-align: left;
+}
+
+.zoom-sim-create-menu-grid button:hover {
+  border-color: #9ecbff;
+  background: #eef6ff;
+}
+
+.zoom-sim-create-menu-grid small {
+  color: #818891;
+}
+
+.zoom-sim-device.windows .zoom-sim-workspace-panel {
+  background: #f7f8fa;
+}
+
+.zoom-sim-device.windows .zoom-sim-quick-actions {
+  grid-template-columns: repeat(3, minmax(0,1fr));
+}
+
+.zoom-sim-device.windows .zoom-sim-quick-actions button:nth-child(4) {
+  display: none;
+}
+
+.zoom-sim-device.windows .zoom-sim-settings-window {
+  width: min(850px, 95%);
+  min-height: 540px;
+}
+
+.zoom-sim-device.windows .zoom-sim-settings-body {
+  grid-template-columns: 215px 1fr;
+  min-height: 480px;
+}
+
+.zoom-sim-device.windows .zoom-sim-settings-body > aside {
+  gap: .18rem;
+}
+
+.zoom-sim-device.windows .zoom-sim-settings-body > aside > button {
+  padding: .5rem .58rem;
+}
+
+.zoom-sim-device.windows .zoom-sim-settings-body > main {
+  padding: 1.15rem 1.35rem;
+}
+
+.zoom-sim-device.windows .zoom-sim-setting-section {
+  gap: .72rem;
+}
+
+.zoom-sim-device.windows .zoom-sim-camera-preview {
+  min-height: 220px;
+}
+
+.zoom-sim-device.windows .zoom-sim-meeting-header {
+  min-height: 48px;
+  box-sizing: border-box;
+}
+
+.zoom-sim-device.windows .zoom-sim-meeting-header-actions button {
+  min-width: 86px;
+}
+
+.zoom-sim-device.windows .zoom-sim-desktop-meeting-toolbar {
+  min-height: 72px;
+  grid-template-columns: auto 1fr auto;
+}
+
+.zoom-sim-device.windows .zoom-sim-desktop-meeting-toolbar > div:nth-child(2) {
+  display: flex;
+  justify-content: center;
+  gap: .3rem;
+}
+
+.zoom-sim-device.windows .zoom-sim-desktop-meeting-toolbar button {
+  min-width: 64px;
+}
+
+.zoom-sim-device.windows .zoom-sim-more-menu {
+  right: 3.5%;
+  bottom: .7rem;
+  width: 240px;
+}
+
+.zoom-sim-device.windows .zoom-sim-training-watermark {
+  top: 46px;
+}
+
+@media (max-width: 900px) {
+  .zoom-sim-device.windows .zoom-sim-desktop-app {
+    grid-template-columns: 132px minmax(0,1fr);
+  }
+
+  .zoom-sim-device.windows .zoom-sim-global-header {
+    grid-template-columns: auto minmax(140px,1fr) repeat(3, auto);
+  }
+
+  .zoom-sim-device.windows .zoom-sim-header-icon:nth-of-type(4),
+  .zoom-sim-device.windows .zoom-sim-header-icon:nth-of-type(5) {
+    display: none;
+  }
+}
