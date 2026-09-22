@@ -321,6 +321,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
   const [alagaSection, setAlagaSection] = useState(null)
   const [tealSection, setTealSection] = useState(null)
   const [alpineSection, setAlpineSection] = useState(null)
+  const [editorialSection, setEditorialSection] = useState(null)
 
   useEffect(() => {
     if (!initialProcessId) return
@@ -508,7 +509,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
     </>
   }
 
-  return <section className={`navigator${theme === 'teal' ? ` teal-layout-home${query.trim() || tealSection ? ' teal-library-open' : ''}` : ''}${theme === 'alpine' ? ` alpine-layout-home${query.trim() || alpineSection ? ' alpine-library-open' : ''}` : ''}`} id="navigator" aria-label="Support Navigator">
+  return <section className={`navigator${theme === 'teal' ? ` teal-layout-home${query.trim() || tealSection ? ' teal-library-open' : ''}` : ''}${theme === 'alpine' ? ` alpine-layout-home${query.trim() || alpineSection ? ' alpine-library-open' : ''}` : ''}${theme === 'editorial' ? ` editorial-layout-home${query.trim() || editorialSection ? ' editorial-library-open' : ''}` : ''}`} id="navigator" aria-label="Support Navigator">
     {theme === 'teal' && <section className="teal-layout-hero">
       <div className="teal-layout-hero-copy">
         <p className="teal-kicker">Support people. Solve faster.</p>
@@ -531,6 +532,19 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
       <div className="alpine-layout-hero-brand">
         <strong>Ogletree</strong>
         <span>People. Solutions. Brighter tomorrows.</span>
+      </div>
+    </section>}
+    {theme === 'editorial' && <section className="editorial-layout-hero">
+      <div className="editorial-layout-hero-copy">
+        <p className="editorial-kicker">Ogletree Support Workspace</p>
+        <h1>Support people.<br/><span>Move forward.</span></h1>
+        <p>Find answers. Follow the flow. Deliver great support with clarity and confidence.</p>
+      </div>
+      <div className="editorial-layout-hero-quote">
+        <span>PEOPLE</span><span>SOLUTIONS</span><span>PROGRESS</span>
+        <i></i>
+        <blockquote>“Great support creates confident people.”</blockquote>
+        <small>THE OZZIE WAY</small>
       </div>
     </section>}
     <section className="navigator-top-workspace" aria-label="Live support workspace">
@@ -676,9 +690,61 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
       </section>
     </>}
 
+    {theme === 'editorial' && !query.trim() && !editorialSection && <>
+      <section className="editorial-layout-call-strip">
+        <div className="editorial-layout-call-copy">
+          <p className="editorial-kicker">Live support</p>
+          <h2>In a call? Get step-by-step guidance.</h2>
+          <p>Answer a few quick questions and Ozzie will guide you to the right solution.</p>
+          <button type="button" onClick={() => setCallFlowExpanded(value => !value)}>{callFlowExpanded ? 'Close Call Flow' : 'Open Call Flow'} →</button>
+        </div>
+        <div className="editorial-layout-recent">
+          <p className="editorial-kicker">Recent activity</p>
+          <ul>
+            <li><span>▤</span><strong>Voicemail Reset</strong><small>Call Flow</small></li>
+            <li><span>◉</span><strong>Benefits Eligibility</strong><small>Knowledge Article</small></li>
+            <li><span>▱</span><strong>VPN Issue</strong><small>Process Guide</small></li>
+            <li><span>☎</span><strong>Software Install</strong><small>Call Flow</small></li>
+          </ul>
+        </div>
+        <aside><span>◍</span><blockquote>Same people.<br/>A smarter way<br/>to support.</blockquote></aside>
+      </section>
+
+      <section className="editorial-layout-workflow" aria-label="Seven stage support workflow">
+        <div className="editorial-layout-section-heading"><div><p>7-stage support workflow</p><h2>From conversation to resolution.</h2></div><span>A consistent support rhythm.</span></div>
+        <ol>
+          {[
+            ['1','Understand','Identify the issue and gather details.'],
+            ['2','Investigate','Check systems and resources.'],
+            ['3','Guide','Apply the right solution steps.'],
+            ['4','Resolve','Confirm the issue is fixed.'],
+            ['5','Document','Log notes and outcomes.'],
+            ['6','Follow Up','Ensure customer satisfaction.'],
+            ['7','Improve','Share learnings and feedback.'],
+          ].map(([number,title,description]) => <li key={number}><span>{number}</span><strong>{title}</strong><small>{description}</small></li>)}
+        </ol>
+      </section>
+
+      <section className="editorial-layout-summary-grid">
+        <article className="editorial-layout-summary-card">
+          <header><div><span>!</span><div><h2>Common Issues</h2><p>Quick access to the topics we see most often.</p></div></div><button type="button" onClick={() => { setEditorialSection('common'); switchLibraryTab('common') }}>View all →</button></header>
+          <div>{COMMON_ISSUE_ROUTES.slice(0,5).map((route,index) => <button type="button" key={route.id} onClick={() => openRoute(route, 'editorial_overview_common')}><span>{index+1}</span><strong>{route.title}</strong><b>›</b></button>)}</div>
+        </article>
+        <article className="editorial-layout-summary-card">
+          <header><div><span>↗</span><div><h2>Fastest Routes</h2><p>Get to the right place, faster.</p></div></div><button type="button" onClick={() => { setEditorialSection('fastest'); switchLibraryTab('fastest') }}>View all →</button></header>
+          <div>{fastestRoutes.slice(0,5).map(route => <button type="button" key={route.id} onClick={() => openRoute(route, 'editorial_overview_fastest')}><strong>{route.title}</strong><b>›</b></button>)}</div>
+        </article>
+        <article className="editorial-layout-summary-card">
+          <header><div><span>▤</span><div><h2>Process Guides</h2><p>Step-by-step guides for common tasks.</p></div></div><button type="button" onClick={() => { setEditorialSection('processes'); switchLibraryTab('processes') }}>View all →</button></header>
+          <div>{PROCESSES.slice(0,5).map(process => <button type="button" key={process.id} onClick={() => openProcess(process, 'editorial_overview_process')}><strong>{process.title}</strong><b>›</b></button>)}</div>
+        </article>
+      </section>
+    </>}
+
     <section className="navigator-library" aria-label="Navigator library">
       {theme === 'teal' && tealSection && <div className="teal-layout-library-heading"><div><p>Support library</p><h2>{tealSection === 'common' ? 'Common Issues' : tealSection === 'fastest' ? 'Fastest Routes' : 'Process Guides'}</h2></div><button type="button" onClick={() => { setTealSection(null); setQuery(''); setCategory(null) }}>← Back to overview</button></div>}
       {theme === 'alpine' && alpineSection && <div className="alpine-layout-library-heading"><div><p>Support library</p><h2>{alpineSection === 'common' ? 'Common Issues' : alpineSection === 'fastest' ? 'Fastest Routes' : 'Process Guides'}</h2></div><button type="button" onClick={() => { setAlpineSection(null); setQuery(''); setCategory(null) }}>← Back to overview</button></div>}
+      {theme === 'editorial' && editorialSection && <div className="editorial-layout-library-heading"><div><p>Support library</p><h2>{editorialSection === 'common' ? 'Common Issues' : editorialSection === 'fastest' ? 'Fastest Routes' : 'Process Guides'}</h2></div><button type="button" onClick={() => { setEditorialSection(null); setQuery(''); setCategory(null) }}>← Back to overview</button></div>}
       <div className="navigator-library-tabs" role="tablist" aria-label="Navigator views">
         <button type="button" role="tab" aria-selected={libraryTab === 'fastest'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('fastest')}>Fastest Routes</button>
         <button type="button" role="tab" aria-selected={libraryTab === 'common'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('common')}>Common Issues</button>
