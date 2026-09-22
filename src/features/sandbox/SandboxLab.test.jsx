@@ -57,7 +57,7 @@ it('matches the recorded Windows Zoom reference and keeps support paths interact
   expect(screen.getByRole('button', { name: /End/i })).toBeInTheDocument()
 
   await user.click(screen.getByRole('button', { name: /Host tools/i }))
-  expect(screen.getByText('Host tools')).toBeInTheDocument()
+  expect(screen.getAllByText('Host tools').length).toBeGreaterThan(1)
   expect(screen.getByText('Lock meeting')).toBeInTheDocument()
 })
 
