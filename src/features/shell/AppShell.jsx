@@ -16,6 +16,7 @@ function Icon({ type }) {
     favorites: 'M12 3.4 14.6 8.7l5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.2-4.1 5.8-.8L12 3.4Z',
     training: 'M4 5h6a3 3 0 0 1 2 3v12a3 3 0 0 0-2-1H4zM20 5h-6a3 3 0 0 0-2 3v12a3 3 0 0 1 2-1h6z',
     readiness: 'M5 4h14v16H5zM8 8h8M8 12h5M8 16h3M15 15l1.5 1.5L20 13',
+    sandbox: 'M4 5h16v11H4zM8 20h8M12 16v4M7 9h3M8.5 7.5v3M14 8h2M17 10h.01',
     updates: 'M12 4v8l4 2M4 12a8 8 0 1 0 2.3-5.7L4 8M4 4v4h4',
     feedback: 'M5 5h14v10H9l-4 4z',
     admin: 'M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7z',
@@ -245,6 +246,13 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           aria-pressed={liveTools.readiness !== 'closed'}
           onClick={event => openToolFromHeader(event, 'readiness')}
         >Readiness Lab</button>
+
+        <button
+          type="button"
+          className={`topnav-link ${currentView === 'sandbox' ? 'active' : ''}`}
+          aria-current={currentView === 'sandbox' ? 'page' : undefined}
+          onClick={event => navigateFromHeader(event, 'sandbox')}
+        >Sandbox</button>
 
         <NavDropdown label="Reports" active={reportsActive}>
           <button type="button" aria-label="Feedback" onClick={event => navigateFromHeader(event, 'feedback')}><Icon type="feedback" /><span><strong>Feedback</strong><small>Send an issue, suggestion, or workspace report.</small></span></button>
