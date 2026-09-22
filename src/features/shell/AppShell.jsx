@@ -63,7 +63,8 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     scope_check: 'closed',
     readiness: 'closed',
   })
-  const [compactNav, setCompactNav] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 800)
+  const compactBreakpoint = theme === 'alaga' ? 1080 : 800
+  const [compactNav, setCompactNav] = useState(() => typeof window !== 'undefined' && window.innerWidth <= compactBreakpoint)
   const profileDialogRef = useRef(null)
   const menuToggleRef = useRef(null)
   const isAdmin = profile.role === 'creator_admin'
@@ -141,14 +142,14 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
 
   useEffect(() => {
     const updateCompactNav = () => {
-      const compact = window.innerWidth <= 800
+      const compact = window.innerWidth <= compactBreakpoint
       setCompactNav(compact)
       if (!compact) setOpen(false)
     }
     window.addEventListener('resize', updateCompactNav)
     updateCompactNav()
     return () => window.removeEventListener('resize', updateCompactNav)
-  }, [])
+  }, [compactBreakpoint])
 
   useDialogFocus(profileDialogRef, profileOpen, closeProfile)
 
