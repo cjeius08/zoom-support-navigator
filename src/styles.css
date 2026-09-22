@@ -4790,3 +4790,24 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     padding: .62rem .68rem;
   }
 }
+
+
+/* Process drawer viewport resilience: keep the top controls visible on short viewports. */
+.process-drawer {
+  overflow: hidden;
+}
+.process-drawer > .drawer-header,
+.process-drawer > .process-tabs {
+  flex: 0 0 auto;
+}
+.process-drawer > .process-tabs {
+  z-index: 2;
+  background: rgba(12, 23, 33, .98);
+}
+.process-drawer > .drawer-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-padding-top: 1rem;
+}
