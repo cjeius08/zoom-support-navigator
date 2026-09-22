@@ -8,7 +8,7 @@ it('supports realistic device-specific Zoom training exploration', async () => {
   render(<SandboxLab />)
 
   expect(screen.getByRole('heading', { name: 'Zoom Workplace Sandbox' })).toBeInTheDocument()
-  expect(screen.getAllByText(/TRAINING SIMULATION/i).length).toBeGreaterThan(0)
+  expect(screen.getByText('TRAINING SIMULATION · NO LIVE AUDIO/VIDEO')).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Windows 11/i })).toHaveAttribute('aria-pressed', 'true')
 
   expect(screen.getByRole('button', { name: 'Back' })).toBeInTheDocument()
@@ -18,6 +18,20 @@ it('supports realistic device-specific Zoom training exploration', async () => {
   expect(screen.getByRole('button', { name: 'Activity' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Calendar panel' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Open AI chat' })).toBeInTheDocument()
+
+
+  await user.click(screen.getByRole('button', { name: /macOS/i }))
+  expect(screen.getByRole('button', { name: /macOS/i })).toHaveAttribute('aria-pressed', 'true')
+  await user.click(screen.getAllByRole('button', { name: /Settings/i })[0])
+  const macSettings = screen.getByRole('dialog', { name: 'Zoom Settings' })
+  expect(within(macSettings).getByText(/Open Zoom Workplace when I log in/i)).toBeInTheDocument()
+  await user.click(within(macSettings).getByRole('button', { name: /Audio/i }))
+  expect(within(macSettings).getByRole('option', { name: 'MacBook Speakers' })).toBeInTheDocument()
+  await user.click(within(macSettings).getByRole('button', { name: /Video & effects/i }))
+  expect(within(macSettings).getByRole('option', { name: 'FaceTime HD Camera' })).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Close Settings' }))
+
+  await user.click(screen.getByRole('button', { name: /Windows 11/i }))
 
   await user.click(screen.getAllByRole('button', { name: /Settings/i })[0])
   const settingsDialog = screen.getByRole('dialog', { name: 'Zoom Settings' })
