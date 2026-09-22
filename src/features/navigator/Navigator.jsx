@@ -633,6 +633,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
     </>}
 
     <section className="navigator-library" aria-label="Navigator library">
+      {theme === 'teal' && tealSection && <div className="teal-layout-library-heading"><div><p>Support library</p><h2>{tealSection === 'common' ? 'Common Issues' : tealSection === 'fastest' ? 'Fastest Routes' : 'Process Guides'}</h2></div><button type="button" onClick={() => { setTealSection(null); setQuery(''); setCategory(null) }}>← Back to overview</button></div>}
       <div className="navigator-library-tabs" role="tablist" aria-label="Navigator views">
         <button type="button" role="tab" aria-selected={libraryTab === 'fastest'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('fastest')}>Fastest Routes</button>
         <button type="button" role="tab" aria-selected={libraryTab === 'common'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('common')}>Common Issues</button>
