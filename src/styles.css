@@ -4811,3 +4811,47 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   overflow-x: hidden;
   scroll-padding-top: 1rem;
 }
+
+
+/* Persistent process drawer tabs across all process views and viewport sizes. */
+.drawer-backdrop {
+  overflow: hidden;
+}
+
+.process-drawer {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+.process-drawer > .drawer-header {
+  min-height: 0;
+}
+
+.process-drawer > .process-tabs {
+  position: relative;
+  z-index: 5;
+  flex: 0 0 auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: rgba(12, 23, 33, .985);
+  scrollbar-width: thin;
+}
+
+.process-drawer > .drawer-content {
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+@supports not (height: 100dvh) {
+  .process-drawer {
+    height: 100vh;
+    max-height: 100vh;
+  }
+}
