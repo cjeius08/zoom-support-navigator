@@ -20,7 +20,11 @@ const WORKSPACES = {
 const SETTINGS = [
   { id: 'general', label: 'General', icon: '⚙' },
   { id: 'audio', label: 'Audio', icon: '🎙' },
-  { id: 'video', label: 'Video', icon: '◉' },
+  { id: 'video', label: 'Video & effects', icon: '◉' },
+  { id: 'meetings', label: 'Meetings & webinars', icon: '▣' },
+  { id: 'chat', label: 'Chat', icon: '◫' },
+  { id: 'share', label: 'Share screen', icon: '⇧' },
+  { id: 'accessibility', label: 'Accessibility', icon: 'Aa' },
 ]
 
 function deviceClass(device) {
@@ -32,7 +36,7 @@ function DesktopRail({ workspace, onWorkspace, onSettings, onMore }) {
     <aside className="zoom-sim-rail" aria-label="Zoom Workplace navigation">
       <div className="zoom-sim-brand" aria-label="Zoom Workplace">
         <span className="zoom-sim-brand-mark">Z</span>
-        <strong>Workplace</strong>
+        <strong>Zoom Workplace</strong>
       </div>
 
       <nav className="zoom-sim-rail-nav">
@@ -262,7 +266,14 @@ function SandboxActionDialog({ type, onClose, onStartMeeting, onNotice }) {
     )
   }
 
-  const title = type === 'more' ? 'More Zoom Workplace Apps' : type === 'meeting-details' ? 'Meeting Details' : 'My Profile'
+  const title = type === 'more' ? 'More Zoom Workplace Apps'
+    : type === 'meeting-details' ? 'Meeting Details'
+      : type === 'create' ? 'Create'
+        : type === 'activity' ? 'Activity'
+          : type === 'calendar-panel' ? 'Calendar'
+            : type === 'history' ? 'History'
+              : type === 'ai-chat' ? 'AI Companion'
+                : 'My Profile'
   return (
     <div className="zoom-sim-action-overlay" role="dialog" aria-modal="true" aria-label={title}>
       <section className="zoom-sim-action-dialog">
@@ -271,6 +282,21 @@ function SandboxActionDialog({ type, onClose, onStartMeeting, onNotice }) {
           <div className="zoom-sim-app-grid">
             {['Whiteboard', 'Docs', 'Clips', 'Tasks', 'Notes', 'Hub'].map(label => <button type="button" key={label} onClick={() => onNotice(`${label} opened in the training simulator.`)}><span>□</span><strong>{label}</strong></button>)}
           </div>
+        ) : type === 'create' ? (
+          <div className="zoom-sim-create-menu-grid">
+            <button type="button" onClick={() => { onClose(); onStartMeeting() }}><span>▣</span><strong>Meeting</strong><small>Start a new meeting</small></button>
+            <button type="button" onClick={() => onNotice('New chat composer opened in the simulator.')}><span>◫</span><strong>Chat</strong><small>Start a conversation</small></button>
+            <button type="button" onClick={() => onNotice('New Zoom Doc opened in the simulator.')}><span>□</span><strong>Doc</strong><small>Create a document</small></button>
+            <button type="button" onClick={() => onNotice('New Clip flow opened in the simulator.')}><span>◉</span><strong>Clip</strong><small>Record a clip</small></button>
+          </div>
+        ) : type === 'activity' ? (
+          <div className="zoom-sim-detail-list"><div><span>Now</span><strong>No new activity</strong></div><div><span>Earlier</span><strong>Support Training Practice starts at 10:00 AM</strong></div></div>
+        ) : type === 'calendar-panel' ? (
+          <div className="zoom-sim-detail-list"><div><span>10:00 AM</span><strong>Support Training Practice</strong></div><div><span>2:00 PM</span><strong>Team Calibration</strong></div><button type="button" className="zoom-sim-primary" onClick={() => { onClose(); onStartMeeting() }}>Start 10:00 AM meeting</button></div>
+        ) : type === 'history' ? (
+          <div className="zoom-sim-detail-list"><div><span>Recent</span><strong>Home</strong></div><div><span>Recent</span><strong>Audio settings</strong></div><div><span>Recent</span><strong>Meetings</strong></div></div>
+        ) : type === 'ai-chat' ? (
+          <div className="zoom-sim-profile-dialog"><div className="zoom-sim-profile-avatar">AI</div><strong>AI Companion</strong><small>Training simulation</small><button type="button" onClick={() => onNotice('AI Companion prompt simulated.')}>Ask a question</button></div>
         ) : type === 'meeting-details' ? (
           <div className="zoom-sim-detail-list">
             <div><span>Topic</span><strong>Team Calibration</strong></div>
@@ -283,8 +309,11 @@ function SandboxActionDialog({ type, onClose, onStartMeeting, onNotice }) {
             <div className="zoom-sim-profile-avatar">ST</div>
             <strong>STAGING_ADMIN</strong>
             <small>Training profile · Available</small>
-            <button type="button" onClick={() => onNotice('Status set to Available in the simulator.')}>Set Status</button>
-            <button type="button" onClick={() => onNotice('Profile settings opened in the simulator.')}>Profile Settings</button>
+            <button type="button" onClick={() => onNotice('Availability menu opened in the simulator.')}>Availability</button>
+            <button type="button" onClick={() => onNotice('Status message editor opened in the simulator.')}>Set status message</button>
+            <button type="button" onClick={() => onNotice('Settings opened from the profile menu in the simulator.')}>Settings</button>
+            <button type="button" onClick={() => onNotice('Check for Updates simulated.')}>Check for Updates</button>
+            <button type="button" onClick={() => onNotice('Help opened in the simulator.')}>Help</button>
           </div>
         )}
         <footer><button type="button" onClick={onClose}>Close</button></footer>
@@ -359,8 +388,8 @@ function SettingsWindow({ activeTab, onTab, onClose, cameraOn, onCamera, device 
 
             {activeTab === 'video' && (
               <div className="zoom-sim-setting-section">
-                <h2>Video</h2>
-                <p>Camera preview and preferences</p>
+                <h2>Video & effects</h2>
+                <p>Camera, appearance, and video preferences</p>
                 <div className={cameraOn ? 'zoom-sim-camera-preview on' : 'zoom-sim-camera-preview'}>
                   <span>{cameraOn ? 'Camera preview active' : 'Camera preview'}</span>
                 </div>
@@ -368,11 +397,17 @@ function SettingsWindow({ activeTab, onTab, onClose, cameraOn, onCamera, device 
                   <label>Camera<select><option>Integrated Camera</option><option>USB Camera</option></select></label>
                   <button type="button" onClick={onCamera}>{cameraOn ? 'Turn Off' : 'Turn On'}</button>
                 </div>
-                <label><input type="checkbox" defaultChecked /> HD</label>
-                <label><input type="checkbox" /> Mirror my video</label>
+                <label><input type="checkbox" defaultChecked /> HD video</label>
+                <label><input type="checkbox" /> Mirror my video preview</label>
                 <label><input type="checkbox" /> Touch up my appearance</label>
+                <label><input type="checkbox" /> Adjust for low light</label>
+                <label><input type="checkbox" /> Portrait lighting</label>
               </div>
             )}
+            {activeTab === 'meetings' && <div className="zoom-sim-setting-section"><h2>Meetings & webinars</h2><p>Join experience and in-meeting preferences</p><label><input type="checkbox" /> Keep my camera off</label><label><input type="checkbox" defaultChecked /> Keep meeting controls visible</label><label><input type="checkbox" /> Show meeting timer</label><label><input type="checkbox" defaultChecked /> Press and hold Space key to temporarily unmute</label></div>}
+            {activeTab === 'chat' && <div className="zoom-sim-setting-section"><h2>Chat</h2><p>Sidebar, notifications, and message preferences</p><label><input type="checkbox" defaultChecked /> Show unread message badge</label><label><input type="checkbox" defaultChecked /> Show link previews</label><label><input type="checkbox" /> Mute notifications while in a meeting</label></div>}
+            {activeTab === 'share' && <div className="zoom-sim-setting-section"><h2>Share screen</h2><p>Screen sharing behavior</p><label><input type="checkbox" defaultChecked /> Show Zoom windows during screen share</label><label><input type="checkbox" /> Silence system notifications when sharing desktop</label><label><input type="checkbox" defaultChecked /> Side-by-side mode</label></div>}
+            {activeTab === 'accessibility' && <div className="zoom-sim-setting-section"><h2>Accessibility</h2><p>Captions and display preferences</p><label className="zoom-sim-volume">Closed captioning font size<input type="range" min="80" max="160" defaultValue="100" /></label><label><input type="checkbox" /> Always show captions</label><label><input type="checkbox" defaultChecked /> Screen reader alerts</label></div>}
           </main>
         </div>
       </section>
@@ -418,14 +453,18 @@ function ChatPanel({ onClose }) {
   )
 }
 
-function MoreMenu({ mobile, onParticipants, onShare, onReaction, onCaptions, onMeetingSettings, onClose }) {
+function MoreMenu({ mobile, onParticipants, onShare, onReaction, onCaptions, onMeetingSettings, onNotice, onClose }) {
   return (
     <div className={mobile ? 'zoom-sim-more-menu mobile' : 'zoom-sim-more-menu'}>
-      <button type="button" onClick={onParticipants}>♙ Participants</button>
-      <button type="button" onClick={onShare}>⇧ Share Screen</button>
+      {mobile && <button type="button" onClick={onParticipants}>♙ Participants</button>}
+      {mobile && <button type="button" onClick={onShare}>⇧ Start share</button>}
       <button type="button" onClick={onReaction}>☺ Reactions</button>
-      <button type="button" onClick={onCaptions}>CC Captions</button>
-      <button type="button" onClick={onMeetingSettings}>⚙ Meeting Settings</button>
+      <button type="button" onClick={() => onNotice('Record request simulated.')}>● Record</button>
+      <button type="button" onClick={onCaptions}>CC Show captions</button>
+      <button type="button" onClick={() => onNotice('Whiteboard opened in the simulator.')}>□ Whiteboards</button>
+      {!mobile && <button type="button" onClick={() => onNotice('Incoming video toggled in the simulator.')}>▣ Start/Stop incoming video</button>}
+      <button type="button" onClick={onMeetingSettings}>⚙ Settings</button>
+      {!mobile && <button type="button" onClick={() => onNotice('Toolbar reset to the default order.')}>↺ Reset toolbar</button>}
       <button type="button" onClick={onClose}>Close</button>
     </div>
   )
@@ -444,6 +483,7 @@ function MeetingWorkspace({
   moreOpen,
   onMore,
   onEnd,
+  onNotice,
 }) {
   const mobile = device.family === 'Mobile'
   const [audioPrompt, setAudioPrompt] = useState(!audioJoined)
@@ -514,6 +554,7 @@ function MeetingWorkspace({
             onReaction={() => { onMore(false); setReaction(current => current ? '' : '👏') }}
             onCaptions={() => { onMore(false); setCaptionsOn(value => !value) }}
             onMeetingSettings={() => { onMore(false); setMeetingSettingsOpen(true) }}
+            onNotice={onNotice}
             onClose={() => onMore(false)}
           />
         )}
@@ -551,7 +592,6 @@ function MeetingWorkspace({
             <button type="button" className={panel === 'participants' ? 'active' : ''} onClick={() => openPanel('participants')}><span>♙</span><small>Participants</small></button>
             <button type="button" className={panel === 'chat' ? 'active' : ''} onClick={() => openPanel('chat')}><span>▤</span><small>Chat</small></button>
             <button type="button" onClick={() => setShareOpen(true)}><span>⇧</span><small>Share</small></button>
-            <button type="button" className={aiOpen ? 'active' : ''} onClick={() => setAiOpen(value => !value)}><span>AI</span><small>AI Companion</small></button>
             <button type="button" className={moreOpen ? 'active' : ''} onClick={() => onMore(!moreOpen)}><span>•••</span><small>More</small></button>
           </div>
           <button type="button" className="zoom-sim-leave" onClick={onEnd}>Leave</button>
@@ -652,7 +692,7 @@ export function SandboxLab() {
       <div className={deviceClass(device)}>
         <div className="zoom-sim-device-chrome">
           {device.shell === 'mac' && <span className="zoom-sim-mac-dots"><i></i><i></i><i></i></span>}
-          {device.shell === 'windows' && <span className="zoom-sim-window-title">Zoom Workplace</span>}
+          {device.shell === 'windows' && <><span className="zoom-sim-window-app"><b>Z</b> Zoom Workplace</span><span className="zoom-sim-window-controls" aria-hidden="true"><i>—</i><i>□</i><i>×</i></span></>}
           {device.shell === 'web' && <div className="zoom-sim-browser-bar"><span>◀ ▶ ↻</span><div>app.zoom.us/wc</div><span>☆</span></div>}
           {device.shell === 'ios' && <div className="zoom-sim-phone-status"><strong>9:41</strong><span>▰ ◔ 100%</span></div>}
           {device.shell === 'android' && <div className="zoom-sim-phone-status"><strong>9:41</strong><span>◔ ▰ 100%</span></div>}
@@ -674,6 +714,7 @@ export function SandboxLab() {
             moreOpen={moreOpen}
             onMore={setMoreOpen}
             onEnd={endMeeting}
+            onNotice={message => { setNotice(message); window.setTimeout(() => setNotice(''), 2600) }}
           />
         ) : mobile ? (
           <div className="zoom-sim-mobile-app">
@@ -691,8 +732,16 @@ export function SandboxLab() {
             <DesktopRail workspace={workspace} onWorkspace={setWorkspace} onSettings={() => setSettingsOpen(true)} onMore={() => setActionDialog('more')} />
             <section className="zoom-sim-desktop-content">
               <header className="zoom-sim-global-header">
-                <div className="zoom-sim-global-search">⌕ Search</div>
-                <button type="button" className="zoom-sim-create-button" onClick={startMeeting}>＋ Create</button>
+                <div className="zoom-sim-history-controls">
+                  <button type="button" aria-label="Back" onClick={() => setNotice('Back navigation simulated.')}>‹</button>
+                  <button type="button" aria-label="Forward" onClick={() => setNotice('Forward navigation simulated.')}>›</button>
+                  <button type="button" aria-label="History" onClick={() => setActionDialog('history')}>↺</button>
+                </div>
+                <label className="zoom-sim-global-search">⌕ <input aria-label="Search Zoom Workplace" placeholder="Search" /></label>
+                <button type="button" className="zoom-sim-header-icon zoom-sim-create-plus" aria-label="Create" onClick={() => setActionDialog('create')}>＋</button>
+                <button type="button" className="zoom-sim-header-icon" aria-label="Activity" onClick={() => setActionDialog('activity')}>♢</button>
+                <button type="button" className="zoom-sim-header-icon" aria-label="Calendar panel" onClick={() => setActionDialog('calendar-panel')}>□</button>
+                <button type="button" className="zoom-sim-header-icon" aria-label="Open AI chat" onClick={() => setActionDialog('ai-chat')}>AI</button>
                 <button type="button" className="zoom-sim-profile-chip" onClick={() => setActionDialog('profile')}>ST</button>
               </header>
               {renderWorkspace()}
