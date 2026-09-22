@@ -31,3 +31,21 @@ it('keeps the original Navigator layout as the default preset', () => {
   expect(screen.getByRole('heading', { name: 'Find the next step' })).toBeInTheDocument()
   expect(screen.queryByText('That’s Ozzie.')).not.toBeInTheDocument()
 })
+
+
+it('renders the Ozzie Teal enterprise layout and keeps summary navigation usable', async () => {
+  const user = userEvent.setup()
+  render(<Navigator theme="teal" onReportContextChange={() => {}} />)
+
+  expect(screen.getByRole('heading', { name: /Welcome to Ozzie/i })).toBeInTheDocument()
+  expect(screen.getByText('Support people. Solve faster.')).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'The 7-Stage Support Workflow' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Common Issues' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Fastest Routes' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Process Guides' })).toBeInTheDocument()
+
+  const commonCard = screen.getByRole('heading', { name: 'Common Issues' }).closest('article')
+  await user.click(within(commonCard).getByRole('button', { name: /View all/i }))
+  expect(screen.getByText('Support library')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /Back to overview/i })).toBeInTheDocument()
+})
