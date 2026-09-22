@@ -509,9 +509,9 @@ function AudioJoinDialog({ mobile, onJoin, onClose }) {
 
 function ParticipantsPanel({ onClose, onInvite }) {
   return (
-    <aside className="zoom-sim-meeting-panel">
+    <aside className="zoom-reference-side-panel">
       <header><strong>Participants (3)</strong><button type="button" onClick={onClose}>×</button></header>
-      <div className="zoom-sim-participant you"><span>ST</span><div><strong>You</strong><small>Host</small></div><b>🎙</b></div>
+      <div className="zoom-sim-participant you"><span>ST</span><div><strong>STAGING_ADMIN</strong><small>Host</small></div><b>🎙</b></div>
       <div className="zoom-sim-participant"><span>AT</span><div><strong>Alex T.</strong><small>Participant</small></div><b>🔇</b></div>
       <div className="zoom-sim-participant"><span>RS</span><div><strong>Riley S.</strong><small>Participant</small></div><b>🎙</b></div>
       <button type="button" className="zoom-sim-panel-action" onClick={onInvite}>Invite</button>
@@ -521,8 +521,8 @@ function ParticipantsPanel({ onClose, onInvite }) {
 
 function ChatPanel({ onClose }) {
   return (
-    <aside className="zoom-sim-meeting-panel">
-      <header><strong>Meeting Chat</strong><button type="button" onClick={onClose}>×</button></header>
+    <aside className="zoom-reference-side-panel">
+      <header><strong>Meeting chat</strong><button type="button" onClick={onClose}>×</button></header>
       <div className="zoom-sim-chat-panel-body">
         <div className="zoom-sim-message incoming">Alex T.: I can hear you now.</div>
         <div className="zoom-sim-message outgoing">You: Great, thanks!</div>
@@ -532,19 +532,50 @@ function ChatPanel({ onClose }) {
   )
 }
 
-function MoreMenu({ mobile, onParticipants, onShare, onReaction, onCaptions, onMeetingSettings, onNotice, onClose }) {
+function HostToolsPanel({ onClose, onNotice }) {
+  const [allowUnmute, setAllowUnmute] = useState(true)
+  const [allowVideo, setAllowVideo] = useState(true)
+  const [allowChat, setAllowChat] = useState(true)
+  const [allowRename, setAllowRename] = useState(true)
+
   return (
-    <div className={mobile ? 'zoom-sim-more-menu mobile' : 'zoom-sim-more-menu'}>
-      {mobile && <button type="button" onClick={onParticipants}>♙ Participants</button>}
-      {mobile && <button type="button" onClick={onShare}>⇧ Start share</button>}
-      <button type="button" onClick={onReaction}>☺ Reactions</button>
-      <button type="button" onClick={() => onNotice('Record request simulated.')}>● Record</button>
-      <button type="button" onClick={onCaptions}>CC Show captions</button>
-      <button type="button" onClick={() => onNotice('Whiteboard opened in the simulator.')}>□ Whiteboards</button>
-      {!mobile && <button type="button" onClick={() => onNotice('Incoming video toggled in the simulator.')}>▣ Start/Stop incoming video</button>}
-      <button type="button" onClick={onMeetingSettings}>⚙ Settings</button>
-      {!mobile && <button type="button" onClick={() => onNotice('Toolbar reset to the default order.')}>↺ Reset toolbar</button>}
-      <button type="button" onClick={onClose}>Close</button>
+    <aside className="zoom-reference-host-tools">
+      <header><strong>Host tools</strong><div><button type="button" onClick={() => onNotice('Host tools popped out in the simulator.')}>↗</button><button type="button" onClick={onClose}>×</button></div></header>
+      <h4>Meeting controls</h4>
+      <label><span>Lock meeting</span><input type="checkbox" /></label>
+      <label><span>Enable waiting room</span><input type="checkbox" /></label>
+      <div className="zoom-reference-host-section"><strong>Allow participants to:</strong><button type="button" onClick={() => { setAllowUnmute(false); setAllowVideo(false); setAllowChat(false); setAllowRename(false) }}>Turn all off</button></div>
+      <label><span>Unmute self</span><input type="checkbox" checked={allowUnmute} onChange={e => setAllowUnmute(e.target.checked)} /></label>
+      <label><span>Start video</span><input type="checkbox" checked={allowVideo} onChange={e => setAllowVideo(e.target.checked)} /></label>
+      <label><span>Chat</span><input type="checkbox" checked={allowChat} onChange={e => setAllowChat(e.target.checked)} /></label>
+      <label><span>Rename self</span><input type="checkbox" checked={allowRename} onChange={e => setAllowRename(e.target.checked)} /></label>
+      <button type="button" className="zoom-reference-host-link">Share screen ›</button>
+      <button type="button" className="zoom-reference-host-link">Recording ›</button>
+    </aside>
+  )
+}
+
+function MoreMenu({ mobile, onShare, onReaction, onCaptions, onNotice, onSettings, onClose }) {
+  const items = [
+    ['♡', 'React', onReaction],
+    ['⇧', 'Share', onShare],
+    ['●', 'Record', () => onNotice('Record request simulated.')],
+    ['CC', 'Show captions', onCaptions],
+    ['▦', 'Breakout rooms', () => onNotice('Breakout rooms opened in the simulator.')],
+    ['▤', 'Docs', () => onNotice('Docs opened in the simulator.')],
+    ['□', 'Whiteboards', () => onNotice('Whiteboards opened in the simulator.')],
+    ['⌘', 'Apps', () => onNotice('Apps opened in the simulator.')],
+    ['ⓘ', 'Meeting info', () => onNotice('Meeting info opened in the simulator.')],
+    ['⚙', 'Settings', onSettings],
+  ]
+
+  return (
+    <div className={mobile ? 'zoom-reference-more-menu mobile' : 'zoom-reference-more-menu'}>
+      <div className="zoom-reference-more-grid">
+        {items.map(([icon,label,handler]) => <button type="button" key={label} onClick={handler}><span>{icon}</span><small>{label}</small></button>)}
+      </div>
+      {!mobile && <div className="zoom-reference-more-footer">Drag to pin or remove from toolbar <button type="button" onClick={() => onNotice('Toolbar reset to the recorded layout.')}>Reset</button></div>}
+      <button type="button" className="zoom-reference-more-close" onClick={onClose}>Close</button>
     </div>
   )
 }
@@ -569,37 +600,40 @@ function MeetingWorkspace({
   const [shareOpen, setShareOpen] = useState(false)
   const [shareSource, setShareSource] = useState('Entire Screen')
   const [sharing, setSharing] = useState('')
-  const [viewMode, setViewMode] = useState('Speaker')
-  const [aiOpen, setAiOpen] = useState(false)
   const [reaction, setReaction] = useState('')
   const [captionsOn, setCaptionsOn] = useState(false)
-  const [meetingSettingsOpen, setMeetingSettingsOpen] = useState(false)
+  const [hostToolsOpen, setHostToolsOpen] = useState(false)
   const [inviteOpen, setInviteOpen] = useState(false)
+  const [viewMode, setViewMode] = useState('Speaker')
 
   function openPanel(next) {
     onMore(false)
+    setHostToolsOpen(false)
     onPanel(panel === next ? null : next)
   }
 
   return (
-    <section className={mobile ? 'zoom-sim-meeting mobile' : 'zoom-sim-meeting'}>
-      <header className="zoom-sim-meeting-header">
+    <section className={mobile ? 'zoom-sim-meeting mobile zoom-reference-meeting' : 'zoom-sim-meeting zoom-reference-meeting'}>
+      <header className="zoom-reference-meeting-header">
+        <strong>STAGING_ADMIN's Zoom Meeting</strong>
         <div>
-          <strong>Support Training Practice</strong>
-          <small>Meeting ID: 123 456 7890 · Training simulation</small>
+          <span className="zoom-reference-shield">◆</span>
+          <button type="button" className="zoom-reference-upgrade-zoom">Upgrade Zoom</button>
+          <button type="button" onClick={() => setViewMode(v => v === 'Speaker' ? 'Gallery' : 'Speaker')}>◈</button>
+          <button type="button" onClick={() => onNotice('Meeting window tool opened in the simulator.')}>✧</button>
+          <button type="button" onClick={() => onNotice('Apps shortcut opened in the simulator.')}>▦</button>
         </div>
-        {!mobile && <div className="zoom-sim-meeting-header-actions"><button type="button" onClick={() => setViewMode(value => value === 'Speaker' ? 'Gallery' : 'Speaker')}>View: {viewMode}</button><button type="button" className={aiOpen ? 'active' : ''} onClick={() => setAiOpen(value => !value)}>AI Companion</button></div>}
       </header>
 
-      <div className="zoom-sim-meeting-stage">
-        <div className={cameraOn ? 'zoom-sim-video-tile camera-on' : 'zoom-sim-video-tile'}>
-          <div className="zoom-sim-avatar-large">ST</div>
+      <div className="zoom-sim-meeting-stage zoom-reference-meeting-stage">
+        <div className={cameraOn ? 'zoom-reference-self-tile camera-on' : 'zoom-reference-self-tile'}>
+          <div className="zoom-reference-meeting-avatar">ST</div>
           <span>STAGING_ADMIN</span>
-          <small>{cameraOn ? 'Camera preview simulated' : 'Camera off'}</small>
         </div>
 
         {panel === 'participants' && <ParticipantsPanel onClose={() => onPanel(null)} onInvite={() => setInviteOpen(true)} />}
         {panel === 'chat' && <ChatPanel onClose={() => onPanel(null)} />}
+        {hostToolsOpen && <HostToolsPanel onClose={() => setHostToolsOpen(false)} onNotice={onNotice} />}
 
         {shareOpen && (
           <div className="zoom-sim-share-dialog" role="dialog" aria-label="Share Screen">
@@ -612,9 +646,7 @@ function MeetingWorkspace({
 
         {sharing && <div className="zoom-sim-sharing-banner"><strong>You are sharing: {sharing}</strong><button type="button" onClick={() => setSharing('')}>Stop Share</button></div>}
         {reaction && <div className="zoom-sim-reaction-bubble" aria-live="polite">{reaction}</div>}
-        {captionsOn && <div className="zoom-sim-caption-line">Live transcript simulation: “Thanks, I can hear you clearly now.”</div>}
-        {aiOpen && <aside className="zoom-sim-ai-panel"><header><strong>AI Companion</strong><button type="button" onClick={() => setAiOpen(false)}>×</button></header><p>Meeting summary and questions are simulated here for navigation practice.</p><button type="button" onClick={() => setReaction('✨')}>Ask AI Companion</button></aside>}
-        {meetingSettingsOpen && <div className="zoom-sim-mini-dialog"><strong>Meeting Settings</strong><label><input type="checkbox" defaultChecked /> Always show meeting controls</label><label><input type="checkbox" /> Show meeting timer</label><button type="button" onClick={() => setMeetingSettingsOpen(false)}>Done</button></div>}
+        {captionsOn && <div className="zoom-sim-caption-line">Captions are on</div>}
         {inviteOpen && <div className="zoom-sim-mini-dialog"><strong>Invite people</strong><p>Meeting ID: 123 456 7890</p><button type="button" onClick={() => setInviteOpen(false)}>Copy Invitation</button><button type="button" onClick={() => setInviteOpen(false)}>Close</button></div>}
 
         {audioPrompt && (
@@ -628,12 +660,11 @@ function MeetingWorkspace({
         {moreOpen && (
           <MoreMenu
             mobile={mobile}
-            onParticipants={() => openPanel('participants')}
             onShare={() => { onMore(false); setShareOpen(true) }}
             onReaction={() => { onMore(false); setReaction(current => current ? '' : '👏') }}
             onCaptions={() => { onMore(false); setCaptionsOn(value => !value) }}
-            onMeetingSettings={() => { onMore(false); setMeetingSettingsOpen(true) }}
             onNotice={onNotice}
+            onSettings={() => { onMore(false); onNotice('Meeting settings opened in the simulator.') }}
             onClose={() => onMore(false)}
           />
         )}
@@ -641,39 +672,21 @@ function MeetingWorkspace({
 
       {mobile ? (
         <div className="zoom-sim-mobile-meeting-toolbar">
-          <button type="button" onClick={() => audioJoined ? onMuted(!muted) : setAudioPrompt(true)}>
-            <span>🎙</span><small>{audioJoined ? (muted ? 'Unmute' : 'Mute') : 'Join Audio'}</small>
-          </button>
-          <button type="button" className={cameraOn ? 'active' : ''} onClick={() => onCamera(!cameraOn)}>
-            <span>◉</span><small>{cameraOn ? 'Stop Video' : 'Start Video'}</small>
-          </button>
-          <button type="button" className={panel === 'chat' ? 'active' : ''} onClick={() => openPanel('chat')}>
-            <span>▤</span><small>Chat</small>
-          </button>
-          <button type="button" className={moreOpen ? 'active' : ''} onClick={() => onMore(!moreOpen)}>
-            <span>•••</span><small>More</small>
-          </button>
-          <button type="button" className="danger" onClick={onEnd}>
-            <span>×</span><small>Leave</small>
-          </button>
+          <button type="button" onClick={() => audioJoined ? onMuted(!muted) : setAudioPrompt(true)}><span>🎙</span><small>{audioJoined ? (muted ? 'Unmute' : 'Mute') : 'Join Audio'}</small></button>
+          <button type="button" className={cameraOn ? 'active' : ''} onClick={() => onCamera(!cameraOn)}><span>▣</span><small>{cameraOn ? 'Stop Video' : 'Start Video'}</small></button>
+          <button type="button" onClick={() => openPanel('participants')}><span>♙</span><small>Participants</small></button>
+          <button type="button" className={moreOpen ? 'active' : ''} onClick={() => onMore(!moreOpen)}><span>•••</span><small>More</small></button>
+          <button type="button" className="danger" onClick={onEnd}><span>×</span><small>Leave</small></button>
         </div>
       ) : (
-        <div className="zoom-sim-desktop-meeting-toolbar">
-          <div>
-            <button type="button" onClick={() => audioJoined ? onMuted(!muted) : setAudioPrompt(true)}>
-              <span>🎙</span><small>{audioJoined ? (muted ? 'Unmute' : 'Mute') : 'Join Audio'}</small>
-            </button>
-            <button type="button" className={cameraOn ? 'active' : ''} onClick={() => onCamera(!cameraOn)}>
-              <span>◉</span><small>{cameraOn ? 'Stop Video' : 'Start Video'}</small>
-            </button>
-          </div>
-          <div>
-            <button type="button" className={panel === 'participants' ? 'active' : ''} onClick={() => openPanel('participants')}><span>♙</span><small>Participants</small></button>
-            <button type="button" className={panel === 'chat' ? 'active' : ''} onClick={() => openPanel('chat')}><span>▤</span><small>Chat</small></button>
-            <button type="button" onClick={() => setShareOpen(true)}><span>⇧</span><small>Share</small></button>
-            <button type="button" className={moreOpen ? 'active' : ''} onClick={() => onMore(!moreOpen)}><span>•••</span><small>More</small></button>
-          </div>
-          <button type="button" className="zoom-sim-leave" onClick={onEnd}>Leave</button>
+        <div className="zoom-reference-meeting-toolbar">
+          <button type="button" onClick={() => audioJoined ? onMuted(!muted) : setAudioPrompt(true)}><span>🎙</span><small>{audioJoined ? (muted ? 'Unmute' : 'Mute') : 'Audio'}</small><b>⌃</b></button>
+          <button type="button" className={cameraOn ? 'active' : ''} onClick={() => onCamera(!cameraOn)}><span>▣</span><small>Video</small><b>⌃</b></button>
+          <button type="button" className={panel === 'participants' ? 'active' : ''} onClick={() => openPanel('participants')}><span>♙</span><small>Participants</small><b>1</b></button>
+          <button type="button" className={panel === 'chat' ? 'active' : ''} onClick={() => openPanel('chat')}><span>▱</span><small>Chat</small><b>⌃</b></button>
+          <button type="button" className={hostToolsOpen ? 'active' : ''} onClick={() => { onPanel(null); onMore(false); setHostToolsOpen(v => !v) }}><span>◇</span><small>Host tools</small></button>
+          <button type="button" className={moreOpen ? 'active' : ''} onClick={() => { setHostToolsOpen(false); onMore(!moreOpen) }}><span>•••</span><small>More</small></button>
+          <button type="button" className="zoom-reference-end" onClick={onEnd}><span>⊗</span><small>End</small></button>
         </div>
       )}
     </section>
