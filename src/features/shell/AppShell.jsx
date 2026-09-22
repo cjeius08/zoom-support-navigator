@@ -63,7 +63,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     scope_check: 'closed',
     readiness: 'closed',
   })
-  const compactBreakpoint = theme === 'alaga' ? 1160 : 800
+  const compactBreakpoint = theme === 'alaga' ? 1160 : theme === 'teal' ? 1120 : 800
   const [compactNav, setCompactNav] = useState(() => typeof window !== 'undefined' && window.innerWidth <= compactBreakpoint)
   const profileDialogRef = useRef(null)
   const menuToggleRef = useRef(null)
@@ -337,6 +337,11 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           <span className="theme-preview-swatch" aria-hidden="true"><span></span><span></span><span></span></span>
           <strong>Alaga Theme</strong>
           <small>A full light/red workspace layout with rearranged Home sections while keeping the same Ozzie functions and branding.</small>
+        </button>
+        <button type="button" className="theme-option" data-theme-option="teal" aria-pressed={theme === 'teal'} onClick={() => onThemeChange('teal')}>
+          <span className="theme-preview-swatch" aria-hidden="true"><span></span><span></span><span></span></span>
+          <strong>Ozzie Teal</strong>
+          <small>A deep teal enterprise workspace with a new Home composition, denser support cards, and the same Ozzie tools underneath.</small>
         </button>
       </div>
       <div className="theme-picker-actions"><button type="button" onClick={() => setAppearanceOpen(false)}>Back to Profile</button></div>
