@@ -14,7 +14,7 @@ it('matches the recorded Windows Zoom reference and keeps support paths interact
   expect(screen.getByRole('button', { name: /ZoomMate/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /New meeting/i })).toBeInTheDocument()
   expect(screen.getByText('Join', { selector: 'strong' }).closest('button')).toBeInTheDocument()
-  expect(screen.getByRole('button', { name: /^Schedule/i })).toBeInTheDocument()
+  expect(screen.getByText('Schedule', { selector: 'strong' }).closest('button')).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Share screen/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /My Notes/i })).toBeInTheDocument()
 
