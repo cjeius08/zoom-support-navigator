@@ -600,6 +600,38 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
 
     {callFlowExpanded && <LiveCallFlowDetails onClose={() => setCallFlowExpanded(false)} />}
 
+    {theme === 'teal' && !query.trim() && !tealSection && <>
+      <section className="teal-layout-workflow" aria-label="Seven stage support workflow">
+        <div className="teal-layout-section-heading"><div><p>Support workflow</p><h2>The 7-Stage Support Workflow</h2></div><span>A consistent approach. A better experience.</span></div>
+        <ol>
+          {[
+            ['1','Greet & Identify','Confirm the caller and understand their need.'],
+            ['2','Research','Look up account details and related information.'],
+            ['3','Guide','Follow the call flow and offer the right solution.'],
+            ['4','Resolve','Complete the action and confirm it worked.'],
+            ['5','Document','Log the call with clear, accurate notes.'],
+            ['6','Close','Confirm satisfaction and set expectations.'],
+            ['7','Follow Up','Escalate or monitor when required.'],
+          ].map(([number,title,description]) => <li key={number}><span>{number}</span><strong>{title}</strong><small>{description}</small></li>)}
+        </ol>
+      </section>
+
+      <section className="teal-layout-summary-grid">
+        <article className="teal-layout-summary-card">
+          <header><div><span>▤</span><div><h2>Common Issues</h2><p>Quick access to the topics we see most.</p></div></div><button type="button" onClick={() => { setTealSection('common'); switchLibraryTab('common') }}>View all →</button></header>
+          <div>{COMMON_ISSUE_ROUTES.slice(0,5).map((route,index) => <button type="button" key={route.id} onClick={() => openRoute(route, 'teal_overview_common')}><span>{index+1}</span><strong>{route.title}</strong><b>›</b></button>)}</div>
+        </article>
+        <article className="teal-layout-summary-card">
+          <header><div><span>⚡</span><div><h2>Fastest Routes</h2><p>Get to the right place, faster.</p></div></div><button type="button" onClick={() => { setTealSection('fastest'); switchLibraryTab('fastest') }}>View all →</button></header>
+          <div>{fastestRoutes.slice(0,5).map(route => <button type="button" key={route.id} onClick={() => openRoute(route, 'teal_overview_fastest')}><strong>{route.title}</strong><b>›</b></button>)}</div>
+        </article>
+        <article className="teal-layout-summary-card">
+          <header><div><span>▱</span><div><h2>Process Guides</h2><p>Step-by-step. Always current.</p></div></div><button type="button" onClick={() => { setTealSection('processes'); switchLibraryTab('processes') }}>View all →</button></header>
+          <div>{PROCESSES.slice(0,5).map(process => <button type="button" key={process.id} onClick={() => openProcess(process, 'teal_overview_process')}><strong>{process.title}</strong><b>›</b></button>)}</div>
+        </article>
+      </section>
+    </>}
+
     <section className="navigator-library" aria-label="Navigator library">
       <div className="navigator-library-tabs" role="tablist" aria-label="Navigator views">
         <button type="button" role="tab" aria-selected={libraryTab === 'fastest'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('fastest')}>Fastest Routes</button>
