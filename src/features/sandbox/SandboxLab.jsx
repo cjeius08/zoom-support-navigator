@@ -11,20 +11,25 @@ const DEVICES = [
 
 const WORKSPACES = {
   home: { label: 'Home', icon: '⌂' },
+  zoommate: { label: 'ZoomMate', icon: '✦' },
   meetings: { label: 'Meetings', icon: '▣' },
-  chat: { label: 'Team Chat', icon: '◫' },
-  calendar: { label: 'Calendar', icon: '□' },
-  contacts: { label: 'Contacts', icon: '♙' },
+  chat: { label: 'Chat', icon: '◫' },
+  hub: { label: 'Hub', icon: '◇' },
 }
 
 const SETTINGS = [
   { id: 'general', label: 'General', icon: '⚙' },
-  { id: 'audio', label: 'Audio', icon: '🎙' },
-  { id: 'video', label: 'Video & effects', icon: '◉' },
-  { id: 'meetings', label: 'Meetings & webinars', icon: '▣' },
-  { id: 'chat', label: 'Chat', icon: '◫' },
+  { id: 'video', label: 'Video & effects', icon: '▣' },
+  { id: 'audio', label: 'Audio', icon: '◖' },
+  { id: 'notifications', label: 'Notifications & sounds', icon: '♧' },
+  { id: 'meetings', label: 'Meetings & webinars', icon: '▤' },
+  { id: 'recording', label: 'Recording', icon: '◉' },
   { id: 'share', label: 'Share screen', icon: '⇧' },
-  { id: 'accessibility', label: 'Accessibility', icon: 'Aa' },
+  { id: 'chat', label: 'Chat', icon: '◫' },
+  { id: 'accessibility', label: 'Accessibility', icon: '⚑' },
+  { id: 'keyboard', label: 'Keyboard shortcuts', icon: '⌨' },
+  { id: 'statistics', label: 'Statistics', icon: '▥' },
+  { id: 'account', label: 'My account', icon: '♙' },
 ]
 
 function deviceClass(device) {
@@ -34,11 +39,6 @@ function deviceClass(device) {
 function DesktopRail({ workspace, onWorkspace, onSettings, onMore }) {
   return (
     <aside className="zoom-sim-rail" aria-label="Zoom Workplace navigation">
-      <div className="zoom-sim-brand" aria-label="Zoom Workplace">
-        <span className="zoom-sim-brand-mark">Z</span>
-        <strong>Zoom Workplace</strong>
-      </div>
-
       <nav className="zoom-sim-rail-nav">
         {Object.entries(WORKSPACES).map(([id, item]) => (
           <button
@@ -93,49 +93,38 @@ function MobileNav({ workspace, onWorkspace, onMore }) {
   )
 }
 
-function HomeWorkspace({ mobile = false, onStartMeeting, onOpenSettings, onJoin, onSchedule }) {
+function HomeWorkspace({ mobile = false, onStartMeeting, onJoin, onSchedule, onShare, onNotes }) {
+  const now = new Date()
+  const time = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+  const date = now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+
   return (
-    <section className="zoom-sim-workspace-panel" aria-label="Zoom Home">
-      <div className="zoom-sim-home-copy">
-        <p className="zoom-sim-kicker">Today</p>
-        <h2>Good morning</h2>
-        <p>Practice the same entry points agents commonly guide customers toward.</p>
+    <section className="zoom-sim-workspace-panel zoom-reference-home" aria-label="Zoom Home">
+      <button type="button" className="zoom-reference-ai-spark" aria-label="Zoom AI shortcut">✧</button>
+      <div className="zoom-reference-clock">
+        <strong>{time}</strong>
+        <span>{date}</span>
       </div>
 
-      <div className="zoom-sim-quick-actions">
-        <button type="button" onClick={onStartMeeting}>
-          <span className="zoom-sim-action-icon new">▣</span>
-          <strong>New Meeting</strong>
-          <small>Start an instant meeting</small>
-        </button>
-        <button type="button" onClick={onJoin}>
-          <span className="zoom-sim-action-icon">＋</span>
-          <strong>Join</strong>
-          <small>Join with meeting ID</small>
-        </button>
-        <button type="button" onClick={onSchedule}>
-          <span className="zoom-sim-action-icon">□</span>
-          <strong>Schedule</strong>
-          <small>Create a meeting</small>
-        </button>
-        {!mobile && (
-          <button type="button" onClick={onOpenSettings}>
-            <span className="zoom-sim-action-icon">⚙</span>
-            <strong>Settings</strong>
-            <small>Audio, video, and app preferences</small>
-          </button>
-        )}
+      <div className="zoom-reference-actions">
+        <button type="button" onClick={onStartMeeting}><span className="orange">▣</span><strong>New meeting</strong><small>⌄</small></button>
+        <button type="button" onClick={onJoin}><span>＋</span><strong>Join</strong></button>
+        <button type="button" onClick={onSchedule}><span>31</span><strong>Schedule</strong></button>
+        <button type="button" onClick={onShare}><span>⇧</span><strong>Share screen</strong></button>
+        {!mobile && <button type="button" onClick={onNotes}><span>✎</span><strong>My Notes</strong></button>}
       </div>
 
-      <div className="zoom-sim-upcoming-card">
-        <div>
-          <span className="zoom-sim-time">10:00 AM</span>
-          <div>
-            <strong>Support Training Practice</strong>
-            <small>Today · 45 min</small>
-          </div>
-        </div>
-        <button type="button" onClick={onStartMeeting}>Start</button>
+      <div className="zoom-reference-calendar-card">
+        <div className="zoom-reference-calendar-alert"><span>ⓘ</span><p>You haven't connected your calendar yet. <button type="button">Connect now</button> to manage all your meetings and events in one place.</p><button type="button" aria-label="Dismiss">×</button></div>
+        <div className="zoom-reference-day-row"><button type="button">＋</button><strong>Today, Sep 22⌄</strong><span></span></div>
+        <div className="zoom-reference-calendar-nav"><button type="button">▣ Today</button><button type="button">‹</button><button type="button">›</button><button type="button">•••</button></div>
+        <article className="zoom-reference-event">
+          <strong>▣ STAGING_ADMIN's Zoom Meeting</strong>
+          <span>Today, Sep 22</span>
+          <span>9:53 - 9:54 AM</span>
+          <span>Host: STAGING_ADMIN</span>
+        </article>
+        <button type="button" className="zoom-reference-recordings">Open recordings ›</button>
       </div>
     </section>
   )
