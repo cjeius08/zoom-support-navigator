@@ -29,6 +29,13 @@ it('stores and applies the Ozzie Teal workspace appearance', () => {
   expect(readStoredTheme()).toBe('teal')
 })
 
+it('stores and applies the Ozzie Alpine workspace appearance', () => {
+  expect(storeTheme('alpine')).toBe('alpine')
+  expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe('alpine')
+  expect(document.documentElement.dataset.theme).toBe('alpine')
+  expect(readStoredTheme()).toBe('alpine')
+})
+
 it('can instantly return to Ozzie Original', () => {
   storeTheme('alaga')
   expect(applyTheme('ozzie')).toBe('ozzie')
@@ -62,4 +69,15 @@ it('supports the full Ozzie Teal workspace appearance', () => {
   expect(css).toMatch(/html\[data-theme="teal"\] \.teal-layout-workflow/)
   expect(css).toMatch(/html\[data-theme="teal"\] \.teal-layout-summary-grid/)
   expect(css).toMatch(/html\[data-theme="teal"\] \.teal-layout-home \.navigator-top-workspace/)
+})
+
+
+it('supports the full Ozzie Alpine workspace appearance', () => {
+  const css = readFileSync(join(cwd(), 'src/features/theme/themeSystem.css'), 'utf8')
+
+  expect(css).toMatch(/html\[data-theme="alpine"\] \.app-header\.app-header-horizontal/)
+  expect(css).toMatch(/html\[data-theme="alpine"\] \.alpine-layout-hero/)
+  expect(css).toMatch(/html\[data-theme="alpine"\] \.alpine-layout-workflow/)
+  expect(css).toMatch(/html\[data-theme="alpine"\] \.alpine-layout-summary-grid/)
+  expect(css).toMatch(/html\[data-theme="alpine"\] \.alpine-layout-home \.navigator-top-workspace/)
 })
