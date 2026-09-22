@@ -19,6 +19,7 @@ import { FavoritesView } from './features/favorites/FavoritesView'
 import { useFavorites } from './features/favorites/useFavorites'
 import { useRecentlyViewed } from './features/favorites/useRecentlyViewed'
 import { OzzieWelcome } from './features/onboarding/OzzieWelcome'
+import { SandboxLab } from './features/sandbox/SandboxLab'
 import { assetUrl } from './lib/assetUrl'
 import { useUsageTracking } from './features/analytics/usePresence'
 import { applyTheme, readStoredTheme, storeTheme } from './features/theme/theme'
@@ -417,6 +418,8 @@ export default function App() {
           />
         : view === 'training'
           ? <TrainingResources initialVideoId={trainingVideoId} initialTarget={trainingTarget} onReportContextChange={updateReportContext}/>
+          : view === 'sandbox'
+            ? <SandboxLab/>
           : view === 'updates'
             ? <UpdatesView isAdmin={profile.role === 'creator_admin'}/>
             : view === 'feedback'
