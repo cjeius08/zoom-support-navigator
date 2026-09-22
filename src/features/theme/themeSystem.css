@@ -1903,3 +1903,670 @@ html[data-theme="alaga"] .process-drawer {
     display: none;
   }
 }
+
+
+/* =========================================================
+   ALAGA COMPLETION PASS
+   Fixes header contrast/spacing, resize behavior, and light-theme
+   coverage for inherited dark Ozzie surfaces.
+   ========================================================= */
+
+/* Header: override the original two-row shell rules explicitly. */
+html[data-theme="alaga"] .app-header.app-header-horizontal {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 90 !important;
+  display: grid !important;
+  grid-template-columns: minmax(140px, 190px) minmax(0, 1fr) minmax(150px, 190px) !important;
+  grid-template-rows: 1fr !important;
+  align-items: center !important;
+  gap: clamp(.55rem, 1.2vw, 1.1rem) !important;
+  width: 100% !important;
+  min-height: 72px !important;
+  padding: .55rem clamp(1.25rem, 2.5vw, 2.4rem) !important;
+  border-bottom: 1px solid rgba(255,255,255,.12) !important;
+  background:
+    radial-gradient(34rem 9rem at 86% 10%, rgba(242,109,103,.18), transparent 70%),
+    linear-gradient(100deg, #111827, #1e1724 62%, #2a171d) !important;
+  box-shadow: 0 .35rem 1.2rem rgba(24,17,25,.13) !important;
+  backdrop-filter: none !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .app-header-brand-row {
+  display: contents !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .ozzie-brand-dock {
+  position: static !important;
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  justify-self: start !important;
+  align-self: center !important;
+  width: auto !important;
+  max-width: 150px !important;
+  min-width: 0 !important;
+  margin-left: .2rem !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .ozzie-brand-dock img {
+  display: block !important;
+  width: auto !important;
+  max-width: 150px !important;
+  height: auto !important;
+  max-height: 52px !important;
+  object-fit: contain !important;
+  object-position: center left !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .top-navigation {
+  position: static !important;
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: center !important;
+  width: min(100%, 760px) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .topnav-link,
+html[data-theme="alaga"] .app-header-horizontal .topnav-dropdown > summary {
+  min-height: 40px !important;
+  padding: .58rem clamp(.42rem, .72vw, .72rem) !important;
+  color: #f4eff3 !important;
+  background: transparent !important;
+  font-size: clamp(.72rem, .78vw, .82rem) !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,.16);
+}
+
+html[data-theme="alaga"] .app-header-horizontal .topnav-link:hover,
+html[data-theme="alaga"] .app-header-horizontal .topnav-link:focus-visible,
+html[data-theme="alaga"] .app-header-horizontal .topnav-dropdown > summary:hover,
+html[data-theme="alaga"] .app-header-horizontal .topnav-dropdown > summary:focus-visible,
+html[data-theme="alaga"] .app-header-horizontal .topnav-dropdown[open] > summary {
+  color: #fff !important;
+  background: rgba(255,255,255,.09) !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .topnav-link.active,
+html[data-theme="alaga"] .app-header-horizontal .topnav-dropdown.active > summary {
+  color: #fff !important;
+  background: rgba(220,57,61,.26) !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .topnav-link.active::after,
+html[data-theme="alaga"] .app-header-horizontal .topnav-dropdown.active > summary::after {
+  right: .55rem !important;
+  bottom: .1rem !important;
+  left: .55rem !important;
+  background: #ff7a75 !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .account-menu {
+  position: static !important;
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: end !important;
+  min-width: 160px !important;
+  max-width: 190px !important;
+  margin: 0 !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  background: rgba(255,255,255,.075) !important;
+  color: #fff !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .account-menu strong {
+  color: #fff !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .account-menu small,
+html[data-theme="alaga"] .app-header-horizontal .account-menu .chevron {
+  color: #d9d0d4 !important;
+  stroke: currentColor !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .avatar-fallback {
+  color: #fff !important;
+  background: linear-gradient(135deg,#d53d43,#9e2530) !important;
+}
+
+html[data-theme="alaga"] .topnav-menu {
+  border-color: #e5e7eb !important;
+  background: #fff !important;
+  box-shadow: 0 1rem 2.6rem rgba(35,29,32,.18) !important;
+  backdrop-filter: none !important;
+}
+
+html[data-theme="alaga"] .topnav-menu > button {
+  color: #2b3036 !important;
+  background: transparent !important;
+}
+
+html[data-theme="alaga"] .topnav-menu > button:hover,
+html[data-theme="alaga"] .topnav-menu > button:focus-visible,
+html[data-theme="alaga"] .topnav-menu > button[aria-pressed="true"] {
+  border-color: #efb0b3 !important;
+  background: #fff2f2 !important;
+}
+
+html[data-theme="alaga"] .topnav-menu strong {
+  color: #1d2228 !important;
+}
+
+html[data-theme="alaga"] .topnav-menu small {
+  color: #6c7580 !important;
+}
+
+html[data-theme="alaga"] .topnav-menu svg {
+  stroke: #c83239 !important;
+}
+
+/* Main content width: comfortable at desktop and restored-window sizes. */
+html[data-theme="alaga"] .app-main.app-main-horizontal {
+  width: min(1480px, calc(100% - clamp(1.2rem, 4vw, 3.5rem))) !important;
+  margin: 0 auto !important;
+  padding: 1.1rem 0 1.5rem !important;
+}
+
+/* Detailed Call Flow: fully follow the light appearance. */
+html[data-theme="alaga"] .live-call-flow,
+html[data-theme="alaga"] .live-call-workflow-panel,
+html[data-theme="alaga"] .live-call-agent-formula,
+html[data-theme="alaga"] .live-call-guidance-method,
+html[data-theme="alaga"] .live-call-resolution-branch,
+html[data-theme="alaga"] .live-call-table-wrap {
+  border-color: #e0e4e8 !important;
+  color: #252a30 !important;
+  background: #fff !important;
+  box-shadow: 0 .25rem .9rem rgba(37,31,33,.045) !important;
+  backdrop-filter: none !important;
+}
+
+html[data-theme="alaga"] .live-call-flow-heading h2,
+html[data-theme="alaga"] .live-call-workflow-panel-heading h2,
+html[data-theme="alaga"] .live-call-agent-formula h3,
+html[data-theme="alaga"] .live-call-guidance-heading h3,
+html[data-theme="alaga"] .live-call-resolution-branch-heading h3,
+html[data-theme="alaga"] .live-call-objective,
+html[data-theme="alaga"] .live-call-table tbody th,
+html[data-theme="alaga"] .live-call-guidance-grid strong {
+  color: #20252b !important;
+}
+
+html[data-theme="alaga"] .live-call-flow-heading > div > p:last-child,
+html[data-theme="alaga"] .live-call-workflow-panel-heading p:last-child,
+html[data-theme="alaga"] .live-call-agent-formula small,
+html[data-theme="alaga"] .live-call-guidance-heading > span,
+html[data-theme="alaga"] .live-call-guidance-grid p,
+html[data-theme="alaga"] .live-call-guidance-rule,
+html[data-theme="alaga"] .live-call-table td p,
+html[data-theme="alaga"] .live-call-table blockquote,
+html[data-theme="alaga"] .live-call-resolution-path p,
+html[data-theme="alaga"] .live-call-resolution-branch aside p {
+  color: #66717c !important;
+}
+
+html[data-theme="alaga"] .live-call-toggle,
+html[data-theme="alaga"] .live-call-panel-close {
+  border-color: #edbec0 !important;
+  color: #a8252c !important;
+  background: #fff5f5 !important;
+}
+
+html[data-theme="alaga"] .live-call-toggle small {
+  color: #8c5960 !important;
+}
+
+html[data-theme="alaga"] .live-call-toggle-icon,
+html[data-theme="alaga"] .live-call-step-number,
+html[data-theme="alaga"] .live-call-guidance-grid article > span {
+  border-color: #e9a7aa !important;
+  color: #ad2930 !important;
+  background: #fff0f0 !important;
+}
+
+html[data-theme="alaga"] .live-call-guidance-grid article,
+html[data-theme="alaga"] .live-call-resolution-path {
+  border-color: #e4e7eb !important;
+  background: #fafbfc !important;
+}
+
+html[data-theme="alaga"] .live-call-guidance-rule {
+  border-top-color: #e7eaed !important;
+}
+
+html[data-theme="alaga"] .live-call-table thead {
+  background: #f3f5f7 !important;
+}
+
+html[data-theme="alaga"] .live-call-table th,
+html[data-theme="alaga"] .live-call-table td {
+  border-bottom-color: #e8ebee !important;
+}
+
+html[data-theme="alaga"] .live-call-table thead th,
+html[data-theme="alaga"] .live-call-cell-label {
+  color: #68727d !important;
+}
+
+html[data-theme="alaga"] .live-call-table blockquote {
+  border-left-color: #df5b60 !important;
+  color: #343a41 !important;
+}
+
+html[data-theme="alaga"] .live-call-resolution-path-resolved {
+  border-color: #b9dfca !important;
+  background: #f3fbf6 !important;
+}
+
+html[data-theme="alaga"] .live-call-resolution-path-resolved strong {
+  color: #27824d !important;
+}
+
+html[data-theme="alaga"] .live-call-resolution-path-unresolved,
+html[data-theme="alaga"] .live-call-resolution-branch aside {
+  border-color: #ead3b1 !important;
+  background: #fff9f1 !important;
+}
+
+html[data-theme="alaga"] .live-call-resolution-path-unresolved strong,
+html[data-theme="alaga"] .live-call-resolution-branch aside strong {
+  color: #9b621f !important;
+}
+
+/* Sandbox shell follows theme; the simulated Zoom screen intentionally keeps
+   its own product-like colors for training fidelity. */
+html[data-theme="alaga"] .sandbox-hero,
+html[data-theme="alaga"] .sandbox-context-bar {
+  border-color: #dfe3e8 !important;
+  color: #23282e !important;
+  background: #fff !important;
+  box-shadow: 0 .3rem 1rem rgba(35,31,33,.05) !important;
+}
+
+html[data-theme="alaga"] .sandbox-hero h1,
+html[data-theme="alaga"] .sandbox-context-bar strong {
+  color: #20252b !important;
+}
+
+html[data-theme="alaga"] .sandbox-hero p,
+html[data-theme="alaga"] .sandbox-context-bar span {
+  color: #68727d !important;
+}
+
+html[data-theme="alaga"] .sandbox-mode-pill,
+html[data-theme="alaga"] .sandbox-safety-badge {
+  border-color: #efb4b7 !important;
+  color: #a9252c !important;
+  background: #fff1f1 !important;
+}
+
+html[data-theme="alaga"] .sandbox-device {
+  border-color: #dde2e7 !important;
+  color: #2b3036 !important;
+  background: #fff !important;
+}
+
+html[data-theme="alaga"] .sandbox-device small {
+  color: #737d87 !important;
+}
+
+html[data-theme="alaga"] .sandbox-device-icon {
+  background: #f1f3f5 !important;
+}
+
+html[data-theme="alaga"] .sandbox-device:hover,
+html[data-theme="alaga"] .sandbox-device.active {
+  border-color: #e39498 !important;
+  color: #9f242a !important;
+  background: #fff3f3 !important;
+  box-shadow: inset 0 0 0 1px rgba(220,57,61,.08) !important;
+}
+
+html[data-theme="alaga"] .sandbox-context-bar button {
+  border-color: #d9dee3 !important;
+  color: #3b424a !important;
+  background: #f8f9fa !important;
+}
+
+/* Admin, reports, saved notes, knowledge and training: remove inherited dark
+   cards/text that made parts of the light preset unreadable. */
+html[data-theme="alaga"] .console-view,
+html[data-theme="alaga"] .console-view h1,
+html[data-theme="alaga"] .console-view h2,
+html[data-theme="alaga"] .console-view h3,
+html[data-theme="alaga"] .console-view h4,
+html[data-theme="alaga"] .console-view strong,
+html[data-theme="alaga"] .favorites-view,
+html[data-theme="alaga"] .training-library {
+  color: #20252b !important;
+}
+
+html[data-theme="alaga"] .console-view > p,
+html[data-theme="alaga"] .view-heading p,
+html[data-theme="alaga"] .team-list small,
+html[data-theme="alaga"] .feedback-list small,
+html[data-theme="alaga"] .usage-privacy-note,
+html[data-theme="alaga"] .saved-note-meta,
+html[data-theme="alaga"] .saved-note-time,
+html[data-theme="alaga"] .saved-notes-result-count,
+html[data-theme="alaga"] .favorites-empty,
+html[data-theme="alaga"] .training-card p {
+  color: #6d7680 !important;
+}
+
+html[data-theme="alaga"] .admin-account-overview,
+html[data-theme="alaga"] .admin-shortcuts button,
+html[data-theme="alaga"] .storage-guardrail-card,
+html[data-theme="alaga"] .real-summary > div,
+html[data-theme="alaga"] .team-list article,
+html[data-theme="alaga"] .feedback-list article,
+html[data-theme="alaga"] .usage-user-row,
+html[data-theme="alaga"] .readiness-admin-report,
+html[data-theme="alaga"] .readiness-report-part,
+html[data-theme="alaga"] .readiness-summary-grid > *,
+html[data-theme="alaga"] .saved-notes-filter-card,
+html[data-theme="alaga"] .saved-notes-summary > *,
+html[data-theme="alaga"] .saved-note-card,
+html[data-theme="alaga"] .favorite-saved-card,
+html[data-theme="alaga"] .training-card,
+html[data-theme="alaga"] .training-viewer,
+html[data-theme="alaga"] .training-roadmap-intro,
+html[data-theme="alaga"] .training-roadmap-key,
+html[data-theme="alaga"] .roadmap-objective,
+html[data-theme="alaga"] .roadmap-skills,
+html[data-theme="alaga"] .training-roadmap-reinforcement,
+html[data-theme="alaga"] .device-walkthrough-panel,
+html[data-theme="alaga"] .device-walkthrough-section,
+html[data-theme="alaga"] .communication-panel,
+html[data-theme="alaga"] .communication-framework-card,
+html[data-theme="alaga"] .communication-phrase-card,
+html[data-theme="alaga"] .scenario-script-card,
+html[data-theme="alaga"] .guided-lesson-panel,
+html[data-theme="alaga"] .guided-lesson-split,
+html[data-theme="alaga"] .guided-remember,
+html[data-theme="alaga"] .guided-practice-note {
+  border-color: #e0e4e8 !important;
+  color: #252a30 !important;
+  background: #fff !important;
+  box-shadow: 0 .22rem .75rem rgba(35,31,33,.04) !important;
+}
+
+html[data-theme="alaga"] .admin-account-overview p,
+html[data-theme="alaga"] .admin-shortcuts span,
+html[data-theme="alaga"] .real-summary span,
+html[data-theme="alaga"] .readiness-report-part p,
+html[data-theme="alaga"] .saved-note-details,
+html[data-theme="alaga"] .favorite-saved-card small {
+  color: #6e7781 !important;
+}
+
+html[data-theme="alaga"] .usage-period-controls button,
+html[data-theme="alaga"] .quick-access-tabs button,
+html[data-theme="alaga"] .training-section-tabs button,
+html[data-theme="alaga"] .communication-mode-tabs button,
+html[data-theme="alaga"] .saved-notes-filter-actions button,
+html[data-theme="alaga"] .clear-recent-button,
+html[data-theme="alaga"] .row-menu {
+  border: 1px solid #dce1e6 !important;
+  color: #3c434b !important;
+  background: #fff !important;
+}
+
+html[data-theme="alaga"] .usage-period-controls button:hover,
+html[data-theme="alaga"] .usage-period-controls button[aria-pressed="true"],
+html[data-theme="alaga"] .quick-access-tabs button[aria-selected="true"],
+html[data-theme="alaga"] .training-section-tabs button[aria-selected="true"],
+html[data-theme="alaga"] .communication-mode-tabs button[aria-selected="true"] {
+  border-color: #e49195 !important;
+  color: #a3242b !important;
+  background: #fff0f0 !important;
+}
+
+html[data-theme="alaga"] .empty-state,
+html[data-theme="alaga"] .favorites-empty,
+html[data-theme="alaga"] .navigator-empty-state {
+  border-color: #e2e6ea !important;
+  color: #69737d !important;
+  background: #fafbfc !important;
+}
+
+html[data-theme="alaga"] .one-time-code {
+  border-color: #efb2b5 !important;
+  color: #9c2229 !important;
+  background: #fff1f1 !important;
+}
+
+/* Semantic warnings/errors keep meaning without becoming illegible. */
+html[data-theme="alaga"] .storage-guardrail-card.warning {
+  border-color: #ead1a8 !important;
+  background: #fff9ed !important;
+}
+
+html[data-theme="alaga"] .storage-guardrail-card.safe {
+  border-color: #b8ddc9 !important;
+  background: #f3fbf6 !important;
+}
+
+html[data-theme="alaga"] [role="alert"] {
+  color: #9f252c !important;
+}
+
+/* Appearance picker itself */
+html[data-theme="alaga"] .profile-panel {
+  border-color: #dfe3e7 !important;
+  color: #23282e !important;
+  background: #fff !important;
+}
+
+html[data-theme="alaga"] .profile-panel h2,
+html[data-theme="alaga"] .profile-panel h3,
+html[data-theme="alaga"] .profile-panel strong {
+  color: #20252b !important;
+}
+
+html[data-theme="alaga"] .profile-actions button,
+html[data-theme="alaga"] .theme-picker-actions button {
+  border: 1px solid #dce1e5 !important;
+  color: #343b43 !important;
+  background: #f8f9fa !important;
+}
+
+/* Resize behavior */
+@media (max-width: 1240px) {
+  html[data-theme="alaga"] .app-header.app-header-horizontal {
+    grid-template-columns: 132px minmax(0,1fr) 158px !important;
+    padding-inline: 1rem !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .ozzie-brand-dock img {
+    max-width: 126px !important;
+    max-height: 46px !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .topnav-link,
+  html[data-theme="alaga"] .app-header-horizontal .topnav-dropdown > summary {
+    padding-inline: .42rem !important;
+    font-size: .71rem !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .account-menu {
+    min-width: 146px !important;
+  }
+
+  html[data-theme="alaga"] .alaga-layout-hero {
+    grid-template-columns: minmax(0,1fr) 210px !important;
+    padding-inline: 1.4rem !important;
+  }
+}
+
+@media (max-width: 1080px) {
+  html[data-theme="alaga"] .app-header.app-header-horizontal {
+    position: sticky !important;
+    display: block !important;
+    min-height: 68px !important;
+    padding: .55rem .85rem !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .app-header-brand-row {
+    display: grid !important;
+    grid-template-columns: auto 1fr auto !important;
+    align-items: center !important;
+    gap: .65rem !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .ozzie-brand-dock {
+    grid-column: 1 !important;
+    margin-left: .25rem !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .ozzie-brand-dock img {
+    max-width: 118px !important;
+    max-height: 44px !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .menu-toggle {
+    display: inline-flex !important;
+    grid-column: 2 !important;
+    justify-self: end !important;
+    align-items: center !important;
+    gap: .35rem !important;
+    border: 1px solid rgba(255,255,255,.14) !important;
+    color: #fff !important;
+    background: rgba(255,255,255,.07) !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .account-menu {
+    grid-column: 3 !important;
+    min-width: 0 !important;
+    max-width: 165px !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .top-navigation {
+    position: fixed !important;
+    top: 68px !important;
+    right: .75rem !important;
+    left: .75rem !important;
+    z-index: 95 !important;
+    display: none !important;
+    width: auto !important;
+    max-height: calc(100vh - 84px) !important;
+    overflow: auto !important;
+    padding: .7rem !important;
+    border: 1px solid rgba(255,255,255,.12) !important;
+    border-radius: .85rem !important;
+    background: #21171b !important;
+    box-shadow: 0 1rem 2.5rem rgba(0,0,0,.3) !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .top-navigation.open {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: .2rem !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .topnav-link,
+  html[data-theme="alaga"] .app-header-horizontal .topnav-dropdown > summary {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    padding: .7rem .8rem !important;
+    font-size: .82rem !important;
+  }
+
+  html[data-theme="alaga"] .topnav-menu {
+    position: static !important;
+    width: 100% !important;
+    margin-top: .2rem !important;
+    box-shadow: none !important;
+  }
+
+  html[data-theme="alaga"] .alaga-layout-summary-grid,
+  html[data-theme="alaga"] .alaga-layout-results-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  html[data-theme="alaga"] .alaga-layout-summary-card:last-child {
+    grid-column: 1 / -1 !important;
+  }
+
+  html[data-theme="alaga"] .alaga-layout-workflow ol {
+    grid-template-columns: repeat(4,minmax(0,1fr)) !important;
+    row-gap: 1rem !important;
+  }
+}
+
+@media (max-width: 760px) {
+  html[data-theme="alaga"] .app-main.app-main-horizontal {
+    width: calc(100% - 1rem) !important;
+    padding-top: .7rem !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .account-copy {
+    display: none !important;
+  }
+
+  html[data-theme="alaga"] .alaga-layout-hero {
+    grid-template-columns: 1fr !important;
+    min-height: 0 !important;
+    padding: 1.05rem !important;
+    background:
+      linear-gradient(90deg, rgba(255,255,255,.98), rgba(255,255,255,.88)),
+      var(--workspace-image) center/cover !important;
+  }
+
+  html[data-theme="alaga"] .alaga-layout-hero-brand {
+    justify-self: stretch !important;
+    width: auto !important;
+  }
+
+  html[data-theme="alaga"] .alaga-layout-search-combobox {
+    grid-template-columns: auto minmax(0,1fr) !important;
+  }
+
+  html[data-theme="alaga"] .alaga-layout-search-combobox > button {
+    grid-column: 1 / -1 !important;
+  }
+
+  html[data-theme="alaga"] .alaga-layout-summary-grid,
+  html[data-theme="alaga"] .alaga-layout-results-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  html[data-theme="alaga"] .alaga-layout-summary-card:last-child {
+    grid-column: auto !important;
+  }
+
+  html[data-theme="alaga"] .alaga-layout-workflow ol {
+    grid-template-columns: 1fr !important;
+  }
+
+  html[data-theme="alaga"] .alaga-layout-workflow li {
+    grid-template-columns: auto 1fr !important;
+    justify-items: start !important;
+    text-align: left !important;
+  }
+
+  html[data-theme="alaga"] .alaga-layout-workflow li small {
+    grid-column: 2 !important;
+  }
+
+  html[data-theme="alaga"] .alaga-layout-workflow li:not(:last-child)::after {
+    display: none !important;
+  }
+
+  html[data-theme="alaga"] .live-call-workflow-panel-heading,
+  html[data-theme="alaga"] .live-call-agent-formula,
+  html[data-theme="alaga"] .live-call-guidance-heading {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+
+  html[data-theme="alaga"] .live-call-guidance-grid,
+  html[data-theme="alaga"] .live-call-resolution-paths {
+    grid-template-columns: 1fr !important;
+  }
+}
