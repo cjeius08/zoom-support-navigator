@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  base: '/zoom-support-navigator/',
+  base: process.env.VITE_BASE || '/zoom-support-navigator/',
   plugins: [react()],
   test: {
     environment: 'jsdom',
