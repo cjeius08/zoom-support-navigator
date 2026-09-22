@@ -75,7 +75,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     .map(([id]) => id)
 
   const callFlowActive = currentView === 'my_saved_notes' || liveTools.documentation !== 'closed' || liveTools.scope_check !== 'closed'
-  const knowledgeActive = ['favorites', 'training', 'updates'].includes(currentView)
+  const knowledgeActive = ['favorites', 'process_documents', 'training', 'updates'].includes(currentView)
   const reportsActive = ['feedback', 'usage', 'feedback_queue'].includes(currentView)
   const adminActive = ['admin', 'team', 'avatar_library', 'saved_notes'].includes(currentView)
 
@@ -235,6 +235,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
 
         <NavDropdown label="Knowledge" active={knowledgeActive}>
           <button type="button" aria-label="Favorites" onClick={event => navigateFromHeader(event, 'favorites')}><Icon type="favorites" /><span><strong>Favorites</strong><small>Your saved support references.</small></span></button>
+          <button type="button" aria-label="Process Documents" onClick={event => navigateFromHeader(event, 'process_documents')}><Icon type="documentation" /><span><strong>Process Documents</strong><small>Original source pages organized by process title.</small></span></button>
           <button type="button" aria-label="Training & Resources" onClick={event => navigateFromHeader(event, 'training')}><Icon type="training" /><span><strong>Training & Resources</strong><small>Guides, scripts, visual lessons, and training.</small></span></button>
           <button type="button" aria-label="What’s New / Updates" onClick={event => navigateFromHeader(event, 'updates')}><Icon type="updates" /><span><strong>What’s New / Updates</strong><small>Recent workspace changes and release notes.</small></span></button>
         </NavDropdown>
