@@ -90,7 +90,224 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = null, initialCommonIssueId = null, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {} }) {
+
+function AlagaNavigatorLayout({
+  query,
+  setQuery,
+  suggestions,
+  showSuggestions,
+  activeSuggestion,
+  setActiveSuggestion,
+  setSuggestionsOpen,
+  handleSearchKeyDown,
+  selectSuggestion,
+  routeMatches,
+  processMatches,
+  fastestRoutes,
+  openRoute,
+  openProcess,
+  isFavorite,
+  isFavoriteBusy,
+  onToggleFavorite,
+  callFlowExpanded,
+  setCallFlowExpanded,
+  section,
+  setSection,
+  category,
+  setCategory,
+  categoryProcesses,
+  onTrackEvent,
+}) {
+  const workflow = [
+    ['1', 'Understand', 'Identify the issue and gather details.'],
+    ['2', 'Investigate', 'Check systems and resources.'],
+    ['3', 'Guide', 'Apply the right solution steps.'],
+    ['4', 'Resolve', 'Confirm the issue is fixed.'],
+    ['5', 'Document', 'Log notes and outcomes.'],
+    ['6', 'Follow Up', 'Ensure customer satisfaction.'],
+    ['7', 'Improve', 'Share learnings and feedback.'],
+  ]
+
+  const examples = ['cant share', 'cant find chat', 'waiting for host']
+  const summaryCommon = COMMON_ISSUE_ROUTES.slice(0, 5)
+  const summaryProcesses = PROCESSES.slice(0, 5)
+
+  const searchBox = <div className="alaga-layout-search-combobox" onBlur={event => {
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      setSuggestionsOpen(false)
+      setActiveSuggestion(-1)
+    }
+  }}>
+    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><circle cx="11" cy="11" r="7" /><path d="m16.2 16.2 4.3 4.3" /></svg>
+    <input
+      role="combobox"
+      aria-label="Search support processes"
+      aria-autocomplete="list"
+      aria-controls="alaga-support-search-suggestions"
+      aria-expanded={showSuggestions}
+      aria-activedescendant={showSuggestions && activeSuggestion >= 0 ? `alaga-support-search-option-${activeSuggestion}` : undefined}
+      value={query}
+      onFocus={() => { if (query.trim()) setSuggestionsOpen(true) }}
+      onKeyDown={handleSearchKeyDown}
+      onChange={event => {
+        const nextQuery = event.target.value
+        setQuery(nextQuery)
+        setCategory(null)
+        setSection(null)
+        setSuggestionsOpen(Boolean(nextQuery.trim()))
+        setActiveSuggestion(-1)
+      }}
+      placeholder="Search for a problem, process, or keyword..."
+    />
+    <button type="button" onClick={() => setSuggestionsOpen(Boolean(query.trim()))}>Search</button>
+    {showSuggestions && <div className="search-suggestions alaga-layout-search-suggestions" id="alaga-support-search-suggestions" role="listbox" aria-label="Search suggestions">
+      {suggestions.map((suggestion, index) => {
+        const isRoute = suggestion.kind === 'route'
+        const item = isRoute ? suggestion.route : suggestion.process
+        return <button
+          type="button"
+          role="option"
+          id={`alaga-support-search-option-${index}`}
+          className={`search-suggestion${isRoute ? ' search-suggestion-route' : ''}`}
+          aria-selected={activeSuggestion === index}
+          tabIndex={-1}
+          key={`${suggestion.kind}-${item.id}`}
+          onMouseMove={() => setActiveSuggestion(index)}
+          onClick={() => selectSuggestion(suggestion)}
+        >
+          <span className="search-suggestion-copy"><strong>{item.title}</strong><small>{isRoute ? item.subtitle : item.purpose}</small></span>
+          <span className="search-suggestion-category">{isRoute ? 'Common Issue' : 'Process Guide'}</span>
+        </button>
+      })}
+    </div>}
+  </div>
+
+  function openSection(next) {
+    setQuery('')
+    setSuggestionsOpen(false)
+    setActiveSuggestion(-1)
+    setSection(next)
+    onTrackEvent?.({ eventType: 'tool_open', routeId: 'navigator', toolId: `alaga_overview_${next}` })
+  }
+
+  return <section className="navigator alaga-layout-home" id="navigator" aria-label="Support Navigator">
+    <section className="alaga-layout-hero">
+      <div className="alaga-layout-hero-copy">
+        <p>Hi there,</p>
+        <h1>Support people. Solve faster.<br/><span>That’s Ozzie.</span></h1>
+        <p>Your all-in-one workspace for call flows, knowledge, training, and support resources.</p>
+        {searchBox}
+        <div className="alaga-layout-popular"><strong>Popular searches:</strong>{examples.map(example => <button type="button" key={example} onClick={() => {
+          setQuery(example)
+          setSection(null)
+          setSuggestionsOpen(true)
+          setActiveSuggestion(-1)
+        }}>{example}</button>)}</div>
+      </div>
+      <div className="alaga-layout-hero-brand" aria-label="Ozzie support message">
+        <strong>Ozzie</strong>
+        <span>Ogletree Support Workspace</span>
+        <p>Support moves people forward.</p>
+      </div>
+    </section>
+
+    {query.trim() ? <section className="alaga-layout-results" aria-live="polite">
+      <div className="alaga-layout-section-heading"><div><p>Smart Search</p><h2>Results for “{query}”</h2></div><button type="button" onClick={() => setQuery('')}>Clear search</button></div>
+      <div className="alaga-layout-results-grid">
+        <section>
+          <header><h3>Common Issues</h3><span>{routeMatches.length}</span></header>
+          {routeMatches.length ? <div className="route-browser-grid">{routeMatches.map(route => <FavoriteRouteCard
+            key={route.id}
+            route={route}
+            showType
+            onOpen={() => openRoute(route, 'alaga_search_result')}
+            favorite={isFavorite('common_issue', route.id)}
+            busy={isFavoriteBusy('common_issue', route.id)}
+            onToggleFavorite={() => onToggleFavorite('common_issue', route.id)}
+          />)}</div> : <div className="navigator-empty-state">No reviewed Common Issue route matches this search yet.</div>}
+        </section>
+        <section>
+          <header><h3>Process Guides</h3><span>{processMatches.length}</span></header>
+          {processMatches.length ? <div className="process-grid">{processMatches.map(process => <FavoriteProcessCard
+            key={process.id}
+            process={process}
+            onOpen={() => openProcess(process, 'alaga_search_result')}
+            favorite={isFavorite('process', process.id)}
+            busy={isFavoriteBusy('process', process.id)}
+            onToggleFavorite={() => onToggleFavorite('process', process.id)}
+          />)}</div> : <div className="navigator-empty-state">No approved Process Guide matches this search.</div>}
+        </section>
+      </div>
+    </section> : section ? <section className="alaga-layout-library-full">
+      <div className="alaga-layout-section-heading">
+        <div><p>Support library</p><h2>{section === 'common' ? 'Common Issues' : section === 'fastest' ? 'Fastest Routes' : 'Process Guides'}</h2></div>
+        <button type="button" onClick={() => { setSection(null); setCategory(null) }}>← Back to overview</button>
+      </div>
+      {section === 'fastest' && <div className="fastest-route-grid">{fastestRoutes.map(route => <FavoriteRouteCard
+        key={route.id}
+        route={route}
+        fast
+        onOpen={() => openRoute(route, 'alaga_fastest_route')}
+        favorite={isFavorite('common_issue', route.id)}
+        busy={isFavoriteBusy('common_issue', route.id)}
+        onToggleFavorite={() => onToggleFavorite('common_issue', route.id)}
+      />)}</div>}
+      {section === 'common' && <div className="common-issue-browser">{[...new Set(COMMON_ISSUE_ROUTES.map(route => route.group))].map(group => <section className="route-group" key={group}>
+        <h3>{group}</h3>
+        <div className="route-browser-grid">{COMMON_ISSUE_ROUTES.filter(route => route.group === group).map(route => <FavoriteRouteCard
+          key={route.id}
+          route={route}
+          onOpen={() => openRoute(route, 'alaga_common_issue')}
+          favorite={isFavorite('common_issue', route.id)}
+          busy={isFavoriteBusy('common_issue', route.id)}
+          onToggleFavorite={() => onToggleFavorite('common_issue', route.id)}
+        />)}</div>
+      </section>)}</div>}
+      {section === 'processes' && <>
+        <div className="category-grid">{categories.map(([id,name,description]) => <button key={id} aria-pressed={category === id} onClick={() => {
+          setCategory(id)
+          onTrackEvent?.({eventType:'category_open',routeId:'navigator',categoryId:id})
+        }}><CategoryIcon type={id} /><strong>{name}</strong><span>{description}</span></button>)}</div>
+        <div className="process-grid">{(category ? categoryProcesses : PROCESSES).map(process => <FavoriteProcessCard
+          key={process.id}
+          process={process}
+          onOpen={() => openProcess(process, 'alaga_process_card')}
+          favorite={isFavorite('process', process.id)}
+          busy={isFavoriteBusy('process', process.id)}
+          onToggleFavorite={() => onToggleFavorite('process', process.id)}
+        />)}</div>
+      </>}
+    </section> : <>
+      <section className="alaga-layout-summary-grid">
+        <article className="alaga-layout-summary-card">
+          <header><div><span>!</span><div><h2>Common Issues</h2><p>Quick access to the topics we see most often.</p></div></div><button type="button" onClick={() => openSection('common')}>View all →</button></header>
+          <div>{summaryCommon.map((route,index) => <button type="button" key={route.id} onClick={() => openRoute(route, 'alaga_overview_common')}><span>{index+1}</span><strong>{route.title}</strong><b>›</b></button>)}</div>
+        </article>
+        <article className="alaga-layout-summary-card">
+          <header><div><span>↗</span><div><h2>Fastest Routes</h2><p>Get to the right place, faster.</p></div></div><button type="button" onClick={() => openSection('fastest')}>View all →</button></header>
+          <div>{fastestRoutes.slice(0,5).map(route => <button type="button" key={route.id} onClick={() => openRoute(route, 'alaga_overview_fastest')}><strong>{route.title}</strong><b>›</b></button>)}</div>
+        </article>
+        <article className="alaga-layout-summary-card">
+          <header><div><span>▤</span><div><h2>Process Guides</h2><p>Step-by-step instructions for common tasks.</p></div></div><button type="button" onClick={() => openSection('processes')}>View all →</button></header>
+          <div>{summaryProcesses.map(process => <button type="button" key={process.id} onClick={() => openProcess(process, 'alaga_overview_process')}><strong>{process.title}</strong><b>›</b></button>)}</div>
+        </article>
+      </section>
+
+      <section className="alaga-layout-call-flow">
+        <div className="alaga-layout-call-heading"><div><span>☎</span><div><h2>Live Call Flow</h2><p>Follow along in real time. Stay on track. Deliver a great experience.</p></div></div><span>Same process. Same support tools.</span></div>
+        <LiveCallFlow expanded={callFlowExpanded} onExpandedChange={setCallFlowExpanded} />
+        {callFlowExpanded && <LiveCallFlowDetails onClose={() => setCallFlowExpanded(false)} />}
+      </section>
+
+      <section className="alaga-layout-workflow">
+        <div className="alaga-layout-section-heading"><div><p>Support workflow</p><h2>7-stage support workflow</h2></div><span>From conversation to resolution.</span></div>
+        <ol>{workflow.map(([number,title,description]) => <li key={number}><span>{number}</span><strong>{title}</strong><small>{description}</small></li>)}</ol>
+      </section>
+    </>}
+  </section>
+}
+
+export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = null, initialCommonIssueId = null, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, theme = 'ozzie' }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -101,6 +318,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
   const [activeSuggestion, setActiveSuggestion] = useState(-1)
   const [libraryTab, setLibraryTab] = useState('fastest')
   const [callFlowExpanded, setCallFlowExpanded] = useState(false)
+  const [alagaSection, setAlagaSection] = useState(null)
 
   useEffect(() => {
     if (!initialProcessId) return
@@ -231,6 +449,61 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
       event.preventDefault()
       selectSuggestion(suggestions[activeSuggestion])
     }
+  }
+
+  if (theme === 'alaga') {
+    return <>
+      <AlagaNavigatorLayout
+        query={query}
+        setQuery={setQuery}
+        suggestions={suggestions}
+        showSuggestions={showSuggestions}
+        activeSuggestion={activeSuggestion}
+        setActiveSuggestion={setActiveSuggestion}
+        setSuggestionsOpen={setSuggestionsOpen}
+        handleSearchKeyDown={handleSearchKeyDown}
+        selectSuggestion={selectSuggestion}
+        routeMatches={routeMatches}
+        processMatches={processMatches}
+        fastestRoutes={fastestRoutes}
+        openRoute={openRoute}
+        openProcess={openProcess}
+        isFavorite={isFavorite}
+        isFavoriteBusy={isFavoriteBusy}
+        onToggleFavorite={onToggleFavorite}
+        callFlowExpanded={callFlowExpanded}
+        setCallFlowExpanded={setCallFlowExpanded}
+        section={alagaSection}
+        setSection={setAlagaSection}
+        category={category}
+        setCategory={setCategory}
+        categoryProcesses={categoryProcesses}
+        onTrackEvent={onTrackEvent}
+      />
+      {selected&&<ProcessDrawer
+        process={selected}
+        onClose={()=>setSelected(null)}
+        onOpenTraining={onOpenTraining}
+        onTrackEvent={onTrackEvent}
+        isFavorite={isFavorite('process', selected.id)}
+        favoriteBusy={isFavoriteBusy('process', selected.id)}
+        onToggleFavorite={() => onToggleFavorite('process', selected.id)}
+      />}
+      {selectedRoute&&<CommonIssueDrawer
+        route={selectedRoute}
+        callContext={callContext}
+        onClose={()=>setSelectedRoute(null)}
+        onOpenRoute={routeId=>openRoute(routeById(routeId),'redirect')}
+        onOpenProcess={processId=>openProcess(PROCESSES.find(process=>process.id===processId),'common_issue_full_process')}
+        onStatusChange={status=>setCallContext(current=>({...current,status}))}
+        onContextChange={patch=>setCallContext(current=>({...current,...patch}))}
+        onTabChange={setCommonIssueTab}
+        onTrackEvent={onTrackEvent}
+        isFavorite={isFavorite('common_issue', selectedRoute.id)}
+        favoriteBusy={isFavoriteBusy('common_issue', selectedRoute.id)}
+        onToggleFavorite={() => onToggleFavorite('common_issue', selectedRoute.id)}
+      />}
+    </>
   }
 
   return <section className="navigator" id="navigator" aria-label="Support Navigator">
