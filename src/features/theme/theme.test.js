@@ -36,6 +36,13 @@ it('stores and applies the Ozzie Alpine workspace appearance', () => {
   expect(readStoredTheme()).toBe('alpine')
 })
 
+it('stores and applies the Ozzie Editorial workspace appearance', () => {
+  expect(storeTheme('editorial')).toBe('editorial')
+  expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe('editorial')
+  expect(document.documentElement.dataset.theme).toBe('editorial')
+  expect(readStoredTheme()).toBe('editorial')
+})
+
 it('can instantly return to Ozzie Original', () => {
   storeTheme('alaga')
   expect(applyTheme('ozzie')).toBe('ozzie')
@@ -80,4 +87,15 @@ it('supports the full Ozzie Alpine workspace appearance', () => {
   expect(css).toMatch(/html\[data-theme="alpine"\] \.alpine-layout-workflow/)
   expect(css).toMatch(/html\[data-theme="alpine"\] \.alpine-layout-summary-grid/)
   expect(css).toMatch(/html\[data-theme="alpine"\] \.alpine-layout-home \.navigator-top-workspace/)
+})
+
+
+it('supports the full Ozzie Editorial workspace appearance', () => {
+  const css = readFileSync(join(cwd(), 'src/features/theme/themeSystem.css'), 'utf8')
+
+  expect(css).toMatch(/html\[data-theme="editorial"\] \.app-header\.app-header-horizontal/)
+  expect(css).toMatch(/html\[data-theme="editorial"\] \.editorial-layout-hero/)
+  expect(css).toMatch(/html\[data-theme="editorial"\] \.editorial-layout-call-strip/)
+  expect(css).toMatch(/html\[data-theme="editorial"\] \.editorial-layout-workflow/)
+  expect(css).toMatch(/html\[data-theme="editorial"\] \.editorial-layout-summary-grid/)
 })
