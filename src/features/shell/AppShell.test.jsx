@@ -184,12 +184,16 @@ it('switches between Ozzie Original and Alaga Theme while preserving Ozzie brand
   expect(screen.getByRole('button', { name: /Alaga Theme/i })).toHaveAttribute('aria-pressed', 'false')
   expect(screen.getByRole('button', { name: /Ozzie Teal/i })).toHaveAttribute('aria-pressed', 'false')
   expect(screen.getByRole('button', { name: /Ozzie Alpine/i })).toHaveAttribute('aria-pressed', 'false')
+  expect(screen.getByRole('button', { name: /Ozzie Editorial/i })).toHaveAttribute('aria-pressed', 'false')
 
   await user.click(screen.getByRole('button', { name: /Ozzie Teal/i }))
   expect(onThemeChange).toHaveBeenCalledWith('teal')
 
   await user.click(screen.getByRole('button', { name: /Ozzie Alpine/i }))
   expect(onThemeChange).toHaveBeenCalledWith('alpine')
+
+  await user.click(screen.getByRole('button', { name: /Ozzie Editorial/i }))
+  expect(onThemeChange).toHaveBeenCalledWith('editorial')
 
   await user.click(screen.getByRole('button', { name: /Alaga Theme/i }))
   expect(onThemeChange).toHaveBeenCalledWith('alaga')
