@@ -10,6 +10,132 @@
   },
   "updates": [
     {
+      "id": "process-documents-knowledge-library",
+      "date": "2026-09-23",
+      "area": "Knowledge / Process Documents",
+      "audience": "all",
+      "title": "Original Process Documents now have their own Knowledge library",
+      "changed": "Added a dedicated Process Documents page under Knowledge so agents can browse the original source documents directly by process title instead of opening a Process Guide first. The library is searchable, shows the source-page count for each process, and opens a full-page reader with the original rendered pages, page numbering, and an Open full size option. Existing Process Guides, Common Issues, and their source references remain unchanged.",
+      "checks": [
+        "Open Knowledge → Process Documents and confirm the source-document library is available.",
+        "Search for Joining a Zoom Meeting and confirm the matching process document appears by title.",
+        "Open the document and confirm all original source pages are shown in order with Page X of Y labels.",
+        "Use Open full size on a source page and confirm the original rendered page opens separately."
+      ]
+    },
+    {
+      "id": "process-guide-persistent-tabs",
+      "date": "2026-09-23",
+      "area": "Process Guides / Navigation",
+      "audience": "all",
+      "title": "Process Guide tabs stay visible while long source content scrolls",
+      "changed": "Improved the shared Process Guide drawer so Call Guide, Visual Guide, Source Pages, and Full Process remain available at the top while the content below scrolls. This applies across Process Guides that use the shared drawer, including long visual references and multi-page source documents, and is designed to remain usable in short desktop windows as well as Windows and macOS browsers.",
+      "checks": [
+        "Open a Process Guide with Visual Guide content and scroll through a long visual; confirm the four process tabs remain available.",
+        "Switch to Source Pages and scroll through multiple pages; confirm the tabs remain available at the top.",
+        "Repeat in a vertically short browser window and confirm only the content area scrolls.",
+        "Switch among Call Guide, Visual Guide, Source Pages, and Full Process and confirm each view remains reachable."
+      ]
+    },
+    {
+      "id": "member-saved-notes-followups",
+      "date": "2026-09-22",
+      "area": "Call Flow / Saved Notes",
+      "audience": "all",
+      "title": "Members and Leads now have a dedicated Saved Notes & Follow-Ups page",
+      "changed": "Added My Saved Notes for regular users so saved call notes and follow-ups can be reviewed outside the documentation dock. Members and Leads can open their own saved records, revisit follow-up items, and jump from a saved note in Call Documentation into the dedicated page. Admin-wide note management remains separate.",
+      "checks": [
+        "Open Call Flow → My Saved Notes and confirm your own saved notes are listed.",
+        "Save a note with Follow-up required and confirm it is available from the dedicated page.",
+        "Open a saved note from Call Documentation and confirm the dedicated notes page can show that record.",
+        "Sign in as a non-admin user and confirm admin-wide saved-note controls are not shown."
+      ]
+    },
+    {
+      "id": "admin-saved-notes-management",
+      "date": "2026-09-22",
+      "area": "Admin / Saved Notes",
+      "audience": "admin",
+      "title": "Admin Saved Notes adds follow-up filtering, user drill-down, and controlled deletion",
+      "changed": "Expanded the Admin Saved Notes workspace with a dedicated follow-up view, filtering and person-level drill-down so protected notes can be reviewed more efficiently. Permanent saved-note deletion is restricted to the creator admin; regular users can review their own notes but cannot permanently delete records from the shared administrative store.",
+      "checks": [
+        "Open Admin → Saved Notes and confirm follow-up items can be filtered and reviewed.",
+        "Open a user from the saved-notes view and confirm that user’s records can be inspected together.",
+        "Confirm the creator admin can delete a saved note from the admin workspace.",
+        "Confirm Member and Lead accounts do not receive admin saved-note deletion controls."
+      ]
+    },
+    {
+      "id": "ozzie-alaga-themes",
+      "date": "2026-09-22",
+      "area": "Profile / Appearance",
+      "audience": "all",
+      "title": "Ozzie now offers Ozzie Original and Alaga color themes",
+      "changed": "Added a personal Appearance setting with Ozzie Original as the default and Alaga as an alternate red/coral color theme. The theme changes colors only; the Ozzie logo, workspace branding, content, navigation, workflows, and feature behavior remain the same. Additional coverage was applied to Fastest Routes and Common Issues so the selected theme stays consistent across the workspace.",
+      "checks": [
+        "Open My Profile → Appearance and confirm Ozzie Original and Alaga Theme are available.",
+        "Switch to Alaga Theme and confirm the workspace color palette changes without replacing the Ozzie logo.",
+        "Open Fastest Routes and Common Issues and confirm the selected theme is applied consistently.",
+        "Switch back to Ozzie Original and confirm the original navy/cyan/blue colors return."
+      ]
+    },
+    {
+      "id": "ozzie-intro-playback-polish",
+      "date": "2026-09-22",
+      "area": "Workspace / Onboarding",
+      "audience": "all",
+      "title": "Meet Ozzie playback is smoother and keeps its media in sync",
+      "changed": "Improved the Meet Ozzie introduction by preloading the video earlier and synchronizing the companion audio with the animation. Playback controls were simplified and hardened so replaying the introduction from My Profile stays predictable without changing the onboarding flow itself.",
+      "checks": [
+        "Open Meet Ozzie and confirm the introduction begins more smoothly after loading.",
+        "Confirm the animation and companion audio stay synchronized during playback.",
+        "Replay Meet Ozzie from My Profile and confirm the same introduction opens correctly.",
+        "Confirm the introduction can still be completed or skipped without blocking the workspace."
+      ]
+    },
+    {
+      "id": "responsive-login-composition",
+      "date": "2026-09-21",
+      "area": "Sign In / Responsive Layout",
+      "audience": "all",
+      "title": "Ozzie sign-in page now uses the approved split-screen composition",
+      "changed": "Updated the sign-in page to the approved responsive layout: the login card sits on the left, the Ozzie brand panel sits on the right, and the Welcome Back message replaces the old logo position inside the card. The existing background and Ozzie branding are preserved, and the layout adapts for narrower screens.",
+      "checks": [
+        "Open the sign-in page on desktop and confirm the login card is on the left and Ozzie branding is on the right.",
+        "Confirm the heading reads Welcome Back! with the sign-in guidance underneath.",
+        "Resize the browser and confirm the layout adapts without overlapping the login card or brand panel.",
+        "Confirm the existing background and Ozzie logo remain unchanged."
+      ]
+    },
+    {
+      "id": "admin-avatar-library-management",
+      "date": "2026-09-21",
+      "area": "Admin / Avatar Library",
+      "audience": "admin",
+      "title": "Avatar Library now supports admin-only single and batch management",
+      "changed": "Added dedicated Avatar Library management for the creator admin, including single and batch upload plus single and batch deletion. The Select All deletion path was corrected so large batches are sent properly instead of returning to the previous page, while non-admin users remain unable to see or call the management controls.",
+      "checks": [
+        "Open Admin → Avatar Library and confirm single and batch upload controls are available to the creator admin.",
+        "Select multiple avatars and confirm batch deletion works.",
+        "Use Select All on a large avatar set and confirm the deletion action is processed instead of navigating away.",
+        "Sign in as a Member or Lead and confirm Avatar Library management controls are not available."
+      ]
+    },
+    {
+      "id": "avatar-catalog-refresh",
+      "date": "2026-09-21",
+      "area": "Profile / Avatar",
+      "audience": "all",
+      "title": "Profile avatar choices were refreshed with the new approved catalog",
+      "changed": "Replaced the previous avatar set with the refreshed approved avatar catalog and updated the picker to use the new library consistently. The new set provides a broader range of profile choices while preserving the same profile-selection workflow and saved-avatar behavior.",
+      "checks": [
+        "Open My Profile → Change Avatar and confirm the refreshed avatar library is available.",
+        "Select an avatar, save it, and confirm it appears in the account card.",
+        "Log out and sign back in and confirm the saved avatar persists.",
+        "Scan the picker and confirm the refreshed catalog uses consistent framing."
+      ]
+    },
+    {
       "id": "phase8-batch4-final-smoke-freeze",
       "date": "2026-09-19",
       "area": "Admin / Stabilization",
