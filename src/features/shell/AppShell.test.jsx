@@ -171,7 +171,7 @@ it('gives regular members direct access to My Saved Notes from Call Flow', async
   expect(onOpenMySavedNotes).toHaveBeenCalledWith('')
 })
 
-it('switches between Ozzie Original and Alaga Theme from Appearance without changing the Ozzie logo', async () => {
+it('switches between Ozzie Original and Alaga Theme while preserving Ozzie branding', async () => {
   const user = userEvent.setup()
   const onThemeChange = vi.fn()
   const { rerender } = render(<AppShell profile={agentProfile} theme="ozzie" onThemeChange={onThemeChange} />)
@@ -187,7 +187,7 @@ it('switches between Ozzie Original and Alaga Theme from Appearance without chan
   expect(onThemeChange).toHaveBeenCalledWith('alaga')
 
   rerender(<AppShell profile={agentProfile} theme="alaga" onThemeChange={onThemeChange} />)
-  expect(screen.getByRole('img', { name: /Ozzie — Ogletree Support Workspace/i })).toHaveAttribute('src', expect.stringContaining('ozzie-hq.png'))
+  expect(screen.getByRole('img', { name: /Ozzie — Ogletree Support Workspace/i })).toHaveAttribute('src', expect.stringContaining('ozzie-workspace.svg'))
 })
 
 it('keeps updates and workspace ownership metadata available after the shell revamp', async () => {
