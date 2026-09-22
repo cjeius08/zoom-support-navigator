@@ -399,6 +399,7 @@ export default function App() {
           isFavoriteBusy={isFavoriteBusy}
           onToggleFavorite={toggleFavorite}
           onResourceViewed={rememberRecentView}
+          theme={theme}
         />
       : view === 'favorites'
         ? <FavoritesView
