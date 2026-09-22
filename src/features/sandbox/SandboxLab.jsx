@@ -316,26 +316,26 @@ function SettingsWindow({ activeTab, onTab, onClose, cameraOn, onCamera, device 
   const [speakerTesting, setSpeakerTesting] = useState(false)
   const [micTesting, setMicTesting] = useState(false)
   const [advancedOpen, setAdvancedOpen] = useState(false)
+  const [videoTab, setVideoTab] = useState('Video')
+
   return (
     <div className="zoom-sim-settings-overlay" role="dialog" aria-modal="true" aria-label="Zoom Settings">
-      <section className="zoom-sim-settings-window">
-        <header>
-          <div>
-            <strong>Settings</strong>
-            <span>{device.label}</span>
-          </div>
+      <section className="zoom-sim-settings-window zoom-reference-settings">
+        <header className="zoom-reference-settings-titlebar">
+          <div><span className="zoom-reference-zm">zm</span><strong>Settings</strong></div>
           <button type="button" aria-label="Close Settings" onClick={onClose}>×</button>
         </header>
+        <div className="zoom-reference-settings-upgrade">Upgrade to Zoom Workplace Pro to get unlimited meetings, productivity apps and more! <button type="button">Upgrade now</button></div>
 
         <div className="zoom-sim-settings-body">
           <aside>
-            <label className="zoom-sim-settings-search">⌕ <input placeholder="Search settings" /></label>
+            <label className="zoom-sim-settings-search">⌕ <input placeholder="Search" /></label>
             {SETTINGS.map(item => (
               <button
                 key={item.id}
                 type="button"
                 className={activeTab === item.id ? 'active' : ''}
-                onClick={() => onTab(item.id)}
+                onClick={() => { onTab(item.id); setAdvancedOpen(false) }}
               >
                 <span>{item.icon}</span>{item.label}
               </button>
@@ -344,67 +344,123 @@ function SettingsWindow({ activeTab, onTab, onClose, cameraOn, onCamera, device 
 
           <main>
             {activeTab === 'general' && (
-              <div className="zoom-sim-setting-section">
-                <h2>General</h2>
-                <p>Zoom Workplace app preferences</p>
-                {isMac
-                  ? <>
-                      <label><input type="checkbox" defaultChecked /> Open Zoom Workplace when I log in</label>
-                      <label><input type="checkbox" /> Keep Zoom Workplace in the Dock when closed</label>
-                    </>
-                  : <>
-                      <label><input type="checkbox" defaultChecked /> Start Zoom Workplace when I start Windows</label>
-                      <label><input type="checkbox" /> Minimize Zoom Workplace to the notification area when closed</label>
-                    </>}
-                <label><input type="checkbox" defaultChecked /> Keep Zoom Workplace up to date automatically</label>
-                <div className="zoom-sim-select-row"><span>Color mode</span><select defaultValue="system"><option value="system">System</option><option>Light</option><option>Dark</option></select></div>
+              <div className="zoom-sim-setting-section zoom-reference-appearance">
+                <h2>Appearance</h2>
+                <div className="zoom-reference-settings-card">
+                  <h3>Color mode</h3>
+                  <div className="zoom-reference-mode-grid">
+                    <button type="button" className="selected"><span className="mode-preview light"></span><small>Light</small></button>
+                    <button type="button"><span className="mode-preview dark"></span><small>Dark</small></button>
+                    <button type="button"><span className="mode-preview system"></span><small>System setting</small></button>
+                  </div>
+                </div>
+                <div className="zoom-reference-settings-card">
+                  <h3>Theme</h3>
+                  <p>Apply an accent color when using light mode.</p>
+                  <div className="zoom-reference-theme-row"><button className="classic" type="button"></button><button className="bloom" type="button"></button><button className="agave" type="button"></button><button className="rose" type="button"></button></div>
+                  <label className="zoom-reference-toggle-row"><span>Always keep my meetings dark</span><input type="checkbox" defaultChecked /></label>
+                  <div className="zoom-sim-select-row"><span>Zoom Chat sidebar</span><select defaultValue="light"><option value="light">Light contrast</option><option>Dark contrast</option></select></div>
+                </div>
+                <div className="zoom-reference-settings-card">
+                  <h3>Emoji and reactions skin tone</h3>
+                  <div className="zoom-reference-skin-row"><button type="button">👍</button><button type="button">👍🏻</button><button type="button">👍🏼</button><button type="button">👍🏽</button><button type="button">👍🏾</button><button type="button">👍🏿</button></div>
+                </div>
+                {isMac && <p className="zoom-sim-test-status">macOS system appearance can also affect the app chrome.</p>}
               </div>
             )}
 
             {activeTab === 'audio' && (
-              <div className="zoom-sim-setting-section">
-                <h2>Audio</h2>
-                <p>Speaker and microphone</p>
-                <div className="zoom-sim-device-setting">
-                  <label>Speaker<select defaultValue="system-speaker"><option value="system-speaker">Same as System</option><option>{isMac ? 'MacBook Speakers' : 'Speakers (Realtek Audio)'}</option><option>USB Headset</option></select></label>
-                  <button type="button" onClick={() => setSpeakerTesting(value => !value)}>{speakerTesting ? 'Stop Test' : 'Test Speaker'}</button>
-                </div>
-                <label className="zoom-sim-volume">Output volume<input type="range" min="0" max="100" defaultValue="72" /></label>
-                <div className="zoom-sim-device-setting">
-                  <label>Microphone<select defaultValue="system-mic"><option value="system-mic">Same as System</option><option>{isMac ? 'MacBook Microphone' : 'Microphone Array'}</option><option>USB Headset Microphone</option></select></label>
-                  <button type="button" onClick={() => setMicTesting(value => !value)}>{micTesting ? 'Stop Test' : 'Test Mic'}</button>
-                </div>
-                <label className="zoom-sim-volume">Input volume<input type="range" min="0" max="100" defaultValue="64" /></label>
-                <label><input type="checkbox" defaultChecked /> Automatically adjust microphone volume</label>
-                {speakerTesting && <p className="zoom-sim-test-status">🔊 Test tone playing · simulated speaker output</p>}
-                {micTesting && <p className="zoom-sim-test-status">🎙 Input level moving · simulated microphone test</p>}
-                <button type="button" className="zoom-sim-link-button" onClick={() => setAdvancedOpen(value => !value)}>{advancedOpen ? 'Hide Advanced' : 'Advanced'}</button>
-                {advancedOpen && <div className="zoom-sim-advanced-settings"><label><input type="checkbox" defaultChecked /> Echo cancellation</label><label><input type="checkbox" /> Original sound for musicians</label><label><input type="checkbox" defaultChecked /> Automatically sync headset buttons</label></div>}
+              <div className="zoom-sim-setting-section zoom-reference-audio">
+                {advancedOpen ? (
+                  <>
+                    <button type="button" className="zoom-reference-back-link" onClick={() => setAdvancedOpen(false)}>←</button>
+                    <h2>Advanced</h2>
+                    <div className="zoom-reference-settings-card zoom-reference-advanced-card">
+                      {[
+                        ['Echo cancellation', 'Reduces the sound of multiple people speaking at the same time.'],
+                        [isMac ? 'macOS audio enhancements' : 'Windows system audio enhancements', 'Turn on system audio enhancements for the speaker and microphone in use.'],
+                        ['Signal processing by audio device drivers', 'Set the system signal processing mode.'],
+                        ['Audio capture and playback API', '']
+                      ].map(([label, note]) => (
+                        <div className="zoom-reference-advanced-row" key={label}>
+                          <div><strong>{label} ⓘ</strong>{note && <small>{note}</small>}</div>
+                          <select defaultValue="Auto"><option>Auto</option><option>On</option><option>Off</option></select>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <h2>Speaker</h2>
+                    <div className="zoom-reference-audio-block">
+                      <label><span>Speaker</span><select defaultValue="device"><option value="device">{isMac ? 'MacBook Speakers' : 'Speakers (Realtek Audio)'}</option><option>Same as system</option><option>USB Headset</option></select></label>
+                      <button type="button" className="zoom-reference-test-button" onClick={() => setSpeakerTesting(v => !v)}>{speakerTesting ? 'Stop' : 'Test speaker'}</button>
+                      <label className="zoom-sim-volume"><span>Output volume</span><input type="range" min="0" max="100" defaultValue="72" /></label>
+                      <label className="zoom-reference-toggle-row"><span>Spatial audio ⓘ</span><input type="checkbox" /></label>
+                      <label className="zoom-reference-toggle-row"><span>Sync buttons on headset</span><input type="checkbox" defaultChecked /></label>
+                      {speakerTesting && <p className="zoom-sim-test-status">🔊 Test tone playing · simulated speaker output</p>}
+                    </div>
+
+                    <h2>Microphone</h2>
+                    <div className="zoom-reference-audio-block">
+                      <label><span>Microphone</span><select defaultValue="device"><option value="device">{isMac ? 'MacBook Microphone' : 'Microphone Array (Realtek Audio)'}</option><option>Same as system</option><option>USB Headset Microphone</option></select></label>
+                      <button type="button" className="zoom-reference-test-button" onClick={() => setMicTesting(v => !v)}>{micTesting ? 'Stop' : 'Test microphone'}</button>
+                      <label className="zoom-sim-volume"><span>Input volume</span><input type="range" min="0" max="100" defaultValue="64" /></label>
+                      <label className="zoom-reference-toggle-row"><span>Automatically adjust microphone volume</span><input type="checkbox" defaultChecked /></label>
+                      {micTesting && <p className="zoom-sim-test-status">🎙 Simulated microphone input detected</p>}
+                    </div>
+                    <button type="button" className="zoom-sim-link-button" onClick={() => setAdvancedOpen(true)}>Advanced</button>
+                  </>
+                )}
               </div>
             )}
 
             {activeTab === 'video' && (
-              <div className="zoom-sim-setting-section">
-                <h2>Video & effects</h2>
-                <p>Camera, appearance, and video preferences</p>
+              <div className="zoom-sim-setting-section zoom-reference-video">
                 <div className={cameraOn ? 'zoom-sim-camera-preview on' : 'zoom-sim-camera-preview'}>
                   <span>{cameraOn ? 'Camera preview active' : 'Camera preview'}</span>
                 </div>
-                <div className="zoom-sim-device-setting">
-                  <label>Camera<select><option>{isMac ? 'FaceTime HD Camera' : 'Integrated Camera'}</option><option>USB Camera</option></select></label>
-                  <button type="button" onClick={onCamera}>{cameraOn ? 'Turn Off' : 'Turn On'}</button>
+                <div className="zoom-reference-video-tabs">
+                  {['Video','Appearance','Backgrounds','Avatars','Filters','Effects'].map(tab => <button type="button" key={tab} className={videoTab === tab ? 'active' : ''} onClick={() => setVideoTab(tab)}>{tab}</button>)}
                 </div>
-                <label><input type="checkbox" defaultChecked /> HD video</label>
-                <label><input type="checkbox" /> Mirror my video preview</label>
-                <label><input type="checkbox" /> Touch up my appearance</label>
-                <label><input type="checkbox" /> Adjust for low light</label>
-                <label><input type="checkbox" /> Portrait lighting</label>
+
+                {videoTab === 'Video' && <>
+                  <h2>Video</h2>
+                  <div className="zoom-sim-device-setting">
+                    <label>Camera<select><option>{isMac ? 'FaceTime HD Camera' : 'HD User Facing'}</option><option>USB Camera</option></select></label>
+                    <button type="button" onClick={onCamera}>{cameraOn ? 'Turn Off' : 'Turn On'}</button>
+                  </div>
+                  <label><input type="checkbox" /> Original ratio</label>
+                  <label><input type="checkbox" defaultChecked /> Mirror my video preview</label>
+                </>}
+                {videoTab === 'Appearance' && <>
+                  <h2>Appearance</h2>
+                  <label className="zoom-reference-toggle-row"><span>Touch up my appearance</span><input type="checkbox" /></label>
+                  <label className="zoom-reference-toggle-row"><span>Adjust for low light</span><input type="checkbox" /></label>
+                  <label className="zoom-reference-toggle-row"><span>Portrait lighting</span><input type="checkbox" /></label>
+                </>}
+                {videoTab === 'Backgrounds' && <>
+                  <h2>Backgrounds</h2>
+                  <div className="zoom-reference-thumb-grid">{['None','Office','Library','Blur','Gradient','Room'].map(x => <button type="button" key={x}><span></span><small>{x}</small></button>)}</div>
+                </>}
+                {videoTab === 'Avatars' && <>
+                  <h2>Avatars</h2>
+                  <div className="zoom-reference-avatar-card"><div className="zoom-reference-avatar-face">🙂</div><div className="zoom-reference-avatar-row">{['Style','Face','Hair','Eyes','Eyebrows','Facial hair'].map(x => <button type="button" key={x}>{x}</button>)}</div><div className="zoom-reference-tone-row">{['🏻','🏼','🏽','🏾','🏿'].map(x => <button type="button" key={x}>●{x}</button>)}</div></div>
+                </>}
+                {videoTab === 'Filters' && <><h2>Filters</h2><div className="zoom-reference-thumb-grid">{['Original','Warm','Cool','Mono','Soft','Bright'].map(x => <button type="button" key={x}><span></span><small>{x}</small></button>)}</div></>}
+                {videoTab === 'Effects' && <><h2>Effects</h2><div className="zoom-reference-thumb-grid">{['Glasses','Hat','Mustache','Frame','Stars','Confetti'].map(x => <button type="button" key={x}><span></span><small>{x}</small></button>)}</div></>}
               </div>
             )}
-            {activeTab === 'meetings' && <div className="zoom-sim-setting-section"><h2>Meetings & webinars</h2><p>Join experience and in-meeting preferences</p><label><input type="checkbox" /> Keep my camera off</label><label><input type="checkbox" defaultChecked /> Keep meeting controls visible</label><label><input type="checkbox" /> Show meeting timer</label><label><input type="checkbox" defaultChecked /> Press and hold Space key to temporarily unmute</label></div>}
-            {activeTab === 'chat' && <div className="zoom-sim-setting-section"><h2>Chat</h2><p>Sidebar, notifications, and message preferences</p><label><input type="checkbox" defaultChecked /> Show unread message badge</label><label><input type="checkbox" defaultChecked /> Show link previews</label><label><input type="checkbox" /> Mute notifications while in a meeting</label></div>}
-            {activeTab === 'share' && <div className="zoom-sim-setting-section"><h2>Share screen</h2><p>Screen sharing behavior</p><label><input type="checkbox" defaultChecked /> Show Zoom windows during screen share</label><label><input type="checkbox" /> Silence system notifications when sharing desktop</label><label><input type="checkbox" defaultChecked /> Side-by-side mode</label></div>}
-            {activeTab === 'accessibility' && <div className="zoom-sim-setting-section"><h2>Accessibility</h2><p>Captions and display preferences</p><label className="zoom-sim-volume">Closed captioning font size<input type="range" min="80" max="160" defaultValue="100" /></label><label><input type="checkbox" /> Always show captions</label><label><input type="checkbox" defaultChecked /> Screen reader alerts</label></div>}
+
+            {activeTab === 'notifications' && <div className="zoom-sim-setting-section"><h2>Sounds</h2><label className="zoom-sim-volume"><span>Ringtone volume</span><input type="range" min="0" max="100" defaultValue="60" /></label><h3>Ringtones</h3><div className="zoom-sim-select-row"><span>Video calls</span><select><option>Default</option></select></div><div className="zoom-sim-select-row"><span>Custom contact ringtones</span><button type="button">Manage</button></div><h3>Notification sounds</h3><label className="zoom-reference-toggle-row"><span>Play new chat message sound</span><input type="checkbox" defaultChecked /></label><h3>Desktop notifications</h3><button type="button" className="zoom-sim-link-button">Notification preferences</button></div>}
+            {activeTab === 'meetings' && <div className="zoom-sim-setting-section"><h2>Meetings & webinars</h2><label><input type="checkbox" /> Keep my camera off</label><label><input type="checkbox" defaultChecked /> Keep meeting controls visible</label><label><input type="checkbox" /> Show meeting timer</label><label><input type="checkbox" defaultChecked /> Press and hold Space key to temporarily unmute</label></div>}
+            {activeTab === 'recording' && <div className="zoom-sim-setting-section"><h2>Recording</h2><label><input type="checkbox" defaultChecked /> Choose a location for recorded files when the meeting ends</label><label><input type="checkbox" /> Add a timestamp to the recording</label></div>}
+            {activeTab === 'share' && <div className="zoom-sim-setting-section"><h2>Share screen</h2><label><input type="checkbox" defaultChecked /> Show Zoom windows during screen share</label><label><input type="checkbox" /> Silence system notifications when sharing desktop</label><label><input type="checkbox" defaultChecked /> Side-by-side mode</label></div>}
+            {activeTab === 'chat' && <div className="zoom-sim-setting-section"><h2>Chat</h2><label><input type="checkbox" defaultChecked /> Show unread message badge</label><label><input type="checkbox" defaultChecked /> Show link previews</label><label><input type="checkbox" /> Mute notifications while in a meeting</label></div>}
+            {activeTab === 'accessibility' && <div className="zoom-sim-setting-section"><h2>Accessibility</h2><label className="zoom-sim-volume">Closed captioning font size<input type="range" min="80" max="160" defaultValue="100" /></label><label><input type="checkbox" /> Always show captions</label><label><input type="checkbox" defaultChecked /> Screen reader alerts</label></div>}
+            {activeTab === 'keyboard' && <div className="zoom-sim-setting-section"><h2>Keyboard shortcuts</h2><div className="zoom-reference-key-row"><span>Mute/unmute my audio</span><kbd>Alt+A</kbd></div><div className="zoom-reference-key-row"><span>Start/stop video</span><kbd>Alt+V</kbd></div><div className="zoom-reference-key-row"><span>Start/stop screen sharing</span><kbd>Alt+S</kbd></div></div>}
+            {activeTab === 'statistics' && <div className="zoom-sim-setting-section"><h2>Statistics</h2><div className="zoom-reference-stats"><span>CPU</span><strong>12%</strong><span>Memory</span><strong>184 MB</strong><span>Network</span><strong>Good</strong></div></div>}
+            {activeTab === 'account' && <div className="zoom-reference-account"><div className="zoom-reference-avatar-face">ST</div><h2>STAGING_ADMIN <span>●</span></h2><p>Training account</p><a>Basic</a><button type="button">Upgrade to pro</button><button type="button">Edit my profile</button><button type="button">View advanced features</button></div>}
           </main>
         </div>
       </section>
