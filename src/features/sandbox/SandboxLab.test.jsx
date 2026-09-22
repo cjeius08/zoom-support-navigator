@@ -11,8 +11,17 @@ it('supports realistic device-specific Zoom training exploration', async () => {
   expect(screen.getAllByText(/TRAINING SIMULATION/i).length).toBeGreaterThan(0)
   expect(screen.getByRole('button', { name: /Windows 11/i })).toHaveAttribute('aria-pressed', 'true')
 
+  expect(screen.getByRole('button', { name: 'Back' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Forward' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'History' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Create' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Activity' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Calendar panel' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Open AI chat' })).toBeInTheDocument()
+
   await user.click(screen.getAllByRole('button', { name: /Settings/i })[0])
   const settingsDialog = screen.getByRole('dialog', { name: 'Zoom Settings' })
+  expect(within(settingsDialog).getByRole('button', { name: /Video & effects/i })).toBeInTheDocument()
   await user.click(within(settingsDialog).getByRole('button', { name: /Audio/i }))
   expect(within(settingsDialog).getByRole('heading', { name: 'Audio' })).toBeInTheDocument()
 
@@ -33,6 +42,10 @@ it('supports realistic device-specific Zoom training exploration', async () => {
   const scheduleDialog = screen.getByRole('dialog', { name: 'Schedule Meeting' })
   expect(within(scheduleDialog).getByDisplayValue('Support Training Practice')).toBeInTheDocument()
   await user.click(within(scheduleDialog).getByRole('button', { name: 'Cancel' }))
+
+  await user.click(screen.getByRole('button', { name: /Create/i }))
+  expect(screen.getByRole('dialog', { name: 'Create' })).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Close Create' }))
 
   await user.click(screen.getByRole('button', { name: /More/i }))
   expect(screen.getByRole('dialog', { name: 'More Zoom Workplace Apps' })).toBeInTheDocument()
