@@ -22,6 +22,13 @@ it('stores and applies the Alaga workspace appearance without changing product i
   expect(readStoredTheme()).toBe('alaga')
 })
 
+it('stores and applies the Ozzie Teal workspace appearance', () => {
+  expect(storeTheme('teal')).toBe('teal')
+  expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe('teal')
+  expect(document.documentElement.dataset.theme).toBe('teal')
+  expect(readStoredTheme()).toBe('teal')
+})
+
 it('can instantly return to Ozzie Original', () => {
   storeTheme('alaga')
   expect(applyTheme('ozzie')).toBe('ozzie')
@@ -44,4 +51,15 @@ it('supports a full Alaga layout preset while preserving Ozzie branding and majo
   expect(css).toMatch(/html\[data-theme="alaga"\] \.training-card/)
   expect(css).toMatch(/html\[data-theme="alaga"\] \.ozzie-brand-dock img/)
   expect(css).toContain('filter: none !important')
+})
+
+
+it('supports the full Ozzie Teal workspace appearance', () => {
+  const css = readFileSync(join(cwd(), 'src/features/theme/themeSystem.css'), 'utf8')
+
+  expect(css).toMatch(/html\[data-theme="teal"\] \.app-header\.app-header-horizontal/)
+  expect(css).toMatch(/html\[data-theme="teal"\] \.teal-layout-hero/)
+  expect(css).toMatch(/html\[data-theme="teal"\] \.teal-layout-workflow/)
+  expect(css).toMatch(/html\[data-theme="teal"\] \.teal-layout-summary-grid/)
+  expect(css).toMatch(/html\[data-theme="teal"\] \.teal-layout-home \.navigator-top-workspace/)
 })
