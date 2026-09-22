@@ -2664,3 +2664,678 @@ html[data-theme="alaga"] .full-process > section {
   color: #2a3036 !important;
   background: #fafbfc !important;
 }
+
+
+/* =========================================================
+   ALAGA READABILITY + RESPONSIVE AUDIT
+   Final pass based on full-screen review of Home, Knowledge,
+   Training, Readiness, Sandbox, Reports and Admin.
+   ========================================================= */
+
+/* ---------- Header / resize safety ---------- */
+html[data-theme="alaga"] .app-header.app-header-horizontal {
+  grid-template-columns: minmax(190px, 220px) minmax(0, 1fr) minmax(170px, 190px) !important;
+  min-height: 84px !important;
+  padding: .7rem clamp(1.4rem, 2.7vw, 2.75rem) !important;
+  overflow: visible !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .ozzie-brand-dock {
+  width: 100% !important;
+  max-width: 205px !important;
+  margin-left: .35rem !important;
+  overflow: visible !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .ozzie-brand-dock img {
+  width: 100% !important;
+  max-width: 205px !important;
+  max-height: 64px !important;
+  object-fit: contain !important;
+  object-position: left center !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .top-navigation {
+  min-width: 0 !important;
+  max-width: 780px !important;
+  overflow: visible !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .topnav-link,
+html[data-theme="alaga"] .app-header-horizontal .topnav-dropdown > summary {
+  min-width: 0 !important;
+  padding-inline: clamp(.4rem, .75vw, .72rem) !important;
+  font-size: clamp(.73rem, .8vw, .84rem) !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .account-menu {
+  min-width: 170px !important;
+  max-width: 190px !important;
+  padding: .46rem .65rem !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .account-copy {
+  min-width: 0 !important;
+}
+
+html[data-theme="alaga"] .app-header-horizontal .account-copy strong,
+html[data-theme="alaga"] .app-header-horizontal .account-copy small {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 1320px) {
+  html[data-theme="alaga"] .app-header.app-header-horizontal {
+    grid-template-columns: 180px minmax(0, 1fr) 176px !important;
+    padding-inline: 1.15rem !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .ozzie-brand-dock,
+  html[data-theme="alaga"] .app-header-horizontal .ozzie-brand-dock img {
+    max-width: 178px !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .ozzie-brand-dock img {
+    max-height: 58px !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .topnav-link,
+  html[data-theme="alaga"] .app-header-horizontal .topnav-dropdown > summary {
+    padding-inline: .42rem !important;
+    font-size: .72rem !important;
+  }
+}
+
+@media (max-width: 1160px) {
+  html[data-theme="alaga"] .app-header.app-header-horizontal {
+    display: block !important;
+    min-height: 72px !important;
+    padding: .6rem .85rem !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .app-header-brand-row {
+    display: grid !important;
+    grid-template-columns: minmax(130px, 160px) 1fr auto !important;
+    align-items: center !important;
+    gap: .7rem !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .ozzie-brand-dock {
+    width: 100% !important;
+    max-width: 156px !important;
+    margin-left: .2rem !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .ozzie-brand-dock img {
+    width: 100% !important;
+    max-width: 156px !important;
+    max-height: 52px !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .menu-toggle {
+    display: inline-flex !important;
+    justify-self: end !important;
+    align-items: center !important;
+    gap: .35rem !important;
+    min-height: 40px !important;
+    padding: .52rem .7rem !important;
+    border: 1px solid rgba(255,255,255,.15) !important;
+    color: #fff !important;
+    background: rgba(255,255,255,.08) !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .account-menu {
+    min-width: 145px !important;
+    max-width: 165px !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .top-navigation {
+    position: fixed !important;
+    top: 72px !important;
+    right: .75rem !important;
+    left: .75rem !important;
+    z-index: 100 !important;
+    display: none !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: calc(100vh - 88px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: .75rem !important;
+    border: 1px solid rgba(255,255,255,.14) !important;
+    border-radius: .9rem !important;
+    background: #21171b !important;
+    box-shadow: 0 1.2rem 3rem rgba(0,0,0,.34) !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .top-navigation.open {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: .2rem !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .topnav-link,
+  html[data-theme="alaga"] .app-header-horizontal .topnav-dropdown > summary {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    min-height: 44px !important;
+    padding: .72rem .8rem !important;
+    font-size: .84rem !important;
+  }
+
+  html[data-theme="alaga"] .topnav-menu {
+    position: static !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin-top: .2rem !important;
+  }
+}
+
+@media (max-width: 680px) {
+  html[data-theme="alaga"] .app-header-horizontal .app-header-brand-row {
+    grid-template-columns: minmax(112px, 135px) 1fr auto !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .ozzie-brand-dock,
+  html[data-theme="alaga"] .app-header-horizontal .ozzie-brand-dock img {
+    max-width: 132px !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .account-menu {
+    min-width: 44px !important;
+    width: 44px !important;
+    padding: .35rem !important;
+  }
+
+  html[data-theme="alaga"] .app-header-horizontal .account-copy,
+  html[data-theme="alaga"] .app-header-horizontal .account-menu .chevron {
+    display: none !important;
+  }
+}
+
+/* ---------- Shared readable surface rules ---------- */
+html[data-theme="alaga"] .console-view,
+html[data-theme="alaga"] .training-library,
+html[data-theme="alaga"] .favorites-view,
+html[data-theme="alaga"] .saved-notes-page,
+html[data-theme="alaga"] .avatar-library-management {
+  color: #20252b !important;
+}
+
+html[data-theme="alaga"] .console-view :where(h1,h2,h3,h4),
+html[data-theme="alaga"] .training-library :where(h1,h2,h3,h4),
+html[data-theme="alaga"] .favorites-view :where(h1,h2,h3,h4),
+html[data-theme="alaga"] .saved-notes-page :where(h1,h2,h3,h4),
+html[data-theme="alaga"] .avatar-library-management :where(h1,h2,h3,h4) {
+  color: #1f242a !important;
+}
+
+html[data-theme="alaga"] .console-view :where(p,small,li,dd),
+html[data-theme="alaga"] .training-library :where(p,small,li),
+html[data-theme="alaga"] .favorites-view :where(p,small),
+html[data-theme="alaga"] .saved-notes-page :where(p,small),
+html[data-theme="alaga"] .avatar-library-management :where(p,small) {
+  color: #606b76;
+}
+
+/* ---------- Common Issue drawer ---------- */
+html[data-theme="alaga"] .common-issue-drawer {
+  border-color: #dfe3e8 !important;
+  color: #252a30 !important;
+  background: #fff !important;
+}
+
+html[data-theme="alaga"] .common-issue-drawer .process-tabs {
+  border-bottom-color: #e7eaee !important;
+  background: #fafbfc !important;
+}
+
+html[data-theme="alaga"] .common-issue-drawer .process-tabs button {
+  color: #5c6670 !important;
+  background: transparent !important;
+}
+
+html[data-theme="alaga"] .common-issue-drawer .process-tabs button[aria-selected="true"] {
+  color: #a5262d !important;
+  background: #fff1f1 !important;
+}
+
+html[data-theme="alaga"] .common-issue-context,
+html[data-theme="alaga"] .common-issue-classification,
+html[data-theme="alaga"] .common-issue-section,
+html[data-theme="alaga"] .common-issue-outcome > div,
+html[data-theme="alaga"] .common-issue-status,
+html[data-theme="alaga"] .common-issue-source-card,
+html[data-theme="alaga"] .common-issue-discrepancy,
+html[data-theme="alaga"] .common-issue-empty,
+html[data-theme="alaga"] .common-issue-step-list article,
+html[data-theme="alaga"] .waiting-state-grid article,
+html[data-theme="alaga"] .common-issue-visual-grid figure,
+html[data-theme="alaga"] .common-issue-process-list article,
+html[data-theme="alaga"] .common-issue-context-status {
+  border-color: #e0e4e8 !important;
+  color: #2a3036 !important;
+  background: #fafbfc !important;
+}
+
+html[data-theme="alaga"] .common-issue-context {
+  border-bottom-color: #e7eaee !important;
+}
+
+html[data-theme="alaga"] .common-issue-context small,
+html[data-theme="alaga"] .common-issue-source-card > span,
+html[data-theme="alaga"] .phase-two-route-group > span,
+html[data-theme="alaga"] .common-issue-verified {
+  color: #78828c !important;
+}
+
+html[data-theme="alaga"] .common-issue-context strong,
+html[data-theme="alaga"] .common-issue-classification strong,
+html[data-theme="alaga"] .common-issue-section h3,
+html[data-theme="alaga"] .common-issue-outcome h3,
+html[data-theme="alaga"] .common-issue-step-list h3,
+html[data-theme="alaga"] .waiting-state-grid h3,
+html[data-theme="alaga"] .phase-two-route-group button strong {
+  color: #22272d !important;
+}
+
+html[data-theme="alaga"] .common-issue-classification p:last-child,
+html[data-theme="alaga"] .common-issue-section > p:last-child,
+html[data-theme="alaga"] .common-issue-outcome p,
+html[data-theme="alaga"] .common-issue-source-card p,
+html[data-theme="alaga"] .common-issue-discrepancy p,
+html[data-theme="alaga"] .common-issue-empty p,
+html[data-theme="alaga"] .common-issue-confirm-list li,
+html[data-theme="alaga"] .common-issue-step-list p,
+html[data-theme="alaga"] .waiting-state-grid p,
+html[data-theme="alaga"] .common-issue-process-list p,
+html[data-theme="alaga"] .common-issue-visual-grid figcaption span,
+html[data-theme="alaga"] .phase-two-route-group button small {
+  color: #5f6a75 !important;
+}
+
+html[data-theme="alaga"] .route-switches button,
+html[data-theme="alaga"] .common-issue-status button,
+html[data-theme="alaga"] .common-issue-context-options button,
+html[data-theme="alaga"] .phase-two-route-group button,
+html[data-theme="alaga"] .common-issue-process-list button {
+  border-color: #d9dee3 !important;
+  color: #3d444c !important;
+  background: #fff !important;
+}
+
+html[data-theme="alaga"] .route-switches button span {
+  color: #6e7882 !important;
+}
+
+html[data-theme="alaga"] .common-issue-status button[aria-pressed="true"],
+html[data-theme="alaga"] .common-issue-context-options button[aria-pressed="true"] {
+  border-color: #e47f83 !important;
+  color: #a4252c !important;
+  background: #fff0f0 !important;
+}
+
+html[data-theme="alaga"] .common-issue-step-number,
+html[data-theme="alaga"] .waiting-state-grid article > span {
+  border-color: #e6a2a5 !important;
+  color: #aa2930 !important;
+  background: #fff0f0 !important;
+}
+
+html[data-theme="alaga"] .common-issue-expected {
+  border-left-color: #dd555a !important;
+  background: #fff6f6 !important;
+}
+
+html[data-theme="alaga"] .common-issue-expected strong,
+html[data-theme="alaga"] .common-issue-visual-grid figcaption a,
+html[data-theme="alaga"] .common-issue-empty a,
+html[data-theme="alaga"] .common-issue-source-card a,
+html[data-theme="alaga"] .common-issue-source-list a {
+  color: #b1282f !important;
+}
+
+/* ---------- Training Roadmap ---------- */
+html[data-theme="alaga"] .training-roadmap-intro,
+html[data-theme="alaga"] .training-roadmap-key,
+html[data-theme="alaga"] .training-roadmap-flow article,
+html[data-theme="alaga"] .training-roadmap-reinforcement {
+  border-color: #dfe4e8 !important;
+  color: #252a30 !important;
+  background: #fff !important;
+  box-shadow: 0 .22rem .75rem rgba(35,31,33,.04) !important;
+}
+
+html[data-theme="alaga"] .training-roadmap-intro h2,
+html[data-theme="alaga"] .training-roadmap-flow h3,
+html[data-theme="alaga"] .training-roadmap-reinforcement h3 {
+  color: #20252b !important;
+}
+
+html[data-theme="alaga"] .training-roadmap-intro p,
+html[data-theme="alaga"] .roadmap-objective,
+html[data-theme="alaga"] .training-roadmap-reinforcement p,
+html[data-theme="alaga"] .training-roadmap-flow footer small {
+  color: #66717c !important;
+}
+
+html[data-theme="alaga"] .roadmap-skills span,
+html[data-theme="alaga"] .device-verified,
+html[data-theme="alaga"] .roadmap-status {
+  border-color: #e7c4c6 !important;
+  color: #9f272e !important;
+  background: #fff3f3 !important;
+}
+
+html[data-theme="alaga"] .roadmap-rail > span,
+html[data-theme="alaga"] .roadmap-dot-ready {
+  border-color: #d94d52 !important;
+  color: #fff !important;
+  background: #d94d52 !important;
+}
+
+html[data-theme="alaga"] .roadmap-rail > i {
+  background: #e9b0b2 !important;
+}
+
+html[data-theme="alaga"] .training-roadmap-flow footer button,
+html[data-theme="alaga"] .training-roadmap-reinforcement > button {
+  border-color: #d43a3f !important;
+  color: #fff !important;
+  background: linear-gradient(135deg,#ee4e51,#cf3036) !important;
+}
+
+/* ---------- Guided visual lessons ---------- */
+html[data-theme="alaga"] .guided-lessons-intro,
+html[data-theme="alaga"] .guided-lesson-panel,
+html[data-theme="alaga"] .guided-lesson-split,
+html[data-theme="alaga"] .guided-remember,
+html[data-theme="alaga"] .guided-practice-note,
+html[data-theme="alaga"] .guided-takeaways,
+html[data-theme="alaga"] .guided-lesson-sources {
+  border-color: #e0e4e8 !important;
+  color: #252a30 !important;
+  background: #fff !important;
+}
+
+html[data-theme="alaga"] .guided-lessons :where(h2,h3,h4,strong) {
+  color: #20252b !important;
+}
+
+html[data-theme="alaga"] .guided-lessons :where(p,small,li) {
+  color: #64707b !important;
+}
+
+html[data-theme="alaga"] .guided-lesson-picker button,
+html[data-theme="alaga"] .guided-flow-stage {
+  border-color: #dce1e6 !important;
+  color: #3f464e !important;
+  background: #f8f9fa !important;
+}
+
+html[data-theme="alaga"] .guided-lesson-picker button[aria-selected="true"],
+html[data-theme="alaga"] .guided-flow-stage.active {
+  border-color: #df777b !important;
+  color: #a3262d !important;
+  background: #fff0f0 !important;
+}
+
+/* ---------- Scripts & Communication ---------- */
+html[data-theme="alaga"] .communication-intro,
+html[data-theme="alaga"] .communication-panel,
+html[data-theme="alaga"] .communication-framework-card,
+html[data-theme="alaga"] .communication-phrase-card,
+html[data-theme="alaga"] .scenario-call-flow-note,
+html[data-theme="alaga"] .scenario-script-detail,
+html[data-theme="alaga"] .scenario-script-card,
+html[data-theme="alaga"] .communication-avoid-panel,
+html[data-theme="alaga"] .communication-avoid-grid > article,
+html[data-theme="alaga"] .communication-self-check {
+  border-color: #e0e4e8 !important;
+  color: #252a30 !important;
+  background: #fff !important;
+  box-shadow: 0 .18rem .6rem rgba(35,31,33,.035) !important;
+}
+
+html[data-theme="alaga"] .scripts-communication :where(h2,h3,h4,strong),
+html[data-theme="alaga"] .communication-self-check h3 {
+  color: #20252b !important;
+}
+
+html[data-theme="alaga"] .scripts-communication :where(p,small,li),
+html[data-theme="alaga"] .communication-panel > header p,
+html[data-theme="alaga"] .communication-phrase {
+  color: #606b76 !important;
+}
+
+html[data-theme="alaga"] .communication-mode-tabs button,
+html[data-theme="alaga"] .communication-section-picker button,
+html[data-theme="alaga"] .scenario-script-picker button,
+html[data-theme="alaga"] .scenario-discovery-options button {
+  border-color: #dce1e6 !important;
+  color: #3f464e !important;
+  background: #fff !important;
+}
+
+html[data-theme="alaga"] .communication-mode-tabs button[aria-selected="true"],
+html[data-theme="alaga"] .communication-section-picker button[aria-selected="true"],
+html[data-theme="alaga"] .scenario-script-picker button[aria-selected="true"],
+html[data-theme="alaga"] .scenario-discovery-options button[aria-pressed="true"] {
+  border-color: #e27d81 !important;
+  color: #a2252c !important;
+  background: #fff0f0 !important;
+}
+
+html[data-theme="alaga"] .communication-copy,
+html[data-theme="alaga"] .scenario-discovery-reset {
+  border-color: #e6a7aa !important;
+  color: #a3262d !important;
+  background: #fff5f5 !important;
+}
+
+html[data-theme="alaga"] .communication-self-check > div:last-child label {
+  border-color: #dfe3e7 !important;
+  color: #3e464f !important;
+  background: #fafbfc !important;
+}
+
+html[data-theme="alaga"] .scenario-route-anchor,
+html[data-theme="alaga"] .scenario-discovery-result {
+  border-color: #e2e6ea !important;
+  color: #333a42 !important;
+  background: #fafbfc !important;
+}
+
+/* ---------- Device walkthroughs ---------- */
+html[data-theme="alaga"] .device-walkthrough-intro,
+html[data-theme="alaga"] .device-walkthrough-panel,
+html[data-theme="alaga"] .device-walkthrough-section,
+html[data-theme="alaga"] .device-platform-notes,
+html[data-theme="alaga"] .device-source-list {
+  border-color: #e0e4e8 !important;
+  color: #252a30 !important;
+  background: #fff !important;
+}
+
+html[data-theme="alaga"] .device-walkthroughs :where(h2,h3,strong) {
+  color: #20252b !important;
+}
+
+html[data-theme="alaga"] .device-walkthroughs :where(p,li,small) {
+  color: #626d78 !important;
+}
+
+html[data-theme="alaga"] .device-selector button,
+html[data-theme="alaga"] .device-quick-facts span,
+html[data-theme="alaga"] .device-platform-notes article,
+html[data-theme="alaga"] .device-source-list a,
+html[data-theme="alaga"] .device-expected {
+  border-color: #dfe3e8 !important;
+  color: #3b434b !important;
+  background: #fafbfc !important;
+}
+
+html[data-theme="alaga"] .device-selector button[aria-selected="true"] {
+  border-color: #e17c80 !important;
+  color: #a2252c !important;
+  background: #fff0f0 !important;
+}
+
+/* ---------- Readiness floating panel ---------- */
+html[data-theme="alaga"] .readiness-lab-dock {
+  border-color: #dfe3e8 !important;
+  color: #252a30 !important;
+  background: #fff !important;
+}
+
+html[data-theme="alaga"] .readiness-lab-dock .documentation-dock-header {
+  border-bottom: 1px solid #4d2329 !important;
+  color: #fff !important;
+  background: linear-gradient(135deg,#31191e,#20161a) !important;
+}
+
+html[data-theme="alaga"] .readiness-lab-dock .documentation-dock-header h2,
+html[data-theme="alaga"] .readiness-lab-dock .documentation-dock-kicker {
+  color: #fff !important;
+}
+
+html[data-theme="alaga"] .readiness-lab-dock .documentation-dock-window-actions button {
+  border-color: rgba(255,255,255,.2) !important;
+  color: #fff !important;
+  background: rgba(255,255,255,.08) !important;
+}
+
+html[data-theme="alaga"] .readiness-open-book,
+html[data-theme="alaga"] .readiness-progress,
+html[data-theme="alaga"] .readiness-resume-banner,
+html[data-theme="alaga"] .readiness-part-summary,
+html[data-theme="alaga"] .readiness-question,
+html[data-theme="alaga"] .readiness-find-card,
+html[data-theme="alaga"] .readiness-feedback,
+html[data-theme="alaga"] .readiness-part-result,
+html[data-theme="alaga"] .readiness-next-parts {
+  border-color: #e0e4e8 !important;
+  color: #252a30 !important;
+  background: #fafbfc !important;
+}
+
+html[data-theme="alaga"] .readiness-lab-dock :where(h3,strong) {
+  color: #20252b !important;
+}
+
+html[data-theme="alaga"] .readiness-lab-dock :where(p,small,span) {
+  color: #616c77;
+}
+
+html[data-theme="alaga"] .readiness-part-rail button,
+html[data-theme="alaga"] .readiness-answer-options button,
+html[data-theme="alaga"] .readiness-question-nav button {
+  border-color: #dce1e6 !important;
+  color: #3e464e !important;
+  background: #fff !important;
+}
+
+html[data-theme="alaga"] .readiness-part-rail button[aria-selected="true"],
+html[data-theme="alaga"] .readiness-answer-options button[aria-checked="true"] {
+  border-color: #e17c80 !important;
+  color: #a2252c !important;
+  background: #fff0f0 !important;
+}
+
+/* ---------- Avatar Library ---------- */
+html[data-theme="alaga"] .avatar-library-upload-panel,
+html[data-theme="alaga"] .avatar-library-upload-group,
+html[data-theme="alaga"] .avatar-library-panel,
+html[data-theme="alaga"] .avatar-library-card,
+html[data-theme="alaga"] .avatar-upload-preview {
+  border-color: #e0e4e8 !important;
+  color: #252a30 !important;
+  background: #fff !important;
+  box-shadow: 0 .18rem .6rem rgba(35,31,33,.035) !important;
+}
+
+html[data-theme="alaga"] .avatar-library-management :where(h1,h2,h3,strong) {
+  color: #20252b !important;
+}
+
+html[data-theme="alaga"] .avatar-library-management :where(p,small,span) {
+  color: #66717c;
+}
+
+html[data-theme="alaga"] .avatar-file-picker,
+html[data-theme="alaga"] .avatar-library-actions button {
+  border-color: #dce1e6 !important;
+  color: #3f464e !important;
+  background: #f8f9fa !important;
+}
+
+html[data-theme="alaga"] .avatar-library-card.selected {
+  border-color: #e17c80 !important;
+  background: #fff3f3 !important;
+}
+
+html[data-theme="alaga"] .avatar-library-card-id {
+  color: #727c86 !important;
+}
+
+/* ---------- Saved Notes ---------- */
+html[data-theme="alaga"] .saved-notes-summary > button,
+html[data-theme="alaga"] .saved-notes-summary > div,
+html[data-theme="alaga"] .saved-notes-filter-card,
+html[data-theme="alaga"] .saved-note-card,
+html[data-theme="alaga"] .saved-note-meta > div,
+html[data-theme="alaga"] .saved-note-details pre {
+  border-color: #e0e4e8 !important;
+  color: #252a30 !important;
+  background: #fff !important;
+}
+
+html[data-theme="alaga"] .saved-notes-summary span,
+html[data-theme="alaga"] .saved-notes-filter-card label > span,
+html[data-theme="alaga"] .saved-note-person small,
+html[data-theme="alaga"] .saved-note-time small,
+html[data-theme="alaga"] .saved-note-meta dt,
+html[data-theme="alaga"] .saved-note-details pre {
+  color: #68737d !important;
+}
+
+html[data-theme="alaga"] .saved-note-meta dd,
+html[data-theme="alaga"] .saved-note-time strong {
+  color: #252a30 !important;
+}
+
+html[data-theme="alaga"] .saved-note-person > button,
+html[data-theme="alaga"] .saved-notes-filter-actions > button {
+  border-color: #dce1e6 !important;
+  color: #3d454d !important;
+  background: #fafbfc !important;
+}
+
+html[data-theme="alaga"] .saved-note-details summary {
+  color: #ad2930 !important;
+}
+
+html[data-theme="alaga"] .saved-note-follow-badge {
+  color: #8a581a !important;
+  background: #fff4dc !important;
+}
+
+/* ---------- Favorites / quick access ---------- */
+html[data-theme="alaga"] .favorite-saved-card,
+html[data-theme="alaga"] .favorites-empty,
+html[data-theme="alaga"] .recent-resource-wrap {
+  border-color: #e0e4e8 !important;
+  color: #252a30 !important;
+  background: #fff !important;
+}
+
+html[data-theme="alaga"] .favorite-saved-card :where(strong,h3),
+html[data-theme="alaga"] .recent-resource-wrap :where(strong,h3) {
+  color: #20252b !important;
+}
+
+html[data-theme="alaga"] .favorite-saved-card :where(p,small),
+html[data-theme="alaga"] .recent-resource-wrap :where(p,small) {
+  color: #66717c !important;
+}
