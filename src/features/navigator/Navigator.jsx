@@ -319,6 +319,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
   const [libraryTab, setLibraryTab] = useState('fastest')
   const [callFlowExpanded, setCallFlowExpanded] = useState(false)
   const [alagaSection, setAlagaSection] = useState(null)
+  const [tealSection, setTealSection] = useState(null)
 
   useEffect(() => {
     if (!initialProcessId) return
@@ -506,7 +507,20 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
     </>
   }
 
-  return <section className="navigator" id="navigator" aria-label="Support Navigator">
+  return <section className={`navigator${theme === 'teal' ? ` teal-layout-home${query.trim() || tealSection ? ' teal-library-open' : ''}` : ''}`} id="navigator" aria-label="Support Navigator">
+    {theme === 'teal' && <section className="teal-layout-hero">
+      <div className="teal-layout-hero-copy">
+        <p className="teal-kicker">Support people. Solve faster.</p>
+        <h1>Welcome to <span>Ozzie</span></h1>
+        <p>Your central workspace for answers, call flow guidance, and support resources across Ogletree.</p>
+        <div className="teal-layout-benefits">
+          <div><span>⚡</span><p><strong>Find it fast</strong><small>Trusted knowledge</small></p></div>
+          <div><span>◎</span><p><strong>Support with confidence</strong><small>Follow proven workflows</small></p></div>
+          <div><span>▥</span><p><strong>Make an impact</strong><small>Better outcomes together</small></p></div>
+        </div>
+      </div>
+      <div className="teal-layout-hero-mark"><span>PEOPLE</span><span>SOLUTIONS</span><span>PROGRESS</span><i></i><p>Same people.<br/>A brighter tomorrow.</p></div>
+    </section>}
     <section className="navigator-top-workspace" aria-label="Live support workspace">
       <section className="smart-search-card" aria-labelledby="smart-search-title">
         <div className="smart-search-heading">
