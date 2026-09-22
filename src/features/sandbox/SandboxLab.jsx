@@ -743,9 +743,14 @@ export function SandboxLab() {
     setMoreOpen(false)
   }
 
+  function openNewMeeting() {
+    if (device.shell === 'windows') setActionDialog('prejoin')
+    else startMeeting()
+  }
+
   function renderWorkspace() {
-    if (workspace === 'home') return <HomeWorkspace mobile={mobile} onStartMeeting={startMeeting} onOpenSettings={() => setSettingsOpen(true)} onJoin={() => setActionDialog('join')} onSchedule={() => setActionDialog('schedule')} />
-    if (workspace === 'meetings') return <MeetingsWorkspace onStartMeeting={startMeeting} onView={() => setActionDialog('meeting-details')} />
+    if (workspace === 'home') return <HomeWorkspace mobile={mobile} onStartMeeting={openNewMeeting} onJoin={() => setActionDialog('join')} onSchedule={() => setActionDialog('schedule')} onShare={() => setNotice('Share screen quick action opened in the simulator.')} onNotes={() => setNotice('My Notes opened in the simulator.')} />
+    if (workspace === 'meetings') return <MeetingsWorkspace onStartMeeting={openNewMeeting} onView={() => setActionDialog('meeting-details')} />
     if (workspace === 'chat') return <ChatWorkspace />
     return <GenericWorkspace workspace={workspace} />
   }
@@ -821,19 +826,22 @@ export function SandboxLab() {
           <div className="zoom-sim-desktop-app">
             <DesktopRail workspace={workspace} onWorkspace={setWorkspace} onSettings={() => setSettingsOpen(true)} onMore={() => setActionDialog('more')} />
             <section className="zoom-sim-desktop-content">
-              <header className="zoom-sim-global-header">
+              <header className="zoom-sim-global-header zoom-reference-app-header">
+                <div className="zoom-reference-workplace"><small>zoom</small><strong>Workplace</strong></div>
                 <div className="zoom-sim-history-controls">
                   <button type="button" aria-label="Back" onClick={() => setNotice('Back navigation simulated.')}>‹</button>
                   <button type="button" aria-label="Forward" onClick={() => setNotice('Forward navigation simulated.')}>›</button>
-                  <button type="button" aria-label="History" onClick={() => setActionDialog('history')}>↺</button>
+                  <button type="button" aria-label="History" onClick={() => setActionDialog('history')}>◔</button>
                 </div>
-                <label className="zoom-sim-global-search">⌕ <input aria-label="Search Zoom Workplace" placeholder="Search" /></label>
-                <button type="button" className="zoom-sim-header-icon zoom-sim-create-plus" aria-label="Create" onClick={() => setActionDialog('create')}>＋</button>
-                <button type="button" className="zoom-sim-header-icon" aria-label="Activity" onClick={() => setActionDialog('activity')}>♢</button>
-                <button type="button" className="zoom-sim-header-icon" aria-label="Calendar panel" onClick={() => setActionDialog('calendar-panel')}>□</button>
-                <button type="button" className="zoom-sim-header-icon" aria-label="Open AI chat" onClick={() => setActionDialog('ai-chat')}>AI</button>
+                <label className="zoom-sim-global-search">⌕ <input aria-label="Search Zoom Workplace" placeholder="Search (Ctrl+E)" /></label>
+                <button type="button" className="zoom-sim-header-icon" aria-label="Create" onClick={() => setActionDialog('create')}>＋</button>
+                <button type="button" className="zoom-reference-upgrade" onClick={() => setNotice('Upgrade flow simulated.')}>Upgrade</button>
+                <button type="button" className="zoom-sim-header-icon zoom-reference-notification" aria-label="Notifications" onClick={() => setActionDialog('activity')}>♧<i></i></button>
+                <button type="button" className="zoom-sim-header-icon" aria-label="Gift" onClick={() => setNotice('Gift shortcut simulated.')}>▣</button>
                 <button type="button" className="zoom-sim-profile-chip" onClick={() => setActionDialog('profile')}>ST</button>
+                <span className="zoom-reference-window-buttons" aria-hidden="true">— □ ×</span>
               </header>
+              <div className="zoom-reference-upgrade-banner"><strong>Upgrade offer</strong><span>Welcome to Zoom! Save up to 16% when you upgrade to Zoom Workplace Pro annual. Get longer meetings, unlimited AI note-taking with My Notes, and more for seamless connection to what matters most. <button type="button">Upgrade today</button></span><button type="button">×</button></div>
               {renderWorkspace()}
             </section>
           </div>
