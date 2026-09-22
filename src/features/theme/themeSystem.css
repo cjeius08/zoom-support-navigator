@@ -3339,3 +3339,54 @@ html[data-theme="alaga"] .favorite-saved-card :where(p,small),
 html[data-theme="alaga"] .recent-resource-wrap :where(p,small) {
   color: #66717c !important;
 }
+
+
+/* Remaining reports / feedback / updates surfaces from the full-page audit. */
+html[data-theme="alaga"] .feedback-form-panel,
+html[data-theme="alaga"] .update-card,
+html[data-theme="alaga"] .updates-policy,
+html[data-theme="alaga"] .update-area,
+html[data-theme="alaga"] .call-notes-report,
+html[data-theme="alaga"] .call-note-report-row,
+html[data-theme="alaga"] .call-note-report-details {
+  border-color: #e0e4e8 !important;
+  color: #252a30 !important;
+  background: #fff !important;
+  box-shadow: 0 .18rem .6rem rgba(35,31,33,.035) !important;
+}
+
+html[data-theme="alaga"] .feedback-page :where(h1,h2,h3,strong),
+html[data-theme="alaga"] .updates-view :where(h1,h2,h3,strong),
+html[data-theme="alaga"] .call-notes-report :where(h1,h2,h3,strong) {
+  color: #20252b !important;
+}
+
+html[data-theme="alaga"] .feedback-page :where(p,small,label),
+html[data-theme="alaga"] .updates-view :where(p,small),
+html[data-theme="alaga"] .call-notes-report :where(p,small) {
+  color: #66717c !important;
+}
+
+html[data-theme="alaga"] .feedback-form-panel :where(input,select,textarea),
+html[data-theme="alaga"] .call-notes-report :where(input,select,textarea) {
+  border-color: #d8dde2 !important;
+  color: #252a30 !important;
+  background: #fff !important;
+}
+
+html[data-theme="alaga"] .updates-version-pill,
+html[data-theme="alaga"] .update-audience-badge,
+html[data-theme="alaga"] .update-history-badge {
+  border-color: #e6b3b6 !important;
+  color: #9f262d !important;
+  background: #fff1f1 !important;
+}
+
+html[data-theme="alaga"] .update-details,
+html[data-theme="alaga"] .call-note-report-details {
+  border-top-color: #e6e9ed !important;
+}
+
+html[data-theme="alaga"] .call-note-person-link {
+  color: #a3262d !important;
+}
