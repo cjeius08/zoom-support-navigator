@@ -222,8 +222,34 @@ function SandboxActionDialog({ type, onClose, onStartMeeting, onNotice }) {
   const [topic, setTopic] = useState('Support Training Practice')
   const [date, setDate] = useState('2026-09-22')
   const [time, setTime] = useState('10:00')
+  const [previewVideoOn, setPreviewVideoOn] = useState(true)
+  const [previewMuted, setPreviewMuted] = useState(false)
 
   if (!type) return null
+
+  if (type === 'prejoin') {
+    return (
+      <div className="zoom-sim-action-overlay zoom-reference-prejoin-overlay" role="dialog" aria-modal="true" aria-label="Video Preview">
+        <section className="zoom-reference-prejoin">
+          <header><strong>STAGING_ADMIN's Zoom Meeting</strong><button type="button" aria-label="Close Video Preview" onClick={onClose}>×</button></header>
+          <div className={previewVideoOn ? 'zoom-reference-prejoin-preview on' : 'zoom-reference-prejoin-preview'}>
+            <div className="zoom-reference-prejoin-avatar">ST</div>
+            <div className="zoom-reference-prejoin-controls">
+              <button type="button" onClick={() => setPreviewMuted(v => !v)}><span>◉</span><small>{previewMuted ? 'Unmute' : 'Audio'}</small></button>
+              <button type="button" onClick={() => setPreviewVideoOn(v => !v)}><span>▣</span><small>{previewVideoOn ? 'Video' : 'Start video'}</small></button>
+              <button type="button"><span>▧</span><small>Backgrounds</small></button>
+            </div>
+          </div>
+          <div className="zoom-reference-prejoin-selects">
+            <select defaultValue="speaker"><option value="speaker">Speakers (Realtek Audio)</option><option>USB Headset</option></select>
+            <select defaultValue="camera"><option value="camera">HD User Facing</option><option>USB Camera</option></select>
+          </div>
+          <label className="zoom-sim-inline-check"><input type="checkbox" /> Always show video preview when joining</label>
+          <footer><button type="button" className="zoom-sim-primary" onClick={() => { onClose(); onStartMeeting() }}>Start</button></footer>
+        </section>
+      </div>
+    )
+  }
 
   if (type === 'join') {
     return (
