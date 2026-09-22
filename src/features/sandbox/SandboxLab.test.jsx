@@ -24,7 +24,7 @@ it('supports realistic device-specific Zoom training exploration', async () => {
   expect(within(settingsDialog).getByText(/Original sound for musicians/i)).toBeInTheDocument()
   await user.click(screen.getByRole('button', { name: 'Close Settings' }))
 
-  await user.click(screen.getByRole('button', { name: /^Join/i }))
+  await user.click(screen.getByText('Join', { selector: 'strong' }).closest('button'))
   const joinDialog = screen.getByRole('dialog', { name: 'Join Meeting' })
   expect(within(joinDialog).getByDisplayValue('123 456 7890')).toBeInTheDocument()
   await user.click(within(joinDialog).getByRole('button', { name: 'Cancel' }))
@@ -72,7 +72,7 @@ it('lets desktop meeting controls open panels and simulate sharing', async () =>
   expect(screen.getByText('Invite people')).toBeInTheDocument()
   await user.click(screen.getByRole('button', { name: 'Close' }))
 
-  await user.click(screen.getByRole('button', { name: /^Share$/i }))
+  await user.click(screen.getByText('Share', { selector: 'small' }).closest('button'))
   const shareDialog = screen.getByRole('dialog', { name: 'Share Screen' })
   await user.click(within(shareDialog).getByRole('button', { name: 'Window' }))
   await user.click(within(shareDialog).getByRole('button', { name: 'Share' }))
