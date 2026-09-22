@@ -13,7 +13,7 @@ it('matches the recorded Windows Zoom reference and keeps support paths interact
 
   expect(screen.getByRole('button', { name: /ZoomMate/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /New meeting/i })).toBeInTheDocument()
-  expect(screen.getByRole('button', { name: /^Join/i })).toBeInTheDocument()
+  expect(screen.getByText('Join', { selector: 'strong' }).closest('button')).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /^Schedule/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Share screen/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /My Notes/i })).toBeInTheDocument()
@@ -27,7 +27,7 @@ it('matches the recorded Windows Zoom reference and keeps support paths interact
   expect(within(settings).getByRole('button', { name: /Statistics/i })).toBeInTheDocument()
   expect(within(settings).getByRole('button', { name: /My account/i })).toBeInTheDocument()
 
-  await user.click(within(settings).getByRole('button', { name: /^Audio/i }))
+  await user.click(within(settings).getByRole('button', { name: /Audio/i }))
   expect(within(settings).getByRole('heading', { name: 'Speaker' })).toBeInTheDocument()
   await user.click(within(settings).getByRole('button', { name: /Test speaker/i }))
   expect(within(settings).getByText(/Test tone playing/i)).toBeInTheDocument()
@@ -74,7 +74,7 @@ it('opens the recorded-style More menu and simulates sharing', async () => {
   expect(screen.getByRole('button', { name: /Whiteboards/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Meeting info/i })).toBeInTheDocument()
 
-  await user.click(screen.getByRole('button', { name: /^Share$/i }))
+  await user.click(screen.getByText('Share', { selector: 'small' }).closest('button'))
   const shareDialog = screen.getByRole('dialog', { name: 'Share Screen' })
   await user.click(within(shareDialog).getByRole('button', { name: 'Window' }))
   await user.click(within(shareDialog).getByRole('button', { name: 'Share' }))
@@ -89,7 +89,7 @@ it('keeps macOS and Android device families navigable', async () => {
   await user.click(screen.getByRole('button', { name: /macOS/i }))
   await user.click(screen.getAllByRole('button', { name: /Settings/i })[0])
   const macSettings = screen.getByRole('dialog', { name: 'Zoom Settings' })
-  await user.click(within(macSettings).getByRole('button', { name: /^Audio/i }))
+  await user.click(within(macSettings).getByRole('button', { name: /Audio/i }))
   expect(within(macSettings).getByRole('option', { name: 'MacBook Speakers' })).toBeInTheDocument()
   await user.click(screen.getByRole('button', { name: 'Close Settings' }))
 
