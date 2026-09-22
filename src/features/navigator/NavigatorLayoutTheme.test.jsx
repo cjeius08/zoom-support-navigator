@@ -67,3 +67,22 @@ it('renders the Ozzie Alpine mountain layout and keeps summary navigation usable
   expect(screen.getByText('Support library')).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Back to overview/i })).toBeInTheDocument()
 })
+
+
+it('renders the Ozzie Editorial premium layout and keeps summary navigation usable', async () => {
+  const user = userEvent.setup()
+  render(<Navigator theme="editorial" onReportContextChange={() => {}} />)
+
+  expect(screen.getByRole('heading', { name: /Support people\./i })).toBeInTheDocument()
+  expect(screen.getByText('Ogletree Support Workspace')).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'In a call? Get step-by-step guidance.' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'From conversation to resolution.' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Common Issues' })).toBeInTheDocument()
+  expect(screen.getAllByRole('heading', { name: 'Fastest Routes' }).length).toBeGreaterThan(0)
+  expect(screen.getByRole('heading', { name: 'Process Guides' })).toBeInTheDocument()
+
+  const commonCard = screen.getByRole('heading', { name: 'Common Issues' }).closest('article')
+  await user.click(within(commonCard).getByRole('button', { name: /View all/i }))
+  expect(screen.getByText('Support library')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /Back to overview/i })).toBeInTheDocument()
+})
