@@ -619,7 +619,7 @@ function MeetingWorkspace({
         <div>
           <span className="zoom-reference-shield">◆</span>
           <button type="button" className="zoom-reference-upgrade-zoom">Upgrade Zoom</button>
-          <button type="button" onClick={() => setViewMode(v => v === 'Speaker' ? 'Gallery' : 'Speaker')}>◈</button>
+          <button type="button" aria-label={`View: ${viewMode}`} onClick={() => setViewMode(v => v === 'Speaker' ? 'Gallery' : 'Speaker')}>◈</button>
           <button type="button" onClick={() => onNotice('Meeting window tool opened in the simulator.')}>✧</button>
           <button type="button" onClick={() => onNotice('Apps shortcut opened in the simulator.')}>▦</button>
         </div>
