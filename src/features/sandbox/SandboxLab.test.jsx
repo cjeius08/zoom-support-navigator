@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it } from 'vitest'
 import { SandboxLab } from './SandboxLab'
@@ -13,8 +13,9 @@ it('supports realistic device-specific Zoom training exploration', async () => {
 
   await user.click(screen.getAllByRole('button', { name: /Settings/i })[0])
   expect(screen.getByRole('dialog', { name: 'Zoom Settings' })).toBeInTheDocument()
-  await user.click(screen.getAllByRole('button', { name: /Audio/i })[0])
-  expect(screen.getByRole('heading', { name: 'Audio' })).toBeInTheDocument()
+  const settingsDialog = screen.getByRole('dialog', { name: 'Zoom Settings' })
+  await user.click(within(settingsDialog).getByRole('button', { name: /Audio/i }))
+  expect(within(settingsDialog).getByRole('heading', { name: 'Audio' })).toBeInTheDocument()
   await user.click(screen.getByRole('button', { name: 'Close Settings' }))
 
   await user.click(screen.getByRole('button', { name: /Android/i }))
