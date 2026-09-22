@@ -63,7 +63,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     scope_check: 'closed',
     readiness: 'closed',
   })
-  const compactBreakpoint = theme === 'alaga' ? 1080 : 800
+  const compactBreakpoint = theme === 'alaga' ? 1160 : 800
   const [compactNav, setCompactNav] = useState(() => typeof window !== 'undefined' && window.innerWidth <= compactBreakpoint)
   const profileDialogRef = useRef(null)
   const menuToggleRef = useRef(null)
