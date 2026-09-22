@@ -2570,3 +2570,97 @@ html[data-theme="alaga"] .theme-picker-actions button {
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* Floating support tools and drawers also belong to the appearance preset. */
+html[data-theme="alaga"] .documentation-dock,
+html[data-theme="alaga"] .documentation-dock-minimized,
+html[data-theme="alaga"] .scope-check-dock,
+html[data-theme="alaga"] .scope-check-dock-minimized,
+html[data-theme="alaga"] .readiness-dock,
+html[data-theme="alaga"] .readiness-dock-minimized,
+html[data-theme="alaga"] .process-drawer {
+  border-color: #dfe3e8 !important;
+  color: #23282e !important;
+  background: #fff !important;
+  box-shadow: 0 .85rem 2.5rem rgba(35,30,32,.16) !important;
+}
+
+html[data-theme="alaga"] .documentation-dock h2,
+html[data-theme="alaga"] .documentation-dock h3,
+html[data-theme="alaga"] .documentation-dock strong,
+html[data-theme="alaga"] .scope-check-dock h2,
+html[data-theme="alaga"] .scope-check-dock h3,
+html[data-theme="alaga"] .scope-check-dock strong,
+html[data-theme="alaga"] .readiness-dock h2,
+html[data-theme="alaga"] .readiness-dock h3,
+html[data-theme="alaga"] .readiness-dock strong,
+html[data-theme="alaga"] .process-drawer h2,
+html[data-theme="alaga"] .process-drawer h3,
+html[data-theme="alaga"] .process-drawer strong {
+  color: #20252b !important;
+}
+
+html[data-theme="alaga"] .documentation-dock p,
+html[data-theme="alaga"] .documentation-dock small,
+html[data-theme="alaga"] .scope-check-dock p,
+html[data-theme="alaga"] .scope-check-dock small,
+html[data-theme="alaga"] .readiness-dock p,
+html[data-theme="alaga"] .readiness-dock small,
+html[data-theme="alaga"] .process-drawer p,
+html[data-theme="alaga"] .process-drawer li,
+html[data-theme="alaga"] .process-drawer small {
+  color: #66717c !important;
+}
+
+html[data-theme="alaga"] .documentation-dock input,
+html[data-theme="alaga"] .documentation-dock select,
+html[data-theme="alaga"] .documentation-dock textarea,
+html[data-theme="alaga"] .scope-check-dock input,
+html[data-theme="alaga"] .scope-check-dock select,
+html[data-theme="alaga"] .readiness-dock input,
+html[data-theme="alaga"] .readiness-dock select,
+html[data-theme="alaga"] .process-drawer input,
+html[data-theme="alaga"] .process-drawer select,
+html[data-theme="alaga"] .process-drawer textarea {
+  border-color: #d9dee3 !important;
+  color: #252a30 !important;
+  background: #fff !important;
+}
+
+html[data-theme="alaga"] .documentation-dock button:not(.danger-action),
+html[data-theme="alaga"] .scope-check-dock button:not(.danger-action),
+html[data-theme="alaga"] .readiness-dock button:not(.danger-action),
+html[data-theme="alaga"] .process-drawer button:not(.danger-action) {
+  border-color: #dce1e6 !important;
+  color: #3c434b !important;
+  background: #f8f9fa !important;
+}
+
+html[data-theme="alaga"] .documentation-dock button:hover:not(.danger-action),
+html[data-theme="alaga"] .scope-check-dock button:hover:not(.danger-action),
+html[data-theme="alaga"] .readiness-dock button:hover:not(.danger-action),
+html[data-theme="alaga"] .process-drawer button:hover:not(.danger-action) {
+  border-color: #e59a9d !important;
+  color: #a3262d !important;
+  background: #fff1f1 !important;
+}
+
+html[data-theme="alaga"] .documentation-copy,
+html[data-theme="alaga"] .readiness-check-answer,
+html[data-theme="alaga"] .process-drawer .primary-action {
+  border-color: #d43a3f !important;
+  color: #fff !important;
+  background: linear-gradient(135deg,#ee4e51,#cf3036) !important;
+}
+
+html[data-theme="alaga"] .refer-card,
+html[data-theme="alaga"] .script-section,
+html[data-theme="alaga"] .visual-card,
+html[data-theme="alaga"] .quick-steps li,
+html[data-theme="alaga"] .source-pages figure,
+html[data-theme="alaga"] .full-process > section {
+  border-color: #e1e5e9 !important;
+  color: #2a3036 !important;
+  background: #fafbfc !important;
+}
