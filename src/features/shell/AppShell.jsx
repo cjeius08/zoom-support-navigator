@@ -63,7 +63,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     scope_check: 'closed',
     readiness: 'closed',
   })
-  const compactBreakpoint = theme === 'alaga' ? 1160 : theme === 'teal' ? 1120 : theme === 'alpine' ? 1140 : 800
+  const compactBreakpoint = theme === 'alaga' ? 1160 : theme === 'teal' ? 1120 : theme === 'alpine' ? 1140 : theme === 'editorial' ? 1180 : 800
   const [compactNav, setCompactNav] = useState(() => typeof window !== 'undefined' && window.innerWidth <= compactBreakpoint)
   const profileDialogRef = useRef(null)
   const menuToggleRef = useRef(null)
@@ -347,6 +347,11 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           <span className="theme-preview-swatch" aria-hidden="true"><span></span><span></span><span></span></span>
           <strong>Ozzie Alpine</strong>
           <small>A mountain-led emerald workspace with stronger depth, glass panels, and a different Home hierarchy while preserving all Ozzie functions.</small>
+        </button>
+        <button type="button" className="theme-option" data-theme-option="editorial" aria-pressed={theme === 'editorial'} onClick={() => onThemeChange('editorial')}>
+          <span className="theme-preview-swatch" aria-hidden="true"><span></span><span></span><span></span></span>
+          <strong>Ozzie Editorial</strong>
+          <small>A premium navy and sunset-coral workspace with editorial typography, story-led Home panels, and the same Ozzie support functions.</small>
         </button>
       </div>
       <div className="theme-picker-actions"><button type="button" onClick={() => setAppearanceOpen(false)}>Back to Profile</button></div>
