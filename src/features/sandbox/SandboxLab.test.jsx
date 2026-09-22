@@ -29,7 +29,7 @@ it('supports realistic device-specific Zoom training exploration', async () => {
   expect(within(joinDialog).getByDisplayValue('123 456 7890')).toBeInTheDocument()
   await user.click(within(joinDialog).getByRole('button', { name: 'Cancel' }))
 
-  await user.click(screen.getByRole('button', { name: /^Schedule/i }))
+  await user.click(screen.getByText('Schedule', { selector: 'strong' }).closest('button'))
   const scheduleDialog = screen.getByRole('dialog', { name: 'Schedule Meeting' })
   expect(within(scheduleDialog).getByDisplayValue('Support Training Practice')).toBeInTheDocument()
   await user.click(within(scheduleDialog).getByRole('button', { name: 'Cancel' }))
