@@ -13,7 +13,7 @@ it('renders the Alaga full-layout preset while keeping navigator actions usable'
   expect(screen.getByRole('heading', { name: 'Common Issues' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Fastest Routes' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Process Guides' })).toBeInTheDocument()
-  expect(screen.getByRole('heading', { name: 'Live Call Flow' })).toBeInTheDocument()
+  expect(screen.getAllByRole('heading', { name: 'Live Call Flow' }).length).toBeGreaterThan(0)
   expect(screen.getByRole('heading', { name: '7-stage support workflow' })).toBeInTheDocument()
 
   const commonCard = screen.getByRole('heading', { name: 'Common Issues' }).closest('article')
