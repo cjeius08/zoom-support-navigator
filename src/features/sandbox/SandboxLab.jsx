@@ -323,6 +323,7 @@ function SandboxActionDialog({ type, onClose, onStartMeeting, onNotice }) {
 }
 
 function SettingsWindow({ activeTab, onTab, onClose, cameraOn, onCamera, device }) {
+  const isMac = device.shell === 'mac'
   const [speakerTesting, setSpeakerTesting] = useState(false)
   const [micTesting, setMicTesting] = useState(false)
   const [advancedOpen, setAdvancedOpen] = useState(false)
@@ -357,8 +358,15 @@ function SettingsWindow({ activeTab, onTab, onClose, cameraOn, onCamera, device 
               <div className="zoom-sim-setting-section">
                 <h2>General</h2>
                 <p>Zoom Workplace app preferences</p>
-                <label><input type="checkbox" defaultChecked /> Start Zoom Workplace when I start Windows</label>
-                <label><input type="checkbox" /> Minimize Zoom Workplace to the notification area when closed</label>
+                {isMac
+                  ? <>
+                      <label><input type="checkbox" defaultChecked /> Open Zoom Workplace when I log in</label>
+                      <label><input type="checkbox" /> Keep Zoom Workplace in the Dock when closed</label>
+                    </>
+                  : <>
+                      <label><input type="checkbox" defaultChecked /> Start Zoom Workplace when I start Windows</label>
+                      <label><input type="checkbox" /> Minimize Zoom Workplace to the notification area when closed</label>
+                    </>}
                 <label><input type="checkbox" defaultChecked /> Keep Zoom Workplace up to date automatically</label>
                 <div className="zoom-sim-select-row"><span>Color mode</span><select defaultValue="system"><option value="system">System</option><option>Light</option><option>Dark</option></select></div>
               </div>
@@ -369,12 +377,12 @@ function SettingsWindow({ activeTab, onTab, onClose, cameraOn, onCamera, device 
                 <h2>Audio</h2>
                 <p>Speaker and microphone</p>
                 <div className="zoom-sim-device-setting">
-                  <label>Speaker<select defaultValue="system-speaker"><option value="system-speaker">Same as System</option><option>Speakers (Realtek Audio)</option><option>USB Headset</option></select></label>
+                  <label>Speaker<select defaultValue="system-speaker"><option value="system-speaker">Same as System</option><option>{isMac ? 'MacBook Speakers' : 'Speakers (Realtek Audio)'}</option><option>USB Headset</option></select></label>
                   <button type="button" onClick={() => setSpeakerTesting(value => !value)}>{speakerTesting ? 'Stop Test' : 'Test Speaker'}</button>
                 </div>
                 <label className="zoom-sim-volume">Output volume<input type="range" min="0" max="100" defaultValue="72" /></label>
                 <div className="zoom-sim-device-setting">
-                  <label>Microphone<select defaultValue="system-mic"><option value="system-mic">Same as System</option><option>Microphone Array</option><option>USB Headset Microphone</option></select></label>
+                  <label>Microphone<select defaultValue="system-mic"><option value="system-mic">Same as System</option><option>{isMac ? 'MacBook Microphone' : 'Microphone Array'}</option><option>USB Headset Microphone</option></select></label>
                   <button type="button" onClick={() => setMicTesting(value => !value)}>{micTesting ? 'Stop Test' : 'Test Mic'}</button>
                 </div>
                 <label className="zoom-sim-volume">Input volume<input type="range" min="0" max="100" defaultValue="64" /></label>
@@ -394,7 +402,7 @@ function SettingsWindow({ activeTab, onTab, onClose, cameraOn, onCamera, device 
                   <span>{cameraOn ? 'Camera preview active' : 'Camera preview'}</span>
                 </div>
                 <div className="zoom-sim-device-setting">
-                  <label>Camera<select><option>Integrated Camera</option><option>USB Camera</option></select></label>
+                  <label>Camera<select><option>{isMac ? 'FaceTime HD Camera' : 'Integrated Camera'}</option><option>USB Camera</option></select></label>
                   <button type="button" onClick={onCamera}>{cameraOn ? 'Turn Off' : 'Turn On'}</button>
                 </div>
                 <label><input type="checkbox" defaultChecked /> HD video</label>
@@ -686,19 +694,17 @@ export function SandboxLab() {
 
       <div className="sandbox-context-bar">
         <div><strong>{device.label}</strong><span>Reference baseline: Zoom Workplace 7.2.1 · high-fidelity training simulation</span></div>
-        <div><span>Account/licensing can change visible tabs and controls.</span><button type="button" onClick={resetInteractiveState}>Reset Sandbox</button></div>
+        <div><span className="sandbox-safety-badge">TRAINING SIMULATION · NO LIVE AUDIO/VIDEO</span><span>Account/licensing can change visible tabs and controls.</span><button type="button" onClick={resetInteractiveState}>Reset Sandbox</button></div>
       </div>
 
       <div className={deviceClass(device)}>
         <div className="zoom-sim-device-chrome">
-          {device.shell === 'mac' && <span className="zoom-sim-mac-dots"><i></i><i></i><i></i></span>}
+          {device.shell === 'mac' && <><span className="zoom-sim-mac-dots"><i></i><i></i><i></i></span><span className="zoom-sim-mac-title">Zoom Workplace</span></>}
           {device.shell === 'windows' && <><span className="zoom-sim-window-app"><b>Z</b> Zoom Workplace</span><span className="zoom-sim-window-controls" aria-hidden="true"><i>—</i><i>□</i><i>×</i></span></>}
           {device.shell === 'web' && <div className="zoom-sim-browser-bar"><span>◀ ▶ ↻</span><div>app.zoom.us/wc</div><span>☆</span></div>}
           {device.shell === 'ios' && <div className="zoom-sim-phone-status"><strong>9:41</strong><span>▰ ◔ 100%</span></div>}
           {device.shell === 'android' && <div className="zoom-sim-phone-status"><strong>9:41</strong><span>◔ ▰ 100%</span></div>}
         </div>
-
-        <div className="zoom-sim-training-watermark">TRAINING SIMULATION · NO LIVE AUDIO/VIDEO</div>
 
         {meetingOpen ? (
           <MeetingWorkspace
