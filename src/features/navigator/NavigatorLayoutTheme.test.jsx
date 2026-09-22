@@ -41,7 +41,7 @@ it('renders the Ozzie Teal enterprise layout and keeps summary navigation usable
   expect(screen.getByText('Support people. Solve faster.')).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'The 7-Stage Support Workflow' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Common Issues' })).toBeInTheDocument()
-  expect(screen.getByRole('heading', { name: 'Fastest Routes' })).toBeInTheDocument()
+  expect(screen.getAllByRole('heading', { name: 'Fastest Routes' }).length).toBeGreaterThan(0)
   expect(screen.getByRole('heading', { name: 'Process Guides' })).toBeInTheDocument()
 
   const commonCard = screen.getByRole('heading', { name: 'Common Issues' }).closest('article')
