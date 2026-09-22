@@ -13,7 +13,7 @@ it('supports realistic device-specific Zoom training exploration', async () => {
 
   await user.click(screen.getAllByRole('button', { name: /Settings/i })[0])
   expect(screen.getByRole('dialog', { name: 'Zoom Settings' })).toBeInTheDocument()
-  await user.click(screen.getByRole('button', { name: /Audio/i }))
+  await user.click(screen.getAllByRole('button', { name: /Audio/i })[0])
   expect(screen.getByRole('heading', { name: 'Audio' })).toBeInTheDocument()
   await user.click(screen.getByRole('button', { name: 'Close Settings' }))
 
