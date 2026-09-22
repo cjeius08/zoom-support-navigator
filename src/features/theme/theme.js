@@ -1,12 +1,13 @@
 export const THEMES = Object.freeze({
   OZZIE: 'ozzie',
   ALAGA: 'alaga',
+  TEAL: 'teal',
 })
 
 export const THEME_STORAGE_KEY = 'ozzie-workspace-theme'
 
 export function normalizeTheme(value) {
-  return value === THEMES.ALAGA ? THEMES.ALAGA : THEMES.OZZIE
+  return [THEMES.ALAGA, THEMES.TEAL].includes(value) ? value : THEMES.OZZIE
 }
 
 export function readStoredTheme() {
