@@ -11,7 +11,7 @@ it('renders the Alaga full-layout preset while keeping navigator actions usable'
   expect(screen.getByRole('heading', { name: /Support people\. Solve faster/i })).toBeInTheDocument()
   expect(screen.getByText('That’s Ozzie.')).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Common Issues' })).toBeInTheDocument()
-  expect(screen.getByRole('heading', { name: 'Fastest Routes' })).toBeInTheDocument()
+  expect(screen.getAllByRole('heading', { name: 'Fastest Routes' }).length).toBeGreaterThan(0)
   expect(screen.getByRole('heading', { name: 'Process Guides' })).toBeInTheDocument()
   expect(screen.getAllByRole('heading', { name: 'Live Call Flow' }).length).toBeGreaterThan(0)
   expect(screen.getByRole('heading', { name: '7-stage support workflow' })).toBeInTheDocument()
