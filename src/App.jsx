@@ -16,6 +16,7 @@ import { TrainingResources } from './features/training/TrainingResources'
 import { FeedbackPage } from './features/feedback/FeedbackPage'
 import { UpdatesView } from './features/updates/UpdatesView'
 import { FavoritesView } from './features/favorites/FavoritesView'
+import { ProcessDocuments } from './features/knowledge/ProcessDocuments'
 import { useFavorites } from './features/favorites/useFavorites'
 import { useRecentlyViewed } from './features/favorites/useRecentlyViewed'
 import { OzzieWelcome } from './features/onboarding/OzzieWelcome'
@@ -390,6 +391,8 @@ export default function App() {
             onOpenProcess={openFavoriteProcess}
             onOpenCommonIssue={openFavoriteCommonIssue}
           />
+        : view === 'process_documents'
+          ? <ProcessDocuments onTrackEvent={trackEvent} onReportContextChange={updateReportContext}/>
         : view === 'training'
           ? <TrainingResources initialVideoId={trainingVideoId} initialTarget={trainingTarget} onReportContextChange={updateReportContext}/>
           : view === 'updates'
