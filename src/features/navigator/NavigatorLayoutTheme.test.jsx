@@ -49,3 +49,21 @@ it('renders the Ozzie Teal enterprise layout and keeps summary navigation usable
   expect(screen.getByText('Support library')).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Back to overview/i })).toBeInTheDocument()
 })
+
+
+it('renders the Ozzie Alpine mountain layout and keeps summary navigation usable', async () => {
+  const user = userEvent.setup()
+  render(<Navigator theme="alpine" onReportContextChange={() => {}} />)
+
+  expect(screen.getByRole('heading', { name: /Support with Confidence/i })).toBeInTheDocument()
+  expect(screen.getByText('People · Answers · Progress')).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: '7-Stage Support Workflow' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Common Issues' })).toBeInTheDocument()
+  expect(screen.getAllByRole('heading', { name: 'Fastest Routes' }).length).toBeGreaterThan(0)
+  expect(screen.getByRole('heading', { name: 'Process Guides' })).toBeInTheDocument()
+
+  const processCard = screen.getByRole('heading', { name: 'Process Guides' }).closest('article')
+  await user.click(within(processCard).getByRole('button', { name: /View all/i }))
+  expect(screen.getByText('Support library')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /Back to overview/i })).toBeInTheDocument()
+})
