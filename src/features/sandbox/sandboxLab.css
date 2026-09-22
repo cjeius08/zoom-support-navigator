@@ -1390,3 +1390,154 @@
     display: none;
   }
 }
+
+
+/* Keep the simulation disclosure outside the interactive mock screen. */
+.sandbox-safety-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.7rem;
+  padding: .28rem .55rem;
+  border: 1px solid rgba(75, 158, 224, .34);
+  border-radius: 999px;
+  background: rgba(46, 126, 188, .1);
+  color: #bfe7ff !important;
+  font-size: .62rem !important;
+  font-weight: 800;
+  letter-spacing: .055em;
+  white-space: nowrap;
+}
+
+/* macOS fidelity pass — same Zoom 7.2.x workspace structure with native Mac chrome. */
+.zoom-sim-device.mac .zoom-sim-device-chrome {
+  position: relative;
+  min-height: 38px;
+  justify-content: flex-start;
+  padding: 0 .75rem;
+  background: #f2f3f5;
+  border-bottom-color: #dfe2e6;
+}
+
+.zoom-sim-mac-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #4d535a;
+  font-size: .72rem;
+  font-weight: 600;
+}
+
+.zoom-sim-device.mac .zoom-sim-desktop-app {
+  grid-template-columns: 168px minmax(0, 1fr);
+}
+
+.zoom-sim-device.mac .zoom-sim-rail {
+  padding: .45rem .5rem;
+  background: #f5f7fa;
+  border-right-color: #e2e5e9;
+}
+
+.zoom-sim-device.mac .zoom-sim-brand {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: .5rem;
+  padding: .45rem .55rem .8rem;
+}
+
+.zoom-sim-device.mac .zoom-sim-brand strong {
+  font-size: .72rem;
+  white-space: nowrap;
+}
+
+.zoom-sim-device.mac .zoom-sim-rail-nav {
+  gap: .14rem;
+}
+
+.zoom-sim-device.mac .zoom-sim-rail button {
+  grid-template-columns: 1.35rem minmax(0,1fr);
+  justify-items: start;
+  align-items: center;
+  gap: .5rem;
+  padding: .52rem .58rem;
+  border-radius: .5rem;
+  text-align: left;
+}
+
+.zoom-sim-device.mac .zoom-sim-rail button span {
+  justify-self: center;
+  font-size: .9rem;
+}
+
+.zoom-sim-device.mac .zoom-sim-rail button small {
+  font-size: .7rem;
+  white-space: nowrap;
+}
+
+.zoom-sim-device.mac .zoom-sim-desktop-content {
+  grid-template-rows: 56px 1fr;
+}
+
+.zoom-sim-device.mac .zoom-sim-global-header {
+  grid-template-columns: auto minmax(220px, 1fr) repeat(5, auto);
+  gap: .35rem;
+  padding: .55rem .7rem;
+  background: #fff;
+}
+
+.zoom-sim-device.mac .zoom-sim-workspace-panel {
+  background: #f7f8fa;
+}
+
+.zoom-sim-device.mac .zoom-sim-quick-actions {
+  grid-template-columns: repeat(3, minmax(0,1fr));
+}
+
+.zoom-sim-device.mac .zoom-sim-quick-actions button:nth-child(4) {
+  display: none;
+}
+
+.zoom-sim-device.mac .zoom-sim-settings-window {
+  width: min(850px, 95%);
+  min-height: 540px;
+}
+
+.zoom-sim-device.mac .zoom-sim-settings-body {
+  grid-template-columns: 215px 1fr;
+  min-height: 480px;
+}
+
+.zoom-sim-device.mac .zoom-sim-settings-body > main {
+  padding: 1.15rem 1.35rem;
+}
+
+.zoom-sim-device.mac .zoom-sim-camera-preview {
+  min-height: 220px;
+}
+
+.zoom-sim-device.mac .zoom-sim-desktop-meeting-toolbar {
+  min-height: 72px;
+}
+
+.zoom-sim-device.mac .zoom-sim-more-menu {
+  right: 3.5%;
+  bottom: .7rem;
+  width: 240px;
+}
+
+@media (max-width: 900px) {
+  .zoom-sim-device.mac .zoom-sim-desktop-app {
+    grid-template-columns: 132px minmax(0,1fr);
+  }
+
+  .zoom-sim-device.mac .zoom-sim-global-header {
+    grid-template-columns: auto minmax(140px,1fr) repeat(3,auto);
+  }
+}
+
+@media (max-width: 760px) {
+  .sandbox-safety-badge {
+    align-self: flex-start;
+    white-space: normal;
+  }
+}
