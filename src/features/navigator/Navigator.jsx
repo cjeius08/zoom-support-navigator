@@ -320,6 +320,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
   const [callFlowExpanded, setCallFlowExpanded] = useState(false)
   const [alagaSection, setAlagaSection] = useState(null)
   const [tealSection, setTealSection] = useState(null)
+  const [alpineSection, setAlpineSection] = useState(null)
 
   useEffect(() => {
     if (!initialProcessId) return
@@ -507,7 +508,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
     </>
   }
 
-  return <section className={`navigator${theme === 'teal' ? ` teal-layout-home${query.trim() || tealSection ? ' teal-library-open' : ''}` : ''}`} id="navigator" aria-label="Support Navigator">
+  return <section className={`navigator${theme === 'teal' ? ` teal-layout-home${query.trim() || tealSection ? ' teal-library-open' : ''}` : ''}${theme === 'alpine' ? ` alpine-layout-home${query.trim() || alpineSection ? ' alpine-library-open' : ''}` : ''}`} id="navigator" aria-label="Support Navigator">
     {theme === 'teal' && <section className="teal-layout-hero">
       <div className="teal-layout-hero-copy">
         <p className="teal-kicker">Support people. Solve faster.</p>
@@ -520,6 +521,17 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
         </div>
       </div>
       <div className="teal-layout-hero-mark"><span>PEOPLE</span><span>SOLUTIONS</span><span>PROGRESS</span><i></i><p>Same people.<br/>A brighter tomorrow.</p></div>
+    </section>}
+    {theme === 'alpine' && <section className="alpine-layout-hero">
+      <div className="alpine-layout-hero-copy">
+        <p className="alpine-kicker">People · Answers · Progress</p>
+        <h1>Support with <span>Confidence.</span></h1>
+        <p>Find answers. Follow the flow. Deliver great service.</p>
+      </div>
+      <div className="alpine-layout-hero-brand">
+        <strong>Ogletree</strong>
+        <span>People. Solutions. Brighter tomorrows.</span>
+      </div>
     </section>}
     <section className="navigator-top-workspace" aria-label="Live support workspace">
       <section className="smart-search-card" aria-labelledby="smart-search-title">
@@ -632,8 +644,41 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
       </section>
     </>}
 
+    {theme === 'alpine' && !query.trim() && !alpineSection && <>
+      <section className="alpine-layout-workflow" aria-label="Seven stage support workflow">
+        <div className="alpine-layout-section-heading"><div><p>Support workflow</p><h2>7-Stage Support Workflow</h2></div><span>Same process. Better customer outcomes.</span></div>
+        <ol>
+          {[
+            ['1','Identify','Confirm the customer and understand their need.'],
+            ['2','Research','Look up details and review relevant information.'],
+            ['3','Guide','Follow the call flow and provide next steps.'],
+            ['4','Resolve','Complete the request or make the update.'],
+            ['5','Document','Add notes and select the right disposition.'],
+            ['6','Confirm','Verify customer understanding and satisfaction.'],
+            ['7','Close','End with confidence and care.'],
+          ].map(([number,title,description]) => <li key={number}><span>{number}</span><strong>{title}</strong><small>{description}</small></li>)}
+        </ol>
+      </section>
+
+      <section className="alpine-layout-summary-grid">
+        <article className="alpine-layout-summary-card">
+          <header><div><span>●</span><div><h2>Common Issues</h2><p>Quick access to frequent support topics.</p></div></div><button type="button" onClick={() => { setAlpineSection('common'); switchLibraryTab('common') }}>View all →</button></header>
+          <div>{COMMON_ISSUE_ROUTES.slice(0,5).map((route,index) => <button type="button" key={route.id} onClick={() => openRoute(route, 'alpine_overview_common')}><span>{index+1}</span><strong>{route.title}</strong><b>›</b></button>)}</div>
+        </article>
+        <article className="alpine-layout-summary-card">
+          <header><div><span>↗</span><div><h2>Fastest Routes</h2><p>Get to the right place, faster.</p></div></div><button type="button" onClick={() => { setAlpineSection('fastest'); switchLibraryTab('fastest') }}>View all →</button></header>
+          <div>{fastestRoutes.slice(0,5).map(route => <button type="button" key={route.id} onClick={() => openRoute(route, 'alpine_overview_fastest')}><strong>{route.title}</strong><b>›</b></button>)}</div>
+        </article>
+        <article className="alpine-layout-summary-card">
+          <header><div><span>▤</span><div><h2>Process Guides</h2><p>Step-by-step instructions for complex tasks.</p></div></div><button type="button" onClick={() => { setAlpineSection('processes'); switchLibraryTab('processes') }}>View all →</button></header>
+          <div>{PROCESSES.slice(0,5).map(process => <button type="button" key={process.id} onClick={() => openProcess(process, 'alpine_overview_process')}><strong>{process.title}</strong><b>›</b></button>)}</div>
+        </article>
+      </section>
+    </>}
+
     <section className="navigator-library" aria-label="Navigator library">
       {theme === 'teal' && tealSection && <div className="teal-layout-library-heading"><div><p>Support library</p><h2>{tealSection === 'common' ? 'Common Issues' : tealSection === 'fastest' ? 'Fastest Routes' : 'Process Guides'}</h2></div><button type="button" onClick={() => { setTealSection(null); setQuery(''); setCategory(null) }}>← Back to overview</button></div>}
+      {theme === 'alpine' && alpineSection && <div className="alpine-layout-library-heading"><div><p>Support library</p><h2>{alpineSection === 'common' ? 'Common Issues' : alpineSection === 'fastest' ? 'Fastest Routes' : 'Process Guides'}</h2></div><button type="button" onClick={() => { setAlpineSection(null); setQuery(''); setCategory(null) }}>← Back to overview</button></div>}
       <div className="navigator-library-tabs" role="tablist" aria-label="Navigator views">
         <button type="button" role="tab" aria-selected={libraryTab === 'fastest'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('fastest')}>Fastest Routes</button>
         <button type="button" role="tab" aria-selected={libraryTab === 'common'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('common')}>Common Issues</button>
