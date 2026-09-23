@@ -447,7 +447,7 @@ export function buildCallGuide(process) {
   }
 
   return {
-    steps: usableSteps.map(({ routeIntro, ...step }) => step),
+    steps: usableSteps,
     routes,
     availablePlatforms,
     deviceSelectionRequired,
