@@ -652,3 +652,53 @@
     width: 100%;
   }
 }
+
+
+/* Common Issue Device UX */
+.common-issue-device-selected {
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  gap:.8rem;
+  align-items:start;
+  padding:.85rem 1rem;
+  border:1px solid rgba(73,174,255,.34);
+  border-radius:.8rem;
+  background:rgba(24,126,213,.12);
+}
+
+.common-issue-device-selected-icon {
+  display:grid;
+  place-items:center;
+  width:2rem;
+  height:2rem;
+  border-radius:999px;
+  color:#dff5ff;
+  background:rgba(55,153,224,.24);
+  font-weight:800;
+}
+
+.common-issue-device-selected h3 {
+  margin:.1rem 0 .3rem;
+  color:#f5fbff;
+}
+
+.common-issue-device-selected p {
+  margin:0;
+  color:#bcd0de;
+  line-height:1.45;
+}
+
+.common-issue-device-selected strong {
+  color:#eef8ff;
+}
+
+.common-issue-context-status strong {
+  white-space:normal;
+  line-height:1.25;
+}
+
+@media (max-width:700px) {
+  .common-issue-device-selected {
+    grid-template-columns:1fr;
+  }
+}
