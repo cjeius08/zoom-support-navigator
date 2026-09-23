@@ -43,7 +43,7 @@ export const COMMON_ISSUE_ROUTES = [
       },
       {
         title: 'Enter the Meeting ID and Passcode Manually',
-        instruction: 'Sign in to Zoom Workplace, select Home → Join, enter the Meeting ID exactly as provided by the host/organizer, then enter the passcode if prompted. Use this when the invite link or direct join does not work.',
+        instruction: 'Sign in to Zoom Workplace and select Home → Join, or open Zoom’s documented manual join page at zoom.us/join. Enter the Meeting ID exactly as provided by the host/organizer, then enter the passcode if prompted. Use this when the invite link or direct join does not work.',
         expected: 'Zoom accepts the meeting details and moves the participant into the meeting or an expected waiting state.',
       },
       {
