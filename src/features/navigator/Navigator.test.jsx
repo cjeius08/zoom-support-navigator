@@ -202,3 +202,35 @@ it('publishes selected tab, device, caller role, and active Common Issue for glo
     category_id: 'video',
   }))
 })
+
+
+it('starts a new call only after in-app confirmation and clears the carried call context', async () => {
+  const user = userEvent.setup()
+  const onNewCall = vi.fn()
+  render(<Navigator onNewCall={onNewCall} />)
+
+  await user.click(screen.getByRole('tab', { name: 'Common Issues' }))
+  await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
+  let dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
+  await user.click(within(dialog).getByRole('button', { name: 'Android' }))
+  await user.click(within(dialog).getByRole('button', { name: 'Host' }))
+  await user.click(within(dialog).getByRole('button', { name: /Close common issue route/i }))
+
+  expect(screen.getByLabelText('Current call session')).toHaveTextContent('Android · Host')
+
+  await user.click(screen.getByRole('button', { name: 'New Call' }))
+  dialog = screen.getByRole('dialog', { name: 'Start a new call?' })
+  expect(within(dialog).getByText(/unsaved Call Documentation draft/i)).toBeInTheDocument()
+  expect(within(dialog).getByText(/Saved notes are not deleted/i)).toBeInTheDocument()
+
+  await user.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+  expect(screen.getByLabelText('Current call session')).toHaveTextContent('Android · Host')
+  expect(onNewCall).not.toHaveBeenCalled()
+
+  await user.click(screen.getByRole('button', { name: 'New Call' }))
+  await user.click(screen.getByRole('button', { name: 'Start New Call' }))
+
+  expect(onNewCall).toHaveBeenCalledTimes(1)
+  expect(screen.getByLabelText('Current call session')).toHaveTextContent('Ready for a new caller')
+  expect(screen.getByRole('tab', { name: 'Fastest Routes' })).toHaveAttribute('aria-selected', 'true')
+})
