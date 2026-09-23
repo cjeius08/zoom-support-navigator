@@ -3105,7 +3105,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 /* Keep the persistent report control clear of in-page bottom-right actions and source pages. */
 body:has(.readiness-lab-dock) .global-feedback-fab,
 body:has(.source-pages) .global-feedback-fab,
-body:has(.process-document-reader) .global-feedback-fab {
+body:has(.process-document-reader) .global-feedback-fab,
+body:has(.process-document-grid) .global-feedback-fab {
   width: 2.75rem;
   min-width: 2.75rem;
   height: 2.75rem;

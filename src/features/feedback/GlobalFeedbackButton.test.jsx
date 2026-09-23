@@ -93,6 +93,7 @@ it('compacts the report button beside Readiness Lab controls and source pages', 
   expect(css).toContain('body:has(.readiness-lab-dock) .global-feedback-fab')
   expect(css).toContain('body:has(.source-pages) .global-feedback-fab')
   expect(css).toContain('body:has(.process-document-reader) .global-feedback-fab')
+  expect(css).toContain('body:has(.process-document-grid) .global-feedback-fab')
   expect(css).toContain('width: 2.75rem;')
   expect(css).toContain('body:has(.readiness-lab-dock) .readiness-question-nav')
   expect(css).toContain('body:has(.source-pages) .source-pages figure')
