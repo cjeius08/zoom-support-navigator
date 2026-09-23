@@ -40,7 +40,7 @@ const trainingCategoryByProcessCategory = {
   devices: "Devices & App",
 };
 
-export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice = null, initialRole = null, initialSourceRouteId = null, onOpenRoute, onContextChange = null, onAddToDocumentation = null, onTrackEvent, isFavorite = false, favoriteBusy = false, onToggleFavorite = () => {} }) {
+export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice = null, initialRole = null, initialSourceRouteId = null, onOpenRoute, onContextChange = null, onCallResolved = null, onAddToDocumentation = null, onTrackEvent, isFavorite = false, favoriteBusy = false, onToggleFavorite = () => {} }) {
   const [tab, setTab] = useState("quick");
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [selectedRoute, setSelectedRoute] = useState("");
@@ -215,6 +215,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
     setDocumentationPreviewOpen(false);
     setDocumentationAdded(false);
     setOutcome("resolved");
+    onCallResolved?.();
     onTrackEvent?.({
       eventType: "guide_outcome",
       routeId: "navigator",
