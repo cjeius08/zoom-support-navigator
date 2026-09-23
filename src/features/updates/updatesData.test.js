@@ -20,7 +20,8 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.metadata.updatePolicy).toMatch(/Developer-only work/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
   expect(data.updates[0].date).toBe('2026-09-23')
-  expect(data.updates.slice(0, 2).map(entry => entry.id)).toEqual([
+  expect(data.updates.slice(0, 3).map(entry => entry.id)).toEqual([
+    'new-call-session-reset',
     'common-issues-smart-routing',
     'guided-process-device-troubleshooting',
   ])
@@ -63,4 +64,13 @@ it('keeps the September 23 guided-support changes in the user-facing change log'
   expect(commonIssues.changed).toMatch(/symptom and device/i)
   expect(guidedProcess).toMatchObject({ date: '2026-09-23', audience: 'all', area: 'Process Guides / Call Guide' })
   expect(guidedProcess.changed).toMatch(/symptom-aware end-of-path routing/i)
+})
+
+
+it('keeps the New Call reset visible as a user-facing safety feature', () => {
+  const path = join(cwd(), 'src/features/updates/updatesData.json')
+  const data = JSON.parse(readFileSync(path, 'utf8'))
+  const entry = data.updates.find(item => item.id === 'new-call-session-reset')
+  expect(entry).toMatchObject({ audience: 'all', area: 'Home / Call Flow', date: '2026-09-23' })
+  expect(entry.changed).toMatch(/Saved notes.*not deleted/i)
 })
