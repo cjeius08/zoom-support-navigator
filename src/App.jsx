@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { validateCredentials } from './features/auth/credentials'
 import { ForcePasswordChange } from './features/auth/ForcePasswordChange'
 import { activateAccount, changeOwnPassword, getCurrentProfile, loginWithUsername, markOzzieIntroSeen, signOut, updateOwnAvatar } from './lib/authApi'
@@ -22,6 +22,7 @@ import { useRecentlyViewed } from './features/favorites/useRecentlyViewed'
 import { OzzieWelcome } from './features/onboarding/OzzieWelcome'
 import { assetUrl } from './lib/assetUrl'
 import { useUsageTracking } from './features/analytics/usePresence'
+import { completeWorkspaceNavigation, createWorkspaceNavigationState, resolveWorkspaceNavigationState, startWorkspaceNavigation } from './lib/workspaceNavigationHistory'
 import { applyTheme, readStoredTheme, storeTheme } from './features/theme/theme'
 import './styles.css'
 import './accessibility-ui.css'
@@ -57,6 +58,7 @@ export default function App() {
   const [savedNotesUserId, setSavedNotesUserId] = useState('')
   const [mySavedNoteId, setMySavedNoteId] = useState('')
   const [navigationHistory, setNavigationHistory] = useState([])
+  const navigationUserIdRef = useRef(null)
   const [showPassword, setShowPassword] = useState(false)
   const [ozzieIntroOpen, setOzzieIntroOpen] = useState(false)
   const [ozzieIntroReplay, setOzzieIntroReplay] = useState(false)
@@ -113,6 +115,7 @@ export default function App() {
   function rememberCurrentPage() {
     const snapshot = currentNavigationSnapshot()
     setNavigationHistory(history => [...history.slice(-29), snapshot])
+    window.history.pushState(startWorkspaceNavigation(window.history.state, snapshot), '', window.location.href)
   }
 
   function restoreNavigationSnapshot(snapshot) {
@@ -128,6 +131,10 @@ export default function App() {
 
   function goBack() {
     if (!navigationHistory.length) return
+    if (window.history.state?.ozzieWorkspaceHistory === true) {
+      window.history.back()
+      return
+    }
     const previous = navigationHistory[navigationHistory.length - 1]
     setNavigationHistory(history => history.slice(0, -1))
     restoreNavigationSnapshot(previous)
@@ -287,6 +294,40 @@ export default function App() {
   }, [theme])
 
   useEffect(() => { getCurrentProfile().then(setProfile).catch(() => signOut()).finally(() => setLoading(false)) }, [])
+
+  useEffect(() => {
+    if (!profile?.id) {
+      navigationUserIdRef.current = null
+      return
+    }
+    if (navigationUserIdRef.current === profile.id) return
+
+    navigationUserIdRef.current = profile.id
+    setNavigationHistory([])
+    window.history.replaceState(createWorkspaceNavigationState(currentNavigationSnapshot()), '', window.location.href)
+  }, [profile?.id])
+
+  useEffect(() => {
+    if (!profile?.id) return
+    const state = window.history.state
+    if (!state?.pending || state.ozzieWorkspaceHistory !== true) return
+
+    window.history.replaceState(completeWorkspaceNavigation(state, currentNavigationSnapshot()), '', window.location.href)
+  }, [profile?.id, view, trainingVideoId, trainingTarget, navigatorProcessId, navigatorCommonIssueId, savedNotesUserId, mySavedNoteId, reportContext, navigationHistory])
+
+  useEffect(() => {
+    if (!profile?.id) return undefined
+    function restoreBrowserNavigation(event) {
+      const restored = resolveWorkspaceNavigationState(event.state)
+      if (!restored) return
+      setNavigationHistory(restored.backStack)
+      restoreNavigationSnapshot(restored.snapshot)
+      trackEvent({ eventType: 'navigation', routeId: restored.snapshot.view || 'navigator', toolId: 'back' })
+    }
+
+    window.addEventListener('popstate', restoreBrowserNavigation)
+    return () => window.removeEventListener('popstate', restoreBrowserNavigation)
+  }, [profile?.id, trackEvent])
 
   useEffect(() => {
     if (!profile) {
