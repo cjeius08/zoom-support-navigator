@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { assetUrl } from "../../lib/assetUrl";
-import { buildCallGuide, processSections } from "./processText";
+import { buildCallGuide, PLATFORM_LABELS, processSections } from "./processText";
+import { COMMON_ISSUE_ROUTES } from "./commonIssueRoutes";
 import { relatedTrainingForCategory } from "../../data/trainingVideos";
 import { useDialogFocus } from "../../lib/useDialogFocus";
 import { FavoriteToggle } from "../favorites/FavoriteToggle";
@@ -12,9 +13,6 @@ const TABS = [
   ["full", "Full Process"],
 ];
 
-const STEP_PREVIEW_LIMIT = 6;
-const SCRIPT_PREVIEW_LIMIT = 3;
-const CALLOUT_PREVIEW_LIMIT = 6;
 
 const trainingCategoryByProcessCategory = {
   join: "Joining Meetings",
@@ -25,23 +23,68 @@ const trainingCategoryByProcessCategory = {
   devices: "Devices & App",
 };
 
-export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent, isFavorite = false, favoriteBusy = false, onToggleFavorite = () => {} }) {
+export function ProcessDrawer({ process, onClose, onOpenTraining, onOpenProcess, onOpenRoute, onTrackEvent, isFavorite = false, favoriteBusy = false, onToggleFavorite = () => {} }) {
   const [tab, setTab] = useState("quick");
-  const [stepsExpanded, setStepsExpanded] = useState(false);
-  const [scriptsExpanded, setScriptsExpanded] = useState(false);
-  const [expandedCallouts, setExpandedCallouts] = useState({});
+  const [selectedPlatform, setSelectedPlatform] = useState("");
+  const [selectedRoute, setSelectedRoute] = useState("");
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [outcome, setOutcome] = useState("active");
   const dialogRef = useRef(null);
   const copyResetRef = useRef(null);
   const [copyState, setCopyState] = useState({ id: "", status: "" });
   const guide = useMemo(() => buildCallGuide(process), [process]);
-  const visibleSteps = stepsExpanded ? guide.steps : guide.steps.slice(0, STEP_PREVIEW_LIMIT);
-  const hiddenStepCount = Math.max(0, guide.steps.length - visibleSteps.length);
-  const visibleGlobalScripts = scriptsExpanded
-    ? guide.globalScripts
-    : guide.globalScripts.slice(0, SCRIPT_PREVIEW_LIMIT);
-  const hiddenScriptCount = Math.max(0, guide.globalScripts.length - visibleGlobalScripts.length);
+  const defaultPlatform = guide.availablePlatforms.length === 1 ? guide.availablePlatforms[0] : "";
+  const relatedRoutes = useMemo(
+    () => COMMON_ISSUE_ROUTES.filter((route) => route.processIds?.includes(process.id)),
+    [process.id],
+  );
+  const officialSources = useMemo(() => {
+    const sources = new Map();
+    for (const route of relatedRoutes) {
+      for (const source of [route.primarySource, ...(route.supportingSources || [])]) {
+        if (source?.url && !sources.has(source.url)) sources.set(source.url, source);
+      }
+    }
+    return [...sources.values()];
+  }, [relatedRoutes]);
+  const eligibleSteps = useMemo(
+    () => guide.steps.filter((step) =>
+      !selectedPlatform || step.platforms.length === 0 || step.platforms.includes(selectedPlatform)
+    ),
+    [guide.steps, selectedPlatform],
+  );
+  const routeOptions = useMemo(() => {
+    const options = [];
+    const seen = new Set();
+    for (const step of eligibleSteps) {
+      const id = step.routeId || "main";
+      if (seen.has(id)) continue;
+      seen.add(id);
+      options.push({ id, label: step.routeLabel || "Main approved steps" });
+    }
+    return options;
+  }, [eligibleSteps]);
+  const activeRouteId = routeOptions.some((route) => route.id === selectedRoute)
+    ? selectedRoute
+    : (routeOptions[0]?.id || "main");
+  const activeSteps = useMemo(
+    () => eligibleSteps.filter((step) => (step.routeId || "main") === activeRouteId),
+    [eligibleSteps, activeRouteId],
+  );
+  const currentStep = activeSteps[currentStepIndex] || null;
+  const quickFlow = guide.quickGuide.find((line) => line.includes("→")) || guide.quickGuide[0] || "";
+  const requirementLines = guide.callouts
+    .filter((callout) => callout.kind === "requirement")
+    .flatMap((callout) => callout.lines);
+
   useDialogFocus(dialogRef, true, onClose);
   useEffect(() => () => window.clearTimeout(copyResetRef.current), []);
+  useEffect(() => {
+    setSelectedPlatform(defaultPlatform);
+    setSelectedRoute("");
+    setCurrentStepIndex(0);
+    setOutcome("active");
+  }, [process.id, defaultPlatform]);
 
   function copyLabel(id, defaultLabel) {
     if (copyState.id !== id) return defaultLabel;
@@ -70,15 +113,71 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent, 
     );
   }
   async function copySteps() {
+    const stepsToCopy = activeSteps.length ? activeSteps : guide.steps;
     await copyText(
-      guide.steps
-        .map(
-          (step) =>
-            `${step.number}. ${step.title}\n${step.instructions.join("\n")}`,
+      stepsToCopy
+        .map((step, index) =>
+          `${index + 1}. ${step.title}\n${[...step.instructions, ...step.confirmations].join("\n")}`
         )
         .join("\n\n"),
       "quick-steps",
     );
+  }
+
+  function resetProgress() {
+    setCurrentStepIndex(0);
+    setOutcome("active");
+  }
+
+  function selectPlatform(platform) {
+    setSelectedPlatform(platform);
+    setSelectedRoute("");
+    resetProgress();
+    onTrackEvent?.({
+      eventType: "guide_device_selected",
+      routeId: "navigator",
+      processId: process.id,
+      categoryId: process.category,
+      toolId: `device_${platform}`,
+    });
+  }
+
+  function selectGuideRoute(routeId) {
+    setSelectedRoute(routeId);
+    resetProgress();
+    onTrackEvent?.({
+      eventType: "guide_path_selected",
+      routeId: "navigator",
+      processId: process.id,
+      categoryId: process.category,
+      toolId: `path_${routeId}`,
+    });
+  }
+
+  function markResolved() {
+    setOutcome("resolved");
+    onTrackEvent?.({
+      eventType: "guide_outcome",
+      routeId: "navigator",
+      processId: process.id,
+      categoryId: process.category,
+      toolId: "resolved",
+    });
+  }
+
+  function markNotResolved() {
+    if (currentStepIndex < activeSteps.length - 1) {
+      setCurrentStepIndex((index) => index + 1);
+      return;
+    }
+    setOutcome("exhausted");
+    onTrackEvent?.({
+      eventType: "guide_outcome",
+      routeId: "navigator",
+      processId: process.id,
+      categoryId: process.category,
+      toolId: "not_resolved_after_path",
+    });
   }
   function selectTab(id, { focus = false } = {}) {
     setTab(id);
@@ -176,223 +275,282 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, onTrackEvent, 
           tabIndex={0}
         >
           {tab === "quick" && (
-            <section className="call-guide" aria-label="Call Guide">
+            <section className="call-guide guided-process" aria-label="Call Guide">
               <div className="section-heading">
                 <div>
                   <p className="eyebrow">Live-call assist</p>
-                  <h3>Call Guide</h3>
+                  <h3>Guided Call Guide</h3>
+                  <p className="guided-process-intro">One approved action at a time. Stop as soon as the issue is resolved.</p>
                 </div>
                 <button onClick={copySteps}>
-                  {copyLabel("quick-steps", "Copy Quick Steps")}
+                  {copyLabel("quick-steps", "Copy Current Path")}
                 </button>
               </div>
-              {guide.quickGuide.length > 0 && (
-                <section className="call-quick-guide">
-                  <p className="eyebrow">Quick Guide / Remember the Process</p>
-                  {guide.quickGuide.map((line, index) => (
-                    <p key={index}>{line}</p>
-                  ))}
-                </section>
-              )}
-              {guide.whatToAsk.length > 0 && (
-                <section className="what-to-ask">
-                  <p className="eyebrow">What to Ask</p>
-                  <ul>
-                    {guide.whatToAsk.map((question, index) => (
-                      <li key={index}>
-                        {question.text}
-                        {question.origin === "derived" && (
-                          <small>Derived from approved process</small>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              )}
-              {guide.suggestedScript.origin === "derived" && (
-                <section className="suggested-script">
-                  <p className="eyebrow">{guide.suggestedScript.label}</p>
-                  <blockquote>{guide.suggestedScript.text}</blockquote>
-                  <button onClick={() => copyText(guide.suggestedScript.text, "suggested-script")}>
-                    {copyLabel("suggested-script", "Copy Script")}
-                  </button>
-                  <small>
-                    Console wording derived only from this approved process.
-                  </small>
-                </section>
-              )}
-              {visibleGlobalScripts.map((script, index) => (
-                <section className="suggested-script" key={`global-${index}`}>
-                  <p className="eyebrow">Additional Source Script</p>
-                  <blockquote>{script}</blockquote>
-                  <button onClick={() => copyText(script, `global-script-${index}`)}>
-                    {copyLabel(`global-script-${index}`, "Copy Script")}
-                  </button>
-                </section>
-              ))}
-              {hiddenScriptCount > 0 && (
-                <button
-                  type="button"
-                  className="show-more-scripts"
-                  onClick={() => setScriptsExpanded(true)}
-                >
-                  Show remaining scripts ({hiddenScriptCount})
-                </button>
-              )}
-              <div className="call-step-list">
-                {visibleSteps.map((step, index) => (
-                  <article
-                    className="call-step-card"
-                    id={`call-step-${index}`}
-                    key={`${step.number}-${step.title}`}
-                  >
-                    <div className="call-step-heading">
-                      <span>Step {step.number}</span>
-                      <h3>{step.title}</h3>
-                      <button
-                        onClick={() =>
-                          copyText(
-                            [
-                              `Step ${step.number}: ${step.title}`,
-                              ...step.instructions,
-                              ...step.scripts,
-                            ].join("\n"),
-                            `step-${index}`,
-                          )
-                        }
-                      >
-                        {copyLabel(`step-${index}`, "Copy Step")}
-                      </button>
-                    </div>
-                    {step.instructions.length > 0 && (
-                      <div>
-                        <p className="eyebrow">What to Do</p>
-                        <ul>
-                          {step.instructions.map((line, lineIndex) => (
-                            <li key={lineIndex}>{line}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {step.scripts.length > 0 && (
-                      <div className="step-scripts">
-                        <p className="eyebrow">Suggested Script</p>
-                        {step.scripts.map((script, scriptIndex) => (
-                          <div key={scriptIndex}>
-                            <blockquote>{script}</blockquote>
-                            <button onClick={() => copyText(script, `step-${index}-script-${scriptIndex}`)}>
-                              {copyLabel(`step-${index}-script-${scriptIndex}`, "Copy Script")}
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {step.confirmations.length > 0 && (
-                      <div className="step-confirm">
-                        <p className="eyebrow">Confirm with Customer</p>
-                        {step.confirmations.map((line, lineIndex) => (
-                          <p key={lineIndex}>{line}</p>
-                        ))}
-                      </div>
-                    )}
-                    {step.visualReferences.map((visual, visualIndex) => (
-                      <button
-                        className="view-visual"
-                        key={visualIndex}
-                        onClick={() => openVisual(visual)}
-                      >
-                        View Visual
-                      </button>
-                    ))}
-                    <nav
-                      className="step-navigation"
-                      aria-label={`Step ${step.number} navigation`}
-                    >
-                      {index > 0 && (
-                        <a href={`#call-step-${index - 1}`}>Previous Step</a>
-                      )}
-                      {index < visibleSteps.length - 1 && (
-                        <a href={`#call-step-${index + 1}`}>Next Step</a>
-                      )}
-                    </nav>
-                  </article>
-                ))}
-              </div>
-              {hiddenStepCount > 0 && (
-                <button
-                  type="button"
-                  className="show-more-steps"
-                  onClick={() => setStepsExpanded(true)}
-                >
-                  Show remaining steps ({hiddenStepCount})
-                </button>
-              )}
-              {guide.callouts.length > 0 && (
-                <section className="guide-callouts">
-                  {guide.callouts.map((callout, index) => {
-                    const expanded = Boolean(expandedCallouts[index]);
-                    const visibleLines = expanded
-                      ? callout.lines
-                      : callout.lines.slice(0, CALLOUT_PREVIEW_LIMIT);
-                    const hiddenCount = Math.max(0, callout.lines.length - visibleLines.length);
-                    const detailLabel = callout.kind === "referral"
-                      ? "referral details"
-                      : `${callout.label.toLowerCase()} details`;
 
-                    return (
-                      <article
-                        className={`guide-callout ${callout.kind}`}
-                        key={index}
+              {guide.availablePlatforms.length > 1 && (
+                <section className="guide-device-picker" aria-label="Choose customer device">
+                  <p className="eyebrow">1 · Device</p>
+                  <h3>What device is the customer using?</h3>
+                  <div className="guide-device-options">
+                    {guide.availablePlatforms.map((platform) => (
+                      <button
+                        type="button"
+                        key={platform}
+                        aria-pressed={selectedPlatform === platform}
+                        onClick={() => selectPlatform(platform)}
                       >
-                        <p className="eyebrow">{callout.label}</p>
-                        {visibleLines.map((line, lineIndex) => (
-                          <p className="callout-line" key={lineIndex}>{line}</p>
-                        ))}
-                        {hiddenCount > 0 && (
-                          <button
-                            type="button"
-                            className="show-more-callout"
-                            onClick={() => setExpandedCallouts(current => ({ ...current, [index]: true }))}
-                          >
-                            Show remaining {detailLabel} ({hiddenCount})
-                          </button>
-                        )}
-                      </article>
-                    );
-                  })}
+                        {PLATFORM_LABELS[platform] || platform}
+                      </button>
+                    ))}
+                  </div>
+                  {!selectedPlatform && <p className="guide-device-hint">Choose a device so Ozzie only shows instructions supported for that platform.</p>}
                 </section>
               )}
-              <div className="refer-card">
-                <h3>When to Refer</h3>
-                {guide.referralDetails.map((line, index) => (
-                  <p key={index}>{line}</p>
-                ))}
-              </div>
-              {trainingCategoryByProcessCategory[process.category] &&
-                relatedTrainingForCategory(
-                  trainingCategoryByProcessCategory[process.category],
-                ).length > 0 && (
-                  <div className="related-training">
-                    <p className="eyebrow">Related training</p>
-                    <div>
-                      {relatedTrainingForCategory(
-                        trainingCategoryByProcessCategory[process.category],
-                      )
-                        .slice(0, 3)
-                        .map((video) => (
-                          <button
-                            key={video.id}
-                            onClick={() => onOpenTraining?.(video.id)}
-                          >
-                            {video.title}
-                          </button>
+
+              {(!guide.availablePlatforms.length || selectedPlatform || guide.availablePlatforms.length === 1) && (
+                <>
+                  {routeOptions.length > 1 && (
+                    <section className="guide-path-picker">
+                      <label htmlFor="guide-path-select">
+                        <span className="eyebrow">Approved path</span>
+                        <strong>What are you trying to do?</strong>
+                      </label>
+                      <select
+                        id="guide-path-select"
+                        value={activeRouteId}
+                        onChange={(event) => selectGuideRoute(event.target.value)}
+                      >
+                        {routeOptions.map((route) => (
+                          <option key={route.id} value={route.id}>{route.label}</option>
                         ))}
+                      </select>
+                    </section>
+                  )}
+
+                  {quickFlow && (
+                    <div className="guide-flow-line">
+                      <span>Quick flow</span>
+                      <strong>{quickFlow}</strong>
                     </div>
-                    <button onClick={() => onOpenTraining?.()}>
-                      Open Training &amp; Resources
-                    </button>
-                  </div>
-                )}
+                  )}
+
+                  {currentStepIndex === 0 && outcome === "active" && guide.whatToAsk.length > 0 && (
+                    <details className="approved-details what-to-ask-details">
+                      <summary>Questions that may change the path</summary>
+                      <ul>
+                        {guide.whatToAsk.slice(0, 3).map((question, index) => (
+                          <li key={index}>{question.text}</li>
+                        ))}
+                      </ul>
+                    </details>
+                  )}
+
+                  {currentStepIndex === 0 && outcome === "active" && requirementLines.length > 0 && (
+                    <details className="approved-details">
+                      <summary>Before you start · approved requirements</summary>
+                      {requirementLines.map((line, index) => <p key={index}>{line}</p>)}
+                    </details>
+                  )}
+
+                  {outcome === "active" && currentStep && (
+                    <article className="call-step-card guided-current-step">
+                      <div className="guide-progress" aria-label={`Step ${currentStepIndex + 1} of ${activeSteps.length}`}>
+                        <span>Step {currentStepIndex + 1} of {activeSteps.length}</span>
+                        <progress value={currentStepIndex + 1} max={activeSteps.length} />
+                      </div>
+                      <div className="call-step-heading">
+                        <span>Do this now</span>
+                        <h3>{currentStep.title}</h3>
+                        <button
+                          onClick={() =>
+                            copyText(
+                              [
+                                currentStep.title,
+                                ...currentStep.instructions,
+                                ...currentStep.confirmations,
+                                ...currentStep.scripts,
+                              ].join("\n"),
+                              `step-${currentStepIndex}`,
+                            )
+                          }
+                        >
+                          {copyLabel(`step-${currentStepIndex}`, "Copy Step")}
+                        </button>
+                      </div>
+
+                      {currentStep.instructions.length > 0 && (
+                        <div className="guide-primary-actions">
+                          <ul>
+                            {currentStep.instructions.slice(0, 3).map((line, lineIndex) => (
+                              <li key={lineIndex}>{line}</li>
+                            ))}
+                          </ul>
+                          {currentStep.instructions.length > 3 && (
+                            <details className="approved-details">
+                              <summary>More approved detail ({currentStep.instructions.length - 3})</summary>
+                              <ul>
+                                {currentStep.instructions.slice(3).map((line, lineIndex) => (
+                                  <li key={lineIndex}>{line}</li>
+                                ))}
+                              </ul>
+                            </details>
+                          )}
+                        </div>
+                      )}
+
+                      {currentStep.confirmations.length > 0 && (
+                        <div className="step-confirm">
+                          <p className="eyebrow">Confirm</p>
+                          {currentStep.confirmations.map((line, lineIndex) => (
+                            <p key={lineIndex}>{line}</p>
+                          ))}
+                        </div>
+                      )}
+
+                      {currentStep.scripts.length > 0 && (
+                        <details className="approved-details step-scripts">
+                          <summary>Suggested wording</summary>
+                          {currentStep.scripts.map((script, scriptIndex) => (
+                            <div key={scriptIndex}>
+                              <blockquote>{script}</blockquote>
+                              <button onClick={() => copyText(script, `step-${currentStepIndex}-script-${scriptIndex}`)}>
+                                {copyLabel(`step-${currentStepIndex}-script-${scriptIndex}`, "Copy Script")}
+                              </button>
+                            </div>
+                          ))}
+                        </details>
+                      )}
+
+                      {currentStep.visualReferences.map((visual, visualIndex) => (
+                        <button
+                          className="view-visual"
+                          key={visualIndex}
+                          onClick={() => openVisual(visual)}
+                        >
+                          View Visual
+                        </button>
+                      ))}
+
+                      <div className="guide-resolution-actions" aria-label="Step result">
+                        <button type="button" className="guide-resolved" onClick={markResolved}>✓ Resolved / Done</button>
+                        <button type="button" className="guide-not-resolved" onClick={markNotResolved}>
+                          {currentStepIndex < activeSteps.length - 1 ? "Not resolved → Next step" : "Not resolved → Next options"}
+                        </button>
+                      </div>
+
+                      {currentStepIndex > 0 && (
+                        <button
+                          type="button"
+                          className="guide-back-step"
+                          onClick={() => setCurrentStepIndex((index) => Math.max(0, index - 1))}
+                        >
+                          ← Previous step
+                        </button>
+                      )}
+                    </article>
+                  )}
+
+                  {outcome === "resolved" && (
+                    <section className="guide-resolution-state resolved" role="status">
+                      <span>✓</span>
+                      <div>
+                        <p className="eyebrow">Resolved</p>
+                        <h3>Stop here — no extra troubleshooting needed.</h3>
+                        <p>The current approved path resolved the issue.</p>
+                        <button type="button" onClick={resetProgress}>Start this path again</button>
+                      </div>
+                    </section>
+                  )}
+
+                  {outcome === "exhausted" && (
+                    <section className="guide-resolution-state unresolved" role="status">
+                      <span>→</span>
+                      <div>
+                        <p className="eyebrow">Still not resolved</p>
+                        <h3>Choose the closest next approved path.</h3>
+                        <p>Ozzie will not guess a fix. Continue only with another documented route or the approved referral boundary.</p>
+
+                        {routeOptions.filter((route) => route.id !== activeRouteId).length > 0 && (
+                          <div className="guide-next-options">
+                            {routeOptions.filter((route) => route.id !== activeRouteId).map((route) => (
+                              <button type="button" key={route.id} onClick={() => selectGuideRoute(route.id)}>
+                                <strong>{route.label}</strong>
+                                <span>Continue in this approved process</span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+
+                        {relatedRoutes.length > 0 && (
+                          <div className="guide-next-options">
+                            {relatedRoutes.map((route) => (
+                              <button type="button" key={route.id} onClick={() => onOpenRoute?.(route.id)}>
+                                <strong>{route.title}</strong>
+                                <span>{route.subtitle}</span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+
+                        <details className="approved-details referral-details">
+                          <summary>When to stop / refer</summary>
+                          {guide.referralDetails.map((line, index) => <p key={index}>{line}</p>)}
+                          {guide.callouts
+                            .filter((callout) => callout.kind === "referral" || callout.kind === "limitation")
+                            .flatMap((callout) => callout.lines)
+                            .map((line, index) => <p key={index}>{line}</p>)}
+                        </details>
+                      </div>
+                    </section>
+                  )}
+
+                  {guide.globalScripts.length > 0 && (
+                    <details className="approved-details">
+                      <summary>Additional approved source wording</summary>
+                      {guide.globalScripts.map((script, index) => (
+                        <div className="suggested-script" key={index}>
+                          <blockquote>{script}</blockquote>
+                          <button onClick={() => copyText(script, `global-script-${index}`)}>
+                            {copyLabel(`global-script-${index}`, "Copy Script")}
+                          </button>
+                        </div>
+                      ))}
+                    </details>
+                  )}
+
+                  <section className="guide-source-trace">
+                    <p className="eyebrow">Source traceability</p>
+                    <h3>Approved process first. Official Zoom Support where available.</h3>
+                    <p>The concise Call Guide reorganizes the approved Process Document; the Full Process and Source Pages remain unchanged.</p>
+                    {officialSources.length > 0 && (
+                      <div>
+                        {officialSources.map((source) => (
+                          <a key={source.url} href={source.url} target="_blank" rel="noreferrer">
+                            Zoom Support — {source.title} ↗
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </section>
+
+                  {trainingCategoryByProcessCategory[process.category] &&
+                    relatedTrainingForCategory(trainingCategoryByProcessCategory[process.category]).length > 0 && (
+                      <div className="related-training">
+                        <p className="eyebrow">Related training</p>
+                        <div>
+                          {relatedTrainingForCategory(trainingCategoryByProcessCategory[process.category])
+                            .slice(0, 3)
+                            .map((video) => (
+                              <button key={video.id} onClick={() => onOpenTraining?.(video.id)}>
+                                {video.title}
+                              </button>
+                            ))}
+                        </div>
+                        <button onClick={() => onOpenTraining?.()}>Open Training &amp; Resources</button>
+                      </div>
+                    )}
+                </>
+              )}
             </section>
           )}
           {tab === "visual" && (
