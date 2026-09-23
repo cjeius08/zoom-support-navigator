@@ -2,8 +2,10 @@ import { render, screen } from '@testing-library/react'
 import { expect, it } from 'vitest'
 import { UpdatesView } from './UpdatesView'
 
-it('hides admin-only release notes from members and leads', () => {
+it('shows user-facing changes while hiding admin-only release notes from members and leads', () => {
   render(<UpdatesView isAdmin={false} />)
+  expect(screen.getByRole('heading', { name: 'Common Issues now helps you find the right approved guide' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Process Guides now give device-specific troubleshooting one step at a time' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Ozzie now welcomes users immediately after first sign-in' })).toBeInTheDocument()
   expect(screen.queryByRole('heading', { name: 'Team Management adds Member and Lead assignment' })).not.toBeInTheDocument()
 })
