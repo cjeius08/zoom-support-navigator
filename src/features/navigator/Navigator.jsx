@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
 import { ProcessDrawer } from './ProcessDrawer'
 import { searchProcesses } from './smartSearch'
@@ -6,6 +6,7 @@ import { LiveCallFlow, LiveCallFlowDetails } from './LiveCallFlow'
 import { CommonIssueDrawer } from './CommonIssueDrawer'
 import { COMMON_ISSUE_ROUTES, routeById, searchCommonIssueRoutes } from './commonIssueRoutes'
 import { FavoriteToggle } from '../favorites/FavoriteToggle'
+import { useDialogFocus } from '../../lib/useDialogFocus'
 
 const categories = [
   ['join', 'Joining Meetings', 'Links, waiting rooms, access errors'],
@@ -90,7 +91,7 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation = null, initialProcessId = null, initialCommonIssueId = null, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {} }) {
+export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -102,6 +103,10 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
   const [activeSuggestion, setActiveSuggestion] = useState(-1)
   const [libraryTab, setLibraryTab] = useState('fastest')
   const [callFlowExpanded, setCallFlowExpanded] = useState(false)
+  const [newCallConfirmOpen, setNewCallConfirmOpen] = useState(false)
+  const newCallDialogRef = useRef(null)
+
+  useDialogFocus(newCallDialogRef, newCallConfirmOpen, () => setNewCallConfirmOpen(false))
 
   useEffect(() => {
     if (!initialProcessId) return
@@ -168,6 +173,27 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
       ].slice(0, 8)
     : []
   const showSuggestions = suggestionsOpen && suggestions.length > 0
+
+  function confirmNewCall() {
+    setSelected(null)
+    setSelectedRoute(null)
+    setProcessLaunchContext(null)
+    setCallContext({ device: null, role: null, hearingStatus: null, impact: null, status: null })
+    setCommonIssueTab('Find the Right Guide')
+    setQuery('')
+    setSuggestionsOpen(false)
+    setActiveSuggestion(-1)
+    setCategory(null)
+    setLibraryTab('fastest')
+    setCallFlowExpanded(false)
+    setNewCallConfirmOpen(false)
+    onNewCall?.()
+    onTrackEvent?.({
+      eventType: 'new_call_reset',
+      routeId: 'navigator',
+      toolId: 'new_call',
+    })
+  }
 
   function switchLibraryTab(nextTab) {
     setLibraryTab(nextTab)
@@ -240,7 +266,19 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
     }
   }
 
+  const callContextSummary = [callContext.device, callContext.role].filter(Boolean).join(' · ')
+
   return <section className="navigator" id="navigator" aria-label="Support Navigator">
+    <section className="navigator-session-bar" aria-label="Current call session">
+      <div>
+        <small>Current call</small>
+        <strong>{callContextSummary || 'Ready for a new caller'}</strong>
+      </div>
+      <button type="button" className="navigator-new-call-button" onClick={() => setNewCallConfirmOpen(true)}>
+        New Call
+      </button>
+    </section>
+
     <section className="navigator-top-workspace" aria-label="Live support workspace">
       <section className="smart-search-card" aria-labelledby="smart-search-title">
         <div className="smart-search-heading">
@@ -446,6 +484,26 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
       favoriteBusy={isFavoriteBusy('process', selected.id)}
       onToggleFavorite={() => onToggleFavorite('process', selected.id)}
     />}
+    {newCallConfirmOpen && <div className="modal-backdrop" role="presentation" onMouseDown={event => event.target === event.currentTarget && setNewCallConfirmOpen(false)}>
+      <section
+        ref={newCallDialogRef}
+        tabIndex={-1}
+        className="new-call-confirmation"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="new-call-confirmation-title"
+      >
+        <p className="eyebrow">Start fresh</p>
+        <h2 id="new-call-confirmation-title">Start a new call?</h2>
+        <p>This clears the current device, caller role, active troubleshooting path, search, and any unsaved Call Documentation draft.</p>
+        <p><strong>Saved notes are not deleted.</strong> Favorites, training progress, and workspace settings also stay unchanged.</p>
+        <div className="dialog-actions">
+          <button type="button" onClick={() => setNewCallConfirmOpen(false)}>Cancel</button>
+          <button type="button" className="primary-action" onClick={confirmNewCall}>Start New Call</button>
+        </div>
+      </section>
+    </div>}
+
     {selectedRoute&&<CommonIssueDrawer
       route={selectedRoute}
       callContext={callContext}
