@@ -5,6 +5,7 @@ import { COMMON_ISSUE_ROUTES, approvedEndPathsForProcess, orderedSourcesForRoute
 import { relatedTrainingForCategory } from "../../data/trainingVideos";
 import { useDialogFocus } from "../../lib/useDialogFocus";
 import { FavoriteToggle } from "../favorites/FavoriteToggle";
+import { buildGuidedDocumentationPreview } from "./guidedDocumentation";
 
 const TABS = [
   ["quick", "Call Guide"],
@@ -39,12 +40,14 @@ const trainingCategoryByProcessCategory = {
   devices: "Devices & App",
 };
 
-export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice = null, initialSourceRouteId = null, onOpenRoute, onTrackEvent, isFavorite = false, favoriteBusy = false, onToggleFavorite = () => {} }) {
+export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice = null, initialSourceRouteId = null, onOpenRoute, onAddToDocumentation = null, onTrackEvent, isFavorite = false, favoriteBusy = false, onToggleFavorite = () => {} }) {
   const [tab, setTab] = useState("quick");
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [selectedRoute, setSelectedRoute] = useState("");
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [outcome, setOutcome] = useState("active");
+  const [documentationPreviewOpen, setDocumentationPreviewOpen] = useState(false);
+  const [documentationAdded, setDocumentationAdded] = useState(false);
   const dialogRef = useRef(null);
   const copyResetRef = useRef(null);
   const [copyState, setCopyState] = useState({ id: "", status: "" });
@@ -57,6 +60,10 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
   const relatedRoutes = useMemo(
     () => COMMON_ISSUE_ROUTES.filter((route) => route.processIds?.includes(process.id)),
     [process.id],
+  );
+  const sourceRoute = useMemo(
+    () => COMMON_ISSUE_ROUTES.find((route) => route.id === initialSourceRouteId) || null,
+    [initialSourceRouteId],
   );
   const sourceDevice = PLATFORM_TO_DEVICE[selectedPlatform || requestedPlatform] || null;
   const approvedEndPaths = useMemo(
@@ -103,6 +110,17 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
     [eligibleSteps, activeRouteId],
   );
   const currentStep = activeSteps[currentStepIndex] || null;
+  const documentationPreview = useMemo(
+    () => buildGuidedDocumentationPreview({
+      process,
+      sourceRoute,
+      device: sourceDevice,
+      steps: activeSteps,
+      currentStepIndex,
+      outcome,
+    }),
+    [process, sourceRoute, sourceDevice, activeSteps, currentStepIndex, outcome],
+  );
   const noApprovedDevicePath = Boolean(selectedPlatform && activeSteps.length === 0);
   const quickFlow = guide.quickGuide.find((line) => line.includes("→")) || guide.quickGuide[0] || "";
   const requirementLines = guide.callouts
@@ -116,6 +134,8 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
     setSelectedRoute("");
     setCurrentStepIndex(0);
     setOutcome("active");
+    setDocumentationPreviewOpen(false);
+    setDocumentationAdded(false);
   }, [process.id, defaultPlatform]);
 
   function copyLabel(id, defaultLabel) {
@@ -160,6 +180,8 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
   function resetProgress() {
     setCurrentStepIndex(0);
     setOutcome("active");
+    setDocumentationPreviewOpen(false);
+    setDocumentationAdded(false);
   }
 
   function selectPlatform(platform) {
@@ -188,6 +210,8 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
   }
 
   function markResolved() {
+    setDocumentationPreviewOpen(false);
+    setDocumentationAdded(false);
     setOutcome("resolved");
     onTrackEvent?.({
       eventType: "guide_outcome",
@@ -203,6 +227,8 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
       setCurrentStepIndex((index) => index + 1);
       return;
     }
+    setDocumentationPreviewOpen(false);
+    setDocumentationAdded(false);
     setOutcome("exhausted");
     onTrackEvent?.({
       eventType: "guide_outcome",
@@ -212,6 +238,22 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
       toolId: "not_resolved_after_path",
     });
   }
+  function addDocumentationPreview() {
+    if (!documentationPreview || !onAddToDocumentation) return
+    onAddToDocumentation({
+      ...documentationPreview,
+      id: `guided-${process.id}-${Date.now()}`,
+    })
+    setDocumentationAdded(true)
+    onTrackEvent?.({
+      eventType: "documentation_handoff",
+      routeId: "navigator",
+      processId: process.id,
+      categoryId: process.category,
+      toolId: "guided_process_to_call_documentation",
+    })
+  }
+
   function selectTab(id, { focus = false } = {}) {
     setTab(id);
     onTrackEvent?.({
@@ -505,7 +547,12 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
                         <p className="eyebrow">Resolved</p>
                         <h3>Stop here — no extra troubleshooting needed.</h3>
                         <p>The current approved path resolved the issue.</p>
-                        <button type="button" onClick={resetProgress}>Start this path again</button>
+                        <div className="guide-resolution-state-actions">
+                          <button type="button" onClick={() => setDocumentationPreviewOpen(value => !value)}>
+                            {documentationPreviewOpen ? 'Hide documentation preview' : 'Preview documentation'}
+                          </button>
+                          <button type="button" onClick={resetProgress}>Start this path again</button>
+                        </div>
                       </div>
                     </section>
                   )}
@@ -549,6 +596,12 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
                           </div>
                         )}
 
+                        <div className="guide-resolution-state-actions">
+                          <button type="button" onClick={() => setDocumentationPreviewOpen(value => !value)}>
+                            {documentationPreviewOpen ? 'Hide documentation preview' : 'Preview documentation'}
+                          </button>
+                        </div>
+
                         <details className="approved-details referral-details">
                           <summary>When to stop / refer</summary>
                           {guide.referralDetails.map((line, index) => <p key={index}>{line}</p>)}
@@ -558,6 +611,44 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
                             .map((line, index) => <p key={index}>{line}</p>)}
                         </details>
                       </div>
+                    </section>
+                  )}
+
+                  {documentationPreviewOpen && documentationPreview && (
+                    <section className="guide-documentation-preview" aria-label="Documentation handoff preview">
+                      <div className="guide-documentation-preview-heading">
+                        <div>
+                          <p className="eyebrow">Call Documentation preview</p>
+                          <h3>Only the troubleshooting that actually happened</h3>
+                        </div>
+                        {documentationAdded && <span role="status">Added to draft ✓</span>}
+                      </div>
+                      <dl>
+                        <div>
+                          <dt>Device</dt>
+                          <dd>{documentationPreview.device || 'Not captured'}</dd>
+                        </div>
+                        <div>
+                          <dt>Exact issue</dt>
+                          <dd>{documentationPreview.exactIssue || 'Add the caller’s exact symptom manually in Call Documentation.'}</dd>
+                        </div>
+                        <div>
+                          <dt>Steps attempted + result</dt>
+                          <dd><pre>{documentationPreview.stepsResult}</pre></dd>
+                        </div>
+                        <div>
+                          <dt>Resolution / next steps</dt>
+                          <dd>{documentationPreview.resolutionNextSteps}</dd>
+                        </div>
+                        <div>
+                          <dt>Outcome</dt>
+                          <dd>{documentationPreview.outcome || 'Not selected yet'}</dd>
+                        </div>
+                      </dl>
+                      <p className="guide-documentation-preview-note">Nothing is saved automatically. Existing caller details stay intact; troubleshooting text is added to the current Call Documentation draft only after you choose Add.</p>
+                      {onAddToDocumentation && <button type="button" className="primary-action" onClick={addDocumentationPreview}>
+                        {documentationAdded ? 'Added to Call Documentation' : 'Add to Call Documentation draft →'}
+                      </button>}
                     </section>
                   )}
 

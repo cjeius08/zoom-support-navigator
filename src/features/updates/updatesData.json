@@ -29,12 +29,13 @@
       "area": "Process Guides / Call Guide",
       "audience": "all",
       "title": "Process Guides now give device-specific troubleshooting one step at a time",
-      "changed": "Call Guides now preserve lettered source actions as ordered device-specific steps, prioritize the matching official Zoom source, and use symptom-aware end-of-path routing. After the last Not resolved step, Ozzie only offers another Common Issue when a documented condition matches the caller’s new symptom; otherwise it stops at the approved referral boundary instead of listing unrelated routes.",
+      "changed": "Call Guides now preserve lettered source actions as ordered device-specific steps, prioritize the matching official Zoom source, use symptom-aware end-of-path routing, and can prepare an optional Call Documentation draft from the troubleshooting that actually happened. The agent sees a preview first, only completed steps are included, existing caller details are preserved, and nothing is saved automatically.",
       "checks": [
-        "Complete an audio-output guide with Not resolved and confirm Ozzie only offers Bluetooth when a Bluetooth device is involved or Meeting Volume when audio works but is only too loud/quiet.",
-        "Confirm the Common Issue that launched the guide is not offered again as a next step.",
-        "Complete a Bluetooth path and confirm the next choices distinguish cannot hear audio from cannot be heard.",
-        "Complete a path with no curated next symptom and confirm Ozzie directs you to the documented stop/referral boundary instead of unrelated troubleshooting."
+        "Resolve a Guided Process after two or more steps and open Documentation preview; confirm only the steps actually reached are listed with their observed result.",
+        "Choose Add to Call Documentation draft and confirm the global Call Documentation tool opens with the device, issue, attempted steps, and resolution/next-step summary.",
+        "Confirm existing caller name, phone/ref, and manually entered issue text are not overwritten by the handoff.",
+        "Confirm the handoff does not save a note automatically; review and Save note remain separate agent actions.",
+        "Exhaust an unresolved path and confirm the preview says the next action is not yet selected rather than claiming a referral or resolution that did not happen."
       ]
     },
     {

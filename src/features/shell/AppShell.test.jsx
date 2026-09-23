@@ -382,3 +382,27 @@ it('keeps all opened live tools available and stacks minimized tools instead of 
   expect(screen.getByLabelText('Scope Check minimized')).toBeInTheDocument()
   expect(screen.getByLabelText('Readiness Lab minimized')).toBeInTheDocument()
 })
+
+
+it('opens Call Documentation when a Guided Process handoff is explicitly sent', async () => {
+  const onDocumentationHandoffApplied = vi.fn()
+
+  render(<AppShell
+    profile={agentProfile}
+    documentationHandoff={{
+      id: 'handoff-shell-1',
+      device: 'Android',
+      exactIssue: 'I can’t hear anyone',
+      stepsResult: 'Approved guide used: Mobile Audio Guide\n1. Join audio — Resolved',
+      resolutionNextSteps: 'Resolved on approved step: Join audio.',
+      outcome: 'Resolved',
+    }}
+    onDocumentationHandoffApplied={onDocumentationHandoffApplied}
+  ><div>Current page content</div></AppShell>)
+
+  expect(await screen.findByLabelText('Device / platform')).toHaveValue('Android')
+  expect(screen.getByLabelText(/Exact issue/i)).toHaveValue('I can’t hear anyone')
+  expect(screen.getByLabelText(/Steps attempted \+ result/i).value).toContain('Mobile Audio Guide')
+  expect(screen.getByText(/Review it before saving/i)).toBeInTheDocument()
+  expect(onDocumentationHandoffApplied).toHaveBeenCalledWith('handoff-shell-1')
+})

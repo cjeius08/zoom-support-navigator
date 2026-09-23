@@ -90,7 +90,7 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = null, initialCommonIssueId = null, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {} }) {
+export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation = null, initialProcessId = null, initialCommonIssueId = null, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -435,6 +435,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
       initialDevice={processLaunchContext?.device ?? null}
       initialSourceRouteId={processLaunchContext?.sourceRouteId ?? null}
       onOpenRoute={routeId=>openRoute(routeById(routeId),'guided_process_next')}
+      onAddToDocumentation={onAddToDocumentation}
       onTrackEvent={onTrackEvent}
       isFavorite={isFavorite('process', selected.id)}
       favoriteBusy={isFavoriteBusy('process', selected.id)}
