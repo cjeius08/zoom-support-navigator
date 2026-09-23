@@ -140,3 +140,43 @@ it('shows privacy and referral framing without claiming an internal escalation',
   expect(screen.getByRole('button', { name: 'Referred for Additional Assistance' })).toBeInTheDocument()
   expect(screen.queryByRole('button', { name: /Escalated/i })).not.toBeInTheDocument()
 })
+
+
+it('merges an explicit Guided Process handoff into the draft without overwriting caller details or auto-saving', async () => {
+  const api = await import('../../lib/callNotesApi')
+  api.saveOwnCallNote.mockClear()
+  const user = userEvent.setup()
+  const onPrefillApplied = vi.fn()
+
+  const { rerender } = render(<CallDocumentation open onPrefillApplied={onPrefillApplied} />)
+
+  await user.type(screen.getByLabelText('Caller name'), 'Existing Caller')
+  await user.type(screen.getByLabelText(/Caller ref/i), 'CASE-77')
+  await user.type(screen.getByLabelText(/Exact issue/i), 'Caller wording already captured.')
+  await user.type(screen.getByLabelText(/Steps attempted \+ result/i), 'Manual step already documented.')
+
+  rerender(<CallDocumentation
+    open
+    onPrefillApplied={onPrefillApplied}
+    prefill={{
+      id: 'guided-handoff-1',
+      device: 'Windows',
+      exactIssue: 'I can’t hear anyone',
+      stepsResult: 'Approved guide used: Speaker Guide\n1. Check speaker — Resolved',
+      resolutionNextSteps: 'Resolved on approved step: Check speaker.',
+      outcome: 'Resolved',
+    }}
+  />)
+
+  expect(screen.getByLabelText('Caller name')).toHaveValue('Existing Caller')
+  expect(screen.getByLabelText(/Caller ref/i)).toHaveValue('CASE-77')
+  expect(screen.getByLabelText(/Exact issue/i)).toHaveValue('Caller wording already captured.')
+  expect(screen.getByLabelText('Device / platform')).toHaveValue('Windows')
+  expect(screen.getByLabelText(/Steps attempted \+ result/i)).toHaveValue(expect.stringContaining('Manual step already documented.'))
+  expect(screen.getByLabelText(/Steps attempted \+ result/i)).toHaveValue(expect.stringContaining('Approved guide used: Speaker Guide'))
+  expect(screen.getByLabelText(/Resolution \/ next steps/i)).toHaveValue('Resolved on approved step: Check speaker.')
+  expect(screen.getByRole('button', { name: 'Resolved' })).toHaveAttribute('aria-pressed', 'true')
+  expect(screen.getByText(/Guided troubleshooting added to this draft. Review it before saving/i)).toBeInTheDocument()
+  expect(onPrefillApplied).toHaveBeenCalledWith('guided-handoff-1')
+  expect(api.saveOwnCallNote).not.toHaveBeenCalled()
+})
