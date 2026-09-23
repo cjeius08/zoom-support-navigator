@@ -58,11 +58,12 @@ it('shows why a device-specific recommendation was selected without treating cal
     routeName: /I can’t hear anyone/i,
   })
 
-  await user.click(within(dialog).getByText('Why this route?'))
+  const explanation = within(dialog).getByText('Why this route?').closest('details')
+  await user.click(within(explanation).getByText('Why this route?'))
 
-  expect(within(dialog).getByText(/Device-specific match: Android/i)).toBeInTheDocument()
-  expect(within(dialog).getByText(/Host is retained as call context; caller role did not change this recommendation/i)).toBeInTheDocument()
-  expect(within(dialog).getByText(/Zoom Support — Troubleshooting speaker or microphone issues on your mobile device/i)).toBeInTheDocument()
+  expect(within(explanation).getByText(/Device-specific match: Android/i)).toBeInTheDocument()
+  expect(within(explanation).getByText(/Host is retained as call context; caller role did not change this recommendation/i)).toBeInTheDocument()
+  expect(within(explanation).getByText(/Zoom Support — Troubleshooting speaker or microphone issues on your mobile device/i)).toBeInTheDocument()
 })
 
 it('shows the exact waiting-screen state as the reason for a state-based recommendation', async () => {
