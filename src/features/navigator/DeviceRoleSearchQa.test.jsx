@@ -144,6 +144,58 @@ it('shows a clear selected-device confirmation even when the approved process ti
   expect(within(dialog).getByLabelText('Route context')).toHaveTextContent(/Android path selected/i)
 })
 
+
+it('routes mobile camera trouble to the approved mobile-capable video test process', async () => {
+  const { dialog } = await openRouteWithContext({
+    device: 'Android',
+    role: 'Participant',
+    routeName: /My camera isn’t working/i,
+  })
+
+  expect(within(dialog).getByRole('heading', { name: /Testing Your Video in Zoom/i })).toBeInTheDocument()
+  expect(within(dialog).getByRole('button', { name: /Start Guided Process/i })).toBeInTheDocument()
+})
+
+it('routes mobile and Web meeting controls to the approved participant-controls process', async () => {
+  const mobile = await openRouteWithContext({
+    device: 'iPhone',
+    role: 'Participant',
+    routeName: /Can’t find a meeting control/i,
+  })
+  expect(within(mobile.dialog).getByRole('heading', { name: /Using Participant Controls in a Zoom Meeting/i })).toBeInTheDocument()
+
+  cleanup()
+
+  const web = await openRouteWithContext({
+    device: 'Browser',
+    role: 'Participant',
+    routeName: /Can’t find a meeting control/i,
+  })
+  expect(within(web.dialog).getByRole('heading', { name: /Using Participant Controls in a Zoom Meeting/i })).toBeInTheDocument()
+})
+
+it('flags desktop invite controls as an approved-guide coverage gap instead of routing to the mobile/Web process', async () => {
+  const { dialog } = await openRouteWithContext({
+    device: 'Windows',
+    role: 'Participant',
+    routeName: /Invite someone \/ copy invite link/i,
+  })
+
+  expect(within(dialog).getByText(/Approved guide coverage gap/i)).toBeInTheDocument()
+  expect(within(dialog).getByText(/not desktop invitation controls/i)).toBeInTheDocument()
+  expect(within(dialog).queryByRole('button', { name: /Start Guided Process/i })).not.toBeInTheDocument()
+})
+
+it.each([
+  ['iPhone', /join with my microphone muted/i, /desktop instructions only/i],
+  ['Android', /meeting is too loud \/ too quiet/i, /detailed Guided Process steps are desktop-only/i],
+])('shows an approved-guide coverage gap for %s when the internal document lacks that device path', async (device, routeName, noteText) => {
+  const { dialog } = await openRouteWithContext({ device, routeName })
+  expect(within(dialog).getByText(/Approved guide coverage gap/i)).toBeInTheDocument()
+  expect(within(dialog).getByText(noteText)).toBeInTheDocument()
+  expect(within(dialog).queryByRole('button', { name: /Start Guided Process/i })).not.toBeInTheDocument()
+})
+
 it.each([
   ['cant jion', 'cant-join'],
   ['no sound', 'cant-hear'],
