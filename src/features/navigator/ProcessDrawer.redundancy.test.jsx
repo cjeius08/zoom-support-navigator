@@ -194,3 +194,58 @@ it('shows the referral boundary instead of unrelated routes when no curated next
   expect(screen.getByText(/rather than starting unrelated troubleshooting/i)).toBeInTheDocument()
   expect(screen.getByText(/When to stop \/ refer/i)).toBeInTheDocument()
 })
+
+
+it('previews only completed troubleshooting before explicitly handing it to Call Documentation', async () => {
+  const user = userEvent.setup()
+  const onAddToDocumentation = vi.fn()
+  const process = {
+    id: 'documentation-preview-test',
+    title: 'Approved Speaker Troubleshooting',
+    purpose: 'Exercise safe documentation handoff.',
+    category: 'audio',
+    referral: 'Refer only after the approved path is exhausted.',
+    visualReferences: [],
+    images: [],
+    text: [
+      'Applies To: Windows',
+      'Process / Step-by-Step Guide',
+      '1. Check the selected speaker',
+      'Choose the intended Zoom speaker.',
+      '2. Run Test Speaker',
+      'Play the Zoom test tone.',
+      '3. Check operating system audio',
+      'Confirm system output only if still needed.',
+    ].join('\n'),
+  }
+
+  render(<ProcessDrawer
+    process={process}
+    initialDevice="Windows"
+    initialSourceRouteId="cant-hear"
+    onClose={() => {}}
+    onAddToDocumentation={onAddToDocumentation}
+  />)
+
+  await user.click(screen.getByRole('button', { name: /Not resolved.*Next step/i }))
+  await user.click(screen.getByRole('button', { name: /Resolved \/ Done/i }))
+  await user.click(screen.getByRole('button', { name: 'Preview documentation' }))
+
+  const preview = screen.getByLabelText('Documentation handoff preview')
+  expect(within(preview).getByText('I can’t hear anyone')).toBeInTheDocument()
+  expect(within(preview).getByText(/1\. Check the selected speaker — Not resolved/i)).toBeInTheDocument()
+  expect(within(preview).getByText(/2\. Run Test Speaker — Resolved/i)).toBeInTheDocument()
+  expect(within(preview).queryByText(/Check operating system audio/i)).not.toBeInTheDocument()
+  expect(onAddToDocumentation).not.toHaveBeenCalled()
+
+  await user.click(within(preview).getByRole('button', { name: /Add to Call Documentation draft/i }))
+
+  expect(onAddToDocumentation).toHaveBeenCalledTimes(1)
+  expect(onAddToDocumentation.mock.calls[0][0]).toMatchObject({
+    device: 'Windows',
+    exactIssue: 'I can’t hear anyone',
+    outcome: 'Resolved',
+  })
+  expect(onAddToDocumentation.mock.calls[0][0].stepsResult).not.toContain('Check operating system audio')
+  expect(within(preview).getByText(/Added to draft/i)).toBeInTheDocument()
+})
