@@ -62,5 +62,5 @@ it('keeps the September 23 guided-support changes in the user-facing change log'
   expect(commonIssues).toMatchObject({ date: '2026-09-23', audience: 'all', area: 'Common Issues' })
   expect(commonIssues.changed).toMatch(/symptom and device/i)
   expect(guidedProcess).toMatchObject({ date: '2026-09-23', audience: 'all', area: 'Process Guides / Call Guide' })
-  expect(guidedProcess.changed).toMatch(/Resolved \/ Done or Not resolved/i)
+  expect(guidedProcess.changed).toMatch(/prioritize the official Zoom Support reference/i)
 })
