@@ -402,7 +402,7 @@ it('opens Call Documentation when a Guided Process handoff is explicitly sent', 
 
   expect(await screen.findByLabelText('Device / platform')).toHaveValue('Android')
   expect(screen.getByLabelText(/Exact issue/i)).toHaveValue('I can’t hear anyone')
-  expect(screen.getByLabelText(/Steps attempted \+ result/i)).toHaveValue(expect.stringContaining('Mobile Audio Guide'))
+  expect(screen.getByLabelText(/Steps attempted \+ result/i).value).toContain('Mobile Audio Guide')
   expect(screen.getByText(/Review it before saving/i)).toBeInTheDocument()
   expect(onDocumentationHandoffApplied).toHaveBeenCalledWith('handoff-shell-1')
 })
