@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest'
 import { PROCESSES } from '../../data/processes'
-import { COMMON_ISSUE_ROUTES, COMMON_ISSUE_VERIFIED_AT } from './commonIssueRoutes'
+import { COMMON_ISSUE_ROUTES, COMMON_ISSUE_VERIFIED_AT, orderedSourcesForRoute } from './commonIssueRoutes'
 
 const EXPECTED_PRIMARY_ARTICLES = {
   'cant-join': 'KB0068749',
@@ -118,4 +118,43 @@ it('records known internal-guide coverage gaps instead of cross-platform substit
   expect(invite.guideCoverageNotes.Windows).toMatch(/not desktop invitation controls/i)
   expect(joinMuted.guideCoverageNotes.iPhone).toMatch(/desktop instructions only/i)
   expect(volume.guideCoverageNotes.Android).toMatch(/detailed Guided Process steps are desktop-only/i)
+})
+
+
+it('prioritizes the official Zoom article that matches the selected device and approved process', () => {
+  const cantHear = COMMON_ISSUE_ROUTES.find(route => route.id === 'cant-hear')
+  const camera = COMMON_ISSUE_ROUTES.find(route => route.id === 'camera-not-working')
+  const cantJoin = COMMON_ISSUE_ROUTES.find(route => route.id === 'cant-join')
+
+  expect(orderedSourcesForRoute(cantHear, {
+    device: 'Android',
+    processId: 'troubleshooting-speaker-or-microphone-issues-on-a-mobile-device',
+  })[0].url).toContain('KB0066222')
+
+  expect(orderedSourcesForRoute(cantHear, {
+    device: 'Windows',
+    processId: 'troubleshooting-speaker-or-microphone-issues-in-the-zoom-desktop-app',
+  })[0].url).toContain('KB0060836')
+
+  expect(orderedSourcesForRoute(camera, {
+    device: 'Android',
+    processId: 'testing-your-video-in-zoom',
+  })[0].url).toContain('KB0061836')
+
+  expect(orderedSourcesForRoute(cantJoin, {
+    device: 'Windows',
+    processId: 'troubleshooting-when-you-cant-join-a-zoom-meeting',
+  })[0].url).toContain('KB0068749')
+
+  expect(orderedSourcesForRoute(cantJoin, {
+    device: 'Android',
+    processId: 'joining-a-zoom-meeting',
+  })[0].url).toContain('KB0060732')
+})
+
+it('prioritizes the official Zoom article that matches an exact meeting-entry state', () => {
+  const waiting = COMMON_ISSUE_ROUTES.find(route => route.id === 'waiting-entry')
+
+  expect(orderedSourcesForRoute(waiting, { state: 'Waiting Room' })[0].url).toContain('KB0063329')
+  expect(orderedSourcesForRoute(waiting, { state: 'Waiting for host' })[0].url).toContain('KB0061476')
 })
