@@ -1,7 +1,7 @@
 {
   "metadata": {
     "version": "1.0",
-    "effectiveDate": "2026-09-18",
+    "effectiveDate": "2026-09-24",
     "owner": "Cjei A.",
     "collaborator": "Nina F.",
     "nextReview": "2026-10-18",
@@ -9,6 +9,17 @@
     "productName": "Ogletree Support Workspace"
   },
   "updates": [
+    {
+      "id": "process-documents-search-normalization",
+      "date": "2026-09-24",
+      "area": "Knowledge · Process Documents",
+      "audience": "all",
+      "title": "Process Documents search handles apostrophe variants",
+      "changed": "Search now treats curly apostrophes, straight apostrophes, and omitted apostrophes equivalently. You can find Can’t Join by searching “can’t join,” “can't join,” or “cant join.”",
+      "checks": [
+        "In Knowledge → Process Documents, search each of “can’t join,” “can't join,” and “cant join,” and confirm each finds the same Can’t Join source document."
+      ]
+    },
     {
       "id": "new-call-session-reset",
       "date": "2026-09-23",
