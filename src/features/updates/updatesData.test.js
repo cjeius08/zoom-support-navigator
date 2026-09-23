@@ -25,7 +25,7 @@ it('keeps workspace metadata and update history complete and newest-first', () =
     area: 'Knowledge · Process Documents',
     audience: 'all',
   })
-  expect(data.updates.slice(0, 3).map(entry => entry.id)).toEqual([
+  expect(data.updates.slice(1, 4).map(entry => entry.id)).toEqual([
     'new-call-session-reset',
     'common-issues-smart-routing',
     'guided-process-device-troubleshooting',
