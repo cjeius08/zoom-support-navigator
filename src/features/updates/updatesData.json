@@ -5,10 +5,36 @@
     "owner": "Cjei A.",
     "collaborator": "Nina F.",
     "nextReview": "2026-10-18",
-    "updatePolicy": "User-facing features, support-content changes, and bug fixes are visible to everyone. Admin-only operational changes are listed only for administrators.",
+    "updatePolicy": "What’s New is curated for the people who use Ozzie. User-facing features, support-content changes, and visible bug fixes are shown to everyone. Admin-only operational or administrative changes are shown only to administrators. Developer-only work such as refactors, tests, commits, backups, and deployment mechanics is not listed unless it changes how Ozzie is used or operated.",
     "productName": "Ogletree Support Workspace"
   },
   "updates": [
+    {
+      "id": "common-issues-smart-routing",
+      "date": "2026-09-23",
+      "area": "Common Issues",
+      "audience": "all",
+      "title": "Common Issues now helps you find the right approved guide",
+      "changed": "Common Issues now focuses on the caller’s symptom and device, then recommends the matching approved Process Guide instead of repeating a second troubleshooting checklist. Device selection now gives clear path feedback, carries into the Guided Process, and blocks unsupported device combinations instead of guessing.",
+      "checks": [
+        "Open Common Issues → I can’t hear anyone, select Windows, and confirm Ozzie recommends the desktop audio guide.",
+        "Switch to Android and confirm the recommendation changes to the mobile audio guide.",
+        "Open Bluetooth headset isn’t working, switch devices, and confirm the selected device path is clearly shown before starting the Guided Process."
+      ]
+    },
+    {
+      "id": "guided-process-device-troubleshooting",
+      "date": "2026-09-23",
+      "area": "Process Guides / Call Guide",
+      "audience": "all",
+      "title": "Process Guides now give device-specific troubleshooting one step at a time",
+      "changed": "Call Guides now use the selected device to show the relevant approved path, present one troubleshooting step at a time, and let the agent choose Resolved / Done or Not resolved. If a step does not solve the issue, Ozzie continues to the next approved action or related documented path without inventing a fix. Full Process and source references remain available.",
+      "checks": [
+        "Open a Process Guide with Windows and mobile instructions and confirm only the selected device path is shown.",
+        "Choose Not resolved and confirm the next approved step appears.",
+        "Choose Resolved / Done and confirm Ozzie stops the troubleshooting path instead of showing unnecessary remaining steps."
+      ]
+    },
     {
       "id": "pilot-readiness-usability-pass",
       "date": "2026-09-23",
