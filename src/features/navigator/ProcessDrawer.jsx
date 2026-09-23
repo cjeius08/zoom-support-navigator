@@ -14,6 +14,14 @@ const TABS = [
 ];
 
 
+const DEVICE_TO_PLATFORM = {
+  Windows: 'windows',
+  Mac: 'macos',
+  iPhone: 'ios',
+  Android: 'android',
+  Browser: 'web',
+}
+
 const trainingCategoryByProcessCategory = {
   join: "Joining Meetings",
   audio: "Audio & Microphone",
@@ -23,7 +31,7 @@ const trainingCategoryByProcessCategory = {
   devices: "Devices & App",
 };
 
-export function ProcessDrawer({ process, onClose, onOpenTraining, onOpenRoute, onTrackEvent, isFavorite = false, favoriteBusy = false, onToggleFavorite = () => {} }) {
+export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice = null, onOpenRoute, onTrackEvent, isFavorite = false, favoriteBusy = false, onToggleFavorite = () => {} }) {
   const [tab, setTab] = useState("quick");
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [selectedRoute, setSelectedRoute] = useState("");
@@ -33,7 +41,10 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, onOpenRoute, o
   const copyResetRef = useRef(null);
   const [copyState, setCopyState] = useState({ id: "", status: "" });
   const guide = useMemo(() => buildCallGuide(process), [process]);
-  const defaultPlatform = guide.availablePlatforms.length === 1 ? guide.availablePlatforms[0] : "";
+  const requestedPlatform = DEVICE_TO_PLATFORM[initialDevice] || "";
+  const defaultPlatform = requestedPlatform && guide.availablePlatforms.includes(requestedPlatform)
+    ? requestedPlatform
+    : (guide.availablePlatforms.length === 1 ? guide.availablePlatforms[0] : "");
   const relatedRoutes = useMemo(
     () => COMMON_ISSUE_ROUTES.filter((route) => route.processIds?.includes(process.id)),
     [process.id],
