@@ -217,6 +217,7 @@ it('starts a new call only after in-app confirmation and clears the carried call
   await user.click(within(dialog).getByRole('button', { name: /Close common issue route/i }))
 
   expect(screen.getByLabelText('Current call session')).toHaveTextContent('Android · Host')
+  expect(screen.getByRole('button', { name: 'New Call' })).toBeInTheDocument()
 
   await user.click(screen.getByRole('button', { name: 'New Call' }))
   dialog = screen.getByRole('dialog', { name: 'Start a new call?' })
@@ -232,5 +233,27 @@ it('starts a new call only after in-app confirmation and clears the carried call
 
   expect(onNewCall).toHaveBeenCalledTimes(1)
   expect(screen.getByLabelText('Current call session')).toHaveTextContent('Ready for a new caller')
+  expect(screen.queryByRole('button', { name: 'New Call' })).not.toBeInTheDocument()
   expect(screen.getByRole('tab', { name: 'Fastest Routes' })).toHaveAttribute('aria-selected', 'true')
+})
+
+it('ends the Home call session when a guided process is resolved', async () => {
+  const user = userEvent.setup()
+  render(<Navigator />)
+
+  expect(screen.queryByRole('button', { name: 'New Call' })).not.toBeInTheDocument()
+  await user.click(screen.getByRole('tab', { name: 'Process Guides' }))
+  await user.click(screen.getByRole('button', { name: /Joining Meetings/i }))
+  await user.click(screen.getByRole('button', { name: /Troubleshooting When You Can’t Join a Zoom Meeting/i }))
+
+  const dialog = screen.getByRole('dialog')
+  expect(screen.getByRole('button', { name: 'New Call' })).toBeInTheDocument()
+  await user.click(within(dialog).getByRole('button', { name: /Resolved \/ Done/i }))
+
+  expect(within(dialog).getByText(/The current approved path resolved the issue/i)).toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: 'New Call' })).not.toBeInTheDocument()
+
+  await user.click(within(dialog).getByRole('button', { name: 'Close process' }))
+  expect(screen.getByLabelText('Current call session')).toHaveTextContent('Ready for a new caller')
+  expect(screen.queryByRole('button', { name: 'New Call' })).not.toBeInTheDocument()
 })
