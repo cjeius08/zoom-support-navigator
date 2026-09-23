@@ -1,18 +1,17 @@
 import { useRef, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
-import { COMMON_ISSUE_VERIFIED_AT } from './commonIssueRoutes'
+import { COMMON_ISSUE_VERIFIED_AT, recommendedProcessForRoute } from './commonIssueRoutes'
 import { useDialogFocus } from '../../lib/useDialogFocus'
 import { FavoriteToggle } from '../favorites/FavoriteToggle'
 import './commonIssueRoutes.css'
 
 const TABS = [
-  ['quick', 'Quick Guide'],
+  ['quick', 'Find the Right Guide'],
   ['visual', 'Visual Guide'],
   ['process', 'Full Process'],
   ['sources', 'Sources'],
 ]
 
-const STATUS_OPTIONS = ['Resolved', 'Unresolved', 'Escalation Needed']
 const DEVICE_OPTIONS = ['Windows', 'Mac', 'iPhone', 'Android', 'Browser']
 const ROLE_OPTIONS = ['Host', 'Participant']
 
@@ -27,7 +26,6 @@ export function CommonIssueDrawer({
   onClose,
   onOpenProcess,
   onOpenRoute,
-  onStatusChange,
   onContextChange,
   onTabChange,
   onTrackEvent,
@@ -48,14 +46,7 @@ export function CommonIssueDrawer({
 
   const selectedDevice = callContext?.device ?? null
   const selectedRole = callContext?.role ?? null
-  const desktopAppDevice = selectedDevice === 'Windows' || selectedDevice === 'Mac'
-  const legacyDeviceSpecificTitles = route.id === 'cant-hear'
-    ? new Set(['Test and select the Zoom speaker'])
-    : route.id === 'cant-be-heard'
-      ? new Set(['Select and test the correct microphone'])
-      : route.id === 'camera-not-working'
-        ? new Set(['Select the correct camera'])
-        : new Set()
+  const [selectedState, setSelectedState] = useState(null)
 
   const routeHasDeviceBoundary = Array.isArray(route.supportedDevices) && route.supportedDevices.length > 0
   const routeDeviceMismatch = Boolean(
@@ -63,23 +54,27 @@ export function CommonIssueDrawer({
     && routeHasDeviceBoundary
     && !route.supportedDevices.includes(selectedDevice),
   )
-  const routeNeedsDeviceSelection = routeHasDeviceBoundary && !selectedDevice
-  const hasDeviceScopedChecks = route.checks.some(check => Array.isArray(check.devices))
-    || legacyDeviceSpecificTitles.size > 0
-  const hasRoleScopedChecks = route.checks.some(check => Array.isArray(check.roles))
+  const routeNeedsDeviceSelection = !selectedDevice
+  const stateSelectionRequired = Array.isArray(route.states) && route.states.length > 0 && !selectedState
+  const recommendedProcessId = (!routeDeviceMismatch && !routeNeedsDeviceSelection && !stateSelectionRequired)
+    ? recommendedProcessForRoute(route, { device: selectedDevice, state: selectedState })
+    : null
+  const recommendedProcess = processEntries.find(process => process.id === recommendedProcessId) ?? null
 
-  const visibleChecks = route.checks.filter(check => {
-    if (routeDeviceMismatch || routeNeedsDeviceSelection) return false
-    if (Array.isArray(check.devices) && (!selectedDevice || !check.devices.includes(selectedDevice))) return false
-    if (Array.isArray(check.roles) && (!selectedRole || !check.roles.includes(selectedRole))) return false
-    if (legacyDeviceSpecificTitles.has(check.title) && !desktopAppDevice) return false
-    return true
-  })
-
-  function stateAction(state) {
-    return selectedRole && state.roleActions?.[selectedRole]
-      ? state.roleActions[selectedRole]
-      : state.action
+  function startRecommendedGuide() {
+    if (!recommendedProcess) return
+    onTrackEvent?.({
+      eventType: 'common_issue_route_to_process',
+      routeId: 'navigator',
+      categoryId: route.categoryId,
+      processId: recommendedProcess.id,
+      toolId: `common_issue_${route.id}_recommended_process`,
+    })
+    onOpenProcess?.(recommendedProcess.id, {
+      device: selectedDevice,
+      role: selectedRole,
+      sourceRouteId: route.id,
+    })
   }
 
   function selectTab(id, { focus = false } = {}) {
@@ -155,7 +150,7 @@ export function CommonIssueDrawer({
             >{role}</button>)}
           </div>
         </div>
-        <span className="common-issue-context-status"><small>Status</small><strong>{callContext?.status || 'In progress'}</strong></span>
+        <span className="common-issue-context-status"><small>Purpose</small><strong>Route to the right approved guide</strong></span>
       </div>
 
       <div className="process-tabs" role="tablist" aria-label="Common issue views">
@@ -179,18 +174,18 @@ export function CommonIssueDrawer({
         aria-labelledby={`common-issue-tab-${tab}`}
         tabIndex={0}
       >
-        {tab === 'quick' && <section className="common-issue-quick" aria-label="Quick Guide">
+        {tab === 'quick' && <section className="common-issue-quick common-issue-router" aria-label="Find the Right Guide">
           <section className="common-issue-classification">
-            <p className="eyebrow">Classify before troubleshooting</p>
+            <p className="eyebrow">1 · Identify the symptom</p>
             <strong>{route.classification}</strong>
             <p>{route.classificationNote}</p>
           </section>
 
           <section className="common-issue-section">
-            <p className="eyebrow">Confirm the symptom first</p>
-            <h3>Ask only what changes the route</h3>
+            <p className="eyebrow">2 · Confirm only what changes the route</p>
+            <h3>Ask these before choosing a process</h3>
             <ol className="common-issue-confirm-list">
-              {route.confirm.map(question => <li key={question}>{question}</li>)}
+              {route.confirm.slice(0, 3).map(question => <li key={question}>{question}</li>)}
             </ol>
           </section>
 
@@ -207,83 +202,61 @@ export function CommonIssueDrawer({
           </section>}
 
           {route.states?.length > 0 && <section className="common-issue-section">
-            <p className="eyebrow">Identify the exact waiting state</p>
-            <div className="waiting-state-grid">
-              {route.states.map(state => <article key={state.title}>
+            <p className="eyebrow">3 · Match the exact screen state</p>
+            <h3>Which one is the caller seeing?</h3>
+            <div className="common-issue-state-choices">
+              {route.states.map(state => <button
+                type="button"
+                key={state.title}
+                aria-pressed={selectedState === state.title}
+                onClick={() => setSelectedState(state.title)}
+              >
+                <strong>{state.title}</strong>
                 <span>{state.badge}</span>
-                <h3>{state.title}</h3>
-                <p>{state.body}</p>
-                <div><strong>Next action</strong><p>{stateAction(state)}</p></div>
-              </article>)}
+                <small>{state.body}</small>
+              </button>)}
             </div>
           </section>}
 
-          {(routeNeedsDeviceSelection || (hasDeviceScopedChecks && !selectedDevice)) && <section className="common-issue-section common-issue-device-prompt">
-            <p className="eyebrow">Device needed</p>
+          {routeNeedsDeviceSelection && <section className="common-issue-section common-issue-device-prompt">
+            <p className="eyebrow">{route.states?.length ? '4' : '3'} · Device needed</p>
             <h3>Select the caller’s device above</h3>
-            <p>{routeHasDeviceBoundary
-              ? `This route has platform-specific guidance. Supported in this approved path: ${route.supportedDevices.join(', ')}.`
-              : 'The workspace is hiding device-specific app steps until the caller’s device is selected, so the agent does not give desktop-only instructions to a mobile or browser caller.'}</p>
+            <p>Ozzie uses the device to choose the closest approved Process Guide and carries that selection into the guided steps.</p>
           </section>}
 
           {routeDeviceMismatch && <section className="common-issue-section common-issue-device-prompt">
             <p className="eyebrow">Different device path</p>
-            <h3>This route does not match the selected device</h3>
-            <p>{route.unsupportedDeviceNote || `The approved steps in this route do not apply to ${selectedDevice}. Choose a route that matches the caller’s platform before continuing.`}</p>
+            <h3>This Common Issue does not support the selected device</h3>
+            <p>{route.unsupportedDeviceNote || `The approved guidance in this route does not apply to ${selectedDevice}. Choose a supported device or a different Common Issue before continuing.`}</p>
           </section>}
 
-          {hasRoleScopedChecks && !selectedRole && !routeDeviceMismatch && !routeNeedsDeviceSelection && <section className="common-issue-section common-issue-device-prompt">
-            <p className="eyebrow">Caller role needed</p>
-            <h3>Select Host or Participant above</h3>
-            <p>The workspace is hiding role-specific steps until the caller’s role is selected, so participant-only permissions are not shown to a host.</p>
+          {!routeNeedsDeviceSelection && !routeDeviceMismatch && stateSelectionRequired && <section className="common-issue-section common-issue-device-prompt">
+            <p className="eyebrow">One detail left</p>
+            <h3>Select the exact screen state above</h3>
+            <p>The next approved Process Guide changes depending on what Zoom is actually showing.</p>
           </section>}
 
-          {visibleChecks.length > 0 && <section className="common-issue-section">
-            <p className="eyebrow">Guide one step at a time</p>
-            <div className="common-issue-step-list">
-              {visibleChecks.map((check, index) => <article key={check.title}>
-                <span className="common-issue-step-number">{index + 1}</span>
-                <div>
-                  <h3>{check.title}</h3>
-                  <p>{check.instruction}</p>
-                  <div className="common-issue-expected">
-                    <strong>What should happen</strong>
-                    <p>{check.expected}</p>
-                  </div>
-                </div>
-              </article>)}
+          {recommendedProcess && <section className="common-issue-router-result">
+            <div>
+              <p className="eyebrow">Recommended approved guide</p>
+              <h3>{recommendedProcess.title}</h3>
+              <p>{recommendedProcess.purpose}</p>
+              <div className="common-issue-route-badges">
+                <span>Approved Process Document</span>
+                <span>{selectedDevice}</span>
+                {selectedRole && <span>{selectedRole}</span>}
+              </div>
             </div>
+            <button type="button" className="primary-action" onClick={startRecommendedGuide}>
+              Start Guided Process →
+            </button>
+            <small>Ozzie is routing—not inventing. The guided steps come from the approved Process Document and retain source traceability to official Zoom Support.</small>
           </section>}
 
-          <section className="suggested-script common-issue-script">
-            <p className="eyebrow">Suggested Script</p>
-            <blockquote>{route.script}</blockquote>
-          </section>
-
-          <section className="common-issue-outcome">
-            <div>
-              <p className="eyebrow">Confirm</p>
-              <h3>Expected result</h3>
-              <p>{route.success}</p>
-            </div>
-            <div>
-              <p className="eyebrow">Still not working?</p>
-              <h3>Next action / boundary</h3>
-              <p>{route.unresolved}</p>
-            </div>
-          </section>
-
-          <section className="common-issue-status" aria-label="Common issue resolution status">
-            <p className="eyebrow">Call outcome</p>
-            <div>
-              {STATUS_OPTIONS.map(status => <button
-                type="button"
-                key={status}
-                aria-pressed={callContext?.status === status}
-                onClick={() => onStatusChange?.(status)}
-              >{status}</button>)}
-            </div>
-          </section>
+          {recommendedProcess && <section className="common-issue-source-preview">
+            <span>Official Zoom reference</span>
+            <a href={route.primarySource.url} target="_blank" rel="noreferrer">{route.primarySource.title} ↗</a>
+          </section>}
         </section>}
 
         {tab === 'visual' && <section aria-label="Visual Guide">
