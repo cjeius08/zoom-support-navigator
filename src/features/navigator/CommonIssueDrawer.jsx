@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
-import { COMMON_ISSUE_VERIFIED_AT, recommendedProcessForRoute } from './commonIssueRoutes'
+import { COMMON_ISSUE_VERIFIED_AT, orderedSourcesForRoute, recommendedProcessForRoute } from './commonIssueRoutes'
 import { useDialogFocus } from '../../lib/useDialogFocus'
 import { FavoriteToggle } from '../favorites/FavoriteToggle'
 import './commonIssueRoutes.css'
@@ -66,6 +66,18 @@ export function CommonIssueDrawer({
     : null
   const recommendedProcess = processEntries.find(process => process.id === recommendedProcessId) ?? null
   const coverageNote = selectedDevice ? route.guideCoverageNotes?.[selectedDevice] ?? null : null
+  const orderedSources = orderedSourcesForRoute(route, {
+    device: selectedDevice,
+    processId: recommendedProcessId,
+    state: selectedState,
+  })
+  const preferredSource = orderedSources[0] ?? route.primarySource
+  const otherSources = orderedSources.slice(1)
+  const sourceMatchLabel = selectedState
+    ? `Matched to ${selectedState}`
+    : selectedDevice
+      ? `Matched to ${selectedDevice} path`
+      : 'Current product source'
   const recommendationByDevice = DEVICE_OPTIONS
     .map(device => recommendedProcessForRoute(route, { device, state: selectedState }))
     .filter(Boolean)
@@ -308,9 +320,9 @@ export function CommonIssueDrawer({
             <small>Ozzie is routing—not inventing. The guided steps come from the approved Process Document and retain source traceability to official Zoom Support.</small>
           </section>}
 
-          {recommendedProcess && <section className="common-issue-source-preview">
-            <span>Official Zoom reference</span>
-            <a href={route.primarySource.url} target="_blank" rel="noreferrer">{route.primarySource.title} ↗</a>
+          {recommendedProcess && preferredSource && <section className="common-issue-source-preview">
+            <span>{sourceMatchLabel}</span>
+            <a href={preferredSource.url} target="_blank" rel="noreferrer">Zoom Support — {preferredSource.title} ↗</a>
           </section>}
         </section>}
 
@@ -330,13 +342,13 @@ export function CommonIssueDrawer({
                   <strong>{visual.title}</strong>
                   <span>{visual.note}</span>
                   {visual.sourceUrl && <a href={visual.sourceUrl} target="_blank" rel="noreferrer">{visual.sourceLabel || 'Open visual source'} ↗</a>}
-                  {route.primarySource?.url && route.primarySource.url !== visual.sourceUrl && <a href={route.primarySource.url} target="_blank" rel="noreferrer">Official Zoom Support ↗</a>}
+                  {preferredSource?.url && preferredSource.url !== visual.sourceUrl && <a href={preferredSource.url} target="_blank" rel="noreferrer">Official Zoom Support ↗</a>}
                 </figcaption>
               </figure>)}</div>
             : <div className="common-issue-empty">
                 <strong>No reviewed visual yet for this route.</strong>
                 <p>Use the official Zoom Support source below rather than relying on an unsourced or recreated interface image.</p>
-                <a href={route.primarySource.url} target="_blank" rel="noreferrer">Open current Zoom Support article ↗</a>
+                <a href={preferredSource.url} target="_blank" rel="noreferrer">Open current Zoom Support article ↗</a>
               </div>}
         </section>}
 
@@ -368,15 +380,15 @@ export function CommonIssueDrawer({
             </div>
           </div>
 
-          <div className="common-issue-source-card">
-            <span>Current product source</span>
-            <strong>{route.primarySource.title}</strong>
-            <a href={route.primarySource.url} target="_blank" rel="noreferrer">Official Zoom Support ↗</a>
-          </div>
+          {preferredSource && <div className="common-issue-source-card">
+            <span>{sourceMatchLabel}</span>
+            <strong>{preferredSource.title}</strong>
+            <a href={preferredSource.url} target="_blank" rel="noreferrer">Official Zoom Support ↗</a>
+          </div>}
 
-          {route.supportingSources?.length > 0 && <div className="common-issue-source-list">
-            {route.supportingSources.map(source => <a key={source.url} href={source.url} target="_blank" rel="noreferrer">
-              Zoom Support — {source.title} ↗
+          {otherSources.length > 0 && <div className="common-issue-source-list">
+            {otherSources.map(source => <a key={source.url} href={source.url} target="_blank" rel="noreferrer">
+              Supporting Zoom source — {source.title} ↗
             </a>)}
           </div>}
 
