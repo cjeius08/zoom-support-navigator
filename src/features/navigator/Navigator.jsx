@@ -194,10 +194,13 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
     })
   }
 
-  function openRoute(route, toolId = 'common_issue') {
+  function openRoute(route, toolId = 'common_issue', contextPatch = null) {
     if (!route) return
     setSelected(null)
     setProcessLaunchContext(null)
+    if (contextPatch) {
+      setCallContext(current => ({ ...current, ...contextPatch }))
+    }
     setCommonIssueTab('Find the Right Guide')
     setSelectedRoute(route)
     onResourceViewed('common_issue', route.id)
@@ -433,8 +436,10 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
       onClose={()=>setSelected(null)}
       onOpenTraining={onOpenTraining}
       initialDevice={processLaunchContext?.device ?? null}
+      initialRole={processLaunchContext?.role ?? callContext.role ?? null}
       initialSourceRouteId={processLaunchContext?.sourceRouteId ?? null}
-      onOpenRoute={routeId=>openRoute(routeById(routeId),'guided_process_next')}
+      onOpenRoute={(routeId, contextPatch)=>openRoute(routeById(routeId),'guided_process_next',contextPatch)}
+      onContextChange={patch=>setCallContext(current=>({...current,...patch}))}
       onAddToDocumentation={onAddToDocumentation}
       onTrackEvent={onTrackEvent}
       isFavorite={isFavorite('process', selected.id)}

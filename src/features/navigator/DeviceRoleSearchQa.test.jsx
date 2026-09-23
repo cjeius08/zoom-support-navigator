@@ -76,6 +76,35 @@ it('carries Android from the Common Issue directly into the guided Bluetooth pro
   expect(within(processDialog).queryByText(/Join with Computer Audio/i)).not.toBeInTheDocument()
 })
 
+it('keeps a device changed inside the Guided Process and the original caller role when chaining to the next Common Issue', async () => {
+  const { user, dialog } = await openRouteWithContext({
+    device: 'Android',
+    role: 'Host',
+    routeName: /Bluetooth headset isn’t working/i,
+  })
+
+  await user.click(within(dialog).getByRole('button', { name: /Start Guided Process/i }))
+  const processDialog = screen.getByRole('dialog', { name: /Using Bluetooth Headphones/i })
+
+  await user.click(within(processDialog).getByRole('button', { name: 'Windows' }))
+  expect(within(processDialog).getByRole('button', { name: 'Windows' })).toHaveAttribute('aria-pressed', 'true')
+
+  for (let index = 0; index < 12; index += 1) {
+    if (within(processDialog).queryByText(/Only if the symptom now matches/i)) break
+    const next = within(processDialog).queryByRole('button', { name: /Not resolved/i })
+    if (!next) break
+    await user.click(next)
+  }
+
+  expect(within(processDialog).getByText(/Only if the symptom now matches/i)).toBeInTheDocument()
+  await user.click(within(processDialog).getByRole('button', { name: /Bluetooth is connected, but the caller still cannot hear meeting audio/i }))
+
+  const nextDialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
+  expect(within(nextDialog).getByRole('button', { name: 'Windows' })).toHaveAttribute('aria-pressed', 'true')
+  expect(within(nextDialog).getByRole('button', { name: 'Host' })).toHaveAttribute('aria-pressed', 'true')
+  expect(within(nextDialog).getByLabelText('Route context')).toHaveTextContent(/Windows selected/i)
+})
+
 it('keeps caller role as context without turning Common Issues into a second troubleshooting tree', async () => {
   const { dialog } = await openRouteWithContext({
     device: 'Windows',
