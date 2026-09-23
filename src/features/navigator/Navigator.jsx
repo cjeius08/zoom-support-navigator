@@ -19,6 +19,7 @@ const categories = [
 ]
 
 const FASTEST_ROUTE_IDS = ['cant-join', 'waiting-entry', 'cant-hear', 'cant-be-heard', 'camera-not-working']
+const EMPTY_CALL_CONTEXT = { device: null, role: null, hearingStatus: null, impact: null, status: null }
 
 const categoryIconPaths = {
   join: 'M5 4h9v16H5z M14 12h6 M17 9l3 3-3 3 M9 12h.01',
@@ -97,7 +98,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
   const [selected, setSelected] = useState(null)
   const [processLaunchContext, setProcessLaunchContext] = useState(null)
   const [selectedRoute, setSelectedRoute] = useState(null)
-  const [callContext, setCallContext] = useState({ device: null, role: null, hearingStatus: null, impact: null, status: null })
+  const [callContext, setCallContext] = useState(EMPTY_CALL_CONTEXT)
   const [commonIssueTab, setCommonIssueTab] = useState('Find the Right Guide')
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
   const [activeSuggestion, setActiveSuggestion] = useState(-1)
@@ -174,11 +175,24 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
     : []
   const showSuggestions = suggestionsOpen && suggestions.length > 0
 
+  function updateCallContext(patch = {}) {
+    setCallContext(current => ({ ...current, ...patch, status: 'active' }))
+  }
+
+  function resolveCurrentCall() {
+    setCallContext(current => ({ ...current, status: 'resolved' }))
+  }
+
+  function closeSelectedProcess() {
+    setSelected(null)
+    if (callContext.status === 'resolved') setCallContext({ ...EMPTY_CALL_CONTEXT })
+  }
+
   function confirmNewCall() {
     setSelected(null)
     setSelectedRoute(null)
     setProcessLaunchContext(null)
-    setCallContext({ device: null, role: null, hearingStatus: null, impact: null, status: null })
+    setCallContext({ ...EMPTY_CALL_CONTEXT })
     setCommonIssueTab('Find the Right Guide')
     setQuery('')
     setSuggestionsOpen(false)
@@ -209,6 +223,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
     setSelectedRoute(null)
     setCommonIssueTab('Find the Right Guide')
     setProcessLaunchContext(launchContext)
+    setCallContext(current => ({ ...current, status: 'active' }))
     setSelected(process)
     onResourceViewed('process', process.id)
     onTrackEvent?.({
@@ -224,9 +239,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
     if (!route) return
     setSelected(null)
     setProcessLaunchContext(null)
-    if (contextPatch) {
-      setCallContext(current => ({ ...current, ...contextPatch }))
-    }
+    setCallContext(current => ({ ...current, ...(contextPatch || {}), status: 'active' }))
     setCommonIssueTab('Find the Right Guide')
     setSelectedRoute(route)
     onResourceViewed('common_issue', route.id)
@@ -274,9 +287,9 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
         <small>Current call</small>
         <strong>{callContextSummary || 'Ready for a new caller'}</strong>
       </div>
-      <button type="button" className="navigator-new-call-button" onClick={() => setNewCallConfirmOpen(true)}>
+      {callContext.status === 'active' && <button type="button" className="navigator-new-call-button" onClick={() => setNewCallConfirmOpen(true)}>
         New Call
-      </button>
+      </button>}
     </section>
 
     <section className="navigator-top-workspace" aria-label="Live support workspace">
@@ -471,13 +484,14 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
     </section>
     {selected&&<ProcessDrawer
       process={selected}
-      onClose={()=>setSelected(null)}
+      onClose={closeSelectedProcess}
       onOpenTraining={onOpenTraining}
       initialDevice={processLaunchContext?.device ?? null}
       initialRole={processLaunchContext?.role ?? callContext.role ?? null}
       initialSourceRouteId={processLaunchContext?.sourceRouteId ?? null}
       onOpenRoute={(routeId, contextPatch)=>openRoute(routeById(routeId),'guided_process_next',contextPatch)}
-      onContextChange={patch=>setCallContext(current=>({...current,...patch}))}
+      onContextChange={updateCallContext}
+      onCallResolved={resolveCurrentCall}
       onAddToDocumentation={onAddToDocumentation}
       onTrackEvent={onTrackEvent}
       isFavorite={isFavorite('process', selected.id)}
@@ -510,7 +524,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
       onClose={()=>setSelectedRoute(null)}
       onOpenRoute={routeId=>openRoute(routeById(routeId),'redirect')}
       onOpenProcess={(processId, launchContext)=>openProcess(PROCESSES.find(process=>process.id===processId),'common_issue_recommended_process',launchContext)}
-      onContextChange={patch=>setCallContext(current=>({...current,...patch}))}
+      onContextChange={updateCallContext}
       onTabChange={setCommonIssueTab}
       onTrackEvent={onTrackEvent}
       isFavorite={isFavorite('common_issue', selectedRoute.id)}
