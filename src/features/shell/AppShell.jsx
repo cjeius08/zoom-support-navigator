@@ -47,7 +47,7 @@ function NavDropdown({ label, active = false, children }) {
   </details>
 }
 
-export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onOpenMySavedNotes = () => {}, theme = 'ozzie', onThemeChange = () => {}, onFeedback, reportContext = {}, avatars }) {
+export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onOpenMySavedNotes = () => {}, documentationHandoff = null, onDocumentationHandoffApplied = () => {}, theme = 'ozzie', onThemeChange = () => {}, onFeedback, reportContext = {}, avatars }) {
   const [open, setOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [avatarOpen, setAvatarOpen] = useState(false)
@@ -63,6 +63,17 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     readiness: 'closed',
   })
   const [compactNav, setCompactNav] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 800)
+  useEffect(() => {
+    if (!documentationHandoff?.id) return
+    setLiveTools(current => {
+      const next = { ...current, documentation: 'open' }
+      Object.keys(next).forEach(key => {
+        if (key !== 'documentation' && next[key] === 'open') next[key] = 'minimized'
+      })
+      return next
+    })
+  }, [documentationHandoff?.id])
+
   const profileDialogRef = useRef(null)
   const menuToggleRef = useRef(null)
   const isAdmin = profile.role === 'creator_admin'
@@ -293,6 +304,8 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
       onOpenSavedNotes={noteId => onOpenMySavedNotes(noteId)}
       minimized={liveTools.documentation === 'minimized'}
       stackIndex={minimizedLiveTools.indexOf('documentation')}
+      prefill={documentationHandoff}
+      onPrefillApplied={onDocumentationHandoffApplied}
       onMinimize={() => toggleLiveToolMinimized('documentation')}
       onClose={() => closeLiveTool('documentation')}
     />
