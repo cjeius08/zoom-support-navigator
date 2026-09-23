@@ -85,8 +85,10 @@ describe('post-QA remediation gate', () => {
     if (guide.availablePlatforms.length > 1) {
       await user.click(screen.getByRole('button', { name: /Windows/i }))
     }
-    expect(screen.getByRole('button', { name: 'Copy Script' })).toBeInTheDocument()
-    expect(screen.getByText(/Suggested wording/i).closest('details')).not.toHaveAttribute('open')
+    const currentStep = document.querySelector('.guided-current-step')
+    expect(currentStep).toBeTruthy()
+    expect(within(currentStep).getByRole('button', { name: 'Copy Script' })).toBeInTheDocument()
+    expect(within(currentStep).getByText(/Suggested wording/i).closest('details')).not.toHaveAttribute('open')
   })
 
   it('holds referral detail until the approved path is exhausted', async () => {
