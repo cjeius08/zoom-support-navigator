@@ -29,12 +29,12 @@
       "area": "Common Issues",
       "audience": "all",
       "title": "Common Issues now helps you find the right approved guide",
-      "changed": "Common Issues now focuses on the caller’s symptom and device, recommends the matching approved Process Guide, and surfaces the official Zoom Support article that best matches the selected device or meeting state. Routing respects audited Process Guide coverage and flags a gap instead of sending a caller into another platform’s instructions.",
+      "changed": "Common Issues now focuses on the caller’s symptom and device, recommends the matching approved Process Guide, surfaces the official Zoom Support article that best matches the selected device or meeting state, and includes a concise “Why this route?” explanation. The explanation shows the actual decision factor—such as device or exact screen state—and clearly distinguishes retained call context like caller role from information that changed the recommendation.",
       "checks": [
-        "Open I can’t hear anyone, select Windows, and confirm the desktop audio guide and desktop Zoom Support article are shown.",
-        "Switch to Android or iPhone and confirm both the recommended guide and the highlighted Zoom Support source change to the mobile path.",
-        "Open I’m waiting to get in, choose Waiting Room, and confirm the Waiting Room Zoom Support source is highlighted.",
-        "Open a known coverage-gap path and confirm Ozzie does not substitute another platform’s Guided Process."
+        "Open I can’t hear anyone, select Android and a caller role, then expand Why this route?; confirm Android is identified as the device-specific routing factor and the role is described only as retained context.",
+        "Switch between Windows and Android and confirm the recommendation, highlighted Zoom source, and route explanation stay aligned.",
+        "Open I’m waiting to get in, choose Waiting Room, and confirm Why this route? identifies the exact Waiting Room screen state as the routing reason.",
+        "Confirm coverage-gap paths still stop without inventing a recommendation or route explanation."
       ]
     },
     {
