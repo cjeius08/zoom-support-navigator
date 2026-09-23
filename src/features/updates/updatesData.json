@@ -29,7 +29,7 @@
       "area": "Process Guides / Call Guide",
       "audience": "all",
       "title": "Process Guides now give device-specific troubleshooting one step at a time",
-      "changed": "Call Guides now preserve device-specific approved steps, matched Zoom sources, symptom-aware end routing, optional documentation handoff, and live call context across chained troubleshooting. If the agent changes the device inside a Guided Process, that device follows into the next approved Common Issue together with the caller role, so the next route does not ask for the same context again.",
+      "changed": "Call Guides now preserve device-specific approved steps, matched Zoom sources, symptom-aware end-of-path routing, optional documentation handoff, and live call context across chained troubleshooting. If the agent changes the device inside a Guided Process, that device follows into the next approved Common Issue together with the caller role, so the next route does not ask for the same context again.",
       "checks": [
         "Start Bluetooth troubleshooting from Android with a caller role selected, then change the device to Windows inside the Guided Process.",
         "Exhaust the path and open a conditional next symptom; confirm the new Common Issue already has Windows and the original caller role selected.",
