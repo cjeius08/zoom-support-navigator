@@ -109,6 +109,41 @@ it('uses the exact waiting state to choose the next approved process', async () 
   expect(within(room.dialog).getByRole('heading', { name: /Joining a Zoom Meeting/i })).toBeInTheDocument()
 })
 
+
+it('makes a device change immediately visible when it changes the recommended process', async () => {
+  const { user, dialog } = await openRouteWithContext({
+    device: 'Windows',
+    role: 'Participant',
+    routeName: /I can’t hear anyone/i,
+  })
+
+  const context = within(dialog).getByLabelText('Route context')
+  expect(context).toHaveTextContent(/Windows selected · recommended guide updated/i)
+  expect(within(dialog).getByText(/This device changes the recommended approved Process Guide/i)).toBeInTheDocument()
+  expect(within(dialog).getByRole('heading', { name: /Zoom Desktop App/i })).toBeInTheDocument()
+
+  await user.click(within(dialog).getByRole('button', { name: 'Android' }))
+
+  expect(context).toHaveTextContent(/Android selected · recommended guide updated/i)
+  expect(within(dialog).getByRole('heading', { name: /Mobile Device/i })).toBeInTheDocument()
+})
+
+it('shows a clear selected-device confirmation even when the approved process title stays the same', async () => {
+  const { user, dialog } = await openRouteWithContext({
+    device: 'Mac',
+    role: 'Participant',
+    routeName: /Bluetooth headset isn’t working/i,
+  })
+
+  expect(within(dialog).getByText(/same approved Process Guide across supported devices/i)).toBeInTheDocument()
+  expect(within(dialog).getByRole('heading', { name: 'Mac' })).toBeInTheDocument()
+
+  await user.click(within(dialog).getByRole('button', { name: 'Android' }))
+
+  expect(within(dialog).getByRole('heading', { name: 'Android' })).toBeInTheDocument()
+  expect(within(dialog).getByLabelText('Route context')).toHaveTextContent(/Android path selected/i)
+})
+
 it.each([
   ['cant jion', 'cant-join'],
   ['no sound', 'cant-hear'],
