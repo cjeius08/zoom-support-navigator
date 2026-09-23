@@ -10,6 +10,20 @@
   },
   "updates": [
     {
+      "id": "pilot-readiness-usability-pass",
+      "date": "2026-09-23",
+      "area": "Workspace / Pilot Readiness",
+      "audience": "all",
+      "title": "Final pilot usability pass hardens the workspace across screen sizes",
+      "changed": "Completed a final pre-pilot usability pass focused on keeping authenticated workspace pages readable and reachable across desktop, short browser windows, tablets, and mobile screens. Added shared overflow and reflow protection for page content and controls, protected long navigation menus in short windows, improved the Process Documents reader under the mobile header, and expanded Feedback Queue Open Page routing so reports from Favorites, Process Documents, Saved Notes, Admin, and other workspace pages return to the correct page instead of defaulting to Home.",
+      "checks": [
+        "Resize the workspace from desktop to tablet/mobile and confirm page content does not create horizontal clipping.",
+        "Open a Knowledge or Admin dropdown in a vertically short desktop window and confirm all menu items remain reachable by scrolling.",
+        "Open Knowledge → Process Documents on mobile, open a document, and confirm its reader toolbar remains usable below the workspace header.",
+        "Submit a feedback report from a non-Home page such as Process Documents or My Saved Notes and confirm Admin Feedback Queue → Open Page returns to that workspace page."
+      ]
+    },
+    {
       "id": "process-documents-knowledge-library",
       "date": "2026-09-23",
       "area": "Knowledge / Process Documents",
