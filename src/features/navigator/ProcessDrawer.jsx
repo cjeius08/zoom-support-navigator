@@ -799,7 +799,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
           )}
           {tab === "full" && (
             <section className="full-process" aria-label="Full Process">
-              {processSections(process.text).map((section, index) => (
+              {processSections(process.sourceText || process.text).map((section, index) => (
                 <section
                   className={
                     section.heading.toLowerCase().includes("sample script")
