@@ -428,7 +428,6 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
       process={selected}
       onClose={()=>setSelected(null)}
       onOpenTraining={onOpenTraining}
-      onOpenProcess={processId=>openProcess(PROCESSES.find(process=>process.id===processId),'guided_process_next')}
       onOpenRoute={routeId=>openRoute(routeById(routeId),'guided_process_next')}
       onTrackEvent={onTrackEvent}
       isFavorite={isFavorite('process', selected.id)}
