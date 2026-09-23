@@ -1,0 +1,137 @@
+/* Final pilot-readiness hardening.
+   Keep existing visual design intact; only protect layout, reachability, and short/narrow viewport behavior. */
+
+html,
+body,
+#root {
+  max-width: 100%;
+}
+
+body {
+  overflow-x: clip;
+}
+
+.app-main.app-main-horizontal,
+.app-main.app-main-horizontal > *,
+.console-view,
+.navigator,
+.updates-view,
+.saved-notes-page,
+.process-documents-view,
+.training-library,
+.feedback-page {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.app-main.app-main-horizontal img,
+.app-main.app-main-horizontal video {
+  max-width: 100%;
+}
+
+.app-main.app-main-horizontal button,
+.app-main.app-main-horizontal input,
+.app-main.app-main-horizontal select,
+.app-main.app-main-horizontal textarea {
+  max-width: 100%;
+}
+
+.view-heading > *,
+.updates-heading > *,
+.process-documents-heading > *,
+.process-document-reader-heading > *,
+.feedback-context-row > *,
+.team-list article > *,
+.usage-user-row > * {
+  min-width: 0;
+}
+
+.console-view h1,
+.console-view h2,
+.console-view h3,
+.update-card,
+.saved-note-card,
+.process-document-card,
+.training-card,
+.admin-shortcuts button,
+.feedback-list article {
+  overflow-wrap: break-word;
+}
+
+.topnav-menu {
+  max-height: min(32rem, calc(100dvh - 10rem));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.process-tabs {
+  scrollbar-gutter: stable;
+}
+
+.feedback-form-panel {
+  width: min(100%, 48rem);
+}
+
+@media (max-height: 700px) and (min-width: 801px) {
+  .topnav-menu {
+    top: calc(100% + .35rem);
+    max-height: calc(100dvh - 9.25rem);
+  }
+
+  .profile-panel,
+  .training-viewer,
+  .admin-dialog {
+    max-height: calc(100dvh - 1.5rem);
+  }
+}
+
+@media (max-width: 800px), (hover: none) and (pointer: coarse) {
+  .process-document-reader-toolbar {
+    top: 4.75rem;
+  }
+
+  .process-document-reader-heading {
+    padding-top: .9rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .workspace-page-nav {
+    margin-bottom: .55rem;
+  }
+
+  .workspace-back-button {
+    max-width: 100%;
+  }
+
+  .process-document-reader-toolbar {
+    gap: .55rem;
+  }
+
+  .process-document-back {
+    min-width: 0;
+  }
+
+  .process-document-back span:last-child,
+  .process-document-card strong,
+  .process-document-card p,
+  .update-card h2,
+  .saved-note-card,
+  .feedback-list article {
+    overflow-wrap: anywhere;
+  }
+
+  .viewer-navigation {
+    flex-wrap: wrap;
+  }
+
+  .viewer-navigation button {
+    flex: 1 1 9rem;
+  }
+}
+
+@supports not (overflow: clip) {
+  body {
+    overflow-x: hidden;
+  }
+}

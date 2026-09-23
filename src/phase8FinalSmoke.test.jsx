@@ -56,6 +56,7 @@ it('keeps Member and Lead on the standard workspace surface', () => {
   expect(screen.getByRole('navigation')).toHaveTextContent('Home')
   expect(screen.getByRole('navigation')).toHaveTextContent('Favorites')
   expect(screen.getByRole('navigation')).toHaveTextContent('Training & Resources')
+  expect(screen.getByRole('navigation')).toHaveTextContent('Process Documents')
   expect(screen.getByRole('navigation')).toHaveTextContent('Readiness Lab')
   expect(screen.queryByText('Admin Home')).not.toBeInTheDocument()
   expect(screen.queryByText('Team Management')).not.toBeInTheDocument()

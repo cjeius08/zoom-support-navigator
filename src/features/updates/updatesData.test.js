@@ -19,6 +19,7 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
   expect(data.updates[0].date).toBe('2026-09-23')
   expect(data.updates.slice(0, 30).map(entry => entry.id)).toEqual([
+    'pilot-readiness-usability-pass',
     'process-documents-knowledge-library',
     'process-guide-persistent-tabs',
     'member-saved-notes-followups',
@@ -48,7 +49,6 @@ it('keeps workspace metadata and update history complete and newest-first', () =
     'phase6-readiness-lab-part1',
     'ogletree-call-flow-alignment',
     'ogletree-support-workspace-rebrand',
-    'phase6-guided-visual-lessons',
   ])
 
   data.updates.forEach((entry) => {

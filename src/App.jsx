@@ -29,6 +29,7 @@ import './features/shell/responsiveShell.css'
 import './features/shell/headerNavRevamp.css'
 import './features/shell/loginRevamp.css'
 import './features/theme/themeSystem.css'
+import './pilotReadiness.css'
 
 const EMPTY_REPORT_CONTEXT = {
   selected_tab: null,
@@ -221,7 +222,7 @@ export default function App() {
 
   function openFeedbackTarget(item) {
     rememberCurrentPage()
-    const safeRoutes = new Set(['navigator', 'training', 'updates', 'feedback'])
+    const safeRoutes = new Set(['navigator', 'favorites', 'process_documents', 'training', 'updates', 'feedback', 'admin', 'avatar_library', 'team', 'usage', 'saved_notes', 'my_saved_notes', 'feedback_queue'])
     if (item?.active_common_issue) {
       setNavigatorProcessId(null)
       setNavigatorCommonIssueId(item.active_common_issue)
