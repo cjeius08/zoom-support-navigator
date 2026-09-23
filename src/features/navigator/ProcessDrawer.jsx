@@ -40,7 +40,7 @@ const trainingCategoryByProcessCategory = {
   devices: "Devices & App",
 };
 
-export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice = null, initialSourceRouteId = null, onOpenRoute, onAddToDocumentation = null, onTrackEvent, isFavorite = false, favoriteBusy = false, onToggleFavorite = () => {} }) {
+export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice = null, initialRole = null, initialSourceRouteId = null, onOpenRoute, onContextChange = null, onAddToDocumentation = null, onTrackEvent, isFavorite = false, favoriteBusy = false, onToggleFavorite = () => {} }) {
   const [tab, setTab] = useState("quick");
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [selectedRoute, setSelectedRoute] = useState("");
@@ -188,6 +188,8 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
     setSelectedPlatform(platform);
     setSelectedRoute("");
     resetProgress();
+    const device = PLATFORM_TO_DEVICE[platform] || null;
+    if (device) onContextChange?.({ device });
     onTrackEvent?.({
       eventType: "guide_device_selected",
       routeId: "navigator",
@@ -581,7 +583,10 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
                             <p className="eyebrow">Only if the symptom now matches</p>
                             <div className="guide-next-options">
                               {approvedEndPaths.map((option) => (
-                                <button type="button" key={option.route.id} onClick={() => onOpenRoute?.(option.route.id)}>
+                                <button type="button" key={option.route.id} onClick={() => onOpenRoute?.(option.route.id, {
+                                  device: sourceDevice,
+                                  role: initialRole,
+                                })}>
                                   <strong>{option.condition}</strong>
                                   <span>{option.route.title}</span>
                                   <small>{option.reason}</small>
