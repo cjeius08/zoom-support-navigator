@@ -1,5 +1,7 @@
 import { createHash } from 'node:crypto'
 import { existsSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { cwd } from 'node:process'
 import { describe, expect, it } from 'vitest'
 import { PROCESSES } from './processes'
 
@@ -50,7 +52,7 @@ describe('source-backed process content', () => {
       const pageNumbers = pages.map(image => Number(image.match(/-page-(\d+)\.png$/)?.[1]))
       expect(pageNumbers, process.id).toEqual(pages.map((_, index) => index + 1))
       for (const image of pages) {
-        expect(existsSync(new URL(`../../public/${image}`, import.meta.url)), `${process.id}: ${image}`).toBe(true)
+        expect(existsSync(resolve(cwd(), 'public', image)), `${process.id}: ${image}`).toBe(true)
       }
     }
   })
