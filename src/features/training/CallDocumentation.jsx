@@ -65,7 +65,7 @@ function Field({ label, hint, children }) {
   </label>
 }
 
-export function CallDocumentation({ open = false, minimized = false, stackIndex = 0, onMinimize = () => {}, onClose = () => {}, onOpenSavedNotes = null, prefill = null, onPrefillApplied = () => {} }) {
+export function CallDocumentation({ open = false, minimized = false, stackIndex = 0, onMinimize = () => {}, onClose = () => {}, onOpenSavedNotes = null, prefill = null, onPrefillApplied = () => {}, resetToken = 0 }) {
   const [draft, setDraft] = useState(createInitialDraft)
   const [copyState, setCopyState] = useState('idle')
   const [activeNoteId, setActiveNoteId] = useState(null)
@@ -75,6 +75,7 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
   const [noteError, setNoteError] = useState('')
   const [handoffMessage, setHandoffMessage] = useState('')
   const lastPrefillIdRef = useRef(null)
+  const lastResetTokenRef = useRef(resetToken)
   const formatted = useMemo(() => formatCallDocumentation(draft), [draft])
   const filledCount = useMemo(() => [
     draft.callerName,
@@ -88,6 +89,18 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
     draft.recommendedContact,
     draft.outcome,
   ].filter(Boolean).length, [draft])
+
+  useEffect(() => {
+    if (lastResetTokenRef.current === resetToken) return
+    lastResetTokenRef.current = resetToken
+    lastPrefillIdRef.current = null
+    setDraft(createInitialDraft())
+    setActiveNoteId(null)
+    setCopyState('idle')
+    setNoteState('idle')
+    setNoteError('')
+    setHandoffMessage('')
+  }, [resetToken])
 
   useEffect(() => {
     if (!prefill?.id || lastPrefillIdRef.current === prefill.id) return

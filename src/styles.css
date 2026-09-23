@@ -5145,3 +5145,58 @@ body:has(.process-document-reader) .process-document-page {
     grid-template-columns:1fr;
   }
 }
+
+
+/* New Call reset */
+.navigator-session-bar {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  margin:0 0 .75rem;
+  padding:.65rem .8rem;
+  border:1px solid rgba(124,190,230,.18);
+  border-radius:.8rem;
+  background:rgba(7,24,36,.42);
+}
+.navigator-session-bar > div {
+  display:grid;
+  gap:.1rem;
+}
+.navigator-session-bar small {
+  color:#86a9bd;
+  font-size:.72rem;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.navigator-session-bar strong {
+  color:#edf7fc;
+  font-size:.9rem;
+}
+.navigator-new-call-button {
+  white-space:nowrap;
+}
+.new-call-confirmation {
+  width:min(30rem,calc(100vw - 2rem));
+  padding:1.25rem;
+  border:1px solid rgba(124,190,230,.26);
+  border-radius:1rem;
+  background:#0b1b27;
+  box-shadow:0 24px 70px rgba(0,0,0,.42);
+}
+.new-call-confirmation h2 {
+  margin:.15rem 0 .65rem;
+}
+.new-call-confirmation p {
+  color:#b8c8d3;
+  line-height:1.5;
+}
+@media (max-width:620px) {
+  .navigator-session-bar {
+    align-items:stretch;
+    flex-direction:column;
+  }
+  .navigator-new-call-button {
+    width:100%;
+  }
+}

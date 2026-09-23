@@ -47,7 +47,7 @@ function NavDropdown({ label, active = false, children }) {
   </details>
 }
 
-export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onOpenMySavedNotes = () => {}, documentationHandoff = null, onDocumentationHandoffApplied = () => {}, theme = 'ozzie', onThemeChange = () => {}, onFeedback, reportContext = {}, avatars }) {
+export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onOpenMySavedNotes = () => {}, documentationHandoff = null, onDocumentationHandoffApplied = () => {}, callResetToken = 0, theme = 'ozzie', onThemeChange = () => {}, onFeedback, reportContext = {}, avatars }) {
   const [open, setOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [avatarOpen, setAvatarOpen] = useState(false)
@@ -306,6 +306,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
       stackIndex={minimizedLiveTools.indexOf('documentation')}
       prefill={documentationHandoff}
       onPrefillApplied={onDocumentationHandoffApplied}
+      resetToken={callResetToken}
       onMinimize={() => toggleLiveToolMinimized('documentation')}
       onClose={() => closeLiveTool('documentation')}
     />
