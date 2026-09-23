@@ -1514,6 +1514,206 @@ export function preferredSourceForRoute(route, context = {}) {
   return orderedSourcesForRoute(route, context)[0] ?? null
 }
 
+const COMMON_ISSUE_END_PATHS = {
+  'cant-join': [
+    {
+      routeId: 'waiting-entry',
+      condition: 'Zoom connected and now shows Waiting Room, Waiting for host, or a scheduled-time message.',
+      reason: 'This is now an entry-state issue rather than a join failure.',
+    },
+    {
+      routeId: 'secure-connection',
+      devices: ['Mac'],
+      condition: 'The exact “Unable to establish secure connection to Zoom” message appears on macOS.',
+      reason: 'Use the approved macOS secure-connection route only for that exact error.',
+    },
+  ],
+  'cant-hear': [
+    {
+      routeId: 'bluetooth-headset',
+      condition: 'The caller is using Bluetooth headphones or a Bluetooth headset.',
+      reason: 'Bluetooth connection and Zoom speaker selection have their own approved path.',
+    },
+    {
+      routeId: 'meeting-volume',
+      condition: 'Audio is working, but the whole meeting is simply too loud or too quiet.',
+      reason: 'That is a volume-control symptom, not a no-audio symptom.',
+    },
+  ],
+  'cant-be-heard': [
+    {
+      routeId: 'bluetooth-headset',
+      condition: 'The caller is using a Bluetooth headset or Bluetooth microphone.',
+      reason: 'Bluetooth microphone selection has its own approved device path.',
+    },
+    {
+      routeId: 'multiple-audio-input-channels',
+      devices: ['Windows', 'Mac'],
+      condition: 'The caller specifically needs to choose among three or more audio input channels.',
+      reason: 'Use the approved multi-input-channel process only when that feature is actually involved.',
+    },
+  ],
+  'camera-not-working': [
+    {
+      routeId: 'join-video-preference',
+      condition: 'The camera works, but the concern is whether video starts on or off when joining.',
+      reason: 'That is a join preference rather than a camera failure.',
+    },
+  ],
+  'waiting-entry': [
+    {
+      routeId: 'cant-join',
+      condition: 'The caller is not actually reaching a Waiting Room/host-waiting screen and instead gets a join error.',
+      reason: 'Return to the join-failure route when Zoom never reaches the waiting state.',
+    },
+  ],
+  'cant-share': [
+    {
+      routeId: 'meeting-controls',
+      condition: 'The problem is only locating the Share control or meeting toolbar.',
+      reason: 'Use the controls route when sharing has not actually started yet.',
+    },
+  ],
+  chat: [
+    {
+      routeId: 'meeting-controls',
+      condition: 'Several meeting controls are missing or the caller cannot reveal the toolbar.',
+      reason: 'Use the broader controls route when the problem is not specific to Chat.',
+    },
+  ],
+  'meeting-controls': [
+    {
+      routeId: 'chat',
+      condition: 'The missing control is specifically Chat or sending a message.',
+      reason: 'Chat has its own approved symptom route.',
+    },
+    {
+      routeId: 'reactions',
+      condition: 'The caller specifically needs Raise Hand or meeting reactions.',
+      reason: 'Reactions have their own approved route and availability checks.',
+    },
+    {
+      routeId: 'cant-share',
+      condition: 'The caller can see the controls but cannot start screen sharing.',
+      reason: 'Use the screen-sharing route for an actual sharing problem.',
+    },
+    {
+      routeId: 'invite',
+      condition: 'The caller specifically needs to invite someone or copy the current meeting invitation.',
+      reason: 'Invitation controls have their own approved route and role boundary.',
+    },
+  ],
+  reactions: [
+    {
+      routeId: 'meeting-controls',
+      condition: 'The caller cannot reveal or locate multiple meeting controls, not just Reactions.',
+      reason: 'Use the broader controls route when the symptom is no longer reaction-specific.',
+    },
+  ],
+  invite: [
+    {
+      routeId: 'meeting-controls',
+      condition: 'The caller cannot reveal or locate the meeting controls at all.',
+      reason: 'Use the broader controls route before treating Invite as the only missing control.',
+    },
+  ],
+  'secure-connection': [
+    {
+      routeId: 'cant-join',
+      condition: 'The secure-connection message is gone, but the caller still cannot join for a different reason.',
+      reason: 'Reclassify as a general join failure once the exact secure-connection error no longer applies.',
+    },
+  ],
+  'bluetooth-headset': [
+    {
+      routeId: 'cant-hear',
+      condition: 'Bluetooth is connected, but the caller still cannot hear meeting audio.',
+      reason: 'Continue with the approved audio-output symptom route.',
+    },
+    {
+      routeId: 'cant-be-heard',
+      condition: 'Bluetooth is connected, but other participants still cannot hear the caller.',
+      reason: 'Continue with the approved microphone-input symptom route.',
+    },
+  ],
+  'join-muted': [
+    {
+      routeId: 'cant-be-heard',
+      condition: 'The join-muted preference is correct, but the microphone still does not transmit after unmuting.',
+      reason: 'That is now a microphone-input symptom rather than a join preference.',
+    },
+  ],
+  'join-video-preference': [
+    {
+      routeId: 'camera-not-working',
+      condition: 'The join preference is correct, but the camera still shows no usable video.',
+      reason: 'That is now a camera-function symptom.',
+    },
+  ],
+  'meeting-volume': [
+    {
+      routeId: 'cant-hear',
+      condition: 'There is no meeting audio at all rather than audio that is merely too loud or too quiet.',
+      reason: 'Use the no-audio route when volume controls are not the actual issue.',
+    },
+  ],
+  'auto-computer-audio': [
+    {
+      routeId: 'cant-hear',
+      condition: 'Zoom connects to meeting audio, but the caller cannot hear anyone.',
+      reason: 'The connection preference worked; continue with audio-output troubleshooting.',
+    },
+    {
+      routeId: 'cant-be-heard',
+      condition: 'Zoom connects to meeting audio, but other participants cannot hear the caller.',
+      reason: 'The connection preference worked; continue with microphone-input troubleshooting.',
+    },
+  ],
+  'multiple-audio-input-channels': [
+    {
+      routeId: 'cant-be-heard',
+      condition: 'The multi-channel setup is not the issue and Zoom simply is not detecting the caller’s microphone.',
+      reason: 'Use the standard microphone-input symptom route.',
+    },
+  ],
+  'participants-before-join': [
+    {
+      routeId: 'waiting-entry',
+      condition: 'The caller has started joining and is now waiting for the host or in the Waiting Room.',
+      reason: 'Use the entry-state route once the caller is already in the join flow.',
+    },
+  ],
+}
+
+export function approvedEndPathsForProcess(processId, { sourceRouteId = null, device = null } = {}) {
+  const basisRoutes = sourceRouteId
+    ? COMMON_ISSUE_ROUTES.filter(route => route.id === sourceRouteId && route.processIds?.includes(processId))
+    : COMMON_ISSUE_ROUTES.filter(route => route.processIds?.includes(processId))
+
+  const seen = new Set()
+  const output = []
+
+  for (const basisRoute of basisRoutes) {
+    for (const option of COMMON_ISSUE_END_PATHS[basisRoute.id] || []) {
+      if (option.routeId === sourceRouteId || seen.has(option.routeId)) continue
+      if (option.devices?.length && (!device || !option.devices.includes(device))) continue
+
+      const target = COMMON_ISSUE_ROUTES.find(route => route.id === option.routeId)
+      if (!target) continue
+      if (target.supportedDevices?.length && device && !target.supportedDevices.includes(device)) continue
+
+      seen.add(option.routeId)
+      output.push({
+        ...option,
+        route: target,
+        fromRouteId: basisRoute.id,
+      })
+    }
+  }
+
+  return output.slice(0, 4)
+}
+
 const routeSearchDocs = COMMON_ISSUE_ROUTES.map(route => ({
   id: route.id,
   title: route.title,

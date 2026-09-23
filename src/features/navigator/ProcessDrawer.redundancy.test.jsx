@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { expect, it } from 'vitest'
+import { expect, it, vi } from 'vitest'
 import { PROCESSES } from '../../data/processes'
 import { ProcessDrawer } from './ProcessDrawer'
 
@@ -127,4 +127,70 @@ it('puts the device-matched official Zoom article first in Process Guide traceab
 
   expect(links[0]).toHaveTextContent(/Matched to Android/i)
   expect(links[0]).toHaveAttribute('href', expect.stringContaining('KB0066222'))
+})
+
+
+it('after exhausting an audio-output path, shows only conditional next symptoms and does not loop back to the same Common Issue', async () => {
+  const user = userEvent.setup()
+  const onOpenRoute = vi.fn()
+  const process = {
+    id: 'troubleshooting-speaker-or-microphone-issues-in-the-zoom-desktop-app',
+    title: 'Minimal desktop audio path',
+    purpose: 'Exercise symptom-aware end routing.',
+    category: 'audio',
+    referral: 'Refer if the approved audio path is exhausted and no documented symptom route matches.',
+    visualReferences: [],
+    images: [],
+    text: [
+      'Applies To: Windows',
+      'Process / Step-by-Step Guide',
+      '1. Test the selected speaker',
+      'Run the approved speaker test.',
+    ].join('\n'),
+  }
+
+  render(<ProcessDrawer
+    process={process}
+    initialDevice="Windows"
+    initialSourceRouteId="cant-hear"
+    onClose={() => {}}
+    onOpenRoute={onOpenRoute}
+  />)
+
+  await user.click(screen.getByRole('button', { name: /Not resolved.*Next options/i }))
+
+  expect(screen.getByText(/Only if the symptom now matches/i)).toBeInTheDocument()
+  expect(screen.getByText(/using Bluetooth headphones/i)).toBeInTheDocument()
+  expect(screen.getByText(/whole meeting is simply too loud or too quiet/i)).toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: /I can’t hear anyone/i })).not.toBeInTheDocument()
+  expect(screen.queryByText(/They can’t hear me/i)).not.toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: /Bluetooth connection and Zoom speaker selection/i }))
+  expect(onOpenRoute).toHaveBeenCalledWith('bluetooth-headset')
+})
+
+it('shows the referral boundary instead of unrelated routes when no curated next symptom applies', async () => {
+  const user = userEvent.setup()
+  const process = {
+    id: 'transferring-meetings-and-webinars-between-devices',
+    title: 'Minimal transfer path',
+    purpose: 'Exercise a process with no automatic next symptom.',
+    category: 'devices',
+    referral: 'Refer when the approved transfer conditions are exhausted.',
+    visualReferences: [],
+    images: [],
+    text: [
+      'Applies To: Windows',
+      'Process / Step-by-Step Guide',
+      '1. Try the approved transfer',
+      'Follow the documented transfer action.',
+    ].join('\n'),
+  }
+
+  render(<ProcessDrawer process={process} initialDevice="Windows" onClose={() => {}} />)
+  await user.click(screen.getByRole('button', { name: /Not resolved.*Next options/i }))
+
+  expect(screen.getByText(/No additional approved symptom route applies automatically/i)).toBeInTheDocument()
+  expect(screen.getByText(/rather than starting unrelated troubleshooting/i)).toBeInTheDocument()
+  expect(screen.getByText(/When to stop \/ refer/i)).toBeInTheDocument()
 })

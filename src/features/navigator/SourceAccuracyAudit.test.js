@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest'
 import { PROCESSES } from '../../data/processes'
-import { COMMON_ISSUE_ROUTES, COMMON_ISSUE_VERIFIED_AT, orderedSourcesForRoute } from './commonIssueRoutes'
+import { approvedEndPathsForProcess, COMMON_ISSUE_ROUTES, COMMON_ISSUE_VERIFIED_AT, orderedSourcesForRoute } from './commonIssueRoutes'
 
 const EXPECTED_PRIMARY_ARTICLES = {
   'cant-join': 'KB0068749',
@@ -157,4 +157,41 @@ it('prioritizes the official Zoom article that matches an exact meeting-entry st
 
   expect(orderedSourcesForRoute(waiting, { state: 'Waiting Room' })[0].url).toContain('KB0063329')
   expect(orderedSourcesForRoute(waiting, { state: 'Waiting for host' })[0].url).toContain('KB0061476')
+})
+
+
+it('keeps exhausted audio routing symptom-aware and prevents loops back to the originating Common Issue', () => {
+  const next = approvedEndPathsForProcess(
+    'troubleshooting-speaker-or-microphone-issues-in-the-zoom-desktop-app',
+    { sourceRouteId: 'cant-hear', device: 'Windows' },
+  )
+
+  expect(next.map(item => item.route.id)).toEqual(['bluetooth-headset', 'meeting-volume'])
+  expect(next.map(item => item.route.id)).not.toContain('cant-hear')
+  expect(next.every(item => item.condition && item.reason)).toBe(true)
+})
+
+it('keeps Bluetooth end paths split by the remaining speaker-versus-microphone symptom', () => {
+  const next = approvedEndPathsForProcess(
+    'using-bluetooth-headphones-with-zoom-on-android-ios',
+    { sourceRouteId: 'bluetooth-headset', device: 'Android' },
+  )
+
+  expect(next.map(item => item.route.id)).toEqual(['cant-hear', 'cant-be-heard'])
+  expect(next.find(item => item.route.id === 'cant-hear').condition).toMatch(/cannot hear meeting audio/i)
+  expect(next.find(item => item.route.id === 'cant-be-heard').condition).toMatch(/cannot hear the caller/i)
+})
+
+it('filters device-specific end paths instead of offering unsupported next routes', () => {
+  const android = approvedEndPathsForProcess(
+    'troubleshooting-speaker-or-microphone-issues-on-a-mobile-device',
+    { sourceRouteId: 'cant-be-heard', device: 'Android' },
+  )
+  const windows = approvedEndPathsForProcess(
+    'troubleshooting-speaker-or-microphone-issues-in-the-zoom-desktop-app',
+    { sourceRouteId: 'cant-be-heard', device: 'Windows' },
+  )
+
+  expect(android.map(item => item.route.id)).toEqual(['bluetooth-headset'])
+  expect(windows.map(item => item.route.id)).toEqual(['bluetooth-headset', 'multiple-audio-input-channels'])
 })

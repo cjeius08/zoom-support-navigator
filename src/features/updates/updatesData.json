@@ -29,12 +29,12 @@
       "area": "Process Guides / Call Guide",
       "audience": "all",
       "title": "Process Guides now give device-specific troubleshooting one step at a time",
-      "changed": "Call Guides now preserve lettered source actions such as A1/B1/C1 as real ordered troubleshooting steps, keep device-specific instructions separated, and prioritize the official Zoom Support reference that matches the selected device and approved process. If an approved device-specific path is missing, Ozzie stops instead of substituting another platform’s steps.",
+      "changed": "Call Guides now preserve lettered source actions as ordered device-specific steps, prioritize the matching official Zoom source, and use symptom-aware end-of-path routing. After the last Not resolved step, Ozzie only offers another Common Issue when a documented condition matches the caller’s new symptom; otherwise it stops at the approved referral boundary instead of listing unrelated routes.",
       "checks": [
-        "Open a mobile audio Process Guide from Android and confirm the mobile Zoom troubleshooting article is listed first under Source traceability.",
-        "Open Screen Sharing on Android and confirm the Android actions appear as an ordered guided path.",
-        "Open a guide with distinct desktop and mobile instructions and confirm only the selected device path is shown.",
-        "Confirm missing device-specific internal coverage produces a coverage-gap message instead of another platform’s instructions."
+        "Complete an audio-output guide with Not resolved and confirm Ozzie only offers Bluetooth when a Bluetooth device is involved or Meeting Volume when audio works but is only too loud/quiet.",
+        "Confirm the Common Issue that launched the guide is not offered again as a next step.",
+        "Complete a Bluetooth path and confirm the next choices distinguish cannot hear audio from cannot be heard.",
+        "Complete a path with no curated next symptom and confirm Ozzie directs you to the documented stop/referral boundary instead of unrelated troubleshooting."
       ]
     },
     {
