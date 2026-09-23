@@ -115,3 +115,16 @@ it('shows the real Android screen-sharing sequence from A1-style approved source
   expect(within(dialog).getByText(/Step 1 of 5/i)).toBeInTheDocument()
   expect(within(dialog).queryByText('Open Screen Share')).not.toBeInTheDocument()
 })
+
+
+it('puts the device-matched official Zoom article first in Process Guide traceability', () => {
+  const process = PROCESSES.find(item => item.id === 'troubleshooting-speaker-or-microphone-issues-on-a-mobile-device')
+
+  render(<ProcessDrawer process={process} initialDevice="Android" onClose={() => {}} />)
+  const dialog = screen.getByRole('dialog')
+  const trace = within(dialog).getByText(/Source traceability/i).closest('.guide-source-trace')
+  const links = within(trace).getAllByRole('link')
+
+  expect(links[0]).toHaveTextContent(/Matched to Android/i)
+  expect(links[0]).toHaveAttribute('href', expect.stringContaining('KB0066222'))
+})
