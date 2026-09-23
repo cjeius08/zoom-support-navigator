@@ -3134,7 +3134,13 @@ body:has(.process-document-reader) .process-document-page {
 }
 
 .common-issue-drawer {
-  grid-template-rows: auto auto max-content minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(3rem, max-content) minmax(0, 1fr);
+}
+
+@media (max-width: 700px) {
+  .common-issue-drawer {
+    grid-template-rows: auto auto minmax(5.5rem, max-content) minmax(0, 1fr);
+  }
 }
 
 .global-feedback-backdrop {
