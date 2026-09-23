@@ -180,3 +180,24 @@ it('merges an explicit Guided Process handoff into the draft without overwriting
   expect(onPrefillApplied).toHaveBeenCalledWith('guided-handoff-1')
   expect(api.saveOwnCallNote).not.toHaveBeenCalled()
 })
+
+
+it('clears only the current unsaved documentation state when a New Call reset is confirmed', async () => {
+  const api = await import('../../lib/callNotesApi')
+  api.saveOwnCallNote.mockClear()
+  const user = userEvent.setup()
+  const { rerender } = render(<CallDocumentation open resetToken={0} />)
+
+  await user.type(screen.getByLabelText('Caller name'), 'Previous Caller')
+  await user.type(screen.getByLabelText(/Caller ref/i), 'PREV-101')
+  await user.type(screen.getByLabelText(/Exact issue/i), 'Previous call issue')
+  expect(screen.getByLabelText('Caller name')).toHaveValue('Previous Caller')
+
+  rerender(<CallDocumentation open resetToken={1} />)
+
+  expect(screen.getByLabelText('Caller name')).toHaveValue('')
+  expect(screen.getByLabelText(/Caller ref/i)).toHaveValue('')
+  expect(screen.getByLabelText(/Exact issue/i)).toHaveValue('')
+  expect(screen.getByLabelText('Device / platform')).toHaveValue('')
+  expect(api.saveOwnCallNote).not.toHaveBeenCalled()
+})
