@@ -10,6 +10,20 @@
   },
   "updates": [
     {
+      "id": "new-call-session-reset",
+      "date": "2026-09-23",
+      "area": "Home / Call Flow",
+      "audience": "all",
+      "title": "New Call now starts a clean support session",
+      "changed": "Added a New Call action that clears the current device, caller role, active troubleshooting path, search, and unsaved Call Documentation draft only after an in-app confirmation. Saved notes, favorites, training progress, and workspace settings are not deleted.",
+      "checks": [
+        "Select a device and caller role, then confirm the Current call bar shows that context.",
+        "Choose New Call and Cancel; confirm the current context and unsaved draft remain unchanged.",
+        "Choose New Call → Start New Call and confirm the Home troubleshooting state returns to a clean session.",
+        "Confirm the unsaved Call Documentation draft is cleared while previously saved notes remain available."
+      ]
+    },
+    {
       "id": "common-issues-smart-routing",
       "date": "2026-09-23",
       "area": "Common Issues",
