@@ -287,7 +287,7 @@ export function CommonIssueDrawer({
               </div>
             </div>
             <button type="button" className="primary-action" onClick={startRecommendedGuide}>
-              Start {selectedDevice} Guided Process →
+              Start Guided Process →
             </button>
             <small>Ozzie is routing—not inventing. The guided steps come from the approved Process Document and retain source traceability to official Zoom Support.</small>
           </section>}
