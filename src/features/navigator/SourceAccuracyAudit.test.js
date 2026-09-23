@@ -25,7 +25,6 @@ const EXPECTED_PRIMARY_ARTICLES = {
 }
 
 const KNOWN_DISCREPANCY_ROUTES = new Set([
-  'cant-join',
   'cant-hear',
   'cant-be-heard',
   'cant-share',
@@ -102,6 +101,20 @@ it('records the current verification date in one auditable constant', () => {
   expect(COMMON_ISSUE_VERIFIED_AT).toBe('September 23, 2026')
 })
 
+
+it('keeps Can’t Join steps in the order of the approved Process Document', () => {
+  const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'cant-join')
+  const process = PROCESSES.find(item => item.id === 'troubleshooting-when-you-cant-join-a-zoom-meeting')
+
+  expect(route.checks.map(check => check.title)).toEqual(process.steps)
+  expect(route.checks[0].instruction).toMatch(/browser-based joining is unsuccessful.*install.*Zoom Workplace desktop app/i)
+  expect(route.checks[1].instruction).toMatch(/already installed.*still cannot join.*uninstall.*reinstall/i)
+  expect(route.checks[2].instruction).toMatch(/Meeting ID/i)
+  expect(route.checks[2].instruction).toMatch(/passcode/i)
+  expect(route.checks[2].instruction).toMatch(/host/i)
+  expect(route.checks[3].instruction).toMatch(/invalid/i)
+  expect(route.checks[3].instruction).toMatch(/host/i)
+})
 
 it('keeps Can’t Join anchored to the troubleshooting article named by the approved Process Document', () => {
   const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'cant-join')
