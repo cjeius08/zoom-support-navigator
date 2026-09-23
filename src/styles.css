@@ -4994,3 +4994,7 @@ body:has(.process-document-reader) .process-document-page {
   .guide-device-options { grid-template-columns:1fr; }
   .guided-current-step { padding:.95rem; }
 }
+
+.step-script-compact { display:grid; gap:.55rem; margin-top:.85rem; }
+.step-script-compact>button { justify-self:start; }
+.step-script-compact .step-scripts { margin:0; }
