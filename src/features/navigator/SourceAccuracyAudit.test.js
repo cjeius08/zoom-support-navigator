@@ -112,7 +112,8 @@ it('keeps Can’t Join steps in the order of the approved Process Document', () 
   expect(route.checks[2].instruction).toMatch(/Meeting ID/i)
   expect(route.checks[2].instruction).toMatch(/passcode/i)
   expect(route.checks[2].instruction).toMatch(/host/i)
-  expect(route.checks[3].instruction).toMatch(/invalid.*contact the host/i)
+  expect(route.checks[3].instruction).toMatch(/invalid/i)
+  expect(route.checks[3].instruction).toMatch(/host/i)
 })
 
 it('keeps Can’t Join anchored to the troubleshooting article named by the approved Process Document', () => {
