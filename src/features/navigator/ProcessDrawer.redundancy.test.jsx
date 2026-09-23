@@ -152,6 +152,7 @@ it('after exhausting an audio-output path, shows only conditional next symptoms 
   render(<ProcessDrawer
     process={process}
     initialDevice="Windows"
+    initialRole="Host"
     initialSourceRouteId="cant-hear"
     onClose={() => {}}
     onOpenRoute={onOpenRoute}
@@ -166,7 +167,28 @@ it('after exhausting an audio-output path, shows only conditional next symptoms 
   expect(screen.queryByText(/They can’t hear me/i)).not.toBeInTheDocument()
 
   await user.click(screen.getByRole('button', { name: /Bluetooth connection and Zoom speaker selection/i }))
-  expect(onOpenRoute).toHaveBeenCalledWith('bluetooth-headset')
+  expect(onOpenRoute).toHaveBeenCalledWith('bluetooth-headset', {
+    device: 'Windows',
+    role: 'Host',
+  })
+})
+
+it('reports a device changed inside the Guided Process back to the shared call context', async () => {
+  const user = userEvent.setup()
+  const onContextChange = vi.fn()
+  const process = PROCESSES.find(item => item.id === 'using-bluetooth-headphones-with-zoom-on-android-ios')
+
+  render(<ProcessDrawer
+    process={process}
+    onClose={() => {}}
+    onContextChange={onContextChange}
+  />)
+
+  await user.click(screen.getByRole('button', { name: 'Android' }))
+  expect(onContextChange).toHaveBeenCalledWith({ device: 'Android' })
+
+  await user.click(screen.getByRole('button', { name: 'Windows' }))
+  expect(onContextChange).toHaveBeenCalledWith({ device: 'Windows' })
 })
 
 it('shows the referral boundary instead of unrelated routes when no curated next symptom applies', async () => {
