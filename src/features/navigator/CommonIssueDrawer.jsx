@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
-import { COMMON_ISSUE_VERIFIED_AT, orderedSourcesForRoute, recommendedProcessForRoute } from './commonIssueRoutes'
+import { COMMON_ISSUE_VERIFIED_AT, orderedSourcesForRoute, recommendedProcessForRoute, routeDecisionExplanation } from './commonIssueRoutes'
 import { useDialogFocus } from '../../lib/useDialogFocus'
 import { FavoriteToggle } from '../favorites/FavoriteToggle'
 import './commonIssueRoutes.css'
@@ -78,6 +78,12 @@ export function CommonIssueDrawer({
     : selectedDevice
       ? `Matched to ${selectedDevice} path`
       : 'Current product source'
+  const routeDecision = routeDecisionExplanation(route, {
+    device: selectedDevice,
+    state: selectedState,
+    processId: recommendedProcessId,
+    role: selectedRole,
+  })
   const recommendationByDevice = DEVICE_OPTIONS
     .map(device => recommendedProcessForRoute(route, { device, state: selectedState }))
     .filter(Boolean)
@@ -314,6 +320,14 @@ export function CommonIssueDrawer({
                 {selectedRole && <span>{selectedRole}</span>}
               </div>
             </div>
+            {routeDecision && <details className="common-issue-route-explanation">
+              <summary>Why this route?</summary>
+              <div>
+                <p><strong>Match:</strong> {routeDecision.matchReason}</p>
+                {routeDecision.contextNote && <p><strong>Context:</strong> {routeDecision.contextNote}</p>}
+                {routeDecision.sourceTitle && <p><strong>Verified against:</strong> Zoom Support — {routeDecision.sourceTitle}</p>}
+              </div>
+            </details>}
             <button type="button" className="primary-action" onClick={startRecommendedGuide}>
               Start Guided Process →
             </button>

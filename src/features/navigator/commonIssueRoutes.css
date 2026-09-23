@@ -702,3 +702,31 @@
     grid-template-columns:1fr;
   }
 }
+
+
+/* Why this route */
+.common-issue-route-explanation {
+  border:1px solid rgba(125,190,235,.2);
+  border-radius:.72rem;
+  background:rgba(5,16,25,.34);
+}
+.common-issue-route-explanation summary {
+  cursor:pointer;
+  padding:.7rem .8rem;
+  color:#dceef9;
+  font-weight:750;
+}
+.common-issue-route-explanation > div {
+  display:grid;
+  gap:.45rem;
+  padding:0 .8rem .8rem;
+}
+.common-issue-route-explanation p {
+  margin:0;
+  color:#aebfcb;
+  font-size:.8rem;
+  line-height:1.45;
+}
+.common-issue-route-explanation strong {
+  color:#dceef9;
+}

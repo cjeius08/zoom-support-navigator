@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest'
 import { PROCESSES } from '../../data/processes'
-import { approvedEndPathsForProcess, COMMON_ISSUE_ROUTES, COMMON_ISSUE_VERIFIED_AT, orderedSourcesForRoute } from './commonIssueRoutes'
+import { approvedEndPathsForProcess, COMMON_ISSUE_ROUTES, COMMON_ISSUE_VERIFIED_AT, orderedSourcesForRoute, routeDecisionExplanation } from './commonIssueRoutes'
 
 const EXPECTED_PRIMARY_ARTICLES = {
   'cant-join': 'KB0068749',
@@ -194,4 +194,32 @@ it('filters device-specific end paths instead of offering unsupported next route
 
   expect(android.map(item => item.route.id)).toEqual(['bluetooth-headset'])
   expect(windows.map(item => item.route.id)).toEqual(['bluetooth-headset', 'multiple-audio-input-channels'])
+})
+
+
+it('explains device-specific Common Issue routing without implying caller role caused the recommendation', () => {
+  const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'cant-hear')
+  const explanation = routeDecisionExplanation(route, {
+    device: 'Android',
+    role: 'Host',
+    processId: 'troubleshooting-speaker-or-microphone-issues-on-a-mobile-device',
+  })
+
+  expect(explanation.matchReason).toMatch(/Device-specific match: Android/i)
+  expect(explanation.matchReason).toMatch(/different approved guide/i)
+  expect(explanation.contextNote).toMatch(/Host is retained as call context/i)
+  expect(explanation.contextNote).toMatch(/did not change this recommendation/i)
+  expect(explanation.sourceTitle).toMatch(/mobile device/i)
+})
+
+it('explains exact waiting-screen state routing as the decision basis', () => {
+  const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'waiting-entry')
+  const explanation = routeDecisionExplanation(route, {
+    device: 'Windows',
+    state: 'Waiting Room',
+    processId: 'joining-a-zoom-meeting',
+  })
+
+  expect(explanation.matchReason).toBe('Exact screen state matched: Waiting Room.')
+  expect(explanation.sourceTitle).toMatch(/Waiting Room/i)
 })

@@ -1420,6 +1420,39 @@ export function recommendedProcessForRoute(route, { device = null, state = null 
   return processId
 }
 
+export function routeDecisionExplanation(route, { device = null, state = null, processId = null, role = null } = {}) {
+  if (!route || !processId) return null
+
+  const routing = COMMON_ISSUE_PROCESS_ROUTING[route.id] || {}
+  const deviceValues = Object.entries(routing)
+    .filter(([key, value]) => key !== 'default' && value)
+    .map(([, value]) => value)
+  const deviceChangesProcess = new Set(deviceValues).size > 1
+  const stateMatched = Boolean(state && Object.prototype.hasOwnProperty.call(routing, state))
+  const deviceMatched = Boolean(device && Object.prototype.hasOwnProperty.call(routing, device))
+
+  let matchReason = `Symptom matched: ${route.classification}.`
+  if (stateMatched) {
+    matchReason = `Exact screen state matched: ${state}.`
+  } else if (deviceMatched && deviceChangesProcess) {
+    matchReason = `Device-specific match: ${device}. This symptom uses a different approved guide for this device path.`
+  } else if (deviceMatched) {
+    matchReason = `Device confirmed: ${device}. The approved guide stays the same, and the device is carried into its supported path.`
+  } else if (device) {
+    matchReason = `Device retained: ${device}. This reviewed symptom maps to the same approved guide across its supported devices.`
+  }
+
+  const source = orderedSourcesForRoute(route, { device, processId, state })[0] ?? route.primarySource ?? null
+
+  return {
+    matchReason,
+    sourceTitle: source?.title ?? null,
+    contextNote: role
+      ? `${role} is retained as call context; caller role did not change this recommendation.`
+      : null,
+  }
+}
+
 const COMMON_ISSUE_SOURCE_PREFERENCES = {
   'cant-join': {
     byDevice: {
