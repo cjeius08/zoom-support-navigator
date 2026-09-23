@@ -134,6 +134,8 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
     setSelectedRoute("");
     setCurrentStepIndex(0);
     setOutcome("active");
+    setDocumentationPreviewOpen(false);
+    setDocumentationAdded(false);
   }, [process.id, defaultPlatform]);
 
   function copyLabel(id, defaultLabel) {
