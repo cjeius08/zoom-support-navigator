@@ -1420,6 +1420,100 @@ export function recommendedProcessForRoute(route, { device = null, state = null 
   return processId
 }
 
+const COMMON_ISSUE_SOURCE_PREFERENCES = {
+  'cant-join': {
+    byDevice: {
+      Windows: 'KB0068749',
+      Mac: 'KB0068749',
+      Browser: 'KB0068749',
+      iPhone: 'KB0060732',
+      Android: 'KB0060732',
+    },
+    byProcess: {
+      'troubleshooting-when-you-cant-join-a-zoom-meeting': 'KB0068749',
+      'joining-a-zoom-meeting': 'KB0060732',
+    },
+  },
+  'cant-hear': {
+    byDevice: {
+      Windows: 'KB0060836',
+      Mac: 'KB0060836',
+      iPhone: 'KB0066222',
+      Android: 'KB0066222',
+      Browser: 'KB0062765',
+    },
+    byProcess: {
+      'troubleshooting-speaker-or-microphone-issues-in-the-zoom-desktop-app': 'KB0060836',
+      'troubleshooting-speaker-or-microphone-issues-on-a-mobile-device': 'KB0066222',
+      'testing-your-audio-settings-for-zoom-meetings': 'KB0062765',
+      'zoom-audio-troubleshooting': 'KB0062765',
+    },
+  },
+  'cant-be-heard': {
+    byDevice: {
+      Windows: 'KB0060836',
+      Mac: 'KB0060836',
+      iPhone: 'KB0066222',
+      Android: 'KB0066222',
+      Browser: 'KB0062765',
+    },
+    byProcess: {
+      'troubleshooting-speaker-or-microphone-issues-in-the-zoom-desktop-app': 'KB0060836',
+      'troubleshooting-speaker-or-microphone-issues-on-a-mobile-device': 'KB0066222',
+      'zoom-audio-troubleshooting': 'KB0062765',
+    },
+  },
+  'camera-not-working': {
+    byDevice: {
+      Windows: 'KB0068908',
+      Mac: 'KB0068908',
+      iPhone: 'KB0061836',
+      Android: 'KB0061836',
+    },
+    byProcess: {
+      'zoom-camera-troubleshooting-during-a-meeting': 'KB0068908',
+      'testing-your-video-in-zoom': 'KB0061836',
+      'showing-and-hiding-your-video-in-a-zoom-meeting': 'KB0061836',
+    },
+  },
+  'waiting-entry': {
+    byState: {
+      'Waiting for host': 'KB0061476',
+      'Waiting Room': 'KB0063329',
+      'Scheduled for a different date or time': 'KB0061476',
+    },
+  },
+}
+
+function articleIdFromSource(source) {
+  return source?.url?.match(/sysparm_article=(KB\d+)/i)?.[1] ?? null
+}
+
+export function orderedSourcesForRoute(route, { device = null, processId = null, state = null } = {}) {
+  if (!route) return []
+
+  const sources = [route.primarySource, ...(route.supportingSources || [])]
+    .filter(source => source?.url)
+
+  const preferences = COMMON_ISSUE_SOURCE_PREFERENCES[route.id] || {}
+  const preferredArticle = preferences.byProcess?.[processId]
+    || preferences.byState?.[state]
+    || preferences.byDevice?.[device]
+    || null
+
+  if (!preferredArticle) return sources
+
+  return [...sources].sort((a, b) => {
+    const aPreferred = articleIdFromSource(a) === preferredArticle ? 1 : 0
+    const bPreferred = articleIdFromSource(b) === preferredArticle ? 1 : 0
+    return bPreferred - aPreferred
+  })
+}
+
+export function preferredSourceForRoute(route, context = {}) {
+  return orderedSourcesForRoute(route, context)[0] ?? null
+}
+
 const routeSearchDocs = COMMON_ISSUE_ROUTES.map(route => ({
   id: route.id,
   title: route.title,
