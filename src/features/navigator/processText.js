@@ -18,6 +18,24 @@ const PLATFORM_MATCHERS = [
   ['web', /\bZoom Web App\b|\bweb browser\b|\bbrowser\b/i],
 ]
 
+const DESKTOP_PLATFORMS = ['windows', 'macos', 'linux']
+const MOBILE_PLATFORMS = ['android', 'ios']
+
+const PROCESS_PLATFORM_OVERRIDES = {
+  'enabling-and-managing-multiple-audio-input-channels-in-zoom': ['windows', 'macos'],
+  'viewing-participants-already-in-a-meeting-before-joining': ['windows', 'macos'],
+}
+
+const PROCESS_ROUTE_PLATFORM_OVERRIDES = {
+  'using-bluetooth-headphones-with-zoom-on-android-ios': {
+    c: ['windows'],
+    d: ['windows'],
+    e: ['windows'],
+    f: ['windows'],
+    g: ['windows'],
+  },
+}
+
 export function processSections(text) {
   const sections = []; let current = { heading: 'Overview', lines: [] }
   for (const raw of String(text || '').split('\n')) {
@@ -32,7 +50,7 @@ export function processSections(text) {
 }
 
 const STEP_PATTERN = /^(?:step\s*)?(\d+)(?:\.|\s*[—–-])\s*(.+)$/i
-const ROUTE_PATTERN = /^([A-Z](?:\d+)?)\.\s+(.+)$/
+const LETTERED_PATTERN = /^([A-Z](?:\d+)?)\.\s+(.+)$/
 const SAMPLE_SCRIPT_PATTERN = /^sample (?:closing )?scripts?\s*:?\s*$/i
 const SECTION_KIND = [
   [/^quick (?:guide \/ remember the process|flow)|^key reminders$/i, 'quick'],
@@ -63,17 +81,57 @@ export function platformsFromText(text) {
     .map(([id]) => id)
 }
 
+function inferApplicationPlatforms(process, applicabilityLine) {
+  const explicit = platformsFromText(applicabilityLine)
+  const inferred = [...explicit]
+  const text = String(applicabilityLine || '')
+
+  if (/desktop app|desktop application/i.test(text) && !explicit.some((id) => DESKTOP_PLATFORMS.includes(id))) {
+    inferred.push('windows', 'macos')
+  }
+  if (/mobile app|mobile application|mobile users?/i.test(text) && !explicit.some((id) => MOBILE_PLATFORMS.includes(id))) {
+    inferred.push('android', 'ios')
+  }
+  if (/supported web browsers?|web app/i.test(text) && !explicit.includes('web')) {
+    inferred.push('web')
+  }
+
+  const override = PROCESS_PLATFORM_OVERRIDES[process?.id] || []
+  return unique([...inferred, ...override])
+}
+
+function platformsFromRouteLabel(label, applicationPlatforms) {
+  const explicit = platformsFromText(label)
+  if (explicit.length) return explicit
+
+  if (/\bdesktop\b/i.test(label)) {
+    const scoped = applicationPlatforms.filter((id) => DESKTOP_PLATFORMS.includes(id))
+    return scoped.length ? scoped : ['windows', 'macos']
+  }
+  if (/\bmobile\b/i.test(label)) {
+    const scoped = applicationPlatforms.filter((id) => MOBILE_PLATFORMS.includes(id))
+    return scoped.length ? scoped : MOBILE_PLATFORMS
+  }
+  return []
+}
+
 function routeLabel(raw) {
-  const platformNames = '(?:Windows|macOS|Mac|Linux|Android|iOS|iPhone|iPad|Zoom Web App|Web App|Browser)'
+  const platformNames = '(?:Windows|macOS|Mac|Linux|Android|iOS|iPhone|iPad|Zoom Web App|Web App|Browser|Desktop|Mobile)'
   const prefix = new RegExp(`^${platformNames}(?:\\s*[|/+,&]\\s*${platformNames})*\\s*(?:[-—–:]\\s*)?`, 'i')
   return raw.replace(prefix, '').trim()
 }
 
-function standalonePlatformHeading(line) {
-  const platforms = platformsFromText(line)
+function standalonePlatformHeading(line, applicationPlatforms) {
+  let platforms = platformsFromText(line)
+  if (!platforms.length && /^desktop(?: app)?$/i.test(line)) {
+    platforms = applicationPlatforms.filter((id) => DESKTOP_PLATFORMS.includes(id))
+  }
+  if (!platforms.length && /^mobile(?: app)?$/i.test(line)) {
+    platforms = applicationPlatforms.filter((id) => MOBILE_PLATFORMS.includes(id))
+  }
   if (!platforms.length || line.length > 90) return null
   const stripped = line
-    .replace(/\b(?:Windows|macOS|Mac|Linux|Android|iOS|iPhone|iPad|Zoom Web App|Web App|Browser)\b/gi, '')
+    .replace(/\b(?:Windows|macOS|Mac|Linux|Android|iOS|iPhone|iPad|Zoom Web App|Web App|Browser|Desktop|Mobile|App)\b/gi, '')
     .replace(/[|/+,&\s:—–-]/g, '')
   return stripped ? null : platforms
 }
@@ -89,26 +147,63 @@ function derivedScript(process) {
   return `Let’s work through the approved Zoom steps for ${process.title.trim()}. Please let me know when you are ready to continue.`
 }
 
-function unnumberedStep(line, activeKind) {
+function referenceLabels(lines) {
+  const referenceIndex = lines.findIndex((line) => /^Reference\s*:?$/i.test(line))
+  if (referenceIndex < 0) return new Set()
+  return new Set(
+    lines
+      .slice(referenceIndex + 1)
+      .filter((line) => line.length <= 130)
+      .map((line) => line.replace(/^[-•·]\s*/, '').trim())
+      .filter(Boolean),
+  )
+}
+
+function unnumberedStep(line, activeKind, sourceReferenceLabels) {
+  const normalized = line.replace(/^[-•·]\s*/, '').trim()
   return activeKind === 'process'
-    && !/^(?:Zoom Download Center|Uninstall Zoom|CleanZoom utility)$/i.test(line)
-    && !ROUTE_PATTERN.test(line)
-    && line.length <= 110
-    && /^[A-Z]/.test(line)
-    && !/[.!?:]$/.test(line)
-    && !/^(?:option|category|platform|control|what it does|agent reminder|question|action)$/i.test(line)
+    && !sourceReferenceLabels.has(normalized)
+    && !/^(?:Zoom Download Center|Uninstall Zoom|CleanZoom utility)$/i.test(normalized)
+    && !LETTERED_PATTERN.test(normalized)
+    && normalized.length <= 110
+    && /^[A-Z]/.test(normalized)
+    && !/[.!?:]$/.test(normalized)
+    && !/^(?:option|category|platform|control|what it does|agent reminder|question|action|primary reference|supporting (?:zoom )?resources?)$/i.test(normalized)
 }
 
 function confirmationLine(line) {
   return /\b(confirm|verify|check whether|able to|expected result|try joining|try again|return to the meeting)\b/i.test(line)
 }
 
+function stepHasContent(step) {
+  return Boolean(step && (step.instructions.length || step.scripts.length || step.confirmations.length || step.visualReferences.length))
+}
+
+function createStep({ number, title, platforms, routeId, routeLabel: label, routeIntro = false }) {
+  return {
+    number,
+    title,
+    instructions: [],
+    scripts: [],
+    confirmations: [],
+    visualReferences: [],
+    platforms: [...platforms],
+    routeId,
+    routeLabel: label,
+    routeIntro,
+  }
+}
+
 export function buildCallGuide(process) {
   const lines = String(process?.text || '').split('\n').map((line) => line.trim()).filter(Boolean)
+  const sourceReferenceLabels = referenceLabels(lines)
+  const applicabilityLine = lines.find((line) => /^Applies To:/i.test(line)) || ''
+  const applicationPlatforms = inferApplicationPlatforms(process, applicabilityLine)
   const steps = []
   const callouts = []
   const globalScripts = []
   const quickGuide = []
+  const routeDefinitions = new Map()
   let currentStep = null
   let currentCallout = null
   let activeKind = null
@@ -118,7 +213,14 @@ export function buildCallGuide(process) {
   let currentRouteId = null
   let currentRouteLabel = ''
   const parentPlatforms = {}
+  const parentLabels = {}
 
+  const removeEmptyRouteIntro = () => {
+    if (currentStep?.routeIntro && !stepHasContent(currentStep)) {
+      const index = steps.indexOf(currentStep)
+      if (index >= 0) steps.splice(index, 1)
+    }
+  }
   const flushScript = () => {
     if (!collectingScript) return
     collectingScript = false
@@ -138,6 +240,7 @@ export function buildCallGuide(process) {
     }
     if (kind) {
       flushScript()
+      removeEmptyRouteIntro()
       activeKind = kind
       currentCallout = null
       currentStep = null
@@ -151,53 +254,90 @@ export function buildCallGuide(process) {
     }
 
     if (inProcess && activeKind === 'process') {
-      const routeMatch = line.match(ROUTE_PATTERN)
-      if (routeMatch) {
+      const letteredMatch = line.match(LETTERED_PATTERN)
+      if (letteredMatch) {
         flushScript()
-        currentStep = null
+        removeEmptyRouteIntro()
         currentCallout = null
-        const [, code, rawLabel] = routeMatch
-        const detectedPlatforms = platformsFromText(rawLabel)
-        const parentCode = code.charAt(0)
+        const [, code, rawLabel] = letteredMatch
+        const parentCode = code.charAt(0).toLowerCase()
+        const routeOverride = PROCESS_ROUTE_PLATFORM_OVERRIDES[process?.id]?.[parentCode] || []
+        const detectedPlatforms = platformsFromRouteLabel(rawLabel, applicationPlatforms)
+
         if (code.length === 1) {
-          currentPlatforms = detectedPlatforms
-          parentPlatforms[parentCode] = detectedPlatforms
+          currentPlatforms = detectedPlatforms.length ? detectedPlatforms : routeOverride
+          parentPlatforms[parentCode] = [...currentPlatforms]
+          currentRouteId = parentCode
+          currentRouteLabel = routeLabel(rawLabel) || rawLabel
+          parentLabels[parentCode] = currentRouteLabel
+          routeDefinitions.set(currentRouteId, {
+            id: currentRouteId,
+            label: currentRouteLabel,
+            platforms: [...currentPlatforms],
+          })
+          currentStep = createStep({
+            number: code,
+            title: currentRouteLabel,
+            platforms: currentPlatforms,
+            routeId: currentRouteId,
+            routeLabel: currentRouteLabel,
+            routeIntro: true,
+          })
+          steps.push(currentStep)
         } else {
+          currentRouteId = parentCode
           currentPlatforms = detectedPlatforms.length
             ? detectedPlatforms
-            : (parentPlatforms[parentCode] || currentPlatforms)
+            : (parentPlatforms[parentCode] || routeOverride || [])
+          currentRouteLabel = parentLabels[parentCode] || routeLabel(rawLabel) || rawLabel
+          if (!routeDefinitions.has(currentRouteId)) {
+            routeDefinitions.set(currentRouteId, {
+              id: currentRouteId,
+              label: currentRouteLabel,
+              platforms: [...currentPlatforms],
+            })
+          }
+          currentStep = createStep({
+            number: code,
+            title: rawLabel,
+            platforms: currentPlatforms,
+            routeId: currentRouteId,
+            routeLabel: currentRouteLabel,
+          })
+          steps.push(currentStep)
         }
-        currentRouteId = code.toLowerCase()
-        currentRouteLabel = routeLabel(rawLabel) || rawLabel
         continue
       }
 
-      const platformHeading = standalonePlatformHeading(line)
+      const platformHeading = standalonePlatformHeading(line, applicationPlatforms)
       if (platformHeading) {
         flushScript()
+        removeEmptyRouteIntro()
         currentStep = null
         currentPlatforms = platformHeading
         currentRouteId = `platform-${platformHeading.join('-')}`
         currentRouteLabel = platformHeading.map((id) => PLATFORM_LABELS[id]).join(' / ')
+        routeDefinitions.set(currentRouteId, {
+          id: currentRouteId,
+          label: currentRouteLabel,
+          platforms: [...currentPlatforms],
+        })
         continue
       }
     }
 
     const stepMatch = inProcess && activeKind === 'process' ? line.match(STEP_PATTERN) : null
-    if (stepMatch || unnumberedStep(line, activeKind)) {
+    if (stepMatch || unnumberedStep(line, activeKind, sourceReferenceLabels)) {
       flushScript()
+      removeEmptyRouteIntro()
       currentCallout = null
-      currentStep = {
+      currentStep = createStep({
         number: stepMatch ? Number(stepMatch[1]) : String(steps.length + 1),
         title: stepMatch?.[2] ?? line,
-        instructions: [],
-        scripts: [],
-        confirmations: [],
-        visualReferences: [],
-        platforms: [...currentPlatforms],
+        platforms: currentPlatforms,
         routeId: currentRouteId,
         routeLabel: currentRouteLabel,
-      }
+      })
       steps.push(currentStep)
       continue
     }
@@ -223,6 +363,7 @@ export function buildCallGuide(process) {
       else currentStep.instructions.push(line)
     }
   }
+  removeEmptyRouteIntro()
 
   const allScripts = [...steps.flatMap((step) => step.scripts), ...globalScripts]
   const sourceLines = [...steps.flatMap((step) => [...step.instructions, ...step.confirmations]), ...callouts.flatMap((callout) => callout.lines)]
@@ -238,27 +379,18 @@ export function buildCallGuide(process) {
     if (target) target.visualReferences.push(visual)
   }
 
-  const applicabilityLine = lines.find((line) => /^Applies To:/i.test(line)) || ''
   const availablePlatforms = unique([
-    ...platformsFromText(applicabilityLine),
+    ...applicationPlatforms,
     ...steps.flatMap((step) => step.platforms),
   ])
 
-  const routes = []
-  const seenRoutes = new Set()
-  for (const step of steps) {
-    const id = step.routeId || 'main'
-    if (seenRoutes.has(id)) continue
-    seenRoutes.add(id)
-    routes.push({
-      id,
-      label: step.routeLabel || 'Main approved steps',
-      platforms: [...step.platforms],
-    })
+  const routes = [...routeDefinitions.values()]
+  if (!routes.length && steps.length) {
+    routes.push({ id: 'main', label: 'Main approved steps', platforms: [] })
   }
 
   return {
-    steps,
+    steps: steps.map(({ routeIntro, ...step }) => step),
     routes,
     availablePlatforms,
     globalScripts,
