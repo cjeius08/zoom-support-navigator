@@ -3132,9 +3132,14 @@ body:has(.source-pages) .source-pages figure,
 body:has(.process-document-reader) .process-document-page {
   max-width: calc(100% - 3.5rem);
 }
+
 .common-issue-drawer .process-tabs > button {
+  pointer-events: auto;
   position: relative;
   z-index: 6;
+}
+.common-issue-drawer .process-tabs {
+  pointer-events: none;
 }
 
 .global-feedback-backdrop {
