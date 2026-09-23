@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
 import { COMMON_ISSUE_VERIFIED_AT, recommendedProcessForRoute } from './commonIssueRoutes'
 import { useDialogFocus } from '../../lib/useDialogFocus'
@@ -47,6 +47,11 @@ export function CommonIssueDrawer({
   const selectedDevice = callContext?.device ?? null
   const selectedRole = callContext?.role ?? null
   const [selectedState, setSelectedState] = useState(null)
+
+  useEffect(() => {
+    setTab('quick')
+    setSelectedState(null)
+  }, [route.id])
 
   const routeHasDeviceBoundary = Array.isArray(route.supportedDevices) && route.supportedDevices.length > 0
   const routeDeviceMismatch = Boolean(
