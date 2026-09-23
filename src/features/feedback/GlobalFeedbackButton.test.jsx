@@ -97,10 +97,7 @@ it('compacts the report button beside Readiness Lab controls and source pages', 
   expect(css).toContain('body:has(.readiness-lab-dock) .readiness-question-nav')
   expect(css).toContain('body:has(.source-pages) .source-pages figure')
   expect(css).toContain('body:has(.process-document-reader) .process-document-page')
-  expect(css).toContain('.common-issue-drawer .process-tabs > button')
-  expect(css).toContain('.common-issue-drawer .process-tabs {')
-  expect(css).toContain('pointer-events: none;')
-  expect(css).toContain('pointer-events: auto;')
+  expect(css).toContain('.common-issue-drawer {\n  grid-template-rows: auto auto auto minmax(0, 1fr);')
 })
 
 it('uses viewport-fixed portal styling so resize and page containers cannot cover the report button', () => {
