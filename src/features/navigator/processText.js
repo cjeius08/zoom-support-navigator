@@ -1,5 +1,23 @@
 const HEADING_PATTERN = /^(?:\d+\.\s*)?(Purpose|Applies To|When To Use|Requirements(?:\s*\/\s*Before You Begin| and Important (?:Notes|Behavior))?|Key Information and Requirements|Important Requirement|Introduction|Process \/ Step-by-Step Guide|Sample Script|Notes?|Important (?:Limitations and Reminders|Transfer Limitations|Notes)|Quick Guide \/ Remember the Process|Quick Flow|Key Reminders|Referral \/ Roadblock Matrix|Immediate Stop \/ Refer Triggers|When to Stop and Refer for Additional Assistance|Who (?:the )?Arbitrator Should Contact|Reference)(?::\s*(.*))?$/i
 
+export const PLATFORM_LABELS = {
+  windows: 'Windows',
+  macos: 'macOS',
+  linux: 'Linux',
+  android: 'Android',
+  ios: 'iOS',
+  web: 'Web / Browser',
+}
+
+const PLATFORM_MATCHERS = [
+  ['windows', /\bWindows\b/i],
+  ['macos', /\bmacOS\b|\bMac\b/i],
+  ['linux', /\bLinux\b/i],
+  ['android', /\bAndroid\b/i],
+  ['ios', /\biOS\b|\biPhone\b|\biPad\b/i],
+  ['web', /\bZoom Web App\b|\bweb browser\b|\bbrowser\b/i],
+]
+
 export function processSections(text) {
   const sections = []; let current = { heading: 'Overview', lines: [] }
   for (const raw of String(text || '').split('\n')) {
@@ -14,7 +32,7 @@ export function processSections(text) {
 }
 
 const STEP_PATTERN = /^(?:step\s*)?(\d+)(?:\.|\s*[—–-])\s*(.+)$/i
-const LETTERED_STEP_PATTERN = /^([A-Z](?:\d+)?)\.\s+(.+)$/
+const ROUTE_PATTERN = /^([A-Z](?:\d+)?)\.\s+(.+)$/
 const SAMPLE_SCRIPT_PATTERN = /^sample (?:closing )?scripts?\s*:?\s*$/i
 const SECTION_KIND = [
   [/^quick (?:guide \/ remember the process|flow)|^key reminders$/i, 'quick'],
@@ -35,6 +53,31 @@ function calloutLabel(kind) {
   return ({ requirement: 'IMPORTANT REQUIREMENT', limitation: 'LIMITATION', note: 'NOTE', referral: 'WHEN TO REFER' })[kind] ?? 'IMPORTANT'
 }
 
+function unique(values) {
+  return [...new Set(values)]
+}
+
+export function platformsFromText(text) {
+  return PLATFORM_MATCHERS
+    .filter(([, pattern]) => pattern.test(String(text || '')))
+    .map(([id]) => id)
+}
+
+function routeLabel(raw) {
+  const platformNames = '(?:Windows|macOS|Mac|Linux|Android|iOS|iPhone|iPad|Zoom Web App|Web App|Browser)'
+  const prefix = new RegExp(`^${platformNames}(?:\\s*[|/+,&]\\s*${platformNames})*\\s*(?:[-—–:]\\s*)?`, 'i')
+  return raw.replace(prefix, '').trim()
+}
+
+function standalonePlatformHeading(line) {
+  const platforms = platformsFromText(line)
+  if (!platforms.length || line.length > 90) return null
+  const stripped = line
+    .replace(/\b(?:Windows|macOS|Mac|Linux|Android|iOS|iPhone|iPad|Zoom Web App|Web App|Browser)\b/gi, '')
+    .replace(/[|/+,&\s:—–-]/g, '')
+  return stripped ? null : platforms
+}
+
 function conservativeQuestion(lines) {
   const source = lines.join(' ')
   if (/device|platform|Windows|macOS|Linux|Android|iOS/i.test(source)) return 'What device or operating system are you using?'
@@ -49,11 +92,15 @@ function derivedScript(process) {
 function unnumberedStep(line, activeKind) {
   return activeKind === 'process'
     && !/^(?:Zoom Download Center|Uninstall Zoom|CleanZoom utility)$/i.test(line)
-    && !LETTERED_STEP_PATTERN.test(line)
+    && !ROUTE_PATTERN.test(line)
     && line.length <= 110
     && /^[A-Z]/.test(line)
     && !/[.!?:]$/.test(line)
     && !/^(?:option|category|platform|control|what it does|agent reminder|question|action)$/i.test(line)
+}
+
+function confirmationLine(line) {
+  return /\b(confirm|verify|check whether|able to|expected result|try joining|try again|return to the meeting)\b/i.test(line)
 }
 
 export function buildCallGuide(process) {
@@ -67,6 +114,10 @@ export function buildCallGuide(process) {
   let activeKind = null
   let inProcess = false
   let collectingScript = false
+  let currentPlatforms = []
+  let currentRouteId = null
+  let currentRouteLabel = ''
+  const parentPlatforms = {}
 
   const flushScript = () => {
     if (!collectingScript) return
@@ -77,11 +128,8 @@ export function buildCallGuide(process) {
     else globalScripts.push(line)
   }
 
-  for (const [index, line] of lines.entries()) {
+  for (const line of lines) {
     const kind = headingKind(line)
-    const lettered = line.match(LETTERED_STEP_PATTERN)
-    const useLetteredStep = Boolean(lettered && (/\d/.test(lettered[1]) || !STEP_PATTERN.test(lines[index + 1] || '')))
-    const stepMatch = inProcess ? (line.match(STEP_PATTERN) || (useLetteredStep ? lettered : null)) : null
     if (SAMPLE_SCRIPT_PATTERN.test(line)) {
       if (/^sample closing scripts?/i.test(line)) currentStep = null
       collectingScript = true
@@ -92,13 +140,64 @@ export function buildCallGuide(process) {
       flushScript()
       activeKind = kind
       currentCallout = null
-      if (kind === 'process') inProcess = true
+      currentStep = null
+      inProcess = kind === 'process'
+      if (kind === 'process') {
+        currentPlatforms = []
+        currentRouteId = null
+        currentRouteLabel = ''
+      }
       continue
     }
+
+    if (inProcess && activeKind === 'process') {
+      const routeMatch = line.match(ROUTE_PATTERN)
+      if (routeMatch) {
+        flushScript()
+        currentStep = null
+        currentCallout = null
+        const [, code, rawLabel] = routeMatch
+        const detectedPlatforms = platformsFromText(rawLabel)
+        const parentCode = code.charAt(0)
+        if (code.length === 1) {
+          currentPlatforms = detectedPlatforms
+          parentPlatforms[parentCode] = detectedPlatforms
+        } else {
+          currentPlatforms = detectedPlatforms.length
+            ? detectedPlatforms
+            : (parentPlatforms[parentCode] || currentPlatforms)
+        }
+        currentRouteId = code.toLowerCase()
+        currentRouteLabel = routeLabel(rawLabel) || rawLabel
+        continue
+      }
+
+      const platformHeading = standalonePlatformHeading(line)
+      if (platformHeading) {
+        flushScript()
+        currentStep = null
+        currentPlatforms = platformHeading
+        currentRouteId = `platform-${platformHeading.join('-')}`
+        currentRouteLabel = platformHeading.map((id) => PLATFORM_LABELS[id]).join(' / ')
+        continue
+      }
+    }
+
+    const stepMatch = inProcess && activeKind === 'process' ? line.match(STEP_PATTERN) : null
     if (stepMatch || unnumberedStep(line, activeKind)) {
       flushScript()
       currentCallout = null
-      currentStep = { number: stepMatch?.[1] && /^\d+$/.test(stepMatch[1]) ? Number(stepMatch[1]) : (stepMatch?.[1] ?? String(steps.length + 1)), title: stepMatch?.[2] ?? line, instructions: [], scripts: [], confirmations: [], visualReferences: [] }
+      currentStep = {
+        number: stepMatch ? Number(stepMatch[1]) : String(steps.length + 1),
+        title: stepMatch?.[2] ?? line,
+        instructions: [],
+        scripts: [],
+        confirmations: [],
+        visualReferences: [],
+        platforms: [...currentPlatforms],
+        routeId: currentRouteId,
+        routeLabel: currentRouteLabel,
+      }
       steps.push(currentStep)
       continue
     }
@@ -120,13 +219,13 @@ export function buildCallGuide(process) {
     }
     if (activeKind === 'reference') continue
     if (currentStep) {
-      currentStep.instructions.push(line)
-      if (/\b(confirm|verify|check whether|able to|expected result|try joining|try again|return to the meeting)\b/i.test(line)) currentStep.confirmations.push(line)
+      if (confirmationLine(line)) currentStep.confirmations.push(line)
+      else currentStep.instructions.push(line)
     }
   }
 
   const allScripts = [...steps.flatMap((step) => step.scripts), ...globalScripts]
-  const sourceLines = [...steps.flatMap((step) => step.instructions), ...callouts.flatMap((callout) => callout.lines)]
+  const sourceLines = [...steps.flatMap((step) => [...step.instructions, ...step.confirmations]), ...callouts.flatMap((callout) => callout.lines)]
   const questionLines = sourceLines.filter((line) => /^(ask|confirm|determine|clarify|identify)\b/i.test(line))
   const derivedQuestion = questionLines.length ? '' : conservativeQuestion(sourceLines)
   const visualReferences = process?.visualReferences || []
@@ -139,8 +238,29 @@ export function buildCallGuide(process) {
     if (target) target.visualReferences.push(visual)
   }
 
+  const applicabilityLine = lines.find((line) => /^Applies To:/i.test(line)) || ''
+  const availablePlatforms = unique([
+    ...platformsFromText(applicabilityLine),
+    ...steps.flatMap((step) => step.platforms),
+  ])
+
+  const routes = []
+  const seenRoutes = new Set()
+  for (const step of steps) {
+    const id = step.routeId || 'main'
+    if (seenRoutes.has(id)) continue
+    seenRoutes.add(id)
+    routes.push({
+      id,
+      label: step.routeLabel || 'Main approved steps',
+      platforms: [...step.platforms],
+    })
+  }
+
   return {
     steps,
+    routes,
+    availablePlatforms,
     globalScripts,
     quickGuide,
     callouts,
