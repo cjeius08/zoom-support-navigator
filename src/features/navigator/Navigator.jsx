@@ -97,7 +97,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
   const [processLaunchContext, setProcessLaunchContext] = useState(null)
   const [selectedRoute, setSelectedRoute] = useState(null)
   const [callContext, setCallContext] = useState({ device: null, role: null, hearingStatus: null, impact: null, status: null })
-  const [commonIssueTab, setCommonIssueTab] = useState('Quick Guide')
+  const [commonIssueTab, setCommonIssueTab] = useState('Find the Right Guide')
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
   const [activeSuggestion, setActiveSuggestion] = useState(-1)
   const [libraryTab, setLibraryTab] = useState('fastest')
@@ -126,7 +126,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
     if (!route) return
     setSelected(null)
     setSelectedRoute(route)
-    setCommonIssueTab('Quick Guide')
+    setCommonIssueTab('Find the Right Guide')
     onResourceViewed('common_issue', route.id)
   }, [initialCommonIssueId, onResourceViewed])
 
