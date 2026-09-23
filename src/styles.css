@@ -3133,13 +3133,8 @@ body:has(.process-document-reader) .process-document-page {
   max-width: calc(100% - 3.5rem);
 }
 
-.common-issue-drawer .process-tabs > button {
-  pointer-events: auto;
-  position: relative;
-  z-index: 6;
-}
-.common-issue-drawer .process-tabs {
-  pointer-events: none;
+.common-issue-drawer {
+  grid-template-rows: auto auto auto minmax(0, 1fr);
 }
 
 .global-feedback-backdrop {
