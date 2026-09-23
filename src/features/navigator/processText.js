@@ -26,7 +26,22 @@ const PROCESS_PLATFORM_OVERRIDES = {
   'viewing-participants-already-in-a-meeting-before-joining': ['windows', 'macos'],
 }
 
+const PROCESS_DEFAULT_STEP_PLATFORM_OVERRIDES = {
+  'adjusting-the-volume-of-a-zoom-meeting': ['windows', 'macos', 'linux'],
+  'muting-your-microphone-when-joining-a-zoom-meeting': ['windows', 'macos', 'linux'],
+  'zoom-camera-troubleshooting-during-a-meeting': ['windows', 'macos'],
+}
+
 const PROCESS_ROUTE_PLATFORM_OVERRIDES = {
+  'adjusting-the-volume-of-a-zoom-meeting': {
+    a: ['windows', 'macos', 'linux'],
+    b: ['windows', 'macos', 'linux'],
+    c: ['windows'],
+  },
+  'muting-your-microphone-when-joining-a-zoom-meeting': {
+    a: ['windows', 'macos', 'linux'],
+    b: ['windows', 'macos', 'linux'],
+  },
   'using-bluetooth-headphones-with-zoom-on-android-ios': {
     c: ['windows'],
     d: ['windows'],
@@ -179,7 +194,11 @@ function stepHasContent(step) {
   return Boolean(step && (step.instructions.length || step.scripts.length || step.confirmations.length || step.visualReferences.length))
 }
 
-function createStep({ number, title, platforms, routeId, routeLabel: label, routeIntro = false }) {
+function createStep({ number, title, platforms, fallbackPlatforms = [], routeId, routeLabel: label, routeIntro = false }) {
+  const titlePlatforms = platformsFromText(title)
+  const scopedPlatforms = titlePlatforms.length
+    ? titlePlatforms
+    : (platforms.length ? platforms : fallbackPlatforms)
   return {
     number,
     title,
@@ -187,7 +206,7 @@ function createStep({ number, title, platforms, routeId, routeLabel: label, rout
     scripts: [],
     confirmations: [],
     visualReferences: [],
-    platforms: [...platforms],
+    platforms: [...scopedPlatforms],
     routeId,
     routeLabel: label,
     routeIntro,
@@ -199,6 +218,7 @@ export function buildCallGuide(process) {
   const sourceReferenceLabels = referenceLabels(lines)
   const applicabilityLine = lines.find((line) => /^Applies To:/i.test(line)) || ''
   const applicationPlatforms = inferApplicationPlatforms(process, applicabilityLine)
+  const defaultStepPlatforms = PROCESS_DEFAULT_STEP_PLATFORM_OVERRIDES[process?.id] || applicationPlatforms
   const steps = []
   const callouts = []
   const globalScripts = []
@@ -279,6 +299,7 @@ export function buildCallGuide(process) {
             number: code,
             title: currentRouteLabel,
             platforms: currentPlatforms,
+            fallbackPlatforms: defaultStepPlatforms,
             routeId: currentRouteId,
             routeLabel: currentRouteLabel,
             routeIntro: true,
@@ -301,6 +322,7 @@ export function buildCallGuide(process) {
             number: code,
             title: rawLabel,
             platforms: currentPlatforms,
+            fallbackPlatforms: defaultStepPlatforms,
             routeId: currentRouteId,
             routeLabel: currentRouteLabel,
           })
@@ -335,6 +357,7 @@ export function buildCallGuide(process) {
         number: stepMatch ? Number(stepMatch[1]) : String(steps.length + 1),
         title: stepMatch?.[2] ?? line,
         platforms: currentPlatforms,
+        fallbackPlatforms: defaultStepPlatforms,
         routeId: currentRouteId,
         routeLabel: currentRouteLabel,
       })
@@ -365,13 +388,14 @@ export function buildCallGuide(process) {
   }
   removeEmptyRouteIntro()
 
-  const allScripts = [...steps.flatMap((step) => step.scripts), ...globalScripts]
-  const sourceLines = [...steps.flatMap((step) => [...step.instructions, ...step.confirmations]), ...callouts.flatMap((callout) => callout.lines)]
+  const usableSteps = steps.filter(stepHasContent)
+  const allScripts = [...usableSteps.flatMap((step) => step.scripts), ...globalScripts]
+  const sourceLines = [...usableSteps.flatMap((step) => [...step.instructions, ...step.confirmations]), ...callouts.flatMap((callout) => callout.lines)]
   const questionLines = sourceLines.filter((line) => /^(ask|confirm|determine|clarify|identify)\b/i.test(line))
   const derivedQuestion = questionLines.length ? '' : conservativeQuestion(sourceLines)
   const visualReferences = process?.visualReferences || []
   for (const visual of visualReferences) {
-    const target = steps.find((step) => {
+    const target = usableSteps.find((step) => {
       const titleWords = step.title.toLowerCase().split(/\W+/).filter((word) => word.length > 3)
       const visualText = `${visual.title || ''} ${visual.documentStep || ''}`.toLowerCase()
       return titleWords.some((word) => visualText.includes(word))
@@ -381,16 +405,16 @@ export function buildCallGuide(process) {
 
   const availablePlatforms = unique([
     ...applicationPlatforms,
-    ...steps.flatMap((step) => step.platforms),
+    ...usableSteps.flatMap((step) => step.platforms),
   ])
 
   const routes = [...routeDefinitions.values()]
-  if (!routes.length && steps.length) {
+  if (!routes.length && usableSteps.length) {
     routes.push({ id: 'main', label: 'Main approved steps', platforms: [] })
   }
 
   return {
-    steps: steps.map(({ routeIntro, ...step }) => step),
+    steps: usableSteps.map(({ routeIntro, ...step }) => step),
     routes,
     availablePlatforms,
     globalScripts,
