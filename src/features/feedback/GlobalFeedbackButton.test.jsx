@@ -97,8 +97,8 @@ it('compacts the report button beside Readiness Lab controls and source pages', 
   expect(css).toContain('body:has(.readiness-lab-dock) .readiness-question-nav')
   expect(css).toContain('body:has(.source-pages) .source-pages figure')
   expect(css).toContain('body:has(.process-document-reader) .process-document-page')
-  expect(css).toContain('.common-issue-drawer {\n  grid-template-rows: auto auto minmax(3rem, max-content) minmax(0, 1fr);')
-  expect(css).toContain('@media (max-width: 700px) {\n  .common-issue-drawer {\n    grid-template-rows: auto auto minmax(5.5rem, max-content) minmax(0, 1fr);')
+  expect(css).toContain('.common-issue-drawer .process-tabs {\n  min-height: 3rem;')
+  expect(css).toContain('@media (max-width: 700px) {\n  .common-issue-drawer .process-tabs {\n    min-height: 5.5rem;')
 })
 
 it('uses viewport-fixed portal styling so resize and page containers cannot cover the report button', () => {
