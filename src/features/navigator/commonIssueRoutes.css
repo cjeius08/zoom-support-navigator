@@ -1,4 +1,4 @@
-.common-issue-drawer {
+.process-drawer.common-issue-drawer {
   width: min(52rem, 94vw);
   grid-template-rows: auto auto auto minmax(0, 1fr);
 }
