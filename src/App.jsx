@@ -55,6 +55,7 @@ export default function App() {
   const [navigatorProcessId, setNavigatorProcessId] = useState(null)
   const [navigatorCommonIssueId, setNavigatorCommonIssueId] = useState(null)
   const [reportContext, setReportContext] = useState(EMPTY_REPORT_CONTEXT)
+  const [documentationHandoff, setDocumentationHandoff] = useState(null)
   const [savedNotesUserId, setSavedNotesUserId] = useState('')
   const [mySavedNoteId, setMySavedNoteId] = useState('')
   const [navigationHistory, setNavigationHistory] = useState([])
@@ -98,6 +99,14 @@ export default function App() {
   const updateReportContext = useCallback((nextContext) => {
     setReportContext(current => ({ ...current, ...nextContext }))
   }, [])
+  const addToCallDocumentation = useCallback((handoff) => {
+    setDocumentationHandoff(handoff)
+  }, [])
+
+  const clearDocumentationHandoff = useCallback(() => {
+    setDocumentationHandoff(null)
+  }, [])
+
 
   function currentNavigationSnapshot() {
     return {
@@ -409,6 +418,7 @@ export default function App() {
       ? <Navigator
           onOpenTraining={openTraining}
           onTrackEvent={trackEvent}
+          onAddToDocumentation={addToCallDocumentation}
           initialProcessId={navigatorProcessId}
           initialCommonIssueId={navigatorCommonIssueId}
           onReportContextChange={updateReportContext}
@@ -465,6 +475,8 @@ export default function App() {
         theme={theme}
         onThemeChange={changeTheme}
         onOpenMySavedNotes={openMySavedNotes}
+        documentationHandoff={documentationHandoff}
+        onDocumentationHandoffApplied={clearDocumentationHandoff}
         onFeedback={submitFeedback}
         reportContext={reportContext}
         avatars={avatarLibrary}
