@@ -344,3 +344,22 @@ it('switches the visible official source when the selected audio device changes'
   expect(within(dialog).getByText(/Matched to Android path/i).closest('.common-issue-source-preview').querySelector('a'))
     .toHaveAttribute('href', expect.stringContaining('KB0066222'))
 })
+
+
+it('routes Can’t Join to the mobile joining guide on iPhone and Android', async () => {
+  const user = userEvent.setup()
+  render(<Navigator />)
+
+  await user.click(screen.getByRole('button', { name: /Can’t join the meeting/i }))
+  const dialog = screen.getByRole('dialog', { name: /Can’t join the meeting/i })
+
+  await user.click(within(dialog).getByRole('button', { name: 'iPhone' }))
+  expect(within(dialog).getByRole('heading', { name: /Joining a Zoom Meeting/i })).toBeInTheDocument()
+  expect(within(dialog).queryByRole('heading', { name: /Troubleshooting When You Can’t Join a Zoom Meeting/i })).not.toBeInTheDocument()
+
+  await user.click(within(dialog).getByRole('button', { name: 'Android' }))
+  expect(within(dialog).getByRole('heading', { name: /Joining a Zoom Meeting/i })).toBeInTheDocument()
+
+  await user.click(within(dialog).getByRole('button', { name: 'Windows' }))
+  expect(within(dialog).getByRole('heading', { name: /Troubleshooting When You Can’t Join a Zoom Meeting/i })).toBeInTheDocument()
+})

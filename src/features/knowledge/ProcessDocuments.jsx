@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
 import { assetUrl } from '../../lib/assetUrl'
+import { normalizeSearchText } from '../navigator/smartSearch'
 import './processDocuments.css'
 
 const categoryLabels = {
@@ -27,13 +28,13 @@ export function ProcessDocuments({ onTrackEvent, onReportContextChange = () => {
 
   const selected = documents.find(process => process.id === selectedId) || null
   const filteredDocuments = useMemo(() => {
-    const normalized = query.trim().toLowerCase()
-    if (!normalized) return documents
+    const normalizedQuery = normalizeSearchText(query)
+    if (!normalizedQuery) return documents
     return documents.filter(process => [
       process.title,
       process.purpose,
       categoryLabels[process.category] || process.category,
-    ].some(value => String(value || '').toLowerCase().includes(normalized)))
+    ].some(value => normalizeSearchText(value).includes(normalizedQuery)))
   }, [documents, query])
 
   useEffect(() => {
