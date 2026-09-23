@@ -136,11 +136,13 @@ it('accepts the macOS secure-connection route only on Mac', async () => {
   expect(within(windows.dialog).queryByRole('button', { name: /Start Guided Process/i })).not.toBeInTheDocument()
 })
 
-it('routes join-muted to the approved mute-on-join process while keeping the distinction visible in classification', async () => {
+it('keeps the join-muted distinction visible and flags the current iPhone internal-guide gap', async () => {
   const { dialog } = await openFromSearch({ query: 'mute on join', device: 'iPhone', role: 'Participant' })
 
   expect(within(dialog).getByText(/Joining muted still connects the caller to meeting audio/i)).toBeInTheDocument()
-  expect(within(dialog).getByRole('heading', { name: /Muting Your Microphone When Joining a Zoom Meeting/i })).toBeInTheDocument()
+  expect(within(dialog).getByText(/Approved guide coverage gap/i)).toBeInTheDocument()
+  expect(within(dialog).getByText(/desktop instructions only/i)).toBeInTheDocument()
+  expect(within(dialog).queryByRole('button', { name: /Start Guided Process/i })).not.toBeInTheDocument()
 })
 
 it('stops unsupported Browser guidance for the pre-join participant-view feature', async () => {
