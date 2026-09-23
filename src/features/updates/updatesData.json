@@ -15,11 +15,12 @@
       "area": "Common Issues",
       "audience": "all",
       "title": "Common Issues now helps you find the right approved guide",
-      "changed": "Common Issues now focuses on the caller’s symptom and device, then recommends the matching approved Process Guide instead of repeating a second troubleshooting checklist. Device selection now gives clear path feedback, carries into the Guided Process, and blocks unsupported device combinations instead of guessing.",
+      "changed": "Common Issues now focuses on the caller’s symptom and device, then recommends the matching approved Process Guide instead of repeating a second troubleshooting checklist. Routing now also respects audited Process Guide coverage: mobile/desktop paths are separated where the approved documents differ, and Ozzie explicitly flags a coverage gap instead of sending a caller into another platform’s instructions.",
       "checks": [
-        "Open Common Issues → I can’t hear anyone, select Windows, and confirm Ozzie recommends the desktop audio guide.",
-        "Switch to Android and confirm the recommendation changes to the mobile audio guide.",
-        "Open Bluetooth headset isn’t working, switch devices, and confirm the selected device path is clearly shown before starting the Guided Process."
+        "Open I can’t hear anyone, switch between Windows and Android, and confirm the approved desktop/mobile guide changes.",
+        "Open My camera isn’t working on Android and confirm Ozzie recommends the mobile-capable Testing Your Video guide.",
+        "Open Invite someone on Windows or Join muted on iPhone and confirm Ozzie flags the approved guide coverage gap instead of offering a mismatched Guided Process.",
+        "Open Bluetooth headset isn’t working on Android and confirm Windows-only native Bluetooth/driver paths are not offered."
       ]
     },
     {
@@ -28,11 +29,12 @@
       "area": "Process Guides / Call Guide",
       "audience": "all",
       "title": "Process Guides now give device-specific troubleshooting one step at a time",
-      "changed": "Call Guides now use the selected device to show the relevant approved path, present one troubleshooting step at a time, and let the agent choose Resolved / Done or Not resolved. If a step does not solve the issue, Ozzie continues to the next approved action or related documented path without inventing a fix. Full Process and source references remain available.",
+      "changed": "Call Guides now use the selected device to show the relevant approved path, preserve lettered source actions such as A1/B1/C1 as real ordered troubleshooting steps, and prevent instructions from another platform from being substituted when an approved device-specific path is missing. Agents still work one step at a time with Resolved / Done or Not resolved, while Full Process and source references remain available.",
       "checks": [
-        "Open a Process Guide with Windows and mobile instructions and confirm only the selected device path is shown.",
-        "Choose Not resolved and confirm the next approved step appears.",
-        "Choose Resolved / Done and confirm Ozzie stops the troubleshooting path instead of showing unnecessary remaining steps."
+        "Open Screen Sharing on Android and confirm the Android actions appear as an ordered guided path instead of separate empty routes.",
+        "Open a guide with distinct desktop and mobile instructions and confirm only the selected device path is shown.",
+        "When Ozzie detects that the approved document does not contain a usable step-by-step path for the selected device, confirm it shows an approved guide coverage gap instead of another platform’s instructions.",
+        "Choose Not resolved and Resolved / Done and confirm the guided flow still advances or stops appropriately."
       ]
     },
     {
