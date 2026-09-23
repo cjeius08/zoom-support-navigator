@@ -67,6 +67,7 @@ export function processSections(text) {
 const STEP_PATTERN = /^(?:step\s*)?(\d+)(?:\.|\s*[—–-])\s*(.+)$/i
 const LETTERED_PATTERN = /^([A-Z](?:\d+)?)\.\s+(.+)$/
 const SAMPLE_SCRIPT_PATTERN = /^sample (?:closing )?scripts?\s*:?\s*$/i
+const SOURCE_LINK_LABEL_PATTERN = /^(?:Using in-meeting chat|Zoom-supported USB devices|Testing Zoom audio settings|Zoom advanced audio settings|Granting Zoom permissions on macOS|Unmuting in a Zoom meeting|Testing your video before a meeting|Troubleshooting video crashes)$/i
 const SECTION_KIND = [
   [/^quick (?:guide \/ remember the process|flow)|^key reminders$/i, 'quick'],
   [/^requirements|^key information and requirements|^important requirement/i, 'requirement'],
@@ -202,6 +203,7 @@ function unnumberedStep(line, activeKind, sourceReferenceLabels) {
   return activeKind === 'process'
     && !sourceReferenceLabels.has(normalized)
     && !resemblesReferenceLabel(normalized, sourceReferenceLabels)
+    && !SOURCE_LINK_LABEL_PATTERN.test(normalized)
     && !/^(?:Zoom Download Center|Uninstall Zoom|CleanZoom utility)$/i.test(normalized)
     && !LETTERED_PATTERN.test(normalized)
     && normalized.length <= 110
