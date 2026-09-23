@@ -29,13 +29,13 @@
       "area": "Process Guides / Call Guide",
       "audience": "all",
       "title": "Process Guides now give device-specific troubleshooting one step at a time",
-      "changed": "Call Guides now preserve lettered source actions as ordered device-specific steps, prioritize the matching official Zoom source, use symptom-aware end-of-path routing, and can prepare an optional Call Documentation draft from the troubleshooting that actually happened. The agent sees a preview first, only completed steps are included, existing caller details are preserved, and nothing is saved automatically.",
+      "changed": "Call Guides now preserve device-specific approved steps, matched Zoom sources, symptom-aware end routing, optional documentation handoff, and live call context across chained troubleshooting. If the agent changes the device inside a Guided Process, that device follows into the next approved Common Issue together with the caller role, so the next route does not ask for the same context again.",
       "checks": [
-        "Resolve a Guided Process after two or more steps and open Documentation preview; confirm only the steps actually reached are listed with their observed result.",
-        "Choose Add to Call Documentation draft and confirm the global Call Documentation tool opens with the device, issue, attempted steps, and resolution/next-step summary.",
-        "Confirm existing caller name, phone/ref, and manually entered issue text are not overwritten by the handoff.",
-        "Confirm the handoff does not save a note automatically; review and Save note remain separate agent actions.",
-        "Exhaust an unresolved path and confirm the preview says the next action is not yet selected rather than claiming a referral or resolution that did not happen."
+        "Start Bluetooth troubleshooting from Android with a caller role selected, then change the device to Windows inside the Guided Process.",
+        "Exhaust the path and open a conditional next symptom; confirm the new Common Issue already has Windows and the original caller role selected.",
+        "Confirm changing the device inside a Process Guide also updates the active device captured in workspace/report context.",
+        "Confirm normal Common Issue → Guided Process handoffs still preserve the selected device and role.",
+        "Confirm Call Documentation handoffs still append only the troubleshooting actually completed and do not auto-save."
       ]
     },
     {
