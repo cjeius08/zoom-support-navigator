@@ -78,7 +78,7 @@ const SECTION_KIND = [
 ]
 
 function headingKind(line) {
-  const heading = line.replace(/:$/, '').trim()
+  const heading = line.replace(/^\d+\.\s*/, '').replace(/:$/, '').trim()
   return SECTION_KIND.find(([pattern]) => pattern.test(heading))?.[1] ?? null
 }
 
@@ -163,7 +163,7 @@ function derivedScript(process) {
 }
 
 function referenceLabels(lines) {
-  const referenceIndex = lines.findIndex((line) => /^Reference\s*:?$/i.test(line))
+  const referenceIndex = lines.findIndex((line) => /^(?:\d+\.\s*)?Reference\s*:?$/i.test(line))
   if (referenceIndex < 0) return new Set()
   return new Set(
     lines
@@ -407,6 +407,13 @@ export function buildCallGuide(process) {
     ...applicationPlatforms,
     ...usableSteps.flatMap((step) => step.platforms),
   ])
+  const platformSignatures = availablePlatforms.map((platform) =>
+    usableSteps
+      .map((step, index) => (!step.platforms.length || step.platforms.includes(platform)) ? index : null)
+      .filter((index) => index !== null)
+      .join(','),
+  )
+  const deviceSelectionRequired = new Set(platformSignatures).size > 1
 
   const routes = [...routeDefinitions.values()]
   if (!routes.length && usableSteps.length) {
@@ -417,6 +424,7 @@ export function buildCallGuide(process) {
     steps: usableSteps.map(({ routeIntro, ...step }) => step),
     routes,
     availablePlatforms,
+    deviceSelectionRequired,
     globalScripts,
     quickGuide,
     callouts,
