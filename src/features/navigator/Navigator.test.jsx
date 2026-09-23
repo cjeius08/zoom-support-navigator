@@ -190,6 +190,7 @@ it('publishes selected tab, device, caller role, and active Common Issue for glo
   await user.click(within(dialog).getByRole('button', { name: 'Windows' }))
   await user.click(within(dialog).getByRole('button', { name: 'Participant' }))
   await user.click(within(dialog).getByRole('tab', { name: 'Visual Guide' }))
+  expect(within(dialog).getByRole('tab', { name: 'Visual Guide' })).toHaveAttribute('aria-selected', 'true')
 
   expect(onReportContextChange).toHaveBeenLastCalledWith(expect.objectContaining({
     selected_tab: 'Visual Guide',

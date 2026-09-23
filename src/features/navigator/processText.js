@@ -48,6 +48,7 @@ function derivedScript(process) {
 
 function unnumberedStep(line, activeKind) {
   return activeKind === 'process'
+    && !/^(?:Zoom Download Center|Uninstall Zoom|CleanZoom utility)$/i.test(line)
     && !LETTERED_STEP_PATTERN.test(line)
     && line.length <= 110
     && /^[A-Z]/.test(line)

@@ -22,6 +22,7 @@ export function GlobalFeedbackButton({ currentView, reportContext, onSubmit }) {
         type="button"
         className="global-feedback-fab"
         aria-label="Report an issue"
+        title="Report an issue"
         onClick={openReport}
       >
         <span aria-hidden="true">!</span>

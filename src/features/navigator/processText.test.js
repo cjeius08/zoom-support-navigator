@@ -26,6 +26,14 @@ describe('buildCallGuide', () => {
     expect(guide.steps.length).toBeGreaterThanOrEqual(14)
   })
 
+  it('keeps linked download and cleanup resources inside the numbered steps', () => {
+    const guide = buildCallGuide(joining)
+    expect(guide.steps.map(({ number }) => number)).toEqual([1, 2, 3, 4])
+    expect(guide.steps[0].instructions.join(' ')).toContain('Zoom Download Center')
+    expect(guide.steps[1].instructions.join(' ')).toContain('Uninstall Zoom')
+    expect(guide.steps[1].instructions.join(' ')).toContain('CleanZoom utility')
+  })
+
   it('exposes exact source quick guidance, limits, referrals, and an explicit source script', () => {
     const guide = buildCallGuide(volume)
     expect(guide.quickGuide).toContain('OPEN → AUDIO → TEST → ADJUST → CONFIRM')
