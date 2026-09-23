@@ -408,17 +408,20 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, onOpenProcess,
                       )}
 
                       {currentStep.scripts.length > 0 && (
-                        <details className="approved-details step-scripts">
-                          <summary>Suggested wording</summary>
-                          {currentStep.scripts.map((script, scriptIndex) => (
-                            <div key={scriptIndex}>
-                              <blockquote>{script}</blockquote>
-                              <button onClick={() => copyText(script, `step-${currentStepIndex}-script-${scriptIndex}`)}>
-                                {copyLabel(`step-${currentStepIndex}-script-${scriptIndex}`, "Copy Script")}
-                              </button>
-                            </div>
-                          ))}
-                        </details>
+                        <div className="step-script-compact">
+                          <button
+                            type="button"
+                            onClick={() => copyText(currentStep.scripts.join("\n\n"), `step-${currentStepIndex}-script`)}
+                          >
+                            {copyLabel(`step-${currentStepIndex}-script`, "Copy Script")}
+                          </button>
+                          <details className="approved-details step-scripts">
+                            <summary>Suggested wording</summary>
+                            {currentStep.scripts.map((script, scriptIndex) => (
+                              <blockquote key={scriptIndex}>{script}</blockquote>
+                            ))}
+                          </details>
+                        </div>
                       )}
 
                       {currentStep.visualReferences.map((visual, visualIndex) => (
