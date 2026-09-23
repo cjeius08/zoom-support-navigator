@@ -106,7 +106,7 @@ it('shows copy feedback only on the clicked control and reports clipboard failur
 
   await user.click(scriptButtons[0])
   expect(within(dialog).getAllByRole('button', { name: 'Copied ✓' })).toHaveLength(1)
-  expect(within(dialog).getAllByRole('button', { name: 'Copy Script' }).length).toBeGreaterThan(0)
+  expect(within(dialog).getByRole('button', { name: 'Copy Step' })).toBeInTheDocument()
 
   vi.spyOn(navigator.clipboard, 'writeText').mockRejectedValueOnce(new Error('Clipboard blocked'))
   await user.click(within(dialog).getByRole('button', { name: 'Copy Current Path' }))
