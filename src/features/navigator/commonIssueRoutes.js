@@ -1,6 +1,6 @@
 import { normalizeSearchText, searchProcesses } from './smartSearch'
 
-export const COMMON_ISSUE_VERIFIED_AT = 'September 18, 2026'
+export const COMMON_ISSUE_VERIFIED_AT = 'September 23, 2026'
 
 export const COMMON_ISSUE_ROUTES = [
   {
@@ -1320,6 +1320,52 @@ export const COMMON_ISSUE_ROUTES = [
     ],
   },
 ]
+
+const COMMON_ISSUE_PROCESS_ROUTING = {
+  'cant-join': { default: 'troubleshooting-when-you-cant-join-a-zoom-meeting' },
+  'cant-hear': {
+    Windows: 'troubleshooting-speaker-or-microphone-issues-in-the-zoom-desktop-app',
+    Mac: 'troubleshooting-speaker-or-microphone-issues-in-the-zoom-desktop-app',
+    iPhone: 'troubleshooting-speaker-or-microphone-issues-on-a-mobile-device',
+    Android: 'troubleshooting-speaker-or-microphone-issues-on-a-mobile-device',
+    default: 'zoom-audio-troubleshooting',
+  },
+  'cant-be-heard': {
+    Windows: 'troubleshooting-speaker-or-microphone-issues-in-the-zoom-desktop-app',
+    Mac: 'troubleshooting-speaker-or-microphone-issues-in-the-zoom-desktop-app',
+    iPhone: 'troubleshooting-speaker-or-microphone-issues-on-a-mobile-device',
+    Android: 'troubleshooting-speaker-or-microphone-issues-on-a-mobile-device',
+    default: 'zoom-audio-troubleshooting',
+  },
+  'camera-not-working': { default: 'zoom-camera-troubleshooting-during-a-meeting' },
+  'waiting-entry': {
+    'Waiting for host': 'waiting-for-the-host-to-start-a-meeting-or-webinar',
+    'Waiting Room': 'joining-a-zoom-meeting',
+    'Scheduled for a different date or time': 'waiting-for-the-host-to-start-a-meeting-or-webinar',
+  },
+  'cant-share': { default: 'sharing-your-screen-desktop-or-content-in-zoom' },
+  chat: { default: 'chatting-in-a-zoom-meeting' },
+  'meeting-controls': { default: 'zoom-meeting-controls-icons' },
+  reactions: { default: 'using-non-verbal-feedback-and-meeting-reactions' },
+  invite: { default: 'using-participant-controls-in-a-zoom-meeting' },
+  'secure-connection': { default: 'zoom-error-unable-to-establish-secure-connection-to-zoom' },
+  'bluetooth-headset': { default: 'using-bluetooth-headphones-with-zoom-on-android-ios' },
+  'transfer-device': { default: 'transferring-meetings-and-webinars-between-devices' },
+  'join-muted': { default: 'muting-your-microphone-when-joining-a-zoom-meeting' },
+  'join-video-preference': { default: 'setting-your-video-to-stay-on-or-off-when-joining-meetings-and-webinars' },
+  'meeting-volume': { default: 'adjusting-the-volume-of-a-zoom-meeting' },
+  'auto-computer-audio': { default: 'automatically-joining-meetings-with-computer-audio' },
+  'multiple-audio-input-channels': { default: 'enabling-and-managing-multiple-audio-input-channels-in-zoom' },
+  'participants-before-join': { default: 'viewing-participants-already-in-a-meeting-before-joining' },
+}
+
+export function recommendedProcessForRoute(route, { device = null, state = null } = {}) {
+  if (!route) return null
+  const routing = COMMON_ISSUE_PROCESS_ROUTING[route.id]
+  const processId = routing?.[state] || routing?.[device] || routing?.default || route.processIds?.[0] || null
+  if (!processId || !route.processIds?.includes(processId)) return null
+  return processId
+}
 
 const routeSearchDocs = COMMON_ISSUE_ROUTES.map(route => ({
   id: route.id,

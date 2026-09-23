@@ -94,9 +94,10 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
+  const [processLaunchContext, setProcessLaunchContext] = useState(null)
   const [selectedRoute, setSelectedRoute] = useState(null)
   const [callContext, setCallContext] = useState({ device: null, role: null, hearingStatus: null, impact: null, status: null })
-  const [commonIssueTab, setCommonIssueTab] = useState('Quick Guide')
+  const [commonIssueTab, setCommonIssueTab] = useState('Find the Right Guide')
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
   const [activeSuggestion, setActiveSuggestion] = useState(-1)
   const [libraryTab, setLibraryTab] = useState('fastest')
@@ -107,6 +108,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
     const process = PROCESSES.find(item => item.id === initialProcessId)
     if (!process) return
     setSelectedRoute(null)
+    setProcessLaunchContext(null)
     setSelected(process)
     onResourceViewed('process', process.id)
     onTrackEvent?.({
@@ -124,7 +126,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
     if (!route) return
     setSelected(null)
     setSelectedRoute(route)
-    setCommonIssueTab('Quick Guide')
+    setCommonIssueTab('Find the Right Guide')
     onResourceViewed('common_issue', route.id)
   }, [initialCommonIssueId, onResourceViewed])
 
@@ -176,10 +178,11 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
     onTrackEvent?.({ eventType: 'tool_open', routeId: 'navigator', toolId: `navigator_tab_${nextTab}` })
   }
 
-  function openProcess(process, toolId = 'process_card') {
+  function openProcess(process, toolId = 'process_card', launchContext = null) {
     if (!process) return
     setSelectedRoute(null)
-    setCommonIssueTab('Quick Guide')
+    setCommonIssueTab('Find the Right Guide')
+    setProcessLaunchContext(launchContext)
     setSelected(process)
     onResourceViewed('process', process.id)
     onTrackEvent?.({
@@ -194,7 +197,8 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
   function openRoute(route, toolId = 'common_issue') {
     if (!route) return
     setSelected(null)
-    setCommonIssueTab('Quick Guide')
+    setProcessLaunchContext(null)
+    setCommonIssueTab('Find the Right Guide')
     setSelectedRoute(route)
     onResourceViewed('common_issue', route.id)
     onTrackEvent?.({
@@ -428,6 +432,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
       process={selected}
       onClose={()=>setSelected(null)}
       onOpenTraining={onOpenTraining}
+      initialDevice={processLaunchContext?.device ?? null}
       onOpenRoute={routeId=>openRoute(routeById(routeId),'guided_process_next')}
       onTrackEvent={onTrackEvent}
       isFavorite={isFavorite('process', selected.id)}
@@ -439,8 +444,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, initialProcessId = nul
       callContext={callContext}
       onClose={()=>setSelectedRoute(null)}
       onOpenRoute={routeId=>openRoute(routeById(routeId),'redirect')}
-      onOpenProcess={processId=>openProcess(PROCESSES.find(process=>process.id===processId),'common_issue_full_process')}
-      onStatusChange={status=>setCallContext(current=>({...current,status}))}
+      onOpenProcess={(processId, launchContext)=>openProcess(PROCESSES.find(process=>process.id===processId),'common_issue_recommended_process',launchContext)}
       onContextChange={patch=>setCallContext(current=>({...current,...patch}))}
       onTabChange={setCommonIssueTab}
       onTrackEvent={onTrackEvent}
