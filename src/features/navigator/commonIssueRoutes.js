@@ -32,19 +32,24 @@ export const COMMON_ISSUE_ROUTES = [
     ],
     checks: [
       {
-        title: 'Try the approved meeting details directly',
-        instruction: 'If the invite link is not working, open Zoom Workplace or zoom.us/join and enter the Meeting ID exactly as provided by the host/organizer. Enter the passcode if prompted.',
+        title: 'Install the Zoom Workplace Desktop App',
+        instruction: 'If browser-based joining is unsuccessful, install and open the Zoom Workplace desktop app, then try joining the meeting again.',
+        expected: 'The participant can continue through the Zoom Workplace app or reaches an expected waiting state.',
+      },
+      {
+        title: 'Uninstall and Reinstall Zoom',
+        instruction: 'If Zoom is already installed but the participant still cannot join, completely uninstall Zoom, download the latest version from Zoom’s official Download Center, reinstall it, and try joining again. Use CleanZoom only when appropriate for the supported environment and only if company policy allows it.',
+        expected: 'The participant can retry after a clean, current Zoom installation.',
+      },
+      {
+        title: 'Enter the Meeting ID and Passcode Manually',
+        instruction: 'Sign in to Zoom Workplace, select Home → Join, enter the Meeting ID exactly as provided by the host/organizer, then enter the passcode if prompted. Use this when the invite link or direct join does not work.',
         expected: 'Zoom accepts the meeting details and moves the participant into the meeting or an expected waiting state.',
       },
       {
-        title: 'If Zoom says the Meeting ID is invalid',
-        instruction: 'Re-check the digits exactly as provided. If Zoom still reports the Meeting ID as invalid, the host/organizer must confirm or resend the correct meeting information. Do not guess or modify the Meeting ID.',
-        expected: 'The meeting details are either accepted or confirmed as needing organizer correction.',
-      },
-      {
-        title: 'If they want to join from a browser',
-        instruction: 'The Join from your browser link is controlled by the host’s setting. If the link is not offered, use the Zoom Workplace app or have the participant contact the host/organizer about the meeting option.',
-        expected: 'The participant uses an available supported join method without changing meeting-owner settings.',
+        title: 'Contact the Host if the Meeting ID Is Invalid',
+        instruction: 'Confirm that the Meeting ID was entered correctly. If Zoom still reports the ID as invalid, ask the host/organizer to confirm or resend the correct meeting information. Do not guess or modify the Meeting ID.',
+        expected: 'The meeting information is confirmed by the host or the participant can retry with the corrected details.',
       },
     ],
     success: 'The participant reaches the meeting, Waiting Room, or Waiting for host screen using the correct meeting information.',
@@ -73,7 +78,6 @@ export const COMMON_ISSUE_ROUTES = [
         url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0059553',
       },
     ],
-    discrepancy: 'The approved “Can’t Join” Process Document lists reinstall early in its sequence. The training instructions separately state that uninstall/reinstall is not the first solution. The workspace therefore keeps reinstall out of this fast route and leaves it in the full approved process pending document review.',
     visuals: [
       {
         title: 'Join from Zoom Workplace without signing in',
