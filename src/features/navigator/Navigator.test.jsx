@@ -139,6 +139,7 @@ it('emits only identifier-based analytics events for support interactions', asyn
 
   await user.click(screen.getByRole('button', { name: /Zoom Audio Troubleshooting/i }))
   const dialog = screen.getByRole('dialog')
+  await user.click(within(dialog).getByRole('button', { name: 'Windows' }))
   await user.click(within(dialog).getByRole('button', { name: 'Copy Step' }))
 
   const copyEvent = onTrackEvent.mock.calls.map(([event]) => event).find(event => event.eventType === 'copy_action')

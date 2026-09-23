@@ -42,6 +42,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
   const [copyState, setCopyState] = useState({ id: "", status: "" });
   const guide = useMemo(() => buildCallGuide(process), [process]);
   const requestedPlatform = DEVICE_TO_PLATFORM[initialDevice] || "";
+  const needsDeviceChoice = Boolean(guide.deviceSelectionRequired && guide.availablePlatforms.length > 1);
   const defaultPlatform = requestedPlatform && guide.availablePlatforms.includes(requestedPlatform)
     ? requestedPlatform
     : (guide.availablePlatforms.length === 1 ? guide.availablePlatforms[0] : "");
@@ -83,6 +84,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
     [eligibleSteps, activeRouteId],
   );
   const currentStep = activeSteps[currentStepIndex] || null;
+  const noApprovedDevicePath = Boolean(selectedPlatform && activeSteps.length === 0);
   const quickFlow = guide.quickGuide.find((line) => line.includes("→")) || guide.quickGuide[0] || "";
   const requirementLines = guide.callouts
     .filter((callout) => callout.kind === "requirement")
@@ -124,7 +126,8 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
     );
   }
   async function copySteps() {
-    const stepsToCopy = activeSteps.length ? activeSteps : guide.steps;
+    const stepsToCopy = selectedPlatform ? activeSteps : (activeSteps.length ? activeSteps : guide.steps);
+    if (!stepsToCopy.length) return;
     await copyText(
       stepsToCopy
         .map((step, index) =>
@@ -293,12 +296,12 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
                   <h3>Guided Call Guide</h3>
                   <p className="guided-process-intro">One approved action at a time. Stop as soon as the issue is resolved.</p>
                 </div>
-                <button onClick={copySteps}>
+                <button onClick={copySteps} disabled={noApprovedDevicePath}>
                   {copyLabel("quick-steps", "Copy Current Path")}
                 </button>
               </div>
 
-              {guide.availablePlatforms.length > 1 && (
+              {needsDeviceChoice && (
                 <section className="guide-device-picker" aria-label="Choose customer device">
                   <p className="eyebrow">1 · Device</p>
                   <h3>What device is the customer using?</h3>
@@ -318,7 +321,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
                 </section>
               )}
 
-              {(!guide.availablePlatforms.length || selectedPlatform || guide.availablePlatforms.length === 1) && (
+              {(!needsDeviceChoice || selectedPlatform) && (
                 <>
                   {routeOptions.length > 1 && (
                     <section className="guide-path-picker">
@@ -361,6 +364,18 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
                       <summary>Before you start · approved requirements</summary>
                       {requirementLines.map((line, index) => <p key={index}>{line}</p>)}
                     </details>
+                  )}
+
+                  {outcome === "active" && noApprovedDevicePath && (
+                    <section className="guide-coverage-gap" role="status">
+                      <p className="eyebrow">Approved guide coverage gap</p>
+                      <h3>No device-specific steps are approved here for {PLATFORM_LABELS[selectedPlatform] || selectedPlatform}.</h3>
+                      <p>The Process Document may mention this platform in scope, but Ozzie did not find a supported step-by-step path for it. Another platform’s instructions will not be substituted.</p>
+                      <div>
+                        <button type="button" onClick={() => setTab("full")}>Open Full Process</button>
+                        <button type="button" onClick={() => setTab("source")}>Open Source Pages</button>
+                      </div>
+                    </section>
                   )}
 
                   {outcome === "active" && currentStep && (

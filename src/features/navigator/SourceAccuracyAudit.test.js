@@ -3,7 +3,7 @@ import { PROCESSES } from '../../data/processes'
 import { COMMON_ISSUE_ROUTES, COMMON_ISSUE_VERIFIED_AT } from './commonIssueRoutes'
 
 const EXPECTED_PRIMARY_ARTICLES = {
-  'cant-join': 'KB0060732',
+  'cant-join': 'KB0068749',
   'cant-hear': 'KB0060836',
   'cant-be-heard': 'KB0060836',
   'camera-not-working': 'KB0068908',
@@ -100,4 +100,22 @@ it('covers all approved Process Guides through a Common Issue route except the a
 
 it('records the current verification date in one auditable constant', () => {
   expect(COMMON_ISSUE_VERIFIED_AT).toBe('September 23, 2026')
+})
+
+
+it('keeps Can’t Join anchored to the troubleshooting article named by the approved Process Document', () => {
+  const route = COMMON_ISSUE_ROUTES.find(item => item.id === 'cant-join')
+  expect(route.primarySource.title).toMatch(/Troubleshooting when you can’t join/i)
+  expect(route.primarySource.url).toContain('KB0068749')
+  expect(route.supportingSources.some(source => source.url.includes('KB0060732'))).toBe(true)
+})
+
+it('records known internal-guide coverage gaps instead of cross-platform substitutions', () => {
+  const invite = COMMON_ISSUE_ROUTES.find(item => item.id === 'invite')
+  const joinMuted = COMMON_ISSUE_ROUTES.find(item => item.id === 'join-muted')
+  const volume = COMMON_ISSUE_ROUTES.find(item => item.id === 'meeting-volume')
+
+  expect(invite.guideCoverageNotes.Windows).toMatch(/not desktop invitation controls/i)
+  expect(joinMuted.guideCoverageNotes.iPhone).toMatch(/desktop instructions only/i)
+  expect(volume.guideCoverageNotes.Android).toMatch(/detailed Guided Process steps are desktop-only/i)
 })

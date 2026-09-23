@@ -19,6 +19,12 @@ describe('buildCallGuide', () => {
   const joining = PROCESSES.find((process) => process.id === 'troubleshooting-when-you-cant-join-a-zoom-meeting')
   const audioTest = PROCESSES.find((process) => process.id === 'testing-your-audio-settings-for-zoom-meetings')
   const bluetooth = PROCESSES.find((process) => process.id === 'using-bluetooth-headphones-with-zoom-on-android-ios')
+  const sharing = PROCESSES.find((process) => process.id === 'sharing-your-screen-desktop-or-content-in-zoom')
+  const videoPreference = PROCESSES.find((process) => process.id === 'setting-your-video-to-stay-on-or-off-when-joining-meetings-and-webinars')
+  const chat = PROCESSES.find((process) => process.id === 'chatting-in-a-zoom-meeting')
+  const transfer = PROCESSES.find((process) => process.id === 'transferring-meetings-and-webinars-between-devices')
+  const multiChannel = PROCESSES.find((process) => process.id === 'enabling-and-managing-multiple-audio-input-channels-in-zoom')
+  const participantPreview = PROCESSES.find((process) => process.id === 'viewing-participants-already-in-a-meeting-before-joining')
 
   it('keeps source steps while treating lettered platform/scenario headings as routes, not fake steps', () => {
     const guide = buildCallGuide(volume)
@@ -44,6 +50,85 @@ describe('buildCallGuide', () => {
     expect(mobileStep.platforms).not.toContain('windows')
     expect(desktopStep.platforms).toEqual(expect.arrayContaining(['windows','macos']))
     expect(desktopStep.platforms).not.toContain('android')
+  })
+
+  it('turns A1/B1/C1 document actions into ordered steps inside their parent approved path', () => {
+    const guide = buildCallGuide(sharing)
+    const windowsPath = guide.steps.filter(step => step.routeId === 'a')
+
+    expect(windowsPath.map(step => step.title)).toEqual(expect.arrayContaining([
+      'Open Screen Share',
+      'Choose What to Share',
+      'Choose Optional Presenter and Share Options',
+      'Start Sharing',
+      'Stop Sharing',
+    ]))
+    expect(windowsPath.every(step => step.platforms.includes('windows') || step.title === 'Show Zoom Windows During Screen Share')).toBe(true)
+    expect(guide.routes.find(route => route.id === 'a')).toMatchObject({
+      label: expect.stringMatching(/Windows.*macOS/i),
+    })
+  })
+
+  it('keeps letter-only sections as a meaningful step when the approved document has no A1 substeps', () => {
+    const guide = buildCallGuide(videoPreference)
+    const desktopOn = guide.steps.find(step => step.routeId === 'a')
+
+    expect(desktopOn.title).toMatch(/Set the Camera to Stay On by Default/i)
+    expect(desktopOn.instructions.join(' ')).toMatch(/Keep my camera off/i)
+    expect(desktopOn.platforms).toEqual(expect.arrayContaining(['windows', 'macos']))
+    expect(desktopOn.platforms).not.toContain('android')
+
+    const mobileOn = guide.steps.find(step => step.routeId === 'c')
+    expect(mobileOn.platforms).toEqual(expect.arrayContaining(['android', 'ios']))
+    expect(mobileOn.instructions.join(' ')).toMatch(/Turn off my video/i)
+  })
+
+  it('keeps desktop, mobile, and web chat actions inside separate platform paths', () => {
+    const guide = buildCallGuide(chat)
+    expect(guide.steps.find(step => step.title === 'Chat With Everyone' && step.routeId === 'a')?.platforms)
+      .toEqual(expect.arrayContaining(['windows', 'macos', 'linux']))
+    expect(guide.steps.find(step => step.title === 'Chat With Everyone' && step.routeId === 'b')?.platforms)
+      .toEqual(expect.arrayContaining(['android', 'ios']))
+    expect(guide.steps.find(step => /Everyone or Send a Private Message/i.test(step.title))?.platforms)
+      .toEqual(['web'])
+  })
+
+  it('preserves device-transfer steps instead of turning each A1/B1/C1 action into a separate route', () => {
+    const guide = buildCallGuide(transfer)
+    expect(guide.routes.map(route => route.id)).toEqual(expect.arrayContaining(['a', 'b', 'c', 'd']))
+    expect(guide.routes.some(route => /^a1$|^b1$|^c1$/.test(route.id))).toBe(false)
+    expect(guide.steps.filter(step => step.routeId === 'a').map(step => step.title))
+      .toEqual(expect.arrayContaining(['Sign In on the Device You Want to Switch To', 'Open the Home Tab', 'Transfer the Session']))
+  })
+
+  it('infers audited Windows/macOS scope for desktop-only approved guides whose Applies To line is generic', () => {
+    expect(buildCallGuide(multiChannel).availablePlatforms).toEqual(expect.arrayContaining(['windows', 'macos']))
+    expect(buildCallGuide(participantPreview).availablePlatforms).toEqual(expect.arrayContaining(['windows', 'macos']))
+    expect(buildCallGuide(multiChannel).availablePlatforms).not.toContain('android')
+    expect(buildCallGuide(participantPreview).availablePlatforms).not.toContain('web')
+  })
+
+  it('does not promote supporting-resource labels into fake troubleshooting steps', () => {
+    const desktopAudio = PROCESSES.find((process) => process.id === 'troubleshooting-speaker-or-microphone-issues-in-the-zoom-desktop-app')
+    const camera = PROCESSES.find((process) => process.id === 'zoom-camera-troubleshooting-during-a-meeting')
+    const audioTitles = buildCallGuide(desktopAudio).steps.map(step => step.title)
+    const cameraTitles = buildCallGuide(camera).steps.map(step => step.title)
+
+    expect(audioTitles).not.toContain('Zoom-supported USB devices')
+    expect(audioTitles).not.toContain('Testing Zoom audio settings')
+    expect(audioTitles).not.toContain('Using in-meeting chat')
+    expect(cameraTitles).not.toContain('Troubleshooting video crashes')
+    expect(cameraTitles).not.toContain('Testing your video before a meeting')
+  })
+
+  it('keeps advanced native Bluetooth Windows paths off Android and iOS', () => {
+    const guide = buildCallGuide(bluetooth)
+    for (const routeId of ['c', 'd', 'e', 'f', 'g']) {
+      const routeSteps = guide.steps.filter(step => step.routeId === routeId)
+      expect(routeSteps.length).toBeGreaterThan(0)
+      expect(routeSteps.every(step => step.platforms.includes('windows'))).toBe(true)
+      expect(routeSteps.every(step => !step.platforms.includes('android') && !step.platforms.includes('ios'))).toBe(true)
+    }
   })
 
   it('keeps linked download and cleanup resources inside the numbered steps', () => {

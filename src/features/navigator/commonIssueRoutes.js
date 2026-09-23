@@ -56,13 +56,13 @@ export const COMMON_ISSUE_ROUTES = [
       'zoom-basic-support-boundaries-decision-path-referral-process',
     ],
     primarySource: {
-      title: 'Joining a Zoom meeting',
-      url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060732',
+      title: 'Troubleshooting when you can’t join a Zoom meeting',
+      url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0068749',
     },
     supportingSources: [
       {
-        title: 'Troubleshooting when you can’t join a Zoom meeting',
-        url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0068749',
+        title: 'Joining a Zoom meeting',
+        url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060732',
       },
       {
         title: 'Troubleshooting invalid Zoom meeting ID',
@@ -253,6 +253,8 @@ export const COMMON_ISSUE_ROUTES = [
     subtitle: 'Video off, black, or wrong camera',
     classification: 'Camera / video symptom',
     classificationNote: 'First distinguish “video is simply off” from “Zoom is trying to use a camera but no usable image appears.” Do not assume a network problem from a camera-only symptom.',
+    supportedDevices: ['Windows', 'Mac', 'iPhone', 'Android'],
+    unsupportedDeviceNote: 'The approved Guided Process coverage for camera troubleshooting is currently limited to the Zoom desktop and mobile apps. Browser-specific camera troubleshooting is not covered by an approved internal Process Guide yet.',
     searchPhrases: [
       'camera not working',
       'camra not working',
@@ -653,6 +655,10 @@ export const COMMON_ISSUE_ROUTES = [
     subtitle: 'Bring someone into the current meeting or copy the current invitation',
     classification: 'Active-meeting invitation request',
     classificationNote: 'Use the actual invitation/link shown by Zoom or supplied by the organizer. Technical support can explain where the control is, but cannot decide who is authorized to join the proceeding.',
+    guideCoverageNotes: {
+      Windows: 'The current approved Participant Controls Process covers Android/iOS and the Zoom Web App, not desktop invitation controls. Do not apply the mobile/Web guide to Windows; use the official Zoom source and the host/organizer boundary until a desktop internal Process Guide is approved.',
+      Mac: 'The current approved Participant Controls Process covers Android/iOS and the Zoom Web App, not desktop invitation controls. Do not apply the mobile/Web guide to macOS; use the official Zoom source and the host/organizer boundary until a desktop internal Process Guide is approved.',
+    },
     searchPhrases: [
       'invite someone', 'invite person', 'invite participant', 'copy invite link', 'copy invitation', 'send zoom link',
       'how do i invite someone', 'bring someone into meeting', 'meeting invitation', 'invite another participant',
@@ -925,6 +931,10 @@ export const COMMON_ISSUE_ROUTES = [
     subtitle: 'Set mute-on-join or choose not to connect audio for one meeting',
     classification: 'Pre-join microphone/audio preference',
     classificationNote: 'Keep “join muted” separate from “don’t connect to audio.” Joining muted still connects the caller to meeting audio; Don’t connect to audio prevents the Zoom audio connection for that join.',
+    guideCoverageNotes: {
+      iPhone: 'The approved Process Document lists iOS as applicable, but its current step-by-step section contains desktop instructions only. Ozzie will not substitute desktop setting labels on iPhone until a mobile internal path is approved.',
+      Android: 'The approved Process Document lists Android as applicable, but its current step-by-step section contains desktop instructions only. Ozzie will not substitute desktop setting labels on Android until a mobile internal path is approved.',
+    },
     supportedDevices: ['Windows', 'Mac', 'iPhone', 'Android'],
     unsupportedDeviceNote: 'This approved mute-on-join route covers the Zoom desktop and mobile apps. Do not apply these app-setting labels to a Browser caller.',
     searchPhrases: [
@@ -1056,6 +1066,10 @@ export const COMMON_ISSUE_ROUTES = [
     subtitle: 'Adjust Zoom speaker volume before or during a meeting',
     classification: 'Meeting-volume / speaker-output request',
     classificationNote: 'First determine whether the entire Zoom meeting is too loud or too quiet, or whether only one participant sounds different. Zoom does not provide a per-participant volume control.',
+    guideCoverageNotes: {
+      iPhone: 'The approved Process Document states that mobile users should use the device’s physical or system volume controls, but its detailed Guided Process steps are desktop-only. Ozzie will not show desktop Audio Settings as an iPhone path.',
+      Android: 'The approved Process Document states that mobile users should use the device’s physical or system volume controls, but its detailed Guided Process steps are desktop-only. Ozzie will not show desktop Audio Settings as an Android path.',
+    },
     supportedDevices: ['Windows', 'Mac', 'iPhone', 'Android'],
     unsupportedDeviceNote: 'This approved route covers Zoom desktop-app volume controls and mobile device volume controls. Do not apply the desktop Audio Settings steps to a Browser caller.',
     searchPhrases: [
@@ -1322,7 +1336,13 @@ export const COMMON_ISSUE_ROUTES = [
 ]
 
 const COMMON_ISSUE_PROCESS_ROUTING = {
-  'cant-join': { default: 'troubleshooting-when-you-cant-join-a-zoom-meeting' },
+  'cant-join': {
+    Windows: 'troubleshooting-when-you-cant-join-a-zoom-meeting',
+    Mac: 'troubleshooting-when-you-cant-join-a-zoom-meeting',
+    Browser: 'troubleshooting-when-you-cant-join-a-zoom-meeting',
+    iPhone: 'joining-a-zoom-meeting',
+    Android: 'joining-a-zoom-meeting',
+  },
   'cant-hear': {
     Windows: 'troubleshooting-speaker-or-microphone-issues-in-the-zoom-desktop-app',
     Mac: 'troubleshooting-speaker-or-microphone-issues-in-the-zoom-desktop-app',
@@ -1337,7 +1357,12 @@ const COMMON_ISSUE_PROCESS_ROUTING = {
     Android: 'troubleshooting-speaker-or-microphone-issues-on-a-mobile-device',
     default: 'zoom-audio-troubleshooting',
   },
-  'camera-not-working': { default: 'zoom-camera-troubleshooting-during-a-meeting' },
+  'camera-not-working': {
+    Windows: 'zoom-camera-troubleshooting-during-a-meeting',
+    Mac: 'zoom-camera-troubleshooting-during-a-meeting',
+    iPhone: 'testing-your-video-in-zoom',
+    Android: 'testing-your-video-in-zoom',
+  },
   'waiting-entry': {
     'Waiting for host': 'waiting-for-the-host-to-start-a-meeting-or-webinar',
     'Waiting Room': 'joining-a-zoom-meeting',
@@ -1345,15 +1370,37 @@ const COMMON_ISSUE_PROCESS_ROUTING = {
   },
   'cant-share': { default: 'sharing-your-screen-desktop-or-content-in-zoom' },
   chat: { default: 'chatting-in-a-zoom-meeting' },
-  'meeting-controls': { default: 'zoom-meeting-controls-icons' },
+  'meeting-controls': {
+    Windows: 'zoom-meeting-controls-icons',
+    Mac: 'zoom-meeting-controls-icons',
+    iPhone: 'using-participant-controls-in-a-zoom-meeting',
+    Android: 'using-participant-controls-in-a-zoom-meeting',
+    Browser: 'using-participant-controls-in-a-zoom-meeting',
+  },
   reactions: { default: 'using-non-verbal-feedback-and-meeting-reactions' },
-  invite: { default: 'using-participant-controls-in-a-zoom-meeting' },
+  invite: {
+    Windows: null,
+    Mac: null,
+    iPhone: 'using-participant-controls-in-a-zoom-meeting',
+    Android: 'using-participant-controls-in-a-zoom-meeting',
+    Browser: 'using-participant-controls-in-a-zoom-meeting',
+  },
   'secure-connection': { default: 'zoom-error-unable-to-establish-secure-connection-to-zoom' },
   'bluetooth-headset': { default: 'using-bluetooth-headphones-with-zoom-on-android-ios' },
   'transfer-device': { default: 'transferring-meetings-and-webinars-between-devices' },
-  'join-muted': { default: 'muting-your-microphone-when-joining-a-zoom-meeting' },
+  'join-muted': {
+    Windows: 'muting-your-microphone-when-joining-a-zoom-meeting',
+    Mac: 'muting-your-microphone-when-joining-a-zoom-meeting',
+    iPhone: null,
+    Android: null,
+  },
   'join-video-preference': { default: 'setting-your-video-to-stay-on-or-off-when-joining-meetings-and-webinars' },
-  'meeting-volume': { default: 'adjusting-the-volume-of-a-zoom-meeting' },
+  'meeting-volume': {
+    Windows: 'adjusting-the-volume-of-a-zoom-meeting',
+    Mac: 'adjusting-the-volume-of-a-zoom-meeting',
+    iPhone: null,
+    Android: null,
+  },
   'auto-computer-audio': { default: 'automatically-joining-meetings-with-computer-audio' },
   'multiple-audio-input-channels': { default: 'enabling-and-managing-multiple-audio-input-channels-in-zoom' },
   'participants-before-join': { default: 'viewing-participants-already-in-a-meeting-before-joining' },
@@ -1362,7 +1409,13 @@ const COMMON_ISSUE_PROCESS_ROUTING = {
 export function recommendedProcessForRoute(route, { device = null, state = null } = {}) {
   if (!route) return null
   const routing = COMMON_ISSUE_PROCESS_ROUTING[route.id]
-  const processId = routing?.[state] || routing?.[device] || routing?.default || route.processIds?.[0] || null
+
+  let processId = null
+  if (routing && state && Object.prototype.hasOwnProperty.call(routing, state)) processId = routing[state]
+  else if (routing && device && Object.prototype.hasOwnProperty.call(routing, device)) processId = routing[device]
+  else if (routing && Object.prototype.hasOwnProperty.call(routing, 'default')) processId = routing.default
+  else processId = route.processIds?.[0] || null
+
   if (!processId || !route.processIds?.includes(processId)) return null
   return processId
 }

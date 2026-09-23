@@ -91,3 +91,27 @@ it('after the last unresolved step, offers documented next routes instead of gue
   expect(screen.getByText(/Ozzie will not guess a fix/i)).toBeInTheDocument()
   expect(screen.getAllByRole('button').some(button => /can.?t hear|hear me/i.test(button.textContent || ''))).toBe(true)
 })
+
+
+it('shows an explicit coverage gap instead of desktop steps when a selected mobile path is not approved', () => {
+  const process = PROCESSES.find(item => item.id === 'muting-your-microphone-when-joining-a-zoom-meeting')
+
+  render(<ProcessDrawer process={process} initialDevice="iPhone" onClose={() => {}} />)
+  const dialog = screen.getByRole('dialog')
+
+  expect(within(dialog).getByText(/No device-specific steps are approved here for iOS/i)).toBeInTheDocument()
+  expect(within(dialog).getByText(/Another platform’s instructions will not be substituted/i)).toBeInTheDocument()
+  expect(within(dialog).queryByText(/Open Meetings & Webinars/i)).not.toBeInTheDocument()
+  expect(within(dialog).getByRole('button', { name: /Copy Current Path/i })).toBeDisabled()
+})
+
+it('shows the real Android screen-sharing sequence from A1-style approved source sections', () => {
+  const process = PROCESSES.find(item => item.id === 'sharing-your-screen-desktop-or-content-in-zoom')
+
+  render(<ProcessDrawer process={process} initialDevice="Android" onClose={() => {}} />)
+  const dialog = screen.getByRole('dialog')
+
+  expect(within(dialog).getByText('Open Share')).toBeInTheDocument()
+  expect(within(dialog).getByText(/Step 1 of 5/i)).toBeInTheDocument()
+  expect(within(dialog).queryByText('Open Screen Share')).not.toBeInTheDocument()
+})

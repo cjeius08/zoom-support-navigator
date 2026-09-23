@@ -65,6 +65,7 @@ export function CommonIssueDrawer({
     ? recommendedProcessForRoute(route, { device: selectedDevice, state: selectedState })
     : null
   const recommendedProcess = processEntries.find(process => process.id === recommendedProcessId) ?? null
+  const coverageNote = selectedDevice ? route.guideCoverageNotes?.[selectedDevice] ?? null : null
   const recommendationByDevice = DEVICE_OPTIONS
     .map(device => recommendedProcessForRoute(route, { device, state: selectedState }))
     .filter(Boolean)
@@ -79,7 +80,9 @@ export function CommonIssueDrawer({
           ? deviceChangesRecommendedProcess
             ? `${selectedDevice} selected · recommended guide updated`
             : `${selectedDevice} path selected`
-          : `${selectedDevice} selected`
+          : coverageNote
+            ? `${selectedDevice} selected · approved guide gap`
+            : `${selectedDevice} selected`
 
 
   function startRecommendedGuide() {
@@ -273,6 +276,19 @@ export function CommonIssueDrawer({
             <p className="eyebrow">One detail left</p>
             <h3>Select the exact screen state above</h3>
             <p>The next approved Process Guide changes depending on what Zoom is actually showing.</p>
+          </section>}
+
+          {!routeNeedsDeviceSelection && !routeDeviceMismatch && !stateSelectionRequired && !recommendedProcess && coverageNote && <section className="common-issue-router-gap">
+            <div>
+              <p className="eyebrow">Approved guide coverage gap</p>
+              <h3>No device-specific internal guide is approved for this path yet.</h3>
+              <p>{coverageNote}</p>
+            </div>
+            <div className="common-issue-router-gap-actions">
+              <button type="button" onClick={() => selectTab('sources')}>Open verified sources</button>
+              <button type="button" onClick={() => selectTab('process')}>Review approved processes</button>
+            </div>
+            <small>Do not reuse another device’s steps just to keep troubleshooting moving.</small>
           </section>}
 
           {recommendedProcess && <section className="common-issue-router-result">

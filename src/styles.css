@@ -4998,3 +4998,31 @@ body:has(.process-document-reader) .process-document-page {
 .step-script-compact { display:grid; gap:.55rem; margin-top:.85rem; }
 .step-script-compact>button { justify-self:start; }
 .step-script-compact .step-scripts { margin:0; }
+
+
+/* Process Guide coverage-gap safety */
+.guide-coverage-gap,
+.common-issue-router-gap {
+  display:grid;
+  gap:.75rem;
+  padding:1rem 1.05rem;
+  border:1px solid rgba(224,173,99,.36);
+  border-radius:.85rem;
+  background:rgba(110,74,24,.12);
+}
+.guide-coverage-gap h3,
+.common-issue-router-gap h3 { margin:.2rem 0 .35rem; color:#f7ecd9; }
+.guide-coverage-gap p,
+.common-issue-router-gap p,
+.common-issue-router-gap small { margin:0; color:#cdbfae; line-height:1.5; }
+.guide-coverage-gap>div,
+.common-issue-router-gap-actions { display:flex; flex-wrap:wrap; gap:.55rem; }
+.guide-coverage-gap button,
+.common-issue-router-gap-actions button {
+  border-color:rgba(224,173,99,.34);
+  background:rgba(224,173,99,.08);
+}
+@media (max-width:700px) {
+  .guide-coverage-gap>div,
+  .common-issue-router-gap-actions { display:grid; grid-template-columns:1fr; }
+}
