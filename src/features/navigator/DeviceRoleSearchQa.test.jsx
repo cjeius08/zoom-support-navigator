@@ -51,6 +51,32 @@ it.each([
   expect(within(dialog).queryByRole('button', { name: /Start Guided Process/i })).not.toBeInTheDocument()
 })
 
+it('shows why a device-specific recommendation was selected without treating caller role as a routing factor', async () => {
+  const { user, dialog } = await openRouteWithContext({
+    device: 'Android',
+    role: 'Host',
+    routeName: /I can’t hear anyone/i,
+  })
+
+  await user.click(within(dialog).getByText('Why this route?'))
+
+  expect(within(dialog).getByText(/Device-specific match: Android/i)).toBeInTheDocument()
+  expect(within(dialog).getByText(/Host is retained as call context; caller role did not change this recommendation/i)).toBeInTheDocument()
+  expect(within(dialog).getByText(/Zoom Support — Troubleshooting speaker or microphone issues on your mobile device/i)).toBeInTheDocument()
+})
+
+it('shows the exact waiting-screen state as the reason for a state-based recommendation', async () => {
+  const { user, dialog } = await openRouteWithContext({
+    device: 'Windows',
+    role: 'Participant',
+    routeName: /I’m waiting to get in/i,
+    state: '^Waiting Room',
+  })
+
+  await user.click(within(dialog).getByText('Why this route?'))
+  expect(within(dialog).getByText(/Exact screen state matched: Waiting Room/i)).toBeInTheDocument()
+})
+
 it('routes no-sound to the mobile process on iPhone and to the desktop process on Windows', async () => {
   const mobile = await openRouteWithContext({ device: 'iPhone', routeName: /I can’t hear anyone/i })
   expect(within(mobile.dialog).getByRole('heading', { name: /Mobile Device/i })).toBeInTheDocument()
