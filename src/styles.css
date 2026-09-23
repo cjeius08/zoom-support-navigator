@@ -3102,6 +3102,30 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   outline-offset: 3px;
 }
 
+/* Keep the persistent report control clear of in-page bottom-right actions and source pages. */
+body:has(.readiness-lab-dock) .global-feedback-fab,
+body:has(.source-pages) .global-feedback-fab,
+body:has(.process-document-reader) .global-feedback-fab {
+  width: 2.75rem;
+  min-width: 2.75rem;
+  height: 2.75rem;
+  padding: .45rem;
+  gap: 0;
+}
+body:has(.readiness-lab-dock) .global-feedback-fab > strong,
+body:has(.source-pages) .global-feedback-fab > strong,
+body:has(.process-document-reader) .global-feedback-fab > strong {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .global-feedback-backdrop {
   position: fixed;
   inset: 0;
