@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { assetUrl } from "../../lib/assetUrl";
 import { buildCallGuide, PLATFORM_LABELS, processSections } from "./processText";
-import { COMMON_ISSUE_ROUTES } from "./commonIssueRoutes";
+import { COMMON_ISSUE_ROUTES, orderedSourcesForRoute } from "./commonIssueRoutes";
 import { relatedTrainingForCategory } from "../../data/trainingVideos";
 import { useDialogFocus } from "../../lib/useDialogFocus";
 import { FavoriteToggle } from "../favorites/FavoriteToggle";
@@ -20,6 +20,14 @@ const DEVICE_TO_PLATFORM = {
   iPhone: 'ios',
   Android: 'android',
   Browser: 'web',
+}
+
+const PLATFORM_TO_DEVICE = {
+  windows: 'Windows',
+  macos: 'Mac',
+  ios: 'iPhone',
+  android: 'Android',
+  web: 'Browser',
 }
 
 const trainingCategoryByProcessCategory = {
@@ -50,15 +58,19 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
     () => COMMON_ISSUE_ROUTES.filter((route) => route.processIds?.includes(process.id)),
     [process.id],
   );
+  const sourceDevice = PLATFORM_TO_DEVICE[selectedPlatform || requestedPlatform] || null;
   const officialSources = useMemo(() => {
     const sources = new Map();
     for (const route of relatedRoutes) {
-      for (const source of [route.primarySource, ...(route.supportingSources || [])]) {
+      for (const source of orderedSourcesForRoute(route, {
+        device: sourceDevice,
+        processId: process.id,
+      })) {
         if (source?.url && !sources.has(source.url)) sources.set(source.url, source);
       }
     }
     return [...sources.values()];
-  }, [relatedRoutes]);
+  }, [relatedRoutes, sourceDevice, process.id]);
   const eligibleSteps = useMemo(
     () => guide.steps.filter((step) =>
       !selectedPlatform || step.platforms.length === 0 || step.platforms.includes(selectedPlatform)
@@ -553,9 +565,9 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
                     <p>The concise Call Guide reorganizes the approved Process Document; the Full Process and Source Pages remain unchanged.</p>
                     {officialSources.length > 0 && (
                       <div>
-                        {officialSources.map((source) => (
+                        {officialSources.map((source, index) => (
                           <a key={source.url} href={source.url} target="_blank" rel="noreferrer">
-                            Zoom Support — {source.title} ↗
+                            {index === 0 && sourceDevice ? `Matched to ${sourceDevice} — ` : 'Zoom Support — '}{source.title} ↗
                           </a>
                         ))}
                       </div>
