@@ -65,6 +65,22 @@ export function CommonIssueDrawer({
     ? recommendedProcessForRoute(route, { device: selectedDevice, state: selectedState })
     : null
   const recommendedProcess = processEntries.find(process => process.id === recommendedProcessId) ?? null
+  const recommendationByDevice = DEVICE_OPTIONS
+    .map(device => recommendedProcessForRoute(route, { device, state: selectedState }))
+    .filter(Boolean)
+  const deviceChangesRecommendedProcess = new Set(recommendationByDevice).size > 1
+  const selectedPathMessage = !selectedDevice
+    ? 'Choose a device'
+    : routeDeviceMismatch
+      ? `${selectedDevice} is not supported by this route`
+      : stateSelectionRequired
+        ? `${selectedDevice} selected · choose the exact screen state`
+        : recommendedProcess
+          ? deviceChangesRecommendedProcess
+            ? `${selectedDevice} selected · recommended guide updated`
+            : `${selectedDevice} path selected`
+          : `${selectedDevice} selected`
+
 
   function startRecommendedGuide() {
     if (!recommendedProcess) return
@@ -155,7 +171,10 @@ export function CommonIssueDrawer({
             >{role}</button>)}
           </div>
         </div>
-        <span className="common-issue-context-status"><small>Purpose</small><strong>Route to the right approved guide</strong></span>
+        <span className="common-issue-context-status" aria-live="polite">
+          <small>Selected path</small>
+          <strong>{selectedPathMessage}</strong>
+        </span>
       </div>
 
       <div className="process-tabs" role="tablist" aria-label="Common issue views">
@@ -180,6 +199,21 @@ export function CommonIssueDrawer({
         tabIndex={0}
       >
         {tab === 'quick' && <section className="common-issue-quick common-issue-router" aria-label="Find the Right Guide">
+          {selectedDevice && !routeDeviceMismatch && <section className="common-issue-device-selected" aria-live="polite">
+            <div className="common-issue-device-selected-icon">✓</div>
+            <div>
+              <p className="eyebrow">Device path selected</p>
+              <h3>{selectedDevice}</h3>
+              {stateSelectionRequired
+                ? <p>Device saved. Choose the exact screen state below so Ozzie can select the approved guide.</p>
+                : recommendedProcess && deviceChangesRecommendedProcess
+                  ? <p>This device changes the recommended approved Process Guide.</p>
+                  : recommendedProcess
+                    ? <p>This issue uses the same approved Process Guide across supported devices. Ozzie will carry <strong>{selectedDevice}</strong> into the Guided Process and show the relevant device path when available.</p>
+                    : <p>Ozzie will use this device when selecting the approved next path.</p>}
+            </div>
+          </section>}
+
           <section className="common-issue-classification">
             <p className="eyebrow">1 · Identify the symptom</p>
             <strong>{route.classification}</strong>
@@ -253,7 +287,7 @@ export function CommonIssueDrawer({
               </div>
             </div>
             <button type="button" className="primary-action" onClick={startRecommendedGuide}>
-              Start Guided Process →
+              Start {selectedDevice} Guided Process →
             </button>
             <small>Ozzie is routing—not inventing. The guided steps come from the approved Process Document and retain source traceability to official Zoom Support.</small>
           </section>}
