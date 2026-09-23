@@ -15,41 +15,22 @@ it('keeps workspace metadata and update history complete and newest-first', () =
     collaborator: 'Nina F.',
     nextReview: '2026-10-18',
   })
-  expect(data.metadata.updatePolicy).toMatch(/Admin-only operational changes/i)
+  expect(data.metadata.updatePolicy).toMatch(/User-facing features/i)
+  expect(data.metadata.updatePolicy).toMatch(/Admin-only operational or administrative changes/i)
+  expect(data.metadata.updatePolicy).toMatch(/Developer-only work/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
   expect(data.updates[0].date).toBe('2026-09-23')
-  expect(data.updates.slice(0, 30).map(entry => entry.id)).toEqual([
+  expect(data.updates.slice(0, 2).map(entry => entry.id)).toEqual([
+    'common-issues-smart-routing',
+    'guided-process-device-troubleshooting',
+  ])
+  expect(data.updates.map(entry => entry.id)).toEqual(expect.arrayContaining([
     'pilot-readiness-usability-pass',
     'process-documents-knowledge-library',
-    'process-guide-persistent-tabs',
     'member-saved-notes-followups',
     'admin-saved-notes-management',
-    'ozzie-alaga-themes',
-    'ozzie-intro-playback-polish',
-    'responsive-login-composition',
-    'admin-avatar-library-management',
-    'avatar-catalog-refresh',
-    'phase8-batch4-final-smoke-freeze',
-    'phase8-batch3-data-security-regression',
-    'phase8-batch2-component-copy-cleanup',
-    'phase8-batch1-runtime-stability',
     'workspace-page-back-navigation',
-    'admin-readiness-summary-polish',
-    'ozzie-first-signin-role-labels',
-    'admin-member-lead-role-management',
-    'readiness-resume-remaining-count',
-    'avatar-selected-indicator',
-    'avatar-persistence-polish',
-    'phase6-readiness-lab-part5-live-call',
-    'phase6-readiness-lab-part4-scope-referral',
-    'phase6-readiness-lab-part3-troubleshooting',
-    'readiness-resource-discovery',
-    'phase6-readiness-lab-part2-device-navigation',
-    'readiness-persistent-attempt-history',
-    'phase6-readiness-lab-part1',
-    'ogletree-call-flow-alignment',
-    'ogletree-support-workspace-rebrand',
-  ])
+  ]))
 
   data.updates.forEach((entry) => {
     expect(entry.id).toBeTruthy()
@@ -69,4 +50,17 @@ it('keeps workspace metadata and update history complete and newest-first', () =
 
   const dates = data.updates.map((entry) => entry.date)
   expect(dates).toEqual([...dates].sort((a, b) => b.localeCompare(a)))
+})
+
+
+it('keeps the September 23 guided-support changes in the user-facing change log', () => {
+  const path = join(cwd(), 'src/features/updates/updatesData.json')
+  const data = JSON.parse(readFileSync(path, 'utf8'))
+  const commonIssues = data.updates.find(entry => entry.id === 'common-issues-smart-routing')
+  const guidedProcess = data.updates.find(entry => entry.id === 'guided-process-device-troubleshooting')
+
+  expect(commonIssues).toMatchObject({ date: '2026-09-23', audience: 'all', area: 'Common Issues' })
+  expect(commonIssues.changed).toMatch(/symptom and device/i)
+  expect(guidedProcess).toMatchObject({ date: '2026-09-23', audience: 'all', area: 'Process Guides / Call Guide' })
+  expect(guidedProcess.changed).toMatch(/Resolved \/ Done or Not resolved/i)
 })
