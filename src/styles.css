@@ -3125,6 +3125,17 @@ body:has(.process-document-reader) .global-feedback-fab > strong {
   white-space: nowrap;
   border: 0;
 }
+body:has(.readiness-lab-dock) .readiness-question-nav {
+  padding-right: 3.5rem;
+}
+body:has(.source-pages) .source-pages figure,
+body:has(.process-document-reader) .process-document-page {
+  max-width: calc(100% - 3.5rem);
+}
+.common-issue-drawer .process-tabs > button {
+  position: relative;
+  z-index: 6;
+}
 
 .global-feedback-backdrop {
   position: fixed;
