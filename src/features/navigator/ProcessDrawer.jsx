@@ -42,6 +42,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
   const [copyState, setCopyState] = useState({ id: "", status: "" });
   const guide = useMemo(() => buildCallGuide(process), [process]);
   const requestedPlatform = DEVICE_TO_PLATFORM[initialDevice] || "";
+  const needsDeviceChoice = Boolean(guide.deviceSelectionRequired && guide.availablePlatforms.length > 1);
   const defaultPlatform = requestedPlatform && guide.availablePlatforms.includes(requestedPlatform)
     ? requestedPlatform
     : (guide.availablePlatforms.length === 1 ? guide.availablePlatforms[0] : "");
@@ -300,7 +301,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
                 </button>
               </div>
 
-              {guide.availablePlatforms.length > 1 && (
+              {needsDeviceChoice && (
                 <section className="guide-device-picker" aria-label="Choose customer device">
                   <p className="eyebrow">1 · Device</p>
                   <h3>What device is the customer using?</h3>
@@ -320,7 +321,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
                 </section>
               )}
 
-              {(!guide.availablePlatforms.length || selectedPlatform || guide.availablePlatforms.length === 1) && (
+              {(!needsDeviceChoice || selectedPlatform) && (
                 <>
                   {routeOptions.length > 1 && (
                     <section className="guide-path-picker">
