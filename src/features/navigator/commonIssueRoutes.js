@@ -1338,7 +1338,11 @@ const COMMON_ISSUE_PROCESS_ROUTING = {
     default: 'zoom-audio-troubleshooting',
   },
   'camera-not-working': { default: 'zoom-camera-troubleshooting-during-a-meeting' },
-  'waiting-entry': { default: 'waiting-for-the-host-to-start-a-meeting-or-webinar' },
+  'waiting-entry': {
+    'Waiting for host': 'waiting-for-the-host-to-start-a-meeting-or-webinar',
+    'Waiting Room': 'joining-a-zoom-meeting',
+    'Scheduled for a different date or time': 'waiting-for-the-host-to-start-a-meeting-or-webinar',
+  },
   'cant-share': { default: 'sharing-your-screen-desktop-or-content-in-zoom' },
   chat: { default: 'chatting-in-a-zoom-meeting' },
   'meeting-controls': { default: 'zoom-meeting-controls-icons' },
@@ -1355,10 +1359,10 @@ const COMMON_ISSUE_PROCESS_ROUTING = {
   'participants-before-join': { default: 'viewing-participants-already-in-a-meeting-before-joining' },
 }
 
-export function recommendedProcessForRoute(route, { device = null } = {}) {
+export function recommendedProcessForRoute(route, { device = null, state = null } = {}) {
   if (!route) return null
   const routing = COMMON_ISSUE_PROCESS_ROUTING[route.id]
-  const processId = routing?.[device] || routing?.default || route.processIds?.[0] || null
+  const processId = routing?.[state] || routing?.[device] || routing?.default || route.processIds?.[0] || null
   if (!processId || !route.processIds?.includes(processId)) return null
   return processId
 }
