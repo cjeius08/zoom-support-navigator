@@ -174,10 +174,34 @@ function referenceLabels(lines) {
   )
 }
 
+function referenceTokens(text) {
+  const stopWords = new Set(['zoom', 'workplace', 'the', 'a', 'an', 'for', 'to', 'of', 'on', 'in', 'your', 'meeting', 'meetings', 'app'])
+  return String(text || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .split(/\s+/)
+    .filter((word) => word && !stopWords.has(word))
+}
+
+function resemblesReferenceLabel(line, sourceReferenceLabels) {
+  const lineTokens = referenceTokens(line)
+  if (lineTokens.length < 2) return false
+
+  return [...sourceReferenceLabels].some((reference) => {
+    const referenceSet = new Set(referenceTokens(reference))
+    if (!referenceSet.size) return false
+    const overlap = lineTokens.filter((token) => referenceSet.has(token)).length
+    const smallerSize = Math.min(lineTokens.length, referenceSet.size)
+    return smallerSize >= 2 && overlap === smallerSize
+  })
+}
+
 function unnumberedStep(line, activeKind, sourceReferenceLabels) {
   const normalized = line.replace(/^[-•·]\s*/, '').trim()
   return activeKind === 'process'
     && !sourceReferenceLabels.has(normalized)
+    && !resemblesReferenceLabel(normalized, sourceReferenceLabels)
     && !/^(?:Zoom Download Center|Uninstall Zoom|CleanZoom utility)$/i.test(normalized)
     && !LETTERED_PATTERN.test(normalized)
     && normalized.length <= 110
