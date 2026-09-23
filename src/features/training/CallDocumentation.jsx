@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { loadOwnCallNotes, saveOwnCallNote } from '../../lib/callNotesApi'
 import { formatCallDocumentation } from './callDocumentationFormat'
 
@@ -48,6 +48,15 @@ function restoredDraft(note) {
   }
 }
 
+function appendDraftText(existing, incoming) {
+  const current = String(existing || '').trim()
+  const next = String(incoming || '').trim()
+  if (!next) return current
+  if (!current) return next
+  if (current.includes(next)) return current
+  return `${current}\n\n${next}`
+}
+
 function Field({ label, hint, children }) {
   return <label className="documentation-dock-field">
     <span>{label}</span>
@@ -56,7 +65,7 @@ function Field({ label, hint, children }) {
   </label>
 }
 
-export function CallDocumentation({ open = false, minimized = false, stackIndex = 0, onMinimize = () => {}, onClose = () => {}, onOpenSavedNotes = null }) {
+export function CallDocumentation({ open = false, minimized = false, stackIndex = 0, onMinimize = () => {}, onClose = () => {}, onOpenSavedNotes = null, prefill = null, onPrefillApplied = () => {} }) {
   const [draft, setDraft] = useState(createInitialDraft)
   const [copyState, setCopyState] = useState('idle')
   const [activeNoteId, setActiveNoteId] = useState(null)
@@ -64,6 +73,8 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
   const [notesLoading, setNotesLoading] = useState(false)
   const [noteState, setNoteState] = useState('idle')
   const [noteError, setNoteError] = useState('')
+  const [handoffMessage, setHandoffMessage] = useState('')
+  const lastPrefillIdRef = useRef(null)
   const formatted = useMemo(() => formatCallDocumentation(draft), [draft])
   const filledCount = useMemo(() => [
     draft.callerName,
@@ -77,6 +88,25 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
     draft.recommendedContact,
     draft.outcome,
   ].filter(Boolean).length, [draft])
+
+  useEffect(() => {
+    if (!prefill?.id || lastPrefillIdRef.current === prefill.id) return
+    lastPrefillIdRef.current = prefill.id
+
+    setDraft(current => ({
+      ...current,
+      device: current.device || prefill.device || '',
+      exactIssue: current.exactIssue || prefill.exactIssue || '',
+      stepsResult: appendDraftText(current.stepsResult, prefill.stepsResult),
+      resolutionNextSteps: appendDraftText(current.resolutionNextSteps, prefill.resolutionNextSteps),
+      outcome: current.outcome || prefill.outcome || '',
+    }))
+    setCopyState('idle')
+    setNoteState('idle')
+    setNoteError('')
+    setHandoffMessage('Guided troubleshooting added to this draft. Review it before saving.')
+    onPrefillApplied?.(prefill.id)
+  }, [prefill, onPrefillApplied])
 
   useEffect(() => {
     if (!open) return undefined
@@ -105,6 +135,7 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
     if (copyState !== 'idle') setCopyState('idle')
     if (noteState !== 'idle') setNoteState('idle')
     if (noteError) setNoteError('')
+    if (handoffMessage) setHandoffMessage('')
   }
 
   async function copyDocumentation() {
@@ -159,6 +190,7 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
     setCopyState('idle')
     setNoteState('idle')
     setNoteError('')
+    setHandoffMessage('')
   }
 
   if (!open) return null
@@ -294,6 +326,7 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
           <button type="button" className="documentation-clear" onClick={clearDocumentation}>Clear</button>
         </div>
         {noteError && <span role="alert">{noteError}</span>}
+        {handoffMessage && <span className="documentation-handoff-status" role="status">{handoffMessage}</span>}
         {copyState === 'failed' && <span role="status">Copy failed. Open the preview and copy manually.</span>}
         <small>Source: {SOURCE_TITLE}</small>
       </footer>
