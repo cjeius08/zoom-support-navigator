@@ -1,38 +1,93 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { expect, it } from 'vitest'
+import { PROCESSES } from '../../data/processes'
 import { ProcessDrawer } from './ProcessDrawer'
 
-it('shows scripts where they belong without a duplicated aggregate script', () => {
+it('shows one approved step at a time and stops when the issue is resolved', async () => {
+  const user = userEvent.setup()
   const process = {
+    id: 'test-process',
     title: 'Audio troubleshooting test process',
-    purpose: 'Verify live-call script presentation.',
+    purpose: 'Verify progressive live-call guidance.',
     category: 'support',
-    referral: '',
+    referral: 'Refer if the approved steps are exhausted.',
     visualReferences: [],
     images: [],
     text: [
       'Process / Step-by-Step Guide',
       '1. Check audio device',
+      'Open the approved audio setting.',
       'Confirm the selected audio device.',
       'Sample Script',
-      'Please test your microphone.',
+      'Please check the selected audio device.',
       '2. Confirm playback',
+      'Run the approved playback test.',
       'Confirm the customer can hear audio.',
       'Sample Script',
       'Please confirm you can hear me.',
-      'Sample Closing Script',
-      'Thanks for testing with me.',
+      'Quick Guide / Remember the Process',
+      'CHECK → TEST → CONFIRM',
     ].join('\n'),
   }
 
   render(<ProcessDrawer process={process} onClose={() => {}} />)
 
-  // Only the two step cards should carry the generic Suggested Script label.
-  expect(screen.getAllByText('Suggested Script')).toHaveLength(2)
-  expect(screen.getByText('Please test your microphone.')).toBeInTheDocument()
-  expect(screen.getByText('Please confirm you can hear me.')).toBeInTheDocument()
+  expect(screen.getByText('Check audio device')).toBeInTheDocument()
+  expect(screen.queryByText('Confirm playback')).not.toBeInTheDocument()
+  expect(screen.getByText(/Step 1 of 2/i)).toBeInTheDocument()
 
-  // A source-level script must still be preserved once instead of being hidden in a giant aggregate block.
-  expect(screen.getByText('Additional Source Script')).toBeInTheDocument()
-  expect(screen.getAllByText('Thanks for testing with me.')).toHaveLength(1)
+  await user.click(screen.getByRole('button', { name: /Not resolved.*Next step/i }))
+  expect(screen.getByText('Confirm playback')).toBeInTheDocument()
+  expect(screen.queryByText('Check audio device')).not.toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: /Resolved \/ Done/i }))
+  expect(screen.getByText(/Stop here/i)).toBeInTheDocument()
+})
+
+it('shows only the selected device path for Bluetooth and keeps other-device steps out of the live path', async () => {
+  const user = userEvent.setup()
+  const process = PROCESSES.find(item => item.id === 'using-bluetooth-headphones-with-zoom-on-android-ios')
+
+  render(<ProcessDrawer process={process} onClose={() => {}} />)
+  const dialog = screen.getByRole('dialog')
+
+  expect(within(dialog).getByRole('button', { name: 'Android' })).toBeInTheDocument()
+  expect(within(dialog).getByRole('button', { name: 'Windows' })).toBeInTheDocument()
+
+  await user.click(within(dialog).getByRole('button', { name: 'Android' }))
+
+  expect(within(dialog).getByText('Connect the Headphones and Join the Meeting')).toBeInTheDocument()
+  expect(within(dialog).queryByText('Join with Computer Audio')).not.toBeInTheDocument()
+
+  const pathSelect = within(dialog).getByLabelText(/What are you trying to do/i)
+  const optionText = [...pathSelect.options].map(option => option.textContent)
+  expect(optionText.some(text => /Zoom-Certified Native Bluetooth Headset/i.test(text))).toBe(false)
+})
+
+it('after the last unresolved step, offers documented next routes instead of guessing another fix', async () => {
+  const user = userEvent.setup()
+  const process = {
+    id: 'testing-your-audio-settings-for-zoom-meetings',
+    title: 'Minimal routed process',
+    purpose: 'Exercise unresolved routing.',
+    category: 'audio',
+    referral: 'Refer after approved troubleshooting is exhausted.',
+    visualReferences: [],
+    images: [],
+    text: [
+      'Applies To: Android',
+      'Process / Step-by-Step Guide',
+      'A. Android - Test audio',
+      '1. Test audio',
+      'Run the approved test.',
+    ].join('\n'),
+  }
+
+  render(<ProcessDrawer process={process} onClose={() => {}} onOpenRoute={() => {}} />)
+  await user.click(screen.getByRole('button', { name: /Not resolved.*Next options/i }))
+
+  expect(screen.getByText(/Choose the closest next approved path/i)).toBeInTheDocument()
+  expect(screen.getByText(/Ozzie will not guess a fix/i)).toBeInTheDocument()
+  expect(screen.getAllByRole('button').some(button => /can.?t hear|hear me/i.test(button.textContent || ''))).toBe(true)
 })
