@@ -3134,7 +3134,7 @@ body:has(.process-document-reader) .process-document-page {
 }
 
 .common-issue-drawer {
-  grid-template-rows: auto auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto max-content minmax(0, 1fr);
 }
 
 .global-feedback-backdrop {
