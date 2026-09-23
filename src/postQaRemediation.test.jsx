@@ -12,7 +12,7 @@ import { FeedbackForm } from './features/feedback/FeedbackForm'
 import { ActivateAccountForm } from './features/auth/ActivateAccountForm'
 import { ForcePasswordChange } from './features/auth/ForcePasswordChange'
 import { searchProcesses } from './features/navigator/smartSearch'
-import { buildCallGuide } from './features/navigator/processText'
+import { buildCallGuide, PLATFORM_LABELS } from './features/navigator/processText'
 import { PROCESSES } from './data/processes'
 
 const profile = { id:'u1', username:'agent_one', initials:'AO', role:'agent', avatar_id:null }
@@ -60,44 +60,48 @@ describe('post-QA remediation gate', () => {
     expect(guide.referralDetails).not.toEqual(expect.arrayContaining(referralCalloutLines))
   })
 
-  it('collapses long call guides behind an explicit show-more control without deleting steps', async () => {
+  it('keeps long call guides focused on one approved step at a time', async () => {
     const user = userEvent.setup()
     const process = PROCESSES.find(item => item.id === 'sharing-your-screen-desktop-or-content-in-zoom')
     render(<ProcessDrawer process={process} onClose={() => {}} />)
 
-    const totalSteps = buildCallGuide(process).steps.length
-    expect(document.querySelectorAll('.call-step-card').length).toBeLessThan(totalSteps)
-    const showMore = screen.getByRole('button', { name: /Show remaining steps/i })
-    expect(showMore).toBeInTheDocument()
-    await user.click(showMore)
-    expect(document.querySelectorAll('.call-step-card')).toHaveLength(totalSteps)
-    expect(screen.queryByRole('button', { name: /Show remaining steps/i })).not.toBeInTheDocument()
+    const guide = buildCallGuide(process)
+    if (guide.availablePlatforms.length > 1) {
+      const firstDevice = guide.availablePlatforms[0]
+      await user.click(screen.getByRole('button', { name: new RegExp(PLATFORM_LABELS[firstDevice], 'i') }))
+    }
+    expect(document.querySelectorAll('.call-step-card')).toHaveLength(1)
+    expect(screen.getByRole('button', { name: /Resolved \/ Done/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Not resolved/i })).toBeInTheDocument()
   })
 
 
-  it('progressively discloses long source-script groups', async () => {
+  it('keeps source scripts collapsed while preserving a visible copy action for the active step', async () => {
     const user = userEvent.setup()
     const process = PROCESSES.find(item => item.id === 'transferring-meetings-and-webinars-between-devices')
     const guide = buildCallGuide(process)
     render(<ProcessDrawer process={process} onClose={() => {}} />)
 
-    expect(document.querySelectorAll('.suggested-script').length).toBeLessThan(guide.globalScripts.length)
-    const showMore = screen.getByRole('button', { name: /Show remaining scripts/i })
-    await user.click(showMore)
-    expect(document.querySelectorAll('.suggested-script')).toHaveLength(guide.globalScripts.length)
+    if (guide.availablePlatforms.length > 1) {
+      await user.click(screen.getByRole('button', { name: /Windows/i }))
+    }
+    expect(screen.getByRole('button', { name: 'Copy Script' })).toBeInTheDocument()
+    expect(screen.getByText(/Suggested wording/i).closest('details')).not.toHaveAttribute('open')
   })
 
-  it('progressively discloses oversized referral callouts', async () => {
+  it('holds referral detail until the approved path is exhausted', async () => {
     const user = userEvent.setup()
     const process = PROCESSES.find(item => item.id === 'zoom-basic-support-boundaries-decision-path-referral-process')
-    const guide = buildCallGuide(process)
-    const referral = guide.callouts.find(callout => callout.kind === 'referral')
     render(<ProcessDrawer process={process} onClose={() => {}} />)
 
-    const referralCard = document.querySelector('.guide-callout.referral')
-    expect(referralCard.querySelectorAll('.callout-line').length).toBeLessThan(referral.lines.length)
-    await user.click(within(referralCard).getByRole('button', { name: /Show remaining referral details/i }))
-    expect(referralCard.querySelectorAll('.callout-line')).toHaveLength(referral.lines.length)
+    expect(screen.queryByText(/When to stop \/ refer/i)).not.toBeInTheDocument()
+    let next = screen.getByRole('button', { name: /Not resolved/i })
+    while (/Next step/i.test(next.textContent || '')) {
+      await user.click(next)
+      next = screen.getByRole('button', { name: /Not resolved/i })
+    }
+    await user.click(next)
+    expect(screen.getByText(/When to stop \/ refer/i)).toBeInTheDocument()
   })
 
   it('uses one tab stop for the avatar grid and arrow keys to move selection', async () => {
