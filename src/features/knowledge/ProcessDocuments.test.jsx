@@ -19,7 +19,8 @@ it('keeps the Process Documents library searchable and opens the original source
   const search = screen.getByRole('searchbox', { name: 'Find a process document' })
   await user.type(search, 'Joining a Zoom Meeting')
 
-  const documentButton = screen.getByRole('button', { name: /Joining a Zoom Meeting/i })
+  const title = screen.getByText('Joining a Zoom Meeting', { selector: 'strong' })
+  const documentButton = title.closest('button')
   expect(documentButton).toBeVisible()
 
   await user.click(documentButton)
