@@ -44,3 +44,17 @@ it('shows an empty state for a process-document search with no match', async () 
   await user.type(screen.getByRole('searchbox', { name: 'Find a process document' }), 'no-such-process-xyz')
   expect(screen.getByRole('heading', { name: 'No process document found' })).toBeInTheDocument()
 })
+
+
+it.each(['cant join', "can't join", 'can’t join'])(
+  'finds Can’t Join in Process Documents when searching %s',
+  async (query) => {
+    const user = userEvent.setup()
+    render(<ProcessDocuments />)
+
+    await user.type(screen.getByRole('searchbox', { name: 'Find a process document' }), query)
+
+    expect(screen.getByText('Troubleshooting When You Can’t Join a Zoom Meeting', { selector: 'strong' }))
+      .toBeVisible()
+  },
+)

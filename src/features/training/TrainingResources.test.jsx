@@ -190,3 +190,32 @@ describe('Training & Resources', () => {
   })
 
 })
+
+
+it('opens Device Walkthroughs and Video Library from their Roadmap actions', async () => {
+  const user = userEvent.setup()
+  render(<TrainingResources />)
+
+  await user.click(screen.getByRole('button', { name: 'Open device walkthroughs' }))
+  expect(screen.getByRole('tab', { name: 'Device Walkthroughs' })).toHaveAttribute('aria-selected', 'true')
+
+  await user.click(screen.getByRole('tab', { name: 'Training Roadmap' }))
+  await user.click(screen.getByRole('button', { name: 'Open Video Library' }))
+  expect(screen.getByRole('tab', { name: 'Video Library' })).toHaveAttribute('aria-selected', 'true')
+  expect(screen.getByRole('searchbox', { name: 'Search training videos' })).toBeInTheDocument()
+})
+
+it('closes the video player when the Close video button is clicked', async () => {
+  const user = userEvent.setup()
+  render(<TrainingResources />)
+
+  await user.click(screen.getByRole('tab', { name: 'Video Library' }))
+  const card = screen.getByText('How to Join a Zoom Meeting').closest('article')
+  await user.click(within(card).getByRole('button', { name: /watch video/i }))
+
+  const dialog = screen.getByRole('dialog', { name: 'How to Join a Zoom Meeting' })
+  await user.click(within(dialog).getByRole('button', { name: 'Close video' }))
+
+  expect(screen.queryByRole('dialog', { name: 'How to Join a Zoom Meeting' })).not.toBeInTheDocument()
+  expect(screen.getByRole('tab', { name: 'Video Library' })).toHaveAttribute('aria-selected', 'true')
+})
