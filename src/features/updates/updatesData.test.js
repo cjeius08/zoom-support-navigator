@@ -19,7 +19,12 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.metadata.updatePolicy).toMatch(/Admin-only operational or administrative changes/i)
   expect(data.metadata.updatePolicy).toMatch(/Developer-only work/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
-  expect(data.updates[0].date).toBe('2026-09-23')
+  expect(data.updates[0]).toMatchObject({
+    id: 'process-documents-search-normalization',
+    date: '2026-09-24',
+    area: 'Knowledge · Process Documents',
+    audience: 'all',
+  })
   expect(data.updates.slice(0, 3).map(entry => entry.id)).toEqual([
     'new-call-session-reset',
     'common-issues-smart-routing',
