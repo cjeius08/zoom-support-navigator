@@ -5026,3 +5026,34 @@ body:has(.process-document-reader) .process-document-page {
   .guide-coverage-gap>div,
   .common-issue-router-gap-actions { display:grid; grid-template-columns:1fr; }
 }
+
+
+/* Guided end-path routing v2 */
+.guide-endpath-group {
+  margin-top:.95rem;
+}
+.guide-endpath-group > .eyebrow {
+  margin:0 0 .35rem;
+}
+.guide-next-options button small {
+  color:#8fa6b8;
+  font-size:.76rem;
+  line-height:1.4;
+}
+.guide-no-next-route {
+  display:grid;
+  gap:.35rem;
+  margin-top:.95rem;
+  padding:.8rem .9rem;
+  border:1px solid rgba(224,173,99,.24);
+  border-radius:.7rem;
+  background:rgba(110,74,24,.08);
+}
+.guide-no-next-route strong {
+  color:#f3e7d4;
+}
+.guide-no-next-route p {
+  margin:0;
+  color:#bcae9b;
+  line-height:1.45;
+}
