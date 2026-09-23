@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { assetUrl } from "../../lib/assetUrl";
 import { buildCallGuide, PLATFORM_LABELS, processSections } from "./processText";
-import { COMMON_ISSUE_ROUTES, orderedSourcesForRoute } from "./commonIssueRoutes";
+import { COMMON_ISSUE_ROUTES, approvedEndPathsForProcess, orderedSourcesForRoute } from "./commonIssueRoutes";
 import { relatedTrainingForCategory } from "../../data/trainingVideos";
 import { useDialogFocus } from "../../lib/useDialogFocus";
 import { FavoriteToggle } from "../favorites/FavoriteToggle";
@@ -39,7 +39,7 @@ const trainingCategoryByProcessCategory = {
   devices: "Devices & App",
 };
 
-export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice = null, onOpenRoute, onTrackEvent, isFavorite = false, favoriteBusy = false, onToggleFavorite = () => {} }) {
+export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice = null, initialSourceRouteId = null, onOpenRoute, onTrackEvent, isFavorite = false, favoriteBusy = false, onToggleFavorite = () => {} }) {
   const [tab, setTab] = useState("quick");
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [selectedRoute, setSelectedRoute] = useState("");
@@ -59,6 +59,13 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
     [process.id],
   );
   const sourceDevice = PLATFORM_TO_DEVICE[selectedPlatform || requestedPlatform] || null;
+  const approvedEndPaths = useMemo(
+    () => approvedEndPathsForProcess(process.id, {
+      sourceRouteId: initialSourceRouteId,
+      device: sourceDevice,
+    }),
+    [process.id, initialSourceRouteId, sourceDevice],
+  );
   const officialSources = useMemo(() => {
     const sources = new Map();
     for (const route of relatedRoutes) {
@@ -522,14 +529,23 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
                           </div>
                         )}
 
-                        {relatedRoutes.length > 0 && (
-                          <div className="guide-next-options">
-                            {relatedRoutes.map((route) => (
-                              <button type="button" key={route.id} onClick={() => onOpenRoute?.(route.id)}>
-                                <strong>{route.title}</strong>
-                                <span>{route.subtitle}</span>
-                              </button>
-                            ))}
+                        {approvedEndPaths.length > 0 ? (
+                          <section className="guide-endpath-group" aria-label="Next approved symptom routes">
+                            <p className="eyebrow">Only if the symptom now matches</p>
+                            <div className="guide-next-options">
+                              {approvedEndPaths.map((option) => (
+                                <button type="button" key={option.route.id} onClick={() => onOpenRoute?.(option.route.id)}>
+                                  <strong>{option.condition}</strong>
+                                  <span>{option.route.title}</span>
+                                  <small>{option.reason}</small>
+                                </button>
+                              ))}
+                            </div>
+                          </section>
+                        ) : (
+                          <div className="guide-no-next-route">
+                            <strong>No additional approved symptom route applies automatically.</strong>
+                            <p>Use the documented stop/referral boundary below rather than starting unrelated troubleshooting.</p>
                           </div>
                         )}
 
