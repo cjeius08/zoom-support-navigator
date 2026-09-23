@@ -5,7 +5,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it } from 'vitest'
 import { Navigator } from './Navigator'
-import { COMMON_ISSUE_ROUTES, searchCommonIssueRoutes } from './commonIssueRoutes'
+import { COMMON_ISSUE_ROUTES, recommendedProcessForRoute, searchCommonIssueRoutes } from './commonIssueRoutes'
 import { PROCESSES } from '../../data/processes'
 
 it('gives Common Issue tabs their own row above the content panel', () => {
@@ -50,7 +50,7 @@ it('classifies cannot-hear as an audio-output symptom before assuming connection
   const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
   expect(within(dialog).getByText('Audio-output symptom')).toBeInTheDocument()
   expect(within(dialog).getByText(/Are they already inside the meeting/i)).toBeInTheDocument()
-  expect(within(dialog).getByText(/If the meeting itself is reconnecting, dropping, or not loading/i)).toBeInTheDocument()
+  expect(within(dialog).getByText(/Select the caller’s device above/i)).toBeInTheDocument()
 })
 
 it('keeps waiting-for-host and Waiting Room as separate meeting states', async () => {
@@ -60,9 +60,9 @@ it('keeps waiting-for-host and Waiting Room as separate meeting states', async (
   await user.click(screen.getByRole('button', { name: /I’m waiting to get in/i }))
 
   const dialog = screen.getByRole('dialog', { name: /I’m waiting to get in/i })
-  expect(within(dialog).getByRole('heading', { name: 'Waiting for host' })).toBeInTheDocument()
+  expect(within(dialog).getByRole('button', { name: /Waiting for host/i })).toBeInTheDocument()
   expect(within(dialog).getByText(/successfully connected to Zoom/i)).toBeInTheDocument()
-  expect(within(dialog).getByRole('heading', { name: 'Waiting Room' })).toBeInTheDocument()
+  expect(within(dialog).getByRole('button', { name: /Waiting Room/i })).toBeInTheDocument()
   expect(within(dialog).getByText('Host controls admission')).toBeInTheDocument()
 })
 
@@ -220,7 +220,7 @@ it('keeps authoritative sources visible but secondary to the quick route', async
 
   expect(within(dialog).getByRole('link', { name: /Official Zoom Support/i })).toHaveAttribute('href', expect.stringContaining('support.zoom.com'))
   expect(within(dialog).getByText(/Zoom Camera Troubleshooting During a Meeting/i)).toBeInTheDocument()
-  expect(within(dialog).getByText(/Verified against official Zoom Support: September 18, 2026/i)).toBeInTheDocument()
+  expect(within(dialog).getByText(/Verified against official Zoom Support: September 23, 2026/i)).toBeInTheDocument()
 })
 
 
@@ -266,27 +266,29 @@ it('uses Zoom’s documented manual join address instead of an alternate hostnam
 })
 
 
-it('does not show desktop-only audio settings to an iPhone caller', async () => {
+it('routes an iPhone no-sound symptom to the approved mobile audio process', async () => {
   const user = userEvent.setup()
   render(<Navigator />)
 
   await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
-
   const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
   await user.click(within(dialog).getByRole('button', { name: 'iPhone' }))
-  expect(within(dialog).queryByRole('heading', { name: 'Test and select the Zoom speaker' })).not.toBeInTheDocument()
-  expect(within(dialog).getByRole('heading', { name: 'Confirm they joined meeting audio' })).toBeInTheDocument()
+
+  expect(within(dialog).getByRole('heading', { name: /Troubleshooting Speaker or Microphone Issues on a Mobile Device/i })).toBeInTheDocument()
+  expect(within(dialog).queryByText(/Test and select the Zoom speaker/i)).not.toBeInTheDocument()
+  expect(within(dialog).getByRole('button', { name: /Start Guided Process/i })).toBeInTheDocument()
 })
 
-it('shows desktop-only audio settings when Windows is the selected device', async () => {
+it('routes a Windows no-sound symptom to the approved desktop audio process', async () => {
   const user = userEvent.setup()
   render(<Navigator />)
 
   await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
-
   const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
   await user.click(within(dialog).getByRole('button', { name: 'Windows' }))
-  expect(within(dialog).getByRole('heading', { name: 'Test and select the Zoom speaker' })).toBeInTheDocument()
+
+  expect(within(dialog).getByRole('heading', { name: /Troubleshooting Speaker or Microphone Issues in the Zoom Desktop App/i })).toBeInTheDocument()
+  expect(within(dialog).getByRole('button', { name: /Start Guided Process/i })).toBeInTheDocument()
 })
 
 it('prompts for device context before exposing device-specific checks', async () => {
@@ -298,4 +300,15 @@ it('prompts for device context before exposing device-specific checks', async ()
 
   expect(within(dialog).getByText(/Select the caller’s device above/i)).toBeInTheDocument()
   expect(within(dialog).queryByRole('heading', { name: 'Test and select the Zoom speaker' })).not.toBeInTheDocument()
+})
+
+
+it('keeps every Common Issue recommendation inside its approved Process Document list', () => {
+  for (const route of COMMON_ISSUE_ROUTES) {
+    for (const device of ['Windows', 'Mac', 'iPhone', 'Android', 'Browser']) {
+      const state = route.states?.[0]?.title ?? null
+      const processId = recommendedProcessForRoute(route, { device, state })
+      if (processId) expect(route.processIds).toContain(processId)
+    }
+  }
 })
