@@ -312,3 +312,35 @@ it('keeps every Common Issue recommendation inside its approved Process Document
     }
   }
 })
+
+
+it('shows the mobile Zoom source first when an iPhone audio route is selected', async () => {
+  const user = userEvent.setup()
+  render(<Navigator />)
+
+  await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
+  const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
+  await user.click(within(dialog).getByRole('button', { name: 'iPhone' }))
+
+  const matched = within(dialog).getByText(/Matched to iPhone path/i).closest('.common-issue-source-preview')
+  expect(within(matched).getByRole('link')).toHaveAttribute('href', expect.stringContaining('KB0066222'))
+
+  await user.click(within(dialog).getByRole('tab', { name: 'Sources' }))
+  expect(within(dialog).getByText(/Matched to iPhone path/i)).toBeInTheDocument()
+  expect(within(dialog).getByRole('link', { name: /Official Zoom Support/i })).toHaveAttribute('href', expect.stringContaining('KB0066222'))
+})
+
+it('switches the visible official source when the selected audio device changes', async () => {
+  const user = userEvent.setup()
+  render(<Navigator />)
+
+  await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
+  const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
+  await user.click(within(dialog).getByRole('button', { name: 'Windows' }))
+  expect(within(dialog).getByText(/Matched to Windows path/i).closest('.common-issue-source-preview').querySelector('a'))
+    .toHaveAttribute('href', expect.stringContaining('KB0060836'))
+
+  await user.click(within(dialog).getByRole('button', { name: 'Android' }))
+  expect(within(dialog).getByText(/Matched to Android path/i).closest('.common-issue-source-preview').querySelector('a'))
+    .toHaveAttribute('href', expect.stringContaining('KB0066222'))
+})
