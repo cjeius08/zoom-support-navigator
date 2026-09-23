@@ -1,9 +1,17 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { cwd } from 'node:process'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it } from 'vitest'
 import { Navigator } from './Navigator'
 import { COMMON_ISSUE_ROUTES, searchCommonIssueRoutes } from './commonIssueRoutes'
 import { PROCESSES } from '../../data/processes'
+
+it('gives Common Issue tabs their own row above the content panel', () => {
+  const css = readFileSync(join(cwd(), 'src/features/navigator/commonIssueRoutes.css'), 'utf8')
+  expect(css).toMatch(/\\.common-issue-drawer\\s*\\{[^}]*grid-template-rows:\\s*auto auto auto minmax\\(0,\\s*1fr\\)/)
+})
 
 it('preserves the five Fastest Routes and exposes all nineteen reviewed routes under Common Issues', async () => {
   const user = userEvent.setup()
