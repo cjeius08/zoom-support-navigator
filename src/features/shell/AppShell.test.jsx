@@ -406,3 +406,35 @@ it('opens Call Documentation when a Guided Process handoff is explicitly sent', 
   expect(screen.getByText(/Review it before saving/i)).toBeInTheDocument()
   expect(onDocumentationHandoffApplied).toHaveBeenCalledWith('handoff-shell-1')
 })
+
+
+it('keeps only one floating tool open and stacks the other reopen controls', async () => {
+  const user = userEvent.setup()
+  render(<AppShell profile={agentProfile}><div>Current page content</div></AppShell>)
+  const nav = screen.getByRole('navigation', { name: 'Primary navigation' })
+
+  await user.click(within(nav).getByRole('button', { name: 'Readiness Lab' }))
+  expect(screen.getByRole('heading', { name: 'Readiness Lab' })).toBeInTheDocument()
+
+  await user.click(within(nav).getByText('Call Flow'))
+  await user.click(within(nav).getByRole('button', { name: 'Call Documentation' }))
+  expect(screen.getByLabelText('Readiness Lab minimized')).toBeInTheDocument()
+  expect(screen.getByRole('complementary', { name: /Call Documentation/i })).toBeInTheDocument()
+
+  await user.click(within(nav).getByText('Call Flow'))
+  await user.click(within(nav).getByRole('button', { name: 'Scope Check' }))
+  expect(screen.getByLabelText('Readiness Lab minimized')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Restore Readiness Lab' })).toHaveAttribute('title', 'Restore Readiness Lab')
+  expect(screen.getByLabelText('Call Documentation minimized')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Restore Call Documentation' })).toHaveAttribute('title', 'Restore Call Documentation')
+  expect(screen.getByRole('heading', { name: 'Scope Check' })).toBeInTheDocument()
+
+  const minimizedControls = [
+    screen.getByLabelText('Readiness Lab minimized'),
+    screen.getByLabelText('Call Documentation minimized'),
+  ]
+  expect(minimizedControls.map(control => control.style.getPropertyValue('--tool-stack-offset')).sort())
+    .toEqual(['0rem', '4.25rem'])
+  expect(minimizedControls.map(control => control.style.getPropertyValue('--tool-stack-offset-compact')).sort())
+    .toEqual(['0rem', '3.25rem'])
+})
