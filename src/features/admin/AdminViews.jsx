@@ -864,9 +864,15 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
               featureId,
             });
             const maxBucketCount = Math.max(1, ...report.activityBuckets.map((bucket) => bucket.count));
+            const topMember = [...report.users].sort(
+              (a, b) => (b.pageViews + b.featureUsage) - (a.pageViews + a.featureUsage),
+            )[0] || null;
+            const topPage = report.byPage[0] || null;
+            const topFeature = report.byFeature[0] || null;
 
             return (
               <>
+                {section === "overview" && <>
                 <div className="real-summary usage-summary" aria-label="Usage summary">
                   <div aria-label={`Total Users: ${report.totalUsers}`}>
                     <strong>{report.totalUsers}</strong>
@@ -894,7 +900,13 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
                   </div>
                 </div>
 
-                <section className="usage-report-panel" aria-labelledby="usage-trend-title">
+                <div className="usage-overview-highlights" aria-label="Usage highlights">
+                  <div><span>Most active member</span><strong>{topMember ? (topMember.username || topMember.initials || "Unknown user") : "—"}</strong><small>{topMember ? (topMember.pageViews + topMember.featureUsage) + " recorded actions" : "No activity yet"}</small></div>
+                  <div><span>Most viewed page</span><strong>{topPage ? humanize(topPage.id) : "—"}</strong><small>{topPage ? topPage.count + " page views" : "No page views yet"}</small></div>
+                  <div><span>Most used feature</span><strong>{topFeature ? humanize(topFeature.id) : "—"}</strong><small>{topFeature ? topFeature.count + " uses" : "No feature actions yet"}</small></div>
+                </div>
+
+                <section className="usage-report-panel usage-trend-panel" aria-labelledby="usage-trend-title">
                   <div className="usage-report-heading">
                     <div>
                       <p className="eyebrow">Historical usage</p>
@@ -923,8 +935,9 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
                     <p className="usage-empty-state">No usage events match this date range and filter set.</p>
                   )}
                 </section>
+                </>}
 
-                <div className="usage-detail-grid">
+                {section === "breakdown" && <div className="usage-detail-grid">
                   <section className="usage-report-panel" aria-labelledby="usage-members-title">
                     <h2 id="usage-members-title">Usage by team member</h2>
                     {report.users.length ? (
