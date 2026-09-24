@@ -42,3 +42,18 @@ describe('presence and active-time semantics', () => {
     expect(presenceWrites.at(-1).state).toBe('offline')
   })
 })
+
+
+describe('route view de-duplication', () => {
+  it('records one route view per route transition, including a return visit, and resets on logout', () => {
+    expect(typeof tracker.createRouteViewGuard).toBe('function')
+    const shouldTrack = tracker.createRouteViewGuard()
+
+    expect(shouldTrack('navigator')).toBe(true)
+    expect(shouldTrack('navigator')).toBe(false)
+    expect(shouldTrack('training')).toBe(true)
+    expect(shouldTrack('navigator')).toBe(true)
+    expect(shouldTrack(null)).toBe(false)
+    expect(shouldTrack('navigator')).toBe(true)
+  })
+})
