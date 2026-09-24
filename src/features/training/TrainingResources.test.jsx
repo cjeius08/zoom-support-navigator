@@ -219,3 +219,34 @@ it('closes the video player when the Close video button is clicked', async () =>
   expect(screen.queryByRole('dialog', { name: 'How to Join a Zoom Meeting' })).not.toBeInTheDocument()
   expect(screen.getByRole('tab', { name: 'Video Library' })).toHaveAttribute('aria-selected', 'true')
 })
+
+  it('opens the external Windows sandbox in a dedicated walkthrough view and tracks the launch once', async () => {
+    const user = userEvent.setup()
+    const trackEvent = vi.fn()
+    render(<TrainingResources trackEvent={trackEvent} />)
+
+    await user.click(screen.getByRole('tab', { name: 'Device Walkthroughs' }))
+    expect(screen.queryByTitle('Windows device sandbox')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Open Windows device sandbox' }))
+
+    expect(screen.getByRole('heading', { name: 'Interactive Windows Sandbox' })).toBeInTheDocument()
+    expect(screen.getByTitle('Windows device sandbox')).toHaveAttribute(
+      'src',
+      'https://limegreen-anteater-490127.hostingersite.com/',
+    )
+    expect(screen.getByRole('link', { name: 'Open sandbox in a new tab' })).toHaveAttribute(
+      'href',
+      'https://limegreen-anteater-490127.hostingersite.com/',
+    )
+    expect(screen.getByText(/Ozzie records when this sandbox page opens/i)).toBeInTheDocument()
+    expect(trackEvent).toHaveBeenCalledTimes(1)
+    expect(trackEvent).toHaveBeenCalledWith({
+      eventType: 'tool_open',
+      routeId: 'training',
+      toolId: 'windows-device-sandbox',
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Back to Windows walkthrough' }))
+    expect(screen.getByRole('tabpanel', { name: 'Windows desktop walkthrough' })).toBeInTheDocument()
+  })
