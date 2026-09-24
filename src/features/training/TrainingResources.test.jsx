@@ -226,20 +226,20 @@ it('closes the video player when the Close video button is clicked', async () =>
     render(<TrainingResources trackEvent={trackEvent} />)
 
     await user.click(screen.getByRole('tab', { name: 'Device Walkthroughs' }))
-    expect(screen.queryByTitle('Windows device sandbox')).not.toBeInTheDocument()
+    expect(screen.queryByTitle('Zoom Training Environment')).not.toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: 'Open Windows device sandbox' }))
+    await user.click(screen.getByRole('button', { name: 'Open Zoom Training Environment' }))
 
-    expect(screen.getByRole('heading', { name: 'Interactive Windows Sandbox' })).toBeInTheDocument()
-    expect(screen.getByTitle('Windows device sandbox')).toHaveAttribute(
+    expect(screen.getByRole('heading', { name: 'Zoom Training Environment' })).toBeInTheDocument()
+    expect(screen.getByTitle('Zoom Training Environment')).toHaveAttribute(
       'src',
       'https://limegreen-anteater-490127.hostingersite.com/',
     )
-    expect(screen.getByRole('link', { name: 'Open sandbox in a new tab' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Open training environment in a new tab' })).toHaveAttribute(
       'href',
       'https://limegreen-anteater-490127.hostingersite.com/',
     )
-    expect(screen.getByText(/Ozzie records when this sandbox page opens/i)).toBeInTheDocument()
+    expect(screen.getByText(/Ozzie records when this training environment opens/i)).toBeInTheDocument()
     expect(trackEvent).toHaveBeenCalledTimes(1)
     expect(trackEvent).toHaveBeenCalledWith({
       eventType: 'tool_open',
@@ -259,7 +259,7 @@ it('closes the video player when the Close video button is clicked', async () =>
       trackEvent={trackEvent}
     />)
 
-    expect(screen.getByRole('heading', { name: 'Interactive Windows Sandbox' })).toBeInTheDocument()
-    expect(screen.getByTitle('Windows device sandbox')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Zoom Training Environment' })).toBeInTheDocument()
+    expect(screen.getByTitle('Zoom Training Environment')).toBeInTheDocument()
     expect(trackEvent).not.toHaveBeenCalled()
   })

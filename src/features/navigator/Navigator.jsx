@@ -295,11 +295,11 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
     <section className="home-sandbox-launch" aria-labelledby="home-sandbox-title">
       <div className="home-sandbox-copy">
         <p className="eyebrow">Interactive practice</p>
-        <h2 id="home-sandbox-title">Windows Device Sandbox</h2>
+        <h2 id="home-sandbox-title">Zoom Training Environment</h2>
         <p>Open the Windows practice environment directly from Home.</p>
       </div>
       <button type="button" onClick={onOpenDeviceSandbox}>
-        Open Windows Sandbox <span aria-hidden="true">→</span>
+        Open Zoom Training Environment <span aria-hidden="true">→</span>
       </button>
     </section>
 

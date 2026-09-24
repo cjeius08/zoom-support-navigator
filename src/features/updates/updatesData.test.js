@@ -81,13 +81,13 @@ it('keeps the New Call reset visible as a user-facing safety feature', () => {
 })
 
 
-it('lists the Home sandbox shortcut in the user-facing updates', () => {
+it('lists the Zoom Training Environment shortcut in the user-facing updates', () => {
   const path = join(cwd(), 'src/features/updates/updatesData.json')
   const data = JSON.parse(readFileSync(path, 'utf8'))
   const entry = data.updates.find(item => item.id === 'windows-device-sandbox-home-shortcut')
 
   expect(entry).toMatchObject({ date: '2026-09-24', area: 'Home / Training & Resources', audience: 'all' })
   expect(entry.changed).toMatch(/launch only/i)
-  expect(entry.changed).toMatch(/actions inside the external Hostinger sandbox are not included/i)
+  expect(entry.changed).toMatch(/actions inside the external training environment are not included/i)
   expect(entry.checks.length).toBeGreaterThan(0)
 })

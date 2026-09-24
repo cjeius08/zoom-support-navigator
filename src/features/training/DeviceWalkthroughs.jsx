@@ -38,7 +38,7 @@ export function DeviceWalkthroughs({ initialDeviceId = null, initialSandboxOpen 
   useEffect(() => {
     onReportContextChange({
       selected_tab: 'Device Walkthroughs',
-      current_section: sandboxOpen ? 'Interactive Windows Sandbox' : active.title,
+      current_section: sandboxOpen ? 'Zoom Training Environment' : active.title,
       active_device: sandboxOpen ? 'windows' : null,
     })
   }, [active.title, onReportContextChange, sandboxOpen])
@@ -50,16 +50,16 @@ export function DeviceWalkthroughs({ initialDeviceId = null, initialSandboxOpen 
       </button>
       <header className="device-sandbox-heading">
         <p className="eyebrow">Device Walkthroughs · Windows</p>
-        <h2 id="device-sandbox-title">Interactive Windows Sandbox</h2>
-        <p>Practice exploring the Windows Zoom interface in the separate sandbox. If it does not load or respond here, open it in a new tab.</p>
+        <h2 id="device-sandbox-title">Zoom Training Environment</h2>
+        <p>Practice exploring the Zoom interface in this separate training environment. If it does not load or respond here, open it in a new tab.</p>
       </header>
       <div className="device-sandbox-actions">
-        <a href={DEVICE_SANDBOX_URL} target="_blank" rel="noopener noreferrer">Open sandbox in a new tab <span aria-hidden="true">↗</span></a>
-        <small>Ozzie records when this sandbox page opens. Actions inside the sandbox are not included in Ozzie usage analytics.</small>
+        <a href={DEVICE_SANDBOX_URL} target="_blank" rel="noopener noreferrer">Open training environment in a new tab <span aria-hidden="true">↗</span></a>
+        <small>Ozzie records when this training environment opens. Actions inside the external training environment are not included in Ozzie usage analytics.</small>
       </div>
       <div className="device-sandbox-frame">
         <iframe
-          title="Windows device sandbox"
+          title="Zoom Training Environment"
           src={DEVICE_SANDBOX_URL}
           loading="lazy"
           referrerPolicy="strict-origin-when-cross-origin"
@@ -114,12 +114,12 @@ export function DeviceWalkthroughs({ initialDeviceId = null, initialSandboxOpen 
       {active.id === 'windows' && <div className="device-sandbox-launch">
         <div>
           <p className="eyebrow">Interactive practice</p>
-          <strong>Explore the Windows Zoom screens in a sandbox</strong>
+          <strong>Explore the Zoom screens in the training environment</strong>
         </div>
         <button type="button" onClick={() => {
           trackEvent({ eventType: 'tool_open', routeId: 'training', toolId: 'windows-device-sandbox' })
           setSandboxOpen(true)
-        }}>Open Windows device sandbox</button>
+        }}>Open Zoom Training Environment</button>
       </div>}
 
       <div className="device-walkthrough-sections">
