@@ -5741,3 +5741,60 @@ body:has(.process-document-reader) .process-document-page {
     min-height: 30rem;
   }
 }
+
+
+/* Home shortcut for the Windows device sandbox */
+.home-sandbox-launch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: .85rem 0;
+  padding: .85rem 1rem;
+  border: 1px solid rgba(87, 171, 235, .28);
+  border-radius: .85rem;
+  background: linear-gradient(110deg, rgba(19, 84, 130, .24), rgba(13, 25, 34, .56));
+}
+.home-sandbox-copy .eyebrow {
+  margin: 0 0 .2rem;
+}
+.home-sandbox-copy h2 {
+  margin: 0;
+  color: #eaf6fd;
+  font-size: 1rem;
+}
+.home-sandbox-copy p:last-child {
+  margin: .2rem 0 0;
+  color: #aabcc9;
+  font-size: .82rem;
+}
+.home-sandbox-launch button {
+  min-height: 2.5rem;
+  padding: .6rem .9rem;
+  border: 1px solid rgba(95, 185, 255, .48);
+  border-radius: .62rem;
+  color: #eaf6fd;
+  background: rgba(28, 111, 172, .34);
+  cursor: pointer;
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.home-sandbox-launch button:hover {
+  border-color: rgba(112, 198, 255, .76);
+  background: rgba(33, 128, 196, .48);
+}
+.home-sandbox-launch button:focus-visible {
+  outline: 2px solid #63b8ff;
+  outline-offset: 3px;
+}
+@media (max-width: 650px) {
+  .home-sandbox-launch {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .home-sandbox-launch button {
+    width: 100%;
+  }
+}

@@ -21,12 +21,12 @@ function WalkthroughSection({ section }) {
   </article>
 }
 
-export function DeviceWalkthroughs({ initialDeviceId = null, onReportContextChange = () => {}, trackEvent = () => {} }) {
+export function DeviceWalkthroughs({ initialDeviceId = null, initialSandboxOpen = false, onReportContextChange = () => {}, trackEvent = () => {} }) {
   const validInitialId = DEVICE_WALKTHROUGHS.some(device => device.id === initialDeviceId)
     ? initialDeviceId
     : DEVICE_WALKTHROUGHS[0].id
   const [activeId, setActiveId] = useState(validInitialId)
-  const [sandboxOpen, setSandboxOpen] = useState(false)
+  const [sandboxOpen, setSandboxOpen] = useState(initialSandboxOpen)
   const active = DEVICE_WALKTHROUGHS.find(device => device.id === activeId) ?? DEVICE_WALKTHROUGHS[0]
 
   useEffect(() => {

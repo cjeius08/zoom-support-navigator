@@ -161,7 +161,7 @@ export function TrainingResources({ initialVideoId = null, initialTarget = null,
       : section === 'lessons'
         ? <GuidedLessons onOpenResource={openRoadmapResource} onReportContextChange={onReportContextChange} />
         : section === 'devices'
-          ? <DeviceWalkthroughs initialDeviceId={deviceTarget} onReportContextChange={onReportContextChange} trackEvent={trackEvent} />
+          ? <DeviceWalkthroughs initialDeviceId={deviceTarget} initialSandboxOpen={Boolean(initialTarget?.sandboxOpen)} onReportContextChange={onReportContextChange} trackEvent={trackEvent} />
         : section === 'scripts'
           ? <ScriptsCommunication
               onReportContextChange={onReportContextChange}

@@ -10,6 +10,19 @@
   },
   "updates": [
     {
+      "id": "windows-device-sandbox-home-shortcut",
+      "date": "2026-09-24",
+      "area": "Home / Training & Resources",
+      "audience": "all",
+      "title": "Windows Sandbox is now one click away from Home",
+      "changed": "Added an Open Windows Sandbox shortcut to Home. Selecting it opens the interactive Windows practice view, while the original Device Walkthroughs access remains available. Ozzie records the sandbox launch only; actions inside the external Hostinger sandbox are not included in Ozzie usage analytics.",
+      "checks": [
+        "On Home, select Open Windows Sandbox and confirm the interactive sandbox view opens.",
+        "Confirm Open sandbox in a new tab remains available if the embedded page does not load.",
+        "Open Training & Resources → Device Walkthroughs → Windows and confirm its original sandbox access remains available."
+      ]
+    },
+    {
       "id": "process-documents-search-normalization",
       "date": "2026-09-24",
       "area": "Knowledge · Process Documents",

@@ -20,15 +20,15 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.metadata.updatePolicy).toMatch(/Developer-only work/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
   expect(data.updates[0]).toMatchObject({
-    id: 'process-documents-search-normalization',
+    id: 'windows-device-sandbox-home-shortcut',
     date: '2026-09-24',
-    area: 'Knowledge · Process Documents',
+    area: 'Home / Training & Resources',
     audience: 'all',
   })
   expect(data.updates.slice(1, 4).map(entry => entry.id)).toEqual([
+    'process-documents-search-normalization',
     'new-call-session-reset',
     'common-issues-smart-routing',
-    'guided-process-device-troubleshooting',
   ])
   expect(data.updates.map(entry => entry.id)).toEqual(expect.arrayContaining([
     'pilot-readiness-usability-pass',
@@ -78,4 +78,16 @@ it('keeps the New Call reset visible as a user-facing safety feature', () => {
   const entry = data.updates.find(item => item.id === 'new-call-session-reset')
   expect(entry).toMatchObject({ audience: 'all', area: 'Home / Call Flow', date: '2026-09-23' })
   expect(entry.changed).toMatch(/Saved notes.*not deleted/i)
+})
+
+
+it('lists the Home sandbox shortcut in the user-facing updates', () => {
+  const path = join(cwd(), 'src/features/updates/updatesData.json')
+  const data = JSON.parse(readFileSync(path, 'utf8'))
+  const entry = data.updates.find(item => item.id === 'windows-device-sandbox-home-shortcut')
+
+  expect(entry).toMatchObject({ date: '2026-09-24', area: 'Home / Training & Resources', audience: 'all' })
+  expect(entry.changed).toMatch(/launch only/i)
+  expect(entry.changed).toMatch(/actions inside the external Hostinger sandbox are not included/i)
+  expect(entry.checks.length).toBeGreaterThan(0)
 })
