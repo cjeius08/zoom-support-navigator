@@ -116,3 +116,17 @@ export function createPresenceController({
     },
   }
 }
+
+
+export function createRouteViewGuard() {
+  let previousRouteId = null
+  return routeId => {
+    if (!routeId) {
+      previousRouteId = null
+      return false
+    }
+    if (routeId === previousRouteId) return false
+    previousRouteId = routeId
+    return true
+  }
+}
