@@ -88,6 +88,6 @@ it('lists the Zoom Training Environment shortcut in the user-facing updates', ()
 
   expect(entry).toMatchObject({ date: '2026-09-24', area: 'Home / Training & Resources', audience: 'all' })
   expect(entry.changed).toMatch(/launch only/i)
-  expect(entry.changed).toMatch(/actions inside it are not included/i)
+  expect(entry.changed).toMatch(/actions inside the external training environment are not included/i)
   expect(entry.checks.length).toBeGreaterThan(0)
 })

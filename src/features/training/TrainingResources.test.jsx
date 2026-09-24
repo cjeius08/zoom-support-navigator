@@ -235,7 +235,7 @@ it('closes the video player when the Close video button is clicked', async () =>
       'src',
       'https://limegreen-anteater-490127.hostingersite.com/',
     )
-    expect(screen.getByRole('link', { name: 'Open sandbox in a new tab' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Open training environment in a new tab' })).toHaveAttribute(
       'href',
       'https://limegreen-anteater-490127.hostingersite.com/',
     )
