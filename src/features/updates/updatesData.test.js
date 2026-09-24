@@ -22,7 +22,7 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.updates[0]).toMatchObject({
     id: 'windows-device-sandbox-home-shortcut',
     date: '2026-09-24',
-    area: 'Knowledge · Process Documents',
+    area: 'Home / Training & Resources',
     audience: 'all',
   })
   expect(data.updates.slice(1, 4).map(entry => entry.id)).toEqual([
