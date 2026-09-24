@@ -862,7 +862,7 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
                       <p>Each bar counts stored usage events that match the selected filters.</p>
                     </div>
                   </div>
-                  {report.activityBuckets.length ? (
+                  {report.eventCount > 0 && report.activityBuckets.length ? (
                     <div className="usage-chart-scroll">
                       <div className="usage-chart" role="list" aria-label="Usage events over time">
                         {report.activityBuckets.map((bucket) => (
