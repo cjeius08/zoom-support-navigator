@@ -351,8 +351,10 @@ it('expands feedback, shows its submitter, and preserves the expanded item when 
   expect(screen.getByRole('button', { name: 'Restore Feedback Queue' })).toBeVisible()
   expect(screen.getAllByText('The full report text should be available after expanding this item.')[0]).not.toBeVisible()
 
+  const scrollToSpy = vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
   await user.click(screen.getByRole('button', { name: 'Restore Feedback Queue' }))
   expect(screen.getAllByText('The full report text should be available after expanding this item.')[0]).toBeVisible()
+  scrollToSpy.mockRestore()
 })
 
 it('labels feedback with an unavailable reporter as Unknown submitter', async () => {
