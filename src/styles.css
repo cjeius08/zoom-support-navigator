@@ -5464,3 +5464,15 @@ body:has(.process-document-reader) .process-document-page {
     bottom: .4rem;
   }
 }
+
+@media (max-width: 1100px) {
+  .documentation-dock-minimized:not(.scope-check-minimized):not(.readiness-lab-minimized) .documentation-dock-restore::after {
+    content: "CF";
+  }
+  .documentation-dock-minimized.scope-check-minimized .documentation-dock-restore::after {
+    content: "SC";
+  }
+  .documentation-dock-minimized.readiness-lab-minimized .documentation-dock-restore::after {
+    content: "RL";
+  }
+}
