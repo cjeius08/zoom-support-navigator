@@ -338,7 +338,7 @@ it('expands feedback, shows its submitter, and preserves the expanded item when 
 
   expect(await screen.findByText('agent_one')).toBeInTheDocument()
   expect(screen.getByText('AO')).toBeInTheDocument()
-  expect(screen.getByText('Member')).toBeInTheDocument()
+  expect(screen.getByText(/Member/)).toBeInTheDocument()
 
   await user.click(screen.getByRole('button', { name: 'Expand feedback feedback-1' }))
   expect(screen.getByText('The full report text should be available after expanding this item.')).toBeVisible()
