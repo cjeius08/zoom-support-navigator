@@ -433,4 +433,6 @@ it('keeps only one floating tool open and stacks the other reopen controls', asy
   ]
   expect(minimizedControls.map(control => control.style.getPropertyValue('--tool-stack-offset')).sort())
     .toEqual(['0rem', '4.25rem'])
+  expect(minimizedControls.map(control => control.style.getPropertyValue('--tool-stack-offset-compact')).sort())
+    .toEqual(['0rem', '3.25rem'])
 })
