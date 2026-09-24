@@ -50,7 +50,7 @@ export function ScopeCheck({ open = false, minimized = false, stackIndex = 0, on
 
   if (minimized) {
     return <aside style={{ '--tool-stack-offset': `${Math.max(0, stackIndex) * 4.25}rem`, '--tool-stack-offset-compact': `${Math.max(0, stackIndex) * 3.25}rem` }} className="documentation-dock documentation-dock-minimized scope-check-minimized" aria-label="Scope Check minimized">
-      <button type="button" className="documentation-dock-restore" aria-label="Restore Scope Check" onClick={onMinimize}>
+      <button type="button" className="documentation-dock-restore" aria-label="Restore Scope Check" title="Restore Scope Check" onClick={onMinimize}>
         <span>
           <strong>Scope Check</strong>
           <small>{referral ? referral.contact : result.state === 'pending' ? 'Decision not complete' : result.label}</small>
