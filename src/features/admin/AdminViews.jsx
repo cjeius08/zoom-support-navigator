@@ -903,12 +903,30 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
 
 const FEEDBACK_STATUSES = ["new", "reviewing", "planned", "resolved", "closed", "dismissed"];
 
+
 export function FeedbackQueue({ onOpenPage }) {
   const [refreshVersion, setRefreshVersion] = useState(0);
   const [updatingId, setUpdatingId] = useState("");
   const [actionError, setActionError] = useState("");
+  const [queueMinimized, setQueueMinimized] = useState(false);
+  const [expandedIds, setExpandedIds] = useState(() => new Set());
   const loader = useCallback(() => loadFeedback(), []);
+  const teamLoader = useCallback(() => loadTeam(), []);
   const state = useData(loader, refreshVersion);
+  const teamState = useData(teamLoader);
+  const profilesById = useMemo(
+    () => new Map((teamState.data || []).filter(person => person.id).map(person => [person.id, person])),
+    [teamState.data],
+  );
+
+  function toggleExpanded(itemId) {
+    setExpandedIds(current => {
+      const next = new Set(current);
+      if (next.has(itemId)) next.delete(itemId);
+      else next.add(itemId);
+      return next;
+    });
+  }
 
   async function changeStatus(item, status) {
     if (status === item.status || updatingId) return;
@@ -927,87 +945,174 @@ export function FeedbackQueue({ onOpenPage }) {
   return (
     <section className="console-view feedback-queue">
       <p className="eyebrow">Admin only</p>
-      <h1>Feedback Queue</h1>
-      <p>
-        Review user reports, update their status, and jump back to the stored
-        safe page or process context.
-      </p>
+      <div className="feedback-queue-heading">
+        <div>
+          <h1>Feedback Queue</h1>
+          <p>
+            Review user reports, update their status, and jump back to the stored
+            safe page or process context.
+          </p>
+        </div>
+        <button
+          type="button"
+          className="feedback-queue-minimize"
+          aria-controls="feedback-queue-panel"
+          aria-expanded={!queueMinimized}
+          onClick={() => setQueueMinimized(value => !value)}
+        >
+          {queueMinimized ? "Restore Feedback Queue" : "Minimize Feedback Queue"}
+        </button>
+      </div>
+      {queueMinimized && (
+        <p className="feedback-queue-minimized-note" role="status">
+          The queue is minimized. Your expanded item and scroll position are saved.
+        </p>
+      )}
       {actionError && <p role="alert">{actionError}</p>}
-      <State state={state}>
-        {(items) =>
-          items.length ? (
-            <div className="feedback-list">
-              {items.map((item) => (
-                <article key={item.id}>
-                  <header>
-                    <strong>{item.type.replaceAll("_", " ")}</strong>
-                    <label className="feedback-status-control">
-                      <span className="sr-only">Status</span>
-                      <select
-                        aria-label={`Status for feedback ${item.id}`}
-                        value={item.status}
-                        disabled={updatingId === item.id}
-                        onChange={(event) => changeStatus(item, event.target.value)}
-                      >
-                        {FEEDBACK_STATUSES.map((status) => (
-                          <option value={status} key={status}>{status}</option>
-                        ))}
-                      </select>
-                    </label>
-                  </header>
-                  <p>{item.what_noticed}</p>
-                  {item.suggested_change && (
-                    <p><b>Suggestion:</b> {item.suggested_change}</p>
-                  )}
-                  <div className="feedback-context-row">
-                    <small>
-                      {item.page_label}
-                      {item.process_id ? ` · ${item.process_id}` : ""}
-                      {item.active_common_issue ? ` · ${item.active_common_issue}` : ""}
-                    </small>
-                    <button type="button" onClick={() => onOpenPage?.(item)}>Open Page</button>
-                  </div>
-                  <details className="feedback-screen-context">
-                    <summary>Captured screen context</summary>
-                    <dl>
-                      <div><dt>Route</dt><dd>{item.route_id || "—"}</dd></div>
-                      <div><dt>Selected tab</dt><dd>{item.selected_tab || "—"}</dd></div>
-                      <div><dt>Section</dt><dd>{item.current_section || "—"}</dd></div>
-                      <div><dt>Device filter</dt><dd>{item.active_device || "—"}</dd></div>
-                      <div><dt>Caller role</dt><dd>{item.active_caller_role || "—"}</dd></div>
-                      <div><dt>Common issue</dt><dd>{item.active_common_issue || "—"}</dd></div>
-                      <div><dt>Process</dt><dd>{item.process_id || "—"}</dd></div>
-                      <div><dt>Category</dt><dd>{item.category_id || "—"}</dd></div>
-                      <div><dt>Viewport</dt><dd>{item.viewport_width && item.viewport_height ? `${item.viewport_width} × ${item.viewport_height}` : "—"}</dd></div>
-                      <div><dt>Page path</dt><dd>{[item.page_path, item.page_hash].filter(Boolean).join("") || "—"}</dd></div>
-                      <div className="feedback-context-wide"><dt>Browser</dt><dd>{item.browser_user_agent || "—"}</dd></div>
-                      <div><dt>Client time</dt><dd>{item.client_reported_at ? new Date(item.client_reported_at).toLocaleString() : "—"}</dd></div>
-                    </dl>
-                  </details>
-                  {updatingId === item.id && <small role="status">Saving…</small>}
-                  {item.history?.length > 0 && (
-                    <div className="feedback-history">
-                      <small>Status history</small>
-                      <ul>
-                        {item.history.slice(-3).map((history, index) => (
-                          <li key={`${history.created_at}-${index}`}>
-                            {history.previous_status || "new"} → {history.new_status}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="empty-state">
-              <h2>No feedback yet</h2>
-              <p>Submitted user reports will appear here.</p>
-            </div>
-          )
-        }
-      </State>
+      <div id="feedback-queue-panel" hidden={queueMinimized}>
+        <State state={state}>
+          {(items) =>
+            items.length ? (
+              <div className="feedback-list">
+                {items.map((item) => {
+                  const reporter = profilesById.get(item.reporter_user_id);
+                  const reporterName = reporter?.username || reporter?.initials || "Unknown submitter";
+                  const reporterRole = reporter
+                    ? reporter.role === "creator_admin"
+                      ? "Admin"
+                      : reporter.workspace_role === "lead"
+                        ? "Lead"
+                        : "Member"
+                    : "Role unavailable";
+                  const reporterAvatar = avatarUrl(reporter?.avatar_id);
+                  const expanded = expandedIds.has(item.id);
+                  const submittedAt = item.created_at
+                    ? new Date(item.created_at).toLocaleString()
+                    : "Time unavailable";
+                  const reporterMeta = reporter
+                    ? (reporter.initials ? reporter.initials + " · " : "") + reporterRole
+                    : reporterRole;
+
+                  return (
+                    <article key={item.id} className={"feedback-item" + (expanded ? " is-expanded" : "")}>
+                      <header className="feedback-item-row">
+                        <button
+                          type="button"
+                          className="feedback-item-toggle"
+                          aria-expanded={expanded}
+                          aria-label={(expanded ? "Collapse" : "Expand") + " feedback " + item.id}
+                          onClick={() => toggleExpanded(item.id)}
+                        >
+                          <span className="feedback-item-type">
+                            {(item.type || "feedback").replaceAll("_", " ")}
+                          </span>
+                          <span className="feedback-reporter">
+                            {reporterAvatar
+                              ? <img src={reporterAvatar} alt="" />
+                              : <span className="feedback-avatar-fallback">{reporter?.initials || "?"}</span>}
+                            <span>
+                              <strong>{reporterName}</strong>
+                              <small>{reporterMeta}</small>
+                            </span>
+                          </span>
+                          <time className="feedback-submitted-at" dateTime={item.created_at || undefined}>
+                            {submittedAt}
+                          </time>
+                          <span className="feedback-item-chevron" aria-hidden="true">{expanded ? "−" : "+"}</span>
+                        </button>
+                        <label className="feedback-status-control">
+                          <span className="sr-only">Status</span>
+                          <select
+                            aria-label={"Status for feedback " + item.id}
+                            value={item.status}
+                            disabled={updatingId === item.id}
+                            onChange={(event) => changeStatus(item, event.target.value)}
+                          >
+                            {FEEDBACK_STATUSES.map((status) => (
+                              <option value={status} key={status}>{status}</option>
+                            ))}
+                          </select>
+                        </label>
+                      </header>
+
+                      {expanded && (
+                        <div className="feedback-item-details">
+                          <div className="feedback-item-submitter">
+                            {reporterAvatar
+                              ? <img src={reporterAvatar} alt="" />
+                              : <span className="feedback-avatar-fallback">{reporter?.initials || "?"}</span>}
+                            <div>
+                              <strong>{reporterName}</strong>
+                              <small>{reporterMeta}</small>
+                            </div>
+                          </div>
+                          <p className="feedback-item-description">
+                            <b>What they noticed</b>
+                            <span>{item.what_noticed || "No description provided."}</span>
+                          </p>
+                          {item.suggested_change && (
+                            <p className="feedback-item-suggestion">
+                              <b>Suggested change</b>
+                              <span>{item.suggested_change}</span>
+                            </p>
+                          )}
+                          <p className="feedback-item-submitted">
+                            <b>Submitted</b>
+                            <time dateTime={item.created_at || undefined}>{submittedAt}</time>
+                          </p>
+                          <div className="feedback-context-row">
+                            <small>
+                              {item.page_label || "Page unavailable"}
+                              {item.process_id ? " · " + item.process_id : ""}
+                              {item.active_common_issue ? " · " + item.active_common_issue : ""}
+                            </small>
+                            <button type="button" onClick={() => onOpenPage?.(item)}>Open Page</button>
+                          </div>
+                          <details className="feedback-screen-context">
+                            <summary>Captured screen context</summary>
+                            <dl>
+                              <div><dt>Route</dt><dd>{item.route_id || "—"}</dd></div>
+                              <div><dt>Selected tab</dt><dd>{item.selected_tab || "—"}</dd></div>
+                              <div><dt>Section</dt><dd>{item.current_section || "—"}</dd></div>
+                              <div><dt>Device filter</dt><dd>{item.active_device || "—"}</dd></div>
+                              <div><dt>Caller role</dt><dd>{item.active_caller_role || "—"}</dd></div>
+                              <div><dt>Common issue</dt><dd>{item.active_common_issue || "—"}</dd></div>
+                              <div><dt>Process</dt><dd>{item.process_id || "—"}</dd></div>
+                              <div><dt>Category</dt><dd>{item.category_id || "—"}</dd></div>
+                              <div><dt>Viewport</dt><dd>{item.viewport_width && item.viewport_height ? item.viewport_width + " × " + item.viewport_height : "—"}</dd></div>
+                              <div><dt>Page path</dt><dd>{[item.page_path, item.page_hash].filter(Boolean).join("") || "—"}</dd></div>
+                              <div className="feedback-context-wide"><dt>Browser</dt><dd>{item.browser_user_agent || "—"}</dd></div>
+                              <div><dt>Client time</dt><dd>{item.client_reported_at ? new Date(item.client_reported_at).toLocaleString() : "—"}</dd></div>
+                            </dl>
+                          </details>
+                          {updatingId === item.id && <small role="status">Saving…</small>}
+                          {item.history?.length > 0 && (
+                            <div className="feedback-history">
+                              <small>Status history</small>
+                              <ul>
+                                {item.history.slice(-3).map((history, index) => (
+                                  <li key={history.created_at + "-" + index}>
+                                    {history.previous_status || "new"} → {history.new_status}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="empty-state">
+                <h2>No feedback yet</h2>
+                <p>Submitted user reports will appear here.</p>
+              </div>
+            )
+          }
+        </State>
+      </div>
     </section>
   );
 }
