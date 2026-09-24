@@ -343,7 +343,8 @@ it('expands feedback, shows its submitter, and preserves the expanded item when 
 
   await user.click(screen.getByRole('button', { name: 'Expand feedback feedback-1' }))
   expect(screen.getAllByText('The full report text should be available after expanding this item.')).toHaveLength(2)
-  expect(screen.getAllByText('The full report text should be available after expanding this item.').every(node => node.checkVisibility())).toBe(true)
+  expect(screen.getAllByText('The full report text should be available after expanding this item.')[0]).toBeVisible()
+  expect(screen.getAllByText('The full report text should be available after expanding this item.')[1]).toBeVisible()
   expect(screen.getByText(/Clarify where to find the audio settings/i)).toBeVisible()
 
   await user.click(screen.getByRole('button', { name: 'Minimize Feedback Queue' }))
