@@ -307,3 +307,66 @@ it('shows the database storage guardrail on Admin Home', async () => {
   expect(screen.getByText(/Safe\. No action needed/i)).toBeInTheDocument()
   expect(screen.getByText(/refreshed hourly/i)).toBeInTheDocument()
 })
+
+
+it('expands feedback, shows its submitter, and preserves the expanded item when the queue is minimized', async () => {
+  const user = userEvent.setup()
+  loadFeedback.mockResolvedValue([{
+    id: 'feedback-1',
+    type: 'navigation',
+    status: 'new',
+    route_id: 'navigator',
+    page_label: 'Navigator',
+    process_id: 'zoom-audio-troubleshooting',
+    what_noticed: 'The full report text should be available after expanding this item.',
+    suggested_change: 'Clarify where to find the audio settings.',
+    created_at: '2026-09-22T09:00:00.000Z',
+    reporter_user_id: 'agent-1',
+    history: [],
+  }])
+  loadTeam.mockResolvedValue([{
+    id: 'agent-1',
+    username: 'agent_one',
+    initials: 'AO',
+    role: 'agent',
+    workspace_role: 'member',
+    avatar_id: null,
+  }])
+
+  const { FeedbackQueue } = await import('./AdminViews')
+  render(<FeedbackQueue onOpenPage={vi.fn()} />)
+
+  expect(await screen.findByText('agent_one')).toBeInTheDocument()
+  expect(screen.getByText('AO')).toBeInTheDocument()
+  expect(screen.getByText('Member')).toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: 'Expand feedback feedback-1' }))
+  expect(screen.getByText('The full report text should be available after expanding this item.')).toBeVisible()
+  expect(screen.getByText(/Clarify where to find the audio settings/i)).toBeVisible()
+
+  await user.click(screen.getByRole('button', { name: 'Minimize Feedback Queue' }))
+  expect(screen.getByRole('button', { name: 'Restore Feedback Queue' })).toBeVisible()
+  expect(screen.getByText('The full report text should be available after expanding this item.')).not.toBeVisible()
+
+  await user.click(screen.getByRole('button', { name: 'Restore Feedback Queue' }))
+  expect(screen.getByText('The full report text should be available after expanding this item.')).toBeVisible()
+})
+
+it('labels feedback with an unavailable reporter as Unknown submitter', async () => {
+  loadFeedback.mockResolvedValue([{
+    id: 'feedback-unknown',
+    type: 'content',
+    status: 'new',
+    page_label: 'Knowledge',
+    what_noticed: 'Reporter profile is unavailable.',
+    created_at: '2026-09-22T09:00:00.000Z',
+    reporter_user_id: 'missing-profile',
+    history: [],
+  }])
+  loadTeam.mockResolvedValue([])
+
+  const { FeedbackQueue } = await import('./AdminViews')
+  render(<FeedbackQueue onOpenPage={vi.fn()} />)
+
+  expect(await screen.findByText('Unknown submitter')).toBeInTheDocument()
+})
