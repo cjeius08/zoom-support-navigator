@@ -129,20 +129,34 @@ function buildActivityBuckets(events, startMs, endMs, period) {
     const next = advanceBucket(cursor, unit)
     const bucketStart = Math.max(cursor.getTime(), startMs)
     const bucketEnd = Math.min(next.getTime(), endMs)
-    const count = events.filter(event => {
-      const time = parseTime(event.created_at)
-      return time !== null && time >= bucketStart && time < bucketEnd
-    }).length
     buckets.push({
       id: String(bucketStart),
+      startMs: bucketStart,
+      endMs: bucketEnd,
       start: new Date(bucketStart).toISOString(),
       end: new Date(bucketEnd).toISOString(),
       label: bucketLabel(cursor, unit),
-      count,
+      count: 0,
     })
     cursor = next
   }
-  return buckets
+  events.forEach(event => {
+    const time = parseTime(event.created_at)
+    if (time === null) return
+    let low = 0
+    let high = buckets.length - 1
+    while (low <= high) {
+      const middle = Math.floor((low + high) / 2)
+      const bucket = buckets[middle]
+      if (time < bucket.startMs) high = middle - 1
+      else if (time >= bucket.endMs) low = middle + 1
+      else {
+        bucket.count += 1
+        break
+      }
+    }
+  })
+  return buckets.map(({ startMs: bucketStart, endMs: bucketEnd, ...bucket }) => ({ ...bucket, start: new Date(bucketStart).toISOString(), end: new Date(bucketEnd).toISOString() }))
 }
 
 export function buildUsageReport({
@@ -246,12 +260,13 @@ export function buildUsageReport({
       }
     })
 
+  const eventTimes = filteredEvents.map(event => parseTime(event.created_at)).filter(Number.isFinite)
   const startForChart = Number.isFinite(startMs)
     ? startMs
-    : Math.min(...filteredEvents.map(event => parseTime(event.created_at)).filter(Number.isFinite))
+    : eventTimes.reduce((minimum, time) => Math.min(minimum, time), Number.POSITIVE_INFINITY)
   const endForChart = Number.isFinite(endMs)
     ? endMs
-    : Math.max(...filteredEvents.map(event => parseTime(event.created_at)).filter(Number.isFinite)) + 1
+    : eventTimes.reduce((maximum, time) => Math.max(maximum, time), Number.NEGATIVE_INFINITY) + 1
   const activityBuckets = Number.isFinite(startForChart) && Number.isFinite(endForChart)
     ? buildActivityBuckets(filteredEvents, startForChart, endForChart, period)
     : []
