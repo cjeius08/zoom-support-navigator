@@ -8,6 +8,8 @@ import { COMMON_ISSUE_ROUTES, routeById, searchCommonIssueRoutes } from './commo
 import { FavoriteToggle } from '../favorites/FavoriteToggle'
 import { useDialogFocus } from '../../lib/useDialogFocus'
 
+import { OzzieAiAssist } from './OzzieAiAssist'
+
 const categories = [
   ['join', 'Joining Meetings', 'Links, waiting rooms, access errors'],
   ['audio', 'Audio & Microphone', 'Hear, speak, test, Bluetooth'],
@@ -370,6 +372,16 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
             }}
           >{example}</button>)}
         </div>
+
+        <OzzieAiAssist
+          query={query}
+          routeMatches={routeMatches}
+          processMatches={processMatches}
+          callContext={callContext}
+          onOpenRoute={route => openRoute(route, 'ai_assist')}
+          onOpenProcess={process => openProcess(process, 'ai_assist')}
+          onTrackEvent={onTrackEvent}
+        />
 
         <span className="sr-only" role="status" aria-live="polite">{query.trim() ? `${routeMatches.length} common issue ${routeMatches.length === 1 ? 'route' : 'routes'} and ${processMatches.length} related ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.` : ''}</span>
       </section>
