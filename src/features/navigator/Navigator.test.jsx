@@ -257,3 +257,14 @@ it('ends the Home call session when a guided process is resolved', async () => {
   expect(screen.getByLabelText('Current call session')).toHaveTextContent('Ready for a new caller')
   expect(screen.queryByRole('button', { name: 'New Call' })).not.toBeInTheDocument()
 })
+
+
+it('shows a Home shortcut that opens the Windows sandbox in one click', async () => {
+  const user = userEvent.setup()
+  const onOpenDeviceSandbox = vi.fn()
+  render(<Navigator onOpenDeviceSandbox={onOpenDeviceSandbox} />)
+
+  await user.click(screen.getByRole('button', { name: 'Open Windows Sandbox' }))
+
+  expect(onOpenDeviceSandbox).toHaveBeenCalledTimes(1)
+})
