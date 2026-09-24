@@ -210,7 +210,7 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
 
   if (minimized) {
     return <aside style={{ '--tool-stack-offset': `${Math.max(0, stackIndex) * 4.25}rem`, '--tool-stack-offset-compact': `${Math.max(0, stackIndex) * 3.25}rem` }} className="documentation-dock documentation-dock-minimized" aria-label="Call Documentation minimized">
-      <button type="button" className="documentation-dock-restore" aria-label="Restore Call Documentation" onClick={onMinimize}>
+      <button type="button" className="documentation-dock-restore" aria-label="Restore Call Documentation" title="Restore Call Documentation" onClick={onMinimize}>
         <span>
           <strong>Call Documentation</strong>
           <small>{filledCount ? `${filledCount} fields in draft` : 'Draft ready'}</small>
