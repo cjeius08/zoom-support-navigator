@@ -226,12 +226,12 @@ it('closes the video player when the Close video button is clicked', async () =>
     render(<TrainingResources trackEvent={trackEvent} />)
 
     await user.click(screen.getByRole('tab', { name: 'Device Walkthroughs' }))
-    expect(screen.queryByTitle('Windows device sandbox')).not.toBeInTheDocument()
+    expect(screen.queryByTitle('Zoom Training Environment')).not.toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: 'Open Windows device sandbox' }))
+    await user.click(screen.getByRole('button', { name: 'Open Zoom Training Environment' }))
 
     expect(screen.getByRole('heading', { name: 'Zoom Training Environment' })).toBeInTheDocument()
-    expect(screen.getByTitle('Windows device sandbox')).toHaveAttribute(
+    expect(screen.getByTitle('Zoom Training Environment')).toHaveAttribute(
       'src',
       'https://limegreen-anteater-490127.hostingersite.com/',
     )
@@ -260,6 +260,6 @@ it('closes the video player when the Close video button is clicked', async () =>
     />)
 
     expect(screen.getByRole('heading', { name: 'Zoom Training Environment' })).toBeInTheDocument()
-    expect(screen.getByTitle('Windows device sandbox')).toBeInTheDocument()
+    expect(screen.getByTitle('Zoom Training Environment')).toBeInTheDocument()
     expect(trackEvent).not.toHaveBeenCalled()
   })

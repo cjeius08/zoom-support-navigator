@@ -15,7 +15,7 @@
       "area": "Home / Training & Resources",
       "audience": "all",
       "title": "Zoom Training Environment is now one click away from Home",
-      "changed": "Added an Open Zoom Training Environment shortcut to Home. Selecting it opens the interactive practice view, while the original Device Walkthroughs access remains available. Ozzie records when the external training environment opens; actions inside it are not included in Ozzie usage analytics.",
+      "changed": "Added an Open Zoom Training Environment shortcut to Home. Selecting it opens the interactive practice view, while the original Device Walkthroughs access remains available. Ozzie tracks the launch only; actions inside the external training environment are not included in Ozzie usage analytics.",
       "checks": [
         "On Home, select Open Zoom Training Environment and confirm the interactive practice view opens.",
         "Confirm Open training environment in a new tab remains available if the embedded page does not load.",
