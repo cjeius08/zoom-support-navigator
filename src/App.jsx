@@ -211,6 +211,21 @@ export default function App() {
     setView('training')
   }
 
+
+  function openDeviceSandbox() {
+    rememberCurrentPage()
+    setTrainingVideoId(null)
+    setTrainingTarget({ section: 'devices', device: 'windows', sandboxOpen: true })
+    trackEvent({ eventType: 'tool_open', routeId: 'training', toolId: 'windows-device-sandbox' })
+    setReportContext({
+      ...EMPTY_REPORT_CONTEXT,
+      selected_tab: 'Device Walkthroughs',
+      current_section: 'Interactive Windows Sandbox',
+      active_device: 'windows',
+    })
+    setView('training')
+  }
+
   function openReadinessResource(target = {}) {
     if (target.view === 'training') {
       rememberCurrentPage()
@@ -424,6 +439,7 @@ export default function App() {
     const content = view === 'navigator'
       ? <Navigator
           onOpenTraining={openTraining}
+          onOpenDeviceSandbox={openDeviceSandbox}
           onTrackEvent={trackEvent}
           onAddToDocumentation={addToCallDocumentation}
           onNewCall={startNewCall}
