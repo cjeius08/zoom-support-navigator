@@ -5481,3 +5481,22 @@ body:has(.process-document-reader) .process-document-page {
     letter-spacing: 0;
   }
 }
+
+
+/* Keep navigation menus usable above a floating tool while switching panels. */
+@media (min-width: 801px) {
+  .app-header:has(.topnav-dropdown[open]) {
+    z-index: 20001;
+  }
+  .app-header:has(.topnav-dropdown[open]) ~ .documentation-dock:not(.documentation-dock-minimized) {
+    top: 9rem;
+  }
+}
+@media (max-width: 800px) {
+  .app-header:has(.top-navigation.open) {
+    z-index: 20001;
+  }
+}
+.documentation-dock-minimized {
+  z-index: 20002;
+}
