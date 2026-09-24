@@ -10,6 +10,36 @@
   },
   "updates": [
     {
+      "id": "ozzie-ai-assist-smart-search",
+      "date": "2026-09-25",
+      "area": "Home / Smart Search",
+      "audience": "all",
+      "title": "Ozzie AI Assist now works alongside Smart Search",
+      "changed": "Added optional Ozzie AI Assist inside the existing Smart Search area. Smart Search remains the fast, non-AI lookup for known issues and process names. When an issue is harder to describe, select Ask Ozzie using the same search text; short descriptions, shorthand, common typos, and natural caller language are supported. Ozzie AI uses the approved Smart Search matches as its source material, asks one clarifying question only when the route is genuinely ambiguous, and keeps Smart Search available if AI is unavailable. Sensitive values are filtered before provider calls, and agents can report an AI answer for review.",
+      "checks": [
+        "Search Bluetooth headset normally and confirm Smart Search results appear without needing Ask Ozzie.",
+        "Try a short description such as “bt connected laptop speaker”, then select Ask Ozzie and confirm the AI uses the approved matching Ozzie route rather than requiring a full sentence.",
+        "Try a broad description such as “audio issue” and confirm Ozzie may ask one useful clarifying question instead of guessing.",
+        "If an AI answer appears wrong or incomplete, use Report answer and confirm it can be submitted for Admin review.",
+        "Confirm the privacy reminder says not to enter passwords, full card numbers, or government IDs."
+      ]
+    },
+    {
+      "id": "admin-ozzie-ai-reports",
+      "date": "2026-09-25",
+      "area": "Admin / Ozzie AI Reports",
+      "audience": "admin",
+      "title": "Admin now has a dedicated Ozzie AI behavior and accuracy report",
+      "changed": "Added a separate Ozzie AI Reports page so AI monitoring does not lengthen the existing Usage Analytics page. The report separates Overview, Interaction Log, Incorrect Answers, Provider Usage, and Behavior Insights. It tracks redacted questions, answers, approved source IDs, system confidence, provider/model, token usage, latency, fallbacks, top AI users, user-reported errors, and Admin QA reviews. Reported error rate is kept separate from QA-reviewed accuracy so an unreported answer is never automatically counted as correct.",
+      "checks": [
+        "Open Admin → Ozzie AI Reports and confirm the five report tabs are separate and usable.",
+        "Open Interaction Log and confirm stored questions are redacted and each interaction can receive a Correct, Partially correct, or Incorrect QA review.",
+        "Open Incorrect Answers and confirm a reported answer shows its redacted question, AI answer, provider/model, route/source context, confidence, and Admin review controls.",
+        "Open Provider Usage and confirm requests, input/output/total tokens, fallbacks, unavailable results, and latency are summarized by provider.",
+        "Confirm Overview clearly distinguishes Reported error rate from Reviewed accuracy."
+      ]
+    },
+    {
       "id": "flex-arbitration-zoom-support-greeting",
       "date": "2026-09-24",
       "area": "Call Flow / Call Language",
