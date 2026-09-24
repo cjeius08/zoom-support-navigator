@@ -64,7 +64,7 @@ export async function loadAiAdminReport({ start, end } = {}) {
   const interactionsPromise = loadPaged(() => {
     let query = supabase
       .from('zoom_ai_interactions')
-      .select('id,user_id,feature,provider,model,redacted_question,ai_answer,status,route_id,source_ids,confidence,input_tokens,output_tokens,total_tokens,fallback_path,fallback_count,latency_ms,error_code,created_at')
+      .select('id,user_id,feature,provider,model,redacted_question,ai_answer,status,route_id,source_ids,confidence,input_tokens,output_tokens,total_tokens,fallback_path,fallback_count,latency_ms,error_code,qa_review_status,qa_review_notes,qa_reviewed_by,qa_reviewed_at,created_at')
       .order('created_at', { ascending: false })
     if (start) query = query.gte('created_at', start)
     if (end) query = query.lt('created_at', end)
@@ -114,6 +114,27 @@ export async function updateAiAnswerReport(reportId, patch) {
     .update(payload)
     .eq('id', reportId)
     .select('id,status,admin_category,admin_notes,reviewed_by,reviewed_at,updated_at')
+    .single()
+  if (error) throw error
+  return data
+}
+
+
+export async function reviewAiInteraction(interactionId, { status, notes = '' }) {
+  if (!supabase) throw new Error('AI reporting is not configured.')
+  const { data: authData, error: authError } = await supabase.auth.getUser()
+  if (authError || !authData?.user?.id) throw authError || new Error('Not signed in.')
+
+  const { data, error } = await supabase
+    .from('zoom_ai_interactions')
+    .update({
+      qa_review_status: status,
+      qa_review_notes: String(notes || '').trim() || null,
+      qa_reviewed_by: authData.user.id,
+      qa_reviewed_at: new Date().toISOString(),
+    })
+    .eq('id', interactionId)
+    .select('id,qa_review_status,qa_review_notes,qa_reviewed_by,qa_reviewed_at')
     .single()
   if (error) throw error
   return data
