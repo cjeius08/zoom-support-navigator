@@ -127,6 +127,15 @@ export function AdminHome({ onNavigate, avatars = [] }) {
       </p>
       <StorageGuardrailCard state={storageState} />
 
+      <section className="admin-ai-reports-shortcut" aria-labelledby="admin-ai-reports-title">
+        <div>
+          <p className="eyebrow">AI oversight</p>
+          <h2 id="admin-ai-reports-title">Ozzie AI Reports</h2>
+          <p>Review AI usage, QA-reviewed accuracy, provider fallbacks, behavior patterns, and answers reported as incorrect.</p>
+        </div>
+        <button type="button" className="primary-action" onClick={() => onNavigate("ai_reports")}>Open Ozzie AI Reports</button>
+      </section>
+
       <section className="admin-account-overview" aria-labelledby="admin-existing-accounts-title">
         <div className="view-heading">
           <div>

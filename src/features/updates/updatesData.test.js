@@ -20,13 +20,15 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.metadata.updatePolicy).toMatch(/Developer-only work/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
   expect(data.updates[0]).toMatchObject({
-    id: 'flex-arbitration-zoom-support-greeting',
-    date: '2026-09-24',
-    area: 'Call Flow / Call Language',
+    id: 'ozzie-ai-assist-smart-search',
+    date: '2026-09-25',
+    area: 'Home / Smart Search',
     audience: 'all',
   })
-  expect(data.updates[1]).toMatchObject({ id: 'windows-device-sandbox-home-shortcut', audience: 'all' })
-  expect(data.updates.slice(2, 5).map(entry => entry.id)).toEqual([
+  expect(data.updates[1]).toMatchObject({ id: 'admin-ozzie-ai-reports', audience: 'admin' })
+  expect(data.updates[2]).toMatchObject({ id: 'flex-arbitration-zoom-support-greeting', audience: 'all' })
+  expect(data.updates[3]).toMatchObject({ id: 'windows-device-sandbox-home-shortcut', audience: 'all' })
+  expect(data.updates.slice(4, 7).map(entry => entry.id)).toEqual([
     'process-documents-search-normalization',
     'new-call-session-reset',
     'common-issues-smart-routing',
@@ -100,7 +102,7 @@ it('lists the Flex Arbitration Zoom Support opening spiel in What’s New', () =
   const entry = data.updates.find(item => item.id === 'flex-arbitration-zoom-support-greeting')
 
   expect(entry).toMatchObject({ date: '2026-09-24', area: 'Call Flow / Call Language', audience: 'all' })
-  expect(data.updates[0].id).toBe('flex-arbitration-zoom-support-greeting')
+  expect(data.updates.findIndex(item => item.id === 'flex-arbitration-zoom-support-greeting')).toBeGreaterThan(0)
   expect(entry.title).toMatch(/Flex Arbitration Zoom Support/i)
   expect(entry.changed).toContain('Thank you for calling Flex Arbitration Zoom Support. This is [Name]. How can I help you today?')
   expect(entry.checks).toEqual(expect.arrayContaining([
