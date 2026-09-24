@@ -16,6 +16,36 @@ export function createSafeEvent(input) {
   )
 }
 
+export function createSessionEventWriter(insertEvent) {
+  let readySessionId = null
+  let readyPromise = null
+
+  return {
+    setSessionReady(sessionId, promise) {
+      readySessionId = sessionId
+      readyPromise = Promise.resolve(promise)
+    },
+    reset(sessionId) {
+      if (!sessionId || sessionId === readySessionId) {
+        readySessionId = null
+        readyPromise = null
+      }
+    },
+    async track(payload) {
+      const pending = readyPromise
+      if (!payload?.sessionId || payload.sessionId !== readySessionId || !pending) return false
+      try {
+        await pending
+        if (readyPromise !== pending || readySessionId !== payload.sessionId) return false
+        await insertEvent(payload)
+        return true
+      } catch {
+        return false
+      }
+    },
+  }
+}
+
 export function createUsageTracker(insertEvent) {
   return {
     trackEvent(input) {
