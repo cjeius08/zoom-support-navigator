@@ -57,3 +57,40 @@ describe('route view de-duplication', () => {
     expect(shouldTrack('navigator')).toBe(true)
   })
 })
+
+
+describe('usage events wait for their session record', () => {
+  it('inserts an event only after the matching session start has completed', async () => {
+    let resolveStart
+    const sessionReady = new Promise(resolve => { resolveStart = resolve })
+    const inserted = []
+    const writer = tracker.createSessionEventWriter(async payload => inserted.push(payload))
+    writer.setSessionReady('session-1', sessionReady)
+
+    const pending = writer.track({
+      userId: 'user-1',
+      sessionId: 'session-1',
+      input: { eventType: 'route_view', routeId: 'navigator' },
+    })
+    await Promise.resolve()
+    expect(inserted).toEqual([])
+
+    resolveStart()
+    await expect(pending).resolves.toBe(true)
+    expect(inserted).toEqual([{
+      userId: 'user-1',
+      sessionId: 'session-1',
+      input: { eventType: 'route_view', routeId: 'navigator' },
+    }])
+  })
+
+  it('does not write an event when its session start fails', async () => {
+    const inserted = []
+    const writer = tracker.createSessionEventWriter(async payload => inserted.push(payload))
+    const sessionReady = Promise.reject(new Error('session insert failed'))
+    writer.setSessionReady('session-1', sessionReady)
+
+    await expect(writer.track({ userId: 'user-1', sessionId: 'session-1', input: { eventType: 'route_view' } })).resolves.toBe(false)
+    expect(inserted).toEqual([])
+  })
+})
