@@ -220,7 +220,7 @@ export default function App() {
     setReportContext({
       ...EMPTY_REPORT_CONTEXT,
       selected_tab: 'Device Walkthroughs',
-      current_section: 'Interactive Windows Sandbox',
+      current_section: 'Zoom Training Environment',
       active_device: 'windows',
     })
     setView('training')

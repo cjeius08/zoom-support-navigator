@@ -259,12 +259,13 @@ it('ends the Home call session when a guided process is resolved', async () => {
 })
 
 
-it('shows a Home shortcut that opens the Windows sandbox in one click', async () => {
+it('shows a Home shortcut that opens the Zoom Training Environment in one click', async () => {
   const user = userEvent.setup()
   const onOpenDeviceSandbox = vi.fn()
   render(<Navigator onOpenDeviceSandbox={onOpenDeviceSandbox} />)
 
-  await user.click(screen.getByRole('button', { name: 'Open Windows Sandbox' }))
+  expect(screen.getByRole('heading', { name: 'Zoom Training Environment' })).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Open Zoom Training Environment' }))
 
   expect(onOpenDeviceSandbox).toHaveBeenCalledTimes(1)
 })

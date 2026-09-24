@@ -150,3 +150,13 @@ it('keeps Browser visuals separate from installed-app walkthrough assets', () =>
   expect(browser.sections.every(section => section.image.includes('browser-'))).toBe(true)
   expect(browser.sections.some(section => installedAppAssets.has(section.image))).toBe(false)
 })
+
+
+it('uses Zoom Training Environment as the interactive practice label', () => {
+  render(<DeviceWalkthroughs initialSandboxOpen />)
+
+  expect(screen.getByRole('heading', { name: 'Zoom Training Environment' })).toBeInTheDocument()
+  expect(screen.getByRole('link', { name: /Open training environment in a new tab/i })).toBeInTheDocument()
+  expect(screen.getByTitle('Zoom Training Environment')).toBeInTheDocument()
+  expect(screen.queryByText(/Windows Sandbox/i)).not.toBeInTheDocument()
+})
