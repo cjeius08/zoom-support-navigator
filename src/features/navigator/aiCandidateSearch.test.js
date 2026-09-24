@@ -2,8 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { buildApprovedAiSources, queryTokens } from './aiCandidateSearch'
 
 describe('Ozzie AI approved candidate search', () => {
-  it('expands shorthand into approved audio candidates', () => {
+  it('prioritizes the approved Bluetooth route for clear Bluetooth shorthand', () => {
     const { routes } = buildApprovedAiSources('bt connected laptop speaker')
+    expect(routes[0]?.id).toBe('bluetooth-headset')
     expect(routes.map(route => route.id)).toContain('cant-hear')
   })
 
