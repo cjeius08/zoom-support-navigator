@@ -1,4 +1,5 @@
 export const DEVICE_WALKTHROUGH_VERIFIED_AT = 'September 18, 2026'
+export const DEVICE_SANDBOX_URL = 'https://limegreen-anteater-490127.hostingersite.com/'
 
 export const DEVICE_WALKTHROUGHS = [
   {
