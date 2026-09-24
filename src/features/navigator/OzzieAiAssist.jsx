@@ -88,7 +88,7 @@ export function OzzieAiAssist({
     ? candidates.find(candidate => candidate.id === state.result.routeId)
     : null
 
-  async function askOzzie() {
+  async function askOzzie(focusCandidate = null) {
     const privacy = sanitizeAiText(query)
     setReportOpen(false)
     setReportState({ saving: false, sent: false, error: '' })
@@ -112,10 +112,12 @@ export function OzzieAiAssist({
     onTrackEvent?.({ eventType: 'tool_open', routeId: 'navigator', toolId: 'ozzie_ai_ask' })
 
     try {
+      const candidatesForRequest = focusCandidate ? [focusCandidate] : candidates
+      const questionForRequest = focusCandidate ? privacy.safeText + '. Selected route: ' + focusCandidate.title : privacy.safeText
       const result = await askOzzieAi({
-        question: privacy.safeText,
+        question: questionForRequest,
         feature: 'ask_ozzie',
-        candidates,
+        candidates: candidatesForRequest,
         context: {
           active_device: callContext.device || null,
           active_caller_role: callContext.role || null,
