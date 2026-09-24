@@ -1006,6 +1006,7 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
                     <li>Page views count `route_view` events. Feature actions count stored feature events; navigation events are reported separately in Recent activity.</li>
                     <li>Sessions count records overlapping the selected dates. Recorded active time includes the full stored duration of those sessions because active seconds are not split by date.</li>
                     <li>Database read completed at {formatTimestamp(data.loadedAt)}. Event-write failures are not stored, so write-delivery completeness cannot be confirmed from these records.</li>
+                    <li>In this report range, {report.unmatchedEventCount} event(s) have no matching session row and {report.unendedSessionCount} overlapping session(s) have no recorded end. An open session uses its last interaction only to estimate range overlap; no historical records are rewritten.</li>
                     <li>Analytics contains approved identifiers and timestamps only. Call Documentation and Readiness reports below use separate protected data.</li>
                   </ul>
                 </div>
