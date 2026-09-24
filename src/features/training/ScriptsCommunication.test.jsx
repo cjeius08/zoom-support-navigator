@@ -56,7 +56,7 @@ it('starts with the official greeting and moves through listen, empathy, assuran
   render(<ScriptsCommunication />)
 
   const opening = screen.getByRole('tabpanel', { name: 'Opening / Greeting' })
-  expect(within(opening).getByText(/Thank you for calling Ogletree Zoom Support/i)).toBeInTheDocument()
+  expect(within(opening).getByText(/Thank you for calling Flex Arbitration Zoom Support/i)).toBeInTheDocument()
 
   await user.click(screen.getByRole('tab', { name: 'Listen & Acknowledge' }))
   expect(screen.getByRole('tabpanel', { name: 'Listen & Acknowledge' })).toHaveTextContent(/listen first/i)
@@ -115,12 +115,13 @@ it('shows approved Avoid / Use Instead guardrails', async () => {
   expect(within(panel).getByText(/feature may be controlled by the meeting host/i)).toBeInTheDocument()
 })
 
-it('copies the current Ogletree opening without changing the wording', async () => {
+it('copies the current Flex Arbitration Zoom Support opening', async () => {
   const user = userEvent.setup()
   render(<ScriptsCommunication />)
 
   const opening = screen.getByRole('tabpanel', { name: 'Opening / Greeting' })
-  const firstCard = within(opening).getByText(/Thank you for calling Ogletree Zoom Support/i).closest('article')
+  const firstCard = within(opening).getByText(/Thank you for calling Flex Arbitration Zoom Support/i).closest('article')
+  expect(firstCard).toHaveTextContent('Thank you for calling Flex Arbitration Zoom Support. This is [Name]. How can I help you today?')
   await user.click(within(firstCard).getByRole('button', { name: 'Copy phrase' }))
 
   expect(within(firstCard).getByRole('button', { name: 'Copied' })).toBeInTheDocument()
