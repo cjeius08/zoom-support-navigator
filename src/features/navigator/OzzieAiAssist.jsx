@@ -164,6 +164,18 @@ export function OzzieAiAssist({
   }
 
   const result = state.result
+  const clarificationChoices = result?.status === 'clarification'
+    ? (() => {
+        const routeChoices = candidates.filter(candidate => candidate.kind === 'common_issue')
+        const ordered = result.routeId
+          ? [
+              ...routeChoices.filter(candidate => candidate.id === result.routeId),
+              ...routeChoices.filter(candidate => candidate.id !== result.routeId),
+            ]
+          : routeChoices
+        return (ordered.length ? ordered : candidates).slice(0, 3)
+      })()
+    : []
 
   return <section className="ozzie-ai-assist" aria-label="Ozzie AI Assist">
     <div className="ozzie-ai-launch">
@@ -212,7 +224,21 @@ export function OzzieAiAssist({
         </div>
       </>}
 
-      {result.status === 'clarification' && <p className="ozzie-ai-answer">{result.clarificationQuestion}</p>}
+      {result.status === 'clarification' && <>
+        <p className="ozzie-ai-answer">{result.clarificationQuestion}</p>
+        {clarificationChoices.length > 0 && <div className="ozzie-ai-clarify">
+          <span>Choose the closest match:</span>
+          <div>
+            {clarificationChoices.map(candidate => <button
+              type="button"
+              key={candidate.id}
+              onClick={() => askOzzie(candidate)}
+              disabled={state.loading}
+            >{candidate.title}</button>)}
+          </div>
+          <small>Pick one to continue with that approved route.</small>
+        </div>}
+      </>}
       {result.status === 'blocked' && <p>{result.message}</p>}
       {result.status === 'no_approved_guide' && <p>{result.message || 'I could not find an approved Ozzie guide that supports an answer yet. Use the Smart Search results or escalate through the approved process.'}</p>}
       {result.status === 'unavailable' && <p>{result.message}</p>}
