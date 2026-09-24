@@ -87,13 +87,15 @@ it('shows accurate presence and zero-usage users across usage periods', async ()
   render(<UsageAnalytics />)
 
   expect(await screen.findByLabelText('Total Users: 3')).toBeInTheDocument()
-  expect(screen.getByLabelText('Active Now: 1')).toBeInTheDocument()
-  expect(screen.getByLabelText('Idle: 1')).toBeInTheDocument()
-  expect(screen.getByLabelText('Offline: 1')).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Daily' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Weekly' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Monthly' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Custom' })).toBeInTheDocument()
+
+  await userEvent.click(screen.getByRole('button', { name: /Live Presence/i }))
+  expect(screen.getByLabelText('Active Now: 1')).toBeInTheDocument()
+  expect(screen.getByLabelText('Idle: 1')).toBeInTheDocument()
+  expect(screen.getByLabelText('Offline: 1')).toBeInTheDocument()
   expect(screen.getAllByText('zero_agent').length).toBeGreaterThan(0)
 })
 
@@ -125,6 +127,7 @@ it('filters historical usage by member, page, and feature while keeping live pre
   render(<UsageAnalytics />)
 
   expect(await screen.findByLabelText('Page Views: 2')).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: /^Filters/i }))
   await user.selectOptions(screen.getByLabelText('Filter by team member'), 'u1')
   await user.selectOptions(screen.getByLabelText('Filter by page or section'), 'navigator')
   await user.selectOptions(screen.getByLabelText('Filter by feature or tool'), 'tool:search')
@@ -132,7 +135,11 @@ it('filters historical usage by member, page, and feature while keeping live pre
   expect(screen.getByLabelText('Page Views: 0')).toBeInTheDocument()
   expect(screen.getByLabelText('Feature Actions: 1')).toBeInTheDocument()
   expect(screen.getByLabelText('Sessions: 1')).toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: /Live Presence/i }))
   expect(screen.getByLabelText('Active Now: 1')).toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: /Data Quality/i }))
   expect(screen.getByText(/Event-write failures are not stored/)).toBeInTheDocument()
 })
 
@@ -288,6 +295,9 @@ it('shows Readiness Lab attempt history separately with scores and incorrect ans
 
   const { UsageAnalytics } = await import('./AdminViews')
   render(<UsageAnalytics />)
+
+  await userEvent.click(screen.getByRole('button', { name: /Support Reports/i }))
+  await userEvent.click(screen.getByRole('tab', { name: /Readiness Lab/i }))
 
   expect(await screen.findByRole('heading', { name: 'Readiness Lab Report' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'General Zoom Scenarios' })).toBeInTheDocument()
