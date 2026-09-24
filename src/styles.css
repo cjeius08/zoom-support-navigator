@@ -327,40 +327,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   line-height: 1.5;
 }
 
-.smart-search-entry-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: .65rem;
-  align-items: stretch;
-  margin-top: .9rem;
-}
-
 .smart-search-card .search-combobox {
   width: 100%;
   max-width: none;
-  margin-top: 0;
-}
-
-.smart-search-submit {
-  min-width: 8.7rem;
-  padding: .78rem 1rem;
-  border: 1px solid rgba(88, 169, 255, .42);
-  border-radius: .72rem;
-  color: #eef7ff;
-  background: linear-gradient(145deg, #174d75, #123753);
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.smart-search-submit:hover,
-.smart-search-submit:focus-visible {
-  border-color: #75baff;
-  background: linear-gradient(145deg, #1c5d8d, #164361);
-}
-
-.smart-search-submit:disabled {
-  cursor: not-allowed;
-  opacity: .45;
+  margin-top: .9rem;
 }
 
 .smart-search-card .search-combobox input {
@@ -430,14 +400,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 @media (max-width: 700px) {
   .smart-search-card {
     padding: 1rem;
-  }
-
-  .smart-search-entry-row {
-    grid-template-columns: 1fr;
-  }
-
-  .smart-search-submit {
-    width: 100%;
   }
 
   .smart-search-examples {
@@ -5834,36 +5796,5 @@ body:has(.process-document-reader) .process-document-page {
   }
   .home-sandbox-launch button {
     width: 100%;
-  }
-}
-
-
-/* Admin AI Reports shortcut */
-.admin-ai-reports-shortcut {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin: 1rem 0 1.25rem;
-  padding: 1rem 1.1rem;
-  border: 1px solid rgba(120, 164, 198, .24);
-  border-radius: 1rem;
-  background: rgba(12, 25, 36, .72);
-}
-.admin-ai-reports-shortcut h2,
-.admin-ai-reports-shortcut p {
-  margin: 0;
-}
-.admin-ai-reports-shortcut .eyebrow {
-  margin-bottom: .2rem;
-}
-.admin-ai-reports-shortcut > div > p:last-child {
-  margin-top: .35rem;
-  color: #a9bac8;
-}
-@media (max-width: 700px) {
-  .admin-ai-reports-shortcut {
-    align-items: stretch;
-    flex-direction: column;
   }
 }

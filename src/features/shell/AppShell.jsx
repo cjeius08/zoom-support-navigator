@@ -88,7 +88,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   const callFlowActive = currentView === 'my_saved_notes' || liveTools.documentation !== 'closed' || liveTools.scope_check !== 'closed'
   const knowledgeActive = ['favorites', 'process_documents', 'training', 'updates'].includes(currentView)
   const reportsActive = ['feedback', 'usage', 'feedback_queue'].includes(currentView)
-  const adminActive = ['admin', 'team', 'avatar_library', 'saved_notes', 'ai_reports'].includes(currentView)
+  const adminActive = ['admin', 'team', 'avatar_library', 'saved_notes'].includes(currentView)
 
   function openLiveTool(id) {
     setLiveTools(current => {
@@ -266,7 +266,6 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
 
         {isAdmin && <NavDropdown label="Admin" active={adminActive}>
           <button type="button" aria-label="Admin Home" onClick={event => navigateFromHeader(event, 'admin')}><Icon type="admin" /><span><strong>Admin Home</strong><small>Workspace administration overview.</small></span></button>
-          <button type="button" aria-label="Ozzie AI Reports" onClick={event => navigateFromHeader(event, 'ai_reports')}><Icon type="usage" /><span><strong>Ozzie AI Reports</strong><small>Audit AI usage, accuracy, fallbacks, and reported answers.</small></span></button>
           <button type="button" aria-label="Saved Notes" onClick={event => navigateFromHeader(event, 'saved_notes')}><Icon type="notes" /><span><strong>Saved Notes</strong><small>Review protected notes and follow-ups.</small></span></button>
           <button type="button" aria-label="Team Management" onClick={event => navigateFromHeader(event, 'team')}><Icon type="team" /><span><strong>Team Management</strong><small>Manage users, access, and accounts.</small></span></button>
           <button type="button" aria-label="Avatar Library" onClick={event => navigateFromHeader(event, 'avatar_library')}><Icon type="avatars" /><span><strong>Avatar Library</strong><small>Add or remove available profile avatars.</small></span></button>
