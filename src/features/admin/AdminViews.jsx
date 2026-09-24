@@ -828,7 +828,7 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
             return (
               <>
                 <div className="real-summary usage-summary" aria-label="Usage summary">
-                  <div aria-label={`Team Members: ${report.totalUsers}`}>
+                  <div aria-label={`Total Users: ${report.totalUsers}`}>
                     <strong>{report.totalUsers}</strong>
                     <span>Team Members</span>
                   </div>
