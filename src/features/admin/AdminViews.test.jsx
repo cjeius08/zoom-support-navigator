@@ -94,7 +94,46 @@ it('shows accurate presence and zero-usage users across usage periods', async ()
   expect(screen.getByRole('button', { name: 'Weekly' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Monthly' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Custom' })).toBeInTheDocument()
-  expect(screen.getByText('zero_agent')).toBeInTheDocument()
+  expect(screen.getAllByText('zero_agent').length).toBeGreaterThan(0)
+})
+
+it('filters historical usage by member, page, and feature while keeping live presence separate', async () => {
+  const user = userEvent.setup()
+  const now = new Date().toISOString()
+  loadUsage.mockResolvedValue({
+    profiles: [
+      { id: 'u1', username: 'agent_one', initials: 'AO', role: 'agent', workspace_role: 'member', status: 'active' },
+      { id: 'u2', username: 'agent_two', initials: 'AT', role: 'agent', workspace_role: 'lead', status: 'active' },
+    ],
+    events: [
+      { user_id: 'u1', session_id: 's1', event_type: 'route_view', route_id: 'navigator', created_at: now },
+      { user_id: 'u1', session_id: 's1', event_type: 'tool_open', route_id: 'navigator', tool_id: 'search', created_at: now },
+      { user_id: 'u2', session_id: 's2', event_type: 'route_view', route_id: 'training', created_at: now },
+    ],
+    sessions: [
+      { session_id: 's1', user_id: 'u1', started_at: now, ended_at: null, active_seconds: 60, last_interaction: now },
+      { session_id: 's2', user_id: 'u2', started_at: now, ended_at: null, active_seconds: 120, last_interaction: now },
+    ],
+    presence: [
+      { user_id: 'u1', state: 'active', last_heartbeat: now, last_interaction: now },
+      { user_id: 'u2', state: 'active', last_heartbeat: now, last_interaction: now },
+    ],
+    loadedAt: now,
+  })
+
+  const { UsageAnalytics } = await import('./AdminViews')
+  render(<UsageAnalytics />)
+
+  expect(await screen.findByLabelText('Page Views: 2')).toBeInTheDocument()
+  await user.selectOptions(screen.getByLabelText('Filter by team member'), 'u1')
+  await user.selectOptions(screen.getByLabelText('Filter by page or section'), 'navigator')
+  await user.selectOptions(screen.getByLabelText('Filter by feature or tool'), 'tool:search')
+
+  expect(screen.getByLabelText('Page Views: 0')).toBeInTheDocument()
+  expect(screen.getByLabelText('Feature Actions: 1')).toBeInTheDocument()
+  expect(screen.getByLabelText('Sessions: 1')).toBeInTheDocument()
+  expect(screen.getByLabelText('Active Now: 1')).toBeInTheDocument()
+  expect(screen.getByText('Event-write failures are not stored, so write-delivery completeness cannot be confirmed from these records.')).toBeInTheDocument()
 })
 
 it('lets JA update feedback status, see history, and open the stored page', async () => {
