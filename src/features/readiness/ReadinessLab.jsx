@@ -176,7 +176,7 @@ export function ReadinessLab({
         ? `Attempt ${lastAttempt.attemptNumber} complete · ${lastAttempt.score}/${lastAttempt.totalQuestions}`
         : 'Ready'
     return <aside style={{ '--tool-stack-offset': `${Math.max(0, stackIndex) * 4.25}rem`, '--tool-stack-offset-compact': `${Math.max(0, stackIndex) * 3.25}rem` }} className="documentation-dock documentation-dock-minimized readiness-lab-minimized" aria-label="Readiness Lab minimized">
-      <button type="button" className="documentation-dock-restore" aria-label="Restore Readiness Lab" onClick={onMinimize}>
+      <button type="button" className="documentation-dock-restore" aria-label="Restore Readiness Lab" title="Restore Readiness Lab" onClick={onMinimize}>
         <span>
           <strong>Readiness Lab</strong>
           <small>{miniStatus}</small>
