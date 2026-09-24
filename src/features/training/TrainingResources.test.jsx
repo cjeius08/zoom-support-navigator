@@ -247,6 +247,6 @@ it('closes the video player when the Close video button is clicked', async () =>
       toolId: 'windows-device-sandbox',
     })
 
-    await user.click(screen.getByRole('button', { name: 'Back to Windows walkthrough' }))
+    await user.click(screen.getByRole('button', { name: /Back to Windows walkthrough/i }))
     expect(screen.getByRole('tabpanel', { name: 'Windows desktop walkthrough' })).toBeInTheDocument()
   })
