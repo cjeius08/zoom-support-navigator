@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { assetUrl } from '../../lib/assetUrl'
-import { DEVICE_WALKTHROUGHS, DEVICE_WALKTHROUGH_VERIFIED_AT } from './deviceWalkthroughs'
+import { DEVICE_SANDBOX_URL, DEVICE_WALKTHROUGHS, DEVICE_WALKTHROUGH_VERIFIED_AT } from './deviceWalkthroughs'
 
 function WalkthroughSection({ section }) {
   return <article className="device-walkthrough-section">
@@ -21,11 +21,12 @@ function WalkthroughSection({ section }) {
   </article>
 }
 
-export function DeviceWalkthroughs({ initialDeviceId = null, onReportContextChange = () => {} }) {
+export function DeviceWalkthroughs({ initialDeviceId = null, onReportContextChange = () => {}, trackEvent = () => {} }) {
   const validInitialId = DEVICE_WALKTHROUGHS.some(device => device.id === initialDeviceId)
     ? initialDeviceId
     : DEVICE_WALKTHROUGHS[0].id
   const [activeId, setActiveId] = useState(validInitialId)
+  const [sandboxOpen, setSandboxOpen] = useState(false)
   const active = DEVICE_WALKTHROUGHS.find(device => device.id === activeId) ?? DEVICE_WALKTHROUGHS[0]
 
   useEffect(() => {
@@ -37,9 +38,37 @@ export function DeviceWalkthroughs({ initialDeviceId = null, onReportContextChan
   useEffect(() => {
     onReportContextChange({
       selected_tab: 'Device Walkthroughs',
-      current_section: active.title,
+      current_section: sandboxOpen ? 'Interactive Windows Sandbox' : active.title,
+      active_device: sandboxOpen ? 'windows' : null,
     })
-  }, [active.title, onReportContextChange])
+  }, [active.title, onReportContextChange, sandboxOpen])
+
+  if (sandboxOpen) {
+    return <section className="device-walkthroughs device-sandbox-view" aria-labelledby="device-sandbox-title">
+      <button className="device-sandbox-back" type="button" onClick={() => setSandboxOpen(false)}>
+        ← Back to Windows walkthrough
+      </button>
+      <header className="device-sandbox-heading">
+        <p className="eyebrow">Device Walkthroughs · Windows</p>
+        <h2 id="device-sandbox-title">Interactive Windows Sandbox</h2>
+        <p>Practice exploring the Windows Zoom interface in the separate sandbox. If it does not load or respond here, open it in a new tab.</p>
+      </header>
+      <div className="device-sandbox-actions">
+        <a href={DEVICE_SANDBOX_URL} target="_blank" rel="noopener noreferrer">Open sandbox in a new tab <span aria-hidden="true">↗</span></a>
+        <small>Ozzie records when this sandbox page opens. Actions inside the sandbox are not included in Ozzie usage analytics.</small>
+      </div>
+      <div className="device-sandbox-frame">
+        <iframe
+          title="Windows device sandbox"
+          src={DEVICE_SANDBOX_URL}
+          loading="lazy"
+          referrerPolicy="strict-origin-when-cross-origin"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+          allowFullScreen
+        />
+      </div>
+    </section>
+  }
 
   return <section className="device-walkthroughs" aria-labelledby="device-walkthrough-title">
     <div className="device-walkthrough-intro">
@@ -81,6 +110,17 @@ export function DeviceWalkthroughs({ initialDeviceId = null, onReportContextChan
           {active.quickFacts.map(fact => <span key={fact}>{fact}</span>)}
         </div>
       </header>
+
+      {active.id === 'windows' && <div className="device-sandbox-launch">
+        <div>
+          <p className="eyebrow">Interactive practice</p>
+          <strong>Explore the Windows Zoom screens in a sandbox</strong>
+        </div>
+        <button type="button" onClick={() => {
+          trackEvent({ eventType: 'tool_open', routeId: 'training', toolId: 'windows-device-sandbox' })
+          setSandboxOpen(true)
+        }}>Open Windows device sandbox</button>
+      </div>}
 
       <div className="device-walkthrough-sections">
         {active.sections.map(section => <WalkthroughSection section={section} key={section.id} />)}
