@@ -250,3 +250,16 @@ it('closes the video player when the Close video button is clicked', async () =>
     await user.click(screen.getByRole('button', { name: /Back to Windows walkthrough/i }))
     expect(screen.getByRole('tabpanel', { name: 'Windows desktop walkthrough' })).toBeInTheDocument()
   })
+
+
+  it('opens the sandbox directly from the Home shortcut target without recording a second launch', () => {
+    const trackEvent = vi.fn()
+    render(<TrainingResources
+      initialTarget={{ section: 'devices', device: 'windows', sandboxOpen: true }}
+      trackEvent={trackEvent}
+    />)
+
+    expect(screen.getByRole('heading', { name: 'Interactive Windows Sandbox' })).toBeInTheDocument()
+    expect(screen.getByTitle('Windows device sandbox')).toBeInTheDocument()
+    expect(trackEvent).not.toHaveBeenCalled()
+  })
