@@ -22,7 +22,7 @@ function VideoViewer({ videos, index, onClose }) {
   </div>
 }
 
-export function TrainingResources({ initialVideoId = null, initialTarget = null, onReportContextChange = () => {} }) {
+export function TrainingResources({ initialVideoId = null, initialTarget = null, onReportContextChange = () => {}, trackEvent = () => {} }) {
   const initialIndex = initialVideoId ? TRAINING_VIDEOS.findIndex(video => video.id === initialVideoId) : -1
   const [section, setSection] = useState(initialVideoId ? 'videos' : initialTarget?.section || 'roadmap')
   const [query, setQuery] = useState('')
@@ -161,7 +161,7 @@ export function TrainingResources({ initialVideoId = null, initialTarget = null,
       : section === 'lessons'
         ? <GuidedLessons onOpenResource={openRoadmapResource} onReportContextChange={onReportContextChange} />
         : section === 'devices'
-          ? <DeviceWalkthroughs initialDeviceId={deviceTarget} onReportContextChange={onReportContextChange} />
+          ? <DeviceWalkthroughs initialDeviceId={deviceTarget} onReportContextChange={onReportContextChange} trackEvent={trackEvent} />
         : section === 'scripts'
           ? <ScriptsCommunication
               onReportContextChange={onReportContextChange}
