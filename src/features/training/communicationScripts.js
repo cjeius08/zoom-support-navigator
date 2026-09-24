@@ -15,7 +15,7 @@ export const COMMUNICATION_SECTIONS = [
     phrases: [
       {
         label: 'Standard opening',
-        text: 'Thank you for calling Ogletree Zoom Support. This is [Name]. How may I assist you today?',
+        text: 'Thank you for calling Flex Arbitration Zoom Support. This is [Name]. How can I help you today?',
       },
     ],
   },
@@ -211,11 +211,11 @@ export const COMMUNICATION_SECTIONS = [
     phrases: [
       {
         label: 'Resolved closing',
-        text: 'Thank you for calling Ogletree Zoom Support. We’re glad we were able to assist you. Have a great day.',
+        text: 'Thank you for calling Flex Arbitration Zoom Support. We’re glad we were able to assist you. Have a great day.',
       },
       {
         label: 'Unresolved / next-step closing',
-        text: 'Thank you for your patience. We’ve documented the issue and the next step we discussed. Thank you for calling Ogletree Zoom Support.',
+        text: 'Thank you for your patience. We’ve documented the issue and the next step we discussed. Thank you for calling Flex Arbitration Zoom Support.',
       },
     ],
   },

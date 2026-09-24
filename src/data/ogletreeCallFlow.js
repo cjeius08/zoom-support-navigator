@@ -21,7 +21,7 @@ export const OGLETREE_CALL_FLOW_STEPS = [
     name: 'Opening / Greeting',
     objective: 'Establish a professional and welcoming tone.',
     action: 'Greet the caller, identify the support team, and ask how you can assist.',
-    script: 'Thank you for calling Ogletree Zoom Support. This is [Name]. How may I assist you today?',
+    script: 'Thank you for calling Flex Arbitration Zoom Support. This is [Name]. How can I help you today?',
   },
   {
     id: 'listen',
@@ -101,7 +101,7 @@ export const OGLETREE_CALL_FLOW_STEPS = [
     name: 'Closing Spiel',
     objective: 'End professionally and confidently.',
     action: 'Close with the final resolution or documented next step.',
-    script: 'Thank you for calling Ogletree Zoom Support. Have a great day.',
+    script: 'Thank you for calling Flex Arbitration Zoom Support. Have a great day.',
   },
 ]
 

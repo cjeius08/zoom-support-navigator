@@ -28,6 +28,11 @@ it('locks the September 19 Ogletree Tier 1 call-flow source', () => {
     'closing',
   ])
   expect(OGLETREE_CALL_FLOW_STEPS).toHaveLength(11)
+  expect(OGLETREE_CALL_FLOW_STEPS[0]).toMatchObject({
+    id: 'opening',
+    name: 'Opening / Greeting',
+    script: 'Thank you for calling Flex Arbitration Zoom Support. This is [Name]. How can I help you today?',
+  })
 
   expect(OGLETREE_SIMPLE_AGENT_FORMULA).toEqual([
     'Greet',
