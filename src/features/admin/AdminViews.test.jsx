@@ -119,6 +119,7 @@ it('lets JA update feedback status, see history, and open the stored page', asyn
   render(<FeedbackQueue onOpenPage={onOpenPage} />)
 
   expect(await screen.findByText('The route needs review.')).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Expand feedback feedback-1' }))
   expect(screen.getByText(/new → reviewing/i)).toBeInTheDocument()
 
   await user.selectOptions(screen.getByLabelText('Status for feedback feedback-1'), 'reviewing')
@@ -341,15 +342,16 @@ it('expands feedback, shows its submitter, and preserves the expanded item when 
   expect(screen.getByText(/Member/)).toBeInTheDocument()
 
   await user.click(screen.getByRole('button', { name: 'Expand feedback feedback-1' }))
-  expect(screen.getByText('The full report text should be available after expanding this item.')).toBeVisible()
+  expect(screen.getAllByText('The full report text should be available after expanding this item.')).toHaveLength(2)
+  expect(screen.getAllByText('The full report text should be available after expanding this item.').every(node => node.checkVisibility())).toBe(true)
   expect(screen.getByText(/Clarify where to find the audio settings/i)).toBeVisible()
 
   await user.click(screen.getByRole('button', { name: 'Minimize Feedback Queue' }))
   expect(screen.getByRole('button', { name: 'Restore Feedback Queue' })).toBeVisible()
-  expect(screen.getByText('The full report text should be available after expanding this item.')).not.toBeVisible()
+  expect(screen.getAllByText('The full report text should be available after expanding this item.')[0]).not.toBeVisible()
 
   await user.click(screen.getByRole('button', { name: 'Restore Feedback Queue' }))
-  expect(screen.getByText('The full report text should be available after expanding this item.')).toBeVisible()
+  expect(screen.getAllByText('The full report text should be available after expanding this item.')[0]).toBeVisible()
 })
 
 it('labels feedback with an unavailable reporter as Unknown submitter', async () => {
