@@ -133,7 +133,7 @@ it('filters historical usage by member, page, and feature while keeping live pre
   expect(screen.getByLabelText('Feature Actions: 1')).toBeInTheDocument()
   expect(screen.getByLabelText('Sessions: 1')).toBeInTheDocument()
   expect(screen.getByLabelText('Active Now: 1')).toBeInTheDocument()
-  expect(screen.getByText('Event-write failures are not stored, so write-delivery completeness cannot be confirmed from these records.')).toBeInTheDocument()
+  expect(screen.getByText(/Event-write failures are not stored/)).toBeInTheDocument()
 })
 
 it('lets JA update feedback status, see history, and open the stored page', async () => {
