@@ -36,7 +36,7 @@ export function createSessionEventWriter(insertEvent) {
       if (!payload?.sessionId || payload.sessionId !== readySessionId || !pending) return false
       try {
         await pending
-        if (readyPromise !== pending || readySessionId !== payload.sessionId) return false
+        if (readySessionId !== payload.sessionId) return false
         await insertEvent(payload)
         return true
       } catch {
