@@ -663,6 +663,8 @@ const USAGE_PERIODS = [
   ["daily", "Daily"],
   ["weekly", "Weekly"],
   ["monthly", "Monthly"],
+  ["quarterly", "Quarterly"],
+  ["yearly", "Yearly"],
   ["custom", "Custom"],
 ];
 
@@ -670,32 +672,58 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
   const [period, setPeriod] = useState("daily");
   const [customStart, setCustomStart] = useState("");
   const [customEnd, setCustomEnd] = useState("");
+  const [memberId, setMemberId] = useState("");
+  const [routeId, setRouteId] = useState("");
+  const [featureId, setFeatureId] = useState("");
   const range = useMemo(
     () => dateRangeForPeriod(period, { customStart, customEnd }),
     [customEnd, customStart, period],
   );
+  const rangeReady = Boolean(range.start && range.end);
   const loader = useCallback(
-    () => loadUsage(range),
-    [range],
+    () => rangeReady
+      ? loadUsage(range)
+      : Promise.resolve({ profiles: [], events: [], sessions: [], presence: [], loadedAt: null }),
+    [range, rangeReady],
   );
   const state = useData(loader);
   const readinessLoader = useCallback(() => loadReadinessReport(), []);
   const readinessState = useData(readinessLoader);
+  const customRangeError = period === "custom" && customStart && customEnd && customStart > customEnd;
+
+  function resetUsageFilters() {
+    setPeriod("daily");
+    setCustomStart("");
+    setCustomEnd("");
+    setMemberId("");
+    setRouteId("");
+    setFeatureId("");
+  }
+
+  function formatTimestamp(value) {
+    if (!value) return "—";
+    const parsed = new Date(value);
+    return Number.isFinite(parsed.getTime()) ? parsed.toLocaleString() : "—";
+  }
+
+  function humanize(value) {
+    return String(value || "").replaceAll("_", " ");
+  }
 
   return (
     <section className="console-view usage-analytics">
       <div className="view-heading">
         <div>
-          <p className="eyebrow">Privacy-safe metadata</p>
+          <p className="eyebrow">Admin only · Privacy-safe metadata</p>
           <h1>Usage Analytics</h1>
           <p>
-            Active time counts only recent-interaction windows. Idle browser
-            tabs do not continue accumulating active hours.
+            Review recorded page views, feature actions, sessions, and member activity.
+            Live presence is shown separately from historical usage.
           </p>
         </div>
       </div>
 
-      <div className="usage-period-controls" role="group" aria-label="Usage period">
+      <div className="usage-period-controls" role="group" aria-label="Usage date range">
         {USAGE_PERIODS.map(([id, label]) => (
           <button
             type="button"
@@ -713,75 +741,281 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
         <div className="usage-custom-range">
           <label>
             Start date
-            <input type="date" value={customStart} onChange={(event) => setCustomStart(event.target.value)} />
+            <input
+              type="date"
+              value={customStart}
+              max={customEnd || undefined}
+              onChange={(event) => setCustomStart(event.target.value)}
+            />
           </label>
           <label>
             End date
-            <input type="date" value={customEnd} onChange={(event) => setCustomEnd(event.target.value)} />
+            <input
+              type="date"
+              value={customEnd}
+              min={customStart || undefined}
+              onChange={(event) => setCustomEnd(event.target.value)}
+            />
           </label>
         </div>
       )}
 
-      <State state={state}>
-        {(data) => {
-          const summary = buildUsageSummary({ ...data, start: range.start, end: range.end });
-          return (
-            <>
-              <div className="real-summary usage-summary" aria-label="Usage summary">
-                <div aria-label={`Total Users: ${summary.totalUsers}`}>
-                  <strong>{summary.totalUsers}</strong>
-                  <span>Total Users</span>
-                </div>
-                <div aria-label={`Active Now: ${summary.active}`}>
-                  <strong>{summary.active}</strong>
-                  <span>Active Now</span>
-                </div>
-                <div aria-label={`Idle: ${summary.idle}`}>
-                  <strong>{summary.idle}</strong>
-                  <span>Idle</span>
-                </div>
-                <div aria-label={`Offline: ${summary.offline}`}>
-                  <strong>{summary.offline}</strong>
-                  <span>Offline</span>
-                </div>
-                <div aria-label={`Active Time: ${formatActiveDuration(summary.activeSeconds)}`}>
-                  <strong>{formatActiveDuration(summary.activeSeconds)}</strong>
-                  <span>Active Time</span>
-                </div>
-              </div>
-
-              <div className="usage-user-list" aria-label="Usage by user">
-                {summary.users.map((user) => (
-                  <article className="usage-user-row" key={user.id}>
-                    <div className="usage-user-identity">
-                      <strong>{user.username || user.initials}</strong>
-                      <small>
-                        {user.initials} · {workspaceRoleLabel(user)}
-                      </small>
-                    </div>
-                    <span className={`presence-badge ${user.presence}`}>{user.presence}</span>
-                    <dl>
-                      <div><dt>Active time</dt><dd>{formatActiveDuration(user.activeSeconds)}</dd></div>
-                      <div><dt>Sessions</dt><dd>{user.sessions}</dd></div>
-                      <div><dt>Events</dt><dd>{user.events}</dd></div>
-                      <div><dt>Top process</dt><dd>{user.topProcess || "—"}</dd></div>
-                      <div><dt>Top category</dt><dd>{user.topCategory || "—"}</dd></div>
-                      <div><dt>Top tool</dt><dd>{user.topTool || "—"}</dd></div>
-                    </dl>
-                  </article>
+      <div className="usage-filter-panel" aria-label="Usage report filters">
+        <div className="usage-filter-grid">
+          <label>
+            Team member
+            <select aria-label="Filter by team member" value={memberId} onChange={(event) => setMemberId(event.target.value)}>
+              <option value="">All team members</option>
+              {state.data?.profiles?.map((person) => (
+                <option key={person.id} value={person.id}>{person.username || person.initials || "Unknown user"}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Page or section
+            <select aria-label="Filter by page or section" value={routeId} onChange={(event) => setRouteId(event.target.value)}>
+              <option value="">All pages and sections</option>
+              {[...new Set((state.data?.events || []).map((event) => event.route_id).filter(Boolean))]
+                .sort()
+                .map((route) => <option key={route} value={route}>{humanize(route)}</option>)}
+            </select>
+          </label>
+          <label>
+            Feature or tool
+            <select aria-label="Filter by feature or tool" value={featureId} onChange={(event) => setFeatureId(event.target.value)}>
+              <option value="">All features and tools</option>
+              {[...new Set((state.data?.events || [])
+                .filter((event) => event.event_type !== "route_view" && event.event_type !== "navigation")
+                .map((event) => event.tool_id ? `tool:${event.tool_id}` : `event:${event.event_type}`))]
+                .sort()
+                .map((feature) => (
+                  <option key={feature} value={feature}>
+                    {humanize(feature.startsWith("tool:") ? feature.slice(5) : feature.slice(6))}
+                  </option>
                 ))}
-              </div>
+            </select>
+          </label>
+          <button type="button" className="usage-reset-button" onClick={resetUsageFilters}>Reset filters</button>
+        </div>
+        {rangeReady && (
+          <p className="usage-range-note">
+            Dates use your browser’s local timezone. End dates include the full selected day.
+          </p>
+        )}
+      </div>
 
-              <p className="usage-privacy-note">
-                Usage Analytics stores identifiers and timestamps only. Saved Call
-                Documentation is stored separately under protected note access rules.
-              </p>
-            </>
-          );
-        }}
-      </State>
+      {customRangeError && (
+        <p className="usage-validation-message" role="alert">The end date must be on or after the start date.</p>
+      )}
+      {period === "custom" && !customRangeError && !rangeReady && (
+        <p className="usage-validation-message" role="status">Choose both a start date and an end date to load a custom report.</p>
+      )}
 
-      <CallNotesReport range={range} onOpenNotes={onOpenSavedNotes} />
+      {rangeReady && (
+        <State state={state}>
+          {(data) => {
+            const report = buildUsageReport({
+              ...data,
+              start: range.start,
+              end: range.end,
+              period,
+              memberId,
+              routeId,
+              featureId,
+            });
+            const maxBucketCount = Math.max(1, ...report.activityBuckets.map((bucket) => bucket.count));
+
+            return (
+              <>
+                <div className="real-summary usage-summary" aria-label="Usage summary">
+                  <div aria-label={`Team Members: ${report.totalUsers}`}>
+                    <strong>{report.totalUsers}</strong>
+                    <span>Team Members</span>
+                  </div>
+                  <div aria-label={`Sessions: ${report.sessionCount}`}>
+                    <strong>{report.sessionCount}</strong>
+                    <span>Sessions</span>
+                  </div>
+                  <div aria-label={`Page Views: ${report.pageViews}`}>
+                    <strong>{report.pageViews}</strong>
+                    <span>Page Views</span>
+                  </div>
+                  <div aria-label={`Feature Actions: ${report.featureUsage}`}>
+                    <strong>{report.featureUsage}</strong>
+                    <span>Feature Actions</span>
+                  </div>
+                  <div aria-label={`Active Time: ${formatActiveDuration(report.activeSeconds)}`}>
+                    <strong>{formatActiveDuration(report.activeSeconds)}</strong>
+                    <span>Recorded Active Time</span>
+                  </div>
+                  <div aria-label={`Most Recent Event: ${formatTimestamp(report.latestEventAt)}`}>
+                    <strong className="usage-summary-time">{formatTimestamp(report.latestEventAt)}</strong>
+                    <span>Most Recent Event</span>
+                  </div>
+                </div>
+
+                <section className="usage-report-panel" aria-labelledby="usage-trend-title">
+                  <div className="usage-report-heading">
+                    <div>
+                      <p className="eyebrow">Historical usage</p>
+                      <h2 id="usage-trend-title">Usage over time</h2>
+                      <p>Each bar counts stored usage events that match the selected filters.</p>
+                    </div>
+                  </div>
+                  {report.activityBuckets.length ? (
+                    <div className="usage-chart-scroll">
+                      <div className="usage-chart" role="list" aria-label="Usage events over time">
+                        {report.activityBuckets.map((bucket) => (
+                          <div className="usage-chart-column" role="listitem" key={bucket.id} aria-label={`${bucket.label}: ${bucket.count} events`}>
+                            <strong>{bucket.count}</strong>
+                            <div className="usage-chart-bar-track">
+                              <span
+                                className="usage-chart-bar"
+                                style={{ height: bucket.count ? `${Math.max(4, (bucket.count / maxBucketCount) * 100)}%` : "0%" }}
+                              />
+                            </div>
+                            <small>{bucket.label}</small>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="usage-empty-state">No usage events match this date range and filter set.</p>
+                  )}
+                </section>
+
+                <div className="usage-detail-grid">
+                  <section className="usage-report-panel" aria-labelledby="usage-members-title">
+                    <h2 id="usage-members-title">Usage by team member</h2>
+                    {report.users.length ? (
+                      <div className="usage-table-wrap">
+                        <table className="usage-table">
+                          <caption className="sr-only">Usage totals by team member</caption>
+                          <thead><tr><th scope="col">Member</th><th scope="col">Role</th><th scope="col">Active time</th><th scope="col">Sessions</th><th scope="col">Page views</th><th scope="col">Feature actions</th></tr></thead>
+                          <tbody>{report.users.map((user) => (
+                            <tr key={user.id}>
+                              <th scope="row">{user.username || user.initials || "Unknown user"}</th>
+                              <td>{workspaceRoleLabel(user)}</td>
+                              <td>{formatActiveDuration(user.activeSeconds)}</td>
+                              <td>{user.sessions}</td>
+                              <td>{user.pageViews}</td>
+                              <td>{user.featureUsage}</td>
+                            </tr>
+                          ))}</tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <p className="usage-empty-state">No team members match the selected filters.</p>
+                    )}
+                  </section>
+
+                  <section className="usage-report-panel" aria-labelledby="usage-pages-title">
+                    <h2 id="usage-pages-title">Usage by page or section</h2>
+                    {report.byPage.length ? (
+                      <div className="usage-table-wrap">
+                        <table className="usage-table">
+                          <caption className="sr-only">Recorded page views by page or section</caption>
+                          <thead><tr><th scope="col">Page or section</th><th scope="col">Page views</th></tr></thead>
+                          <tbody>{report.byPage.map((item) => (
+                            <tr key={item.id}><th scope="row">{humanize(item.id)}</th><td>{item.count}</td></tr>
+                          ))}</tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <p className="usage-empty-state">No page views match the selected filters.</p>
+                    )}
+                  </section>
+
+                  <section className="usage-report-panel" aria-labelledby="usage-features-title">
+                    <h2 id="usage-features-title">Usage by feature or tool</h2>
+                    {report.byFeature.length ? (
+                      <div className="usage-table-wrap">
+                        <table className="usage-table">
+                          <caption className="sr-only">Feature actions by tool or event type</caption>
+                          <thead><tr><th scope="col">Feature or action</th><th scope="col">Uses</th></tr></thead>
+                          <tbody>{report.byFeature.map((item) => (
+                            <tr key={item.id}><th scope="row">{humanize(item.id)}</th><td>{item.count}</td></tr>
+                          ))}</tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <p className="usage-empty-state">No feature actions match the selected filters.</p>
+                    )}
+                  </section>
+
+                  <section className="usage-report-panel usage-recent-activity" aria-labelledby="usage-activity-title">
+                    <h2 id="usage-activity-title">Recent activity</h2>
+                    {report.recentActivity.length ? (
+                      <div className="usage-table-wrap">
+                        <table className="usage-table">
+                          <caption className="sr-only">Recent recorded activity</caption>
+                          <thead><tr><th scope="col">Time</th><th scope="col">Member</th><th scope="col">Action</th><th scope="col">Page or section</th><th scope="col">Feature or tool</th></tr></thead>
+                          <tbody>{report.recentActivity.map((event, index) => (
+                            <tr key={`${event.session_id || "no-session"}-${event.created_at}-${index}`}>
+                              <td>{formatTimestamp(event.created_at)}</td>
+                              <td>{event.userLabel} · {event.userRole}</td>
+                              <td>{event.actionLabel}</td>
+                              <td>{humanize(event.route_id) || "—"}</td>
+                              <td>{humanize(event.featureLabel) || "—"}</td>
+                            </tr>
+                          ))}</tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <p className="usage-empty-state">No activity matches the selected filters.</p>
+                    )}
+                  </section>
+                </div>
+
+                <section className="usage-report-panel usage-presence-panel" aria-labelledby="usage-presence-title">
+                  <div className="usage-report-heading">
+                    <div>
+                      <p className="eyebrow">Live status · not historical usage</p>
+                      <h2 id="usage-presence-title">User presence now</h2>
+                      <p>Presence uses the latest heartbeat and interaction. Date filters do not change live state.</p>
+                    </div>
+                  </div>
+                  <div className="usage-presence-summary">
+                    <div aria-label={`Active Now: ${report.presenceCounts.active}`}><strong>{report.presenceCounts.active}</strong><span>Active now</span></div>
+                    <div aria-label={`Idle: ${report.presenceCounts.idle}`}><strong>{report.presenceCounts.idle}</strong><span>Idle</span></div>
+                    <div aria-label={`Offline: ${report.presenceCounts.offline}`}><strong>{report.presenceCounts.offline}</strong><span>Offline</span></div>
+                  </div>
+                  {report.users.length ? (
+                    <div className="usage-table-wrap">
+                      <table className="usage-table">
+                        <caption className="sr-only">Current user presence</caption>
+                        <thead><tr><th scope="col">Member</th><th scope="col">Role</th><th scope="col">Presence</th><th scope="col">Last interaction</th></tr></thead>
+                        <tbody>{report.users.map((user) => (
+                          <tr key={user.id}>
+                            <th scope="row">{user.username || user.initials || "Unknown user"}</th>
+                            <td>{workspaceRoleLabel(user)}</td>
+                            <td><span className={`presence-badge ${user.presence}`}>{user.presence}</span></td>
+                            <td>{formatTimestamp(user.presenceLastInteraction)}</td>
+                          </tr>
+                        ))}</tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <p className="usage-empty-state">No team members match the selected filters.</p>
+                  )}
+                </section>
+
+                <div className="usage-data-integrity" role="note">
+                  <strong>Data and metric definitions</strong>
+                  <ul>
+                    <li>Page views count `route_view` events. Feature actions count stored feature events; navigation events are reported separately in Recent activity.</li>
+                    <li>Sessions count records overlapping the selected dates. Recorded active time includes the full stored duration of those sessions because active seconds are not split by date.</li>
+                    <li>Database read completed at {formatTimestamp(data.loadedAt)}. Event-write failures are not stored, so write-delivery completeness cannot be confirmed from these records.</li>
+                    <li>Analytics contains approved identifiers and timestamps only. Call Documentation and Readiness reports below use separate protected data.</li>
+                  </ul>
+                </div>
+              </>
+            );
+          }}
+        </State>
+      )}
+
+      {rangeReady && <CallNotesReport range={range} onOpenNotes={onOpenSavedNotes} />}
 
       <section className="readiness-admin-report" aria-labelledby="readiness-report-title">
         <div className="view-heading">
