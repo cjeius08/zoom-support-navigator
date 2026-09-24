@@ -260,10 +260,30 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
     setActiveSuggestion(-1)
   }
 
+  function runSmartSearch() {
+    if (!query.trim()) return
+    setCategory(null)
+    setSuggestionsOpen(false)
+    setActiveSuggestion(-1)
+    onTrackEvent?.({ eventType: 'tool_open', routeId: 'navigator', toolId: 'smart_search_submit' })
+    window.requestAnimationFrame(() => {
+      document.getElementById('search-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }
+
   function handleSearchKeyDown(event) {
     if (event.key === 'Escape') {
       setSuggestionsOpen(false)
       setActiveSuggestion(-1)
+      return
+    }
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      if (activeSuggestion >= 0 && suggestions[activeSuggestion]) {
+        selectSuggestion(suggestions[activeSuggestion])
+      } else {
+        runSmartSearch()
+      }
       return
     }
     if (!suggestions.length) return
@@ -275,9 +295,6 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
       event.preventDefault()
       setSuggestionsOpen(true)
       setActiveSuggestion(current => current <= 0 ? suggestions.length - 1 : current - 1)
-    } else if (event.key === 'Enter' && activeSuggestion >= 0) {
-      event.preventDefault()
-      selectSuggestion(suggestions[activeSuggestion])
     }
   }
 
@@ -313,50 +330,55 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
           <p>Search by caller symptom or approved process name.</p>
         </div>
 
-        <div className="search-combobox" onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) { setSuggestionsOpen(false); setActiveSuggestion(-1) } }}>
-          <svg className="smart-search-icon" aria-hidden="true" viewBox="0 0 24 24" focusable="false">
-            <circle cx="11" cy="11" r="7" />
-            <path d="m16.2 16.2 4.3 4.3" />
-          </svg>
-          <input
-            role="combobox"
-            aria-label="Search support processes"
-            aria-autocomplete="list"
-            aria-controls="support-search-suggestions"
-            aria-expanded={showSuggestions}
-            aria-activedescendant={showSuggestions && activeSuggestion >= 0 ? `support-search-option-${activeSuggestion}` : undefined}
-            value={query}
-            onFocus={() => { if (query.trim()) setSuggestionsOpen(true) }}
-            onKeyDown={handleSearchKeyDown}
-            onChange={event => {
-              const nextQuery = event.target.value
-              setQuery(nextQuery)
-              setCategory(null)
-              setSuggestionsOpen(Boolean(nextQuery.trim()))
-              setActiveSuggestion(-1)
-            }}
-            placeholder="Try: can’t share, can’t find chat, waiting for host…"
-          />
-          {showSuggestions && <div className="search-suggestions" id="support-search-suggestions" role="listbox" aria-label="Search suggestions">
-            {suggestions.map((suggestion, index) => {
-              const isRoute = suggestion.kind === 'route'
-              const item = isRoute ? suggestion.route : suggestion.process
-              return <button
-                type="button"
-                role="option"
-                id={`support-search-option-${index}`}
-                className={`search-suggestion${isRoute ? ' search-suggestion-route' : ''}`}
-                aria-selected={activeSuggestion === index}
-                tabIndex={-1}
-                key={`${suggestion.kind}-${item.id}`}
-                onMouseMove={() => setActiveSuggestion(index)}
-                onClick={() => selectSuggestion(suggestion)}
-              >
-                <span className="search-suggestion-copy"><strong>{item.title}</strong><small>{isRoute ? item.subtitle : item.purpose}</small></span>
-                <span className="search-suggestion-category">{isRoute ? 'Common Issue' : 'Process Guide'}</span>
-              </button>
-            })}
-          </div>}
+        <div className="smart-search-entry-row">
+          <div className="search-combobox" onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) { setSuggestionsOpen(false); setActiveSuggestion(-1) } }}>
+            <svg className="smart-search-icon" aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m16.2 16.2 4.3 4.3" />
+            </svg>
+            <input
+              role="combobox"
+              aria-label="Search support processes"
+              aria-autocomplete="list"
+              aria-controls="support-search-suggestions"
+              aria-expanded={showSuggestions}
+              aria-activedescendant={showSuggestions && activeSuggestion >= 0 ? `support-search-option-${activeSuggestion}` : undefined}
+              value={query}
+              onFocus={() => { if (query.trim()) setSuggestionsOpen(true) }}
+              onKeyDown={handleSearchKeyDown}
+              onChange={event => {
+                const nextQuery = event.target.value
+                setQuery(nextQuery)
+                setCategory(null)
+                setSuggestionsOpen(Boolean(nextQuery.trim()))
+                setActiveSuggestion(-1)
+              }}
+              placeholder="Try: can’t share, can’t find chat, waiting for host…"
+            />
+            {showSuggestions && <div className="search-suggestions" id="support-search-suggestions" role="listbox" aria-label="Search suggestions">
+              {suggestions.map((suggestion, index) => {
+                const isRoute = suggestion.kind === 'route'
+                const item = isRoute ? suggestion.route : suggestion.process
+                return <button
+                  type="button"
+                  role="option"
+                  id={`support-search-option-${index}`}
+                  className={`search-suggestion${isRoute ? ' search-suggestion-route' : ''}`}
+                  aria-selected={activeSuggestion === index}
+                  tabIndex={-1}
+                  key={`${suggestion.kind}-${item.id}`}
+                  onMouseMove={() => setActiveSuggestion(index)}
+                  onClick={() => selectSuggestion(suggestion)}
+                >
+                  <span className="search-suggestion-copy"><strong>{item.title}</strong><small>{isRoute ? item.subtitle : item.purpose}</small></span>
+                  <span className="search-suggestion-category">{isRoute ? 'Common Issue' : 'Process Guide'}</span>
+                </button>
+              })}
+            </div>}
+          </div>
+          <button type="button" className="smart-search-submit" onClick={runSmartSearch} disabled={!query.trim()}>
+            Search Guides
+          </button>
         </div>
 
         <div className="smart-search-examples" aria-label="Example searches">
