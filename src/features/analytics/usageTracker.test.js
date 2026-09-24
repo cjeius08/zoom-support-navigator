@@ -94,3 +94,19 @@ describe('usage events wait for their session record', () => {
     expect(inserted).toEqual([])
   })
 })
+
+  it('keeps a queued event when the same session is re-armed after an effect replay', async () => {
+    let resolveFirstStart
+    const firstStart = new Promise(resolve => { resolveFirstStart = resolve })
+    const inserted = []
+    const writer = tracker.createSessionEventWriter(async payload => inserted.push(payload))
+    writer.setSessionReady('session-1', firstStart)
+
+    const pending = writer.track({ userId: 'user-1', sessionId: 'session-1', input: { eventType: 'route_view' } })
+    writer.reset('session-1')
+    writer.setSessionReady('session-1', Promise.resolve())
+    resolveFirstStart()
+
+    await expect(pending).resolves.toBe(true)
+    expect(inserted).toHaveLength(1)
+  })
