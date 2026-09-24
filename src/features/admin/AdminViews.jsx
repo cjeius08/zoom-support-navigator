@@ -996,7 +996,9 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
                     )}
                   </section>
 
-                  <section className="usage-report-panel usage-recent-activity" aria-labelledby="usage-activity-title">
+                </div>}
+
+                {section === "activity" && <section className="usage-report-panel usage-recent-activity" aria-labelledby="usage-activity-title">
                     <h2 id="usage-activity-title">Recent activity</h2>
                     {report.recentActivity.length ? (
                       <div className="usage-table-wrap">
@@ -1017,10 +1019,9 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
                     ) : (
                       <p className="usage-empty-state">No activity matches the selected filters.</p>
                     )}
-                  </section>
-                </div>
+                  </section>}
 
-                <section className="usage-report-panel usage-presence-panel" aria-labelledby="usage-presence-title">
+                {section === "presence" && <section className="usage-report-panel usage-presence-panel" aria-labelledby="usage-presence-title">
                   <div className="usage-report-heading">
                     <div>
                       <p className="eyebrow">Live status · not historical usage</p>
@@ -1051,9 +1052,9 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
                   ) : (
                     <p className="usage-empty-state">No team members match the selected filters.</p>
                   )}
-                </section>
+                </section>}
 
-                <div className="usage-data-integrity" role="note">
+                {section === "quality" && <div className="usage-data-integrity" role="note">
                   <strong>Data and metric definitions</strong>
                   <ul>
                     <li>Page views count `route_view` events. Feature actions count stored feature events; navigation events are reported separately in Recent activity.</li>
@@ -1062,7 +1063,7 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
                     <li>In this report range, {report.unmatchedEventCount} event(s) have no matching session row and {report.unendedSessionCount} overlapping session(s) have no recorded end. An open session uses its last interaction only to estimate range overlap; no historical records are rewritten.</li>
                     <li>Analytics contains approved identifiers and timestamps only. Call Documentation and Readiness reports below use separate protected data.</li>
                   </ul>
-                </div>
+                </div>}
               </>
             );
           }}
