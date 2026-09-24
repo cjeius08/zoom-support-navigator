@@ -37,8 +37,8 @@ describe('detailed usage report', () => {
   ]
   const sessions = [
     { session_id: 's1', user_id: 'u1', started_at: '2026-08-31T23:00:00.000Z', ended_at: '2026-09-02T01:00:00.000Z', active_seconds: 120 },
-    { session_id: 's2', user_id: 'u1', started_at: '2026-09-24T08:55:00.000Z', ended_at: null, active_seconds: 600 },
-    { session_id: 's3', user_id: 'u2', started_at: '2026-09-24T09:55:00.000Z', ended_at: null, active_seconds: 300 },
+    { session_id: 's2', user_id: 'u1', started_at: '2026-09-24T08:55:00.000Z', ended_at: null, last_interaction: '2026-09-24T09:02:00.000Z', active_seconds: 600 },
+    { session_id: 's3', user_id: 'u2', started_at: '2026-09-24T09:55:00.000Z', ended_at: null, last_interaction: '2026-09-24T10:00:00.000Z', active_seconds: 300 },
     { session_id: 's4', user_id: 'u2', started_at: '2026-10-01T00:00:00.000Z', ended_at: null, active_seconds: 900 },
   ]
   const presence = [
