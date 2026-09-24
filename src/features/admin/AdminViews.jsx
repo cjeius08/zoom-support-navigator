@@ -1070,9 +1070,33 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
         </State>
       )}
 
-      {rangeReady && <CallNotesReport range={range} onOpenNotes={onOpenSavedNotes} />}
+      {section === "support" && <>
+        <div className="usage-support-switch" role="tablist" aria-label="Support report type">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={supportView === "call_notes"}
+            className={supportView === "call_notes" ? "active" : ""}
+            onClick={() => setSupportView("call_notes")}
+          >
+            <strong>Call Documentation</strong>
+            <small>Saved call notes and activity</small>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={supportView === "readiness"}
+            className={supportView === "readiness" ? "active" : ""}
+            onClick={() => setSupportView("readiness")}
+          >
+            <strong>Readiness Lab</strong>
+            <small>Attempt history and incorrect answers</small>
+          </button>
+        </div>
 
-      <section className="readiness-admin-report" aria-labelledby="readiness-report-title">
+        {supportView === "call_notes" && rangeReady && <CallNotesReport range={range} onOpenNotes={onOpenSavedNotes} />}
+
+        {supportView === "readiness" && <section className="readiness-admin-report" aria-labelledby="readiness-report-title">
         <div className="view-heading">
           <div>
             <p className="eyebrow">Readiness validation</p>
@@ -1185,7 +1209,8 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
             </div>
           )}
         </State>
-      </section>
+      </section>}
+      </>}
     </section>
   );
 }
