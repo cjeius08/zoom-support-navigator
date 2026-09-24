@@ -186,7 +186,7 @@ export function OzzieAiAssist({
           <small>Ask Ozzie to interpret the same text — shorthand, typos, and natural descriptions are okay.</small>
         </span>
       </div>
-      <button type="button" onClick={askOzzie} disabled={!query.trim() || state.loading}>
+      <button type="button" onClick={() => askOzzie()} disabled={!query.trim() || state.loading}>
         {state.loading ? 'Checking…' : 'Ask Ozzie'}
       </button>
     </div>
