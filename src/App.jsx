@@ -454,7 +454,7 @@ export default function App() {
         : view === 'process_documents'
           ? <ProcessDocuments onTrackEvent={trackEvent} onReportContextChange={updateReportContext}/>
         : view === 'training'
-          ? <TrainingResources initialVideoId={trainingVideoId} initialTarget={trainingTarget} onReportContextChange={updateReportContext}/>
+          ? <TrainingResources initialVideoId={trainingVideoId} initialTarget={trainingTarget} onReportContextChange={updateReportContext} trackEvent={trackEvent}/>
           : view === 'updates'
             ? <UpdatesView isAdmin={profile.role === 'creator_admin'}/>
             : view === 'feedback'
