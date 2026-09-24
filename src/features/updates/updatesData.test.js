@@ -20,12 +20,13 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.metadata.updatePolicy).toMatch(/Developer-only work/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
   expect(data.updates[0]).toMatchObject({
-    id: 'windows-device-sandbox-home-shortcut',
+    id: 'flex-arbitration-zoom-support-greeting',
     date: '2026-09-24',
-    area: 'Home / Training & Resources',
+    area: 'Call Flow / Call Language',
     audience: 'all',
   })
-  expect(data.updates.slice(1, 4).map(entry => entry.id)).toEqual([
+  expect(data.updates[1]).toMatchObject({ id: 'windows-device-sandbox-home-shortcut', audience: 'all' })
+  expect(data.updates.slice(2, 5).map(entry => entry.id)).toEqual([
     'process-documents-search-normalization',
     'new-call-session-reset',
     'common-issues-smart-routing',
@@ -90,4 +91,20 @@ it('lists the Zoom Training Environment shortcut in the user-facing updates', ()
   expect(entry.changed).toMatch(/launch only/i)
   expect(entry.changed).toMatch(/actions inside the external training environment are not included/i)
   expect(entry.checks.length).toBeGreaterThan(0)
+})
+
+
+it('lists the Flex Arbitration Zoom Support opening spiel in What’s New', () => {
+  const path = join(cwd(), 'src/features/updates/updatesData.json')
+  const data = JSON.parse(readFileSync(path, 'utf8'))
+  const entry = data.updates.find(item => item.id === 'flex-arbitration-zoom-support-greeting')
+
+  expect(entry).toMatchObject({ date: '2026-09-24', area: 'Call Flow / Call Language', audience: 'all' })
+  expect(data.updates[0].id).toBe('flex-arbitration-zoom-support-greeting')
+  expect(entry.title).toMatch(/Flex Arbitration Zoom Support/i)
+  expect(entry.changed).toContain('Thank you for calling Flex Arbitration Zoom Support. This is [Name]. How can I help you today?')
+  expect(entry.checks).toEqual(expect.arrayContaining([
+    expect.stringMatching(/Call Language.*Opening \/ Greeting/i),
+    expect.stringMatching(/Call Flow/i),
+  ]))
 })
