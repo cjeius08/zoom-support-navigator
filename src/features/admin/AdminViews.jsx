@@ -909,6 +909,7 @@ export function FeedbackQueue({ onOpenPage }) {
   const [updatingId, setUpdatingId] = useState("");
   const [actionError, setActionError] = useState("");
   const [queueMinimized, setQueueMinimized] = useState(false);
+  const queueScrollPosition = useRef(0);
   const [expandedIds, setExpandedIds] = useState(() => new Set());
   const loader = useCallback(() => loadFeedback(), []);
   const teamLoader = useCallback(() => loadTeam(), []);
@@ -926,6 +927,16 @@ export function FeedbackQueue({ onOpenPage }) {
       else next.add(itemId);
       return next;
     });
+  }
+
+  function toggleQueueMinimized() {
+    if (queueMinimized) {
+      setQueueMinimized(false);
+      window.requestAnimationFrame(() => window.scrollTo(0, queueScrollPosition.current));
+      return;
+    }
+    queueScrollPosition.current = window.scrollY || 0;
+    setQueueMinimized(true);
   }
 
   async function changeStatus(item, status) {
@@ -958,7 +969,7 @@ export function FeedbackQueue({ onOpenPage }) {
           className="feedback-queue-minimize"
           aria-controls="feedback-queue-panel"
           aria-expanded={!queueMinimized}
-          onClick={() => setQueueMinimized(value => !value)}
+          onClick={toggleQueueMinimized}
         >
           {queueMinimized ? "Restore Feedback Queue" : "Minimize Feedback Queue"}
         </button>
