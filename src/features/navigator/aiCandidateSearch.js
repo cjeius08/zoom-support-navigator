@@ -85,9 +85,22 @@ function scoreText(query, text) {
   return score
 }
 
-function rankedFallback(query, items, textFor, limit) {
+function routeSpecificBonus(query, route) {
+  const tokens = new Set(queryTokens(query))
+  let bonus = 0
+
+  if (route.id === 'bluetooth-headset' && tokens.has('bluetooth')) bonus += 18
+  if (route.id === 'bluetooth-headset' && tokens.has('bluetooth') && tokens.has('connected')) bonus += 12
+  if (route.id === 'bluetooth-headset' && tokens.has('bluetooth') && tokens.has('speaker')) bonus += 12
+  if (route.id === 'cant-hear' && tokens.has('speaker') && !tokens.has('bluetooth')) bonus += 6
+  if (route.id === 'cant-be-heard' && tokens.has('microphone')) bonus += 8
+
+  return bonus
+}
+
+function rankedFallback(query, items, textFor, limit, scoreBonus = () => 0) {
   return items
-    .map(item => ({ item, score: scoreText(query, textFor(item)) }))
+    .map(item => ({ item, score: scoreText(query, textFor(item)) + scoreBonus(query, item) }))
     .filter(entry => entry.score >= 10)
     .sort((a, b) => b.score - a.score)
     .slice(0, limit)
@@ -104,7 +117,7 @@ function dedupeById(items) {
 }
 
 export function buildApprovedAiSources(query, routeMatches = [], processMatches = []) {
-  const fallbackRoutes = rankedFallback(query, COMMON_ISSUE_ROUTES, routeText, 5)
+  const fallbackRoutes = rankedFallback(query, COMMON_ISSUE_ROUTES, routeText, 5, routeSpecificBonus)
   const fallbackProcesses = rankedFallback(query, PROCESSES, processText, 4)
 
   const routes = dedupeById([...routeMatches, ...fallbackRoutes]).slice(0, 5)
