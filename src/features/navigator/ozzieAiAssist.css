@@ -31,3 +31,11 @@
 .ozzie-ai-report-form select,.ozzie-ai-report-form textarea{width:100%;box-sizing:border-box;border:1px solid #425a6b;border-radius:9px;padding:8px;background:#0a151d;color:#eef5f9}
 .ozzie-ai-report-actions{display:flex;justify-content:flex-end;gap:8px}
 @media(max-width:700px){.ozzie-ai-launch{align-items:stretch;flex-direction:column}.ozzie-ai-launch button{width:100%}.ozzie-ai-result header{flex-direction:column}.ozzie-ai-confidence{align-self:flex-start}}
+
+.ozzie-ai-clarify{margin-top:12px;padding-top:12px;border-top:1px solid rgba(218,232,240,.14);display:grid;gap:8px}
+.ozzie-ai-clarify>span{font-size:12px;font-weight:800;color:#a9c0cf;text-transform:uppercase;letter-spacing:.04em}
+.ozzie-ai-clarify>div{display:flex;flex-wrap:wrap;gap:8px}
+.ozzie-ai-clarify button{border:1px solid rgba(88,169,255,.34);border-radius:999px;padding:8px 10px;background:rgba(24,83,124,.26);color:#eaf5fb;font-weight:750;cursor:pointer}
+.ozzie-ai-clarify button:hover,.ozzie-ai-clarify button:focus-visible{border-color:#75baff;background:rgba(29,103,155,.42)}
+.ozzie-ai-clarify button:disabled{opacity:.55;cursor:not-allowed}
+.ozzie-ai-clarify small{color:#8298a7}
