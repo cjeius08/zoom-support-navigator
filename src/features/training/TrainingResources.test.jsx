@@ -239,7 +239,7 @@ it('closes the video player when the Close video button is clicked', async () =>
       'href',
       'https://limegreen-anteater-490127.hostingersite.com/',
     )
-    expect(screen.getByText(/Ozzie records when this sandbox page opens/i)).toBeInTheDocument()
+    expect(screen.getByText(/Ozzie records when this training environment opens/i)).toBeInTheDocument()
     expect(trackEvent).toHaveBeenCalledTimes(1)
     expect(trackEvent).toHaveBeenCalledWith({
       eventType: 'tool_open',
