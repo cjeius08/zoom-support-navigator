@@ -64,7 +64,7 @@ export async function loadUsage({ start, end } = {}) {
       .select('session_id,user_id,started_at,ended_at,active_seconds,last_interaction')
       .order('started_at', { ascending: false })
     if (end) query = query.lt('started_at', end)
-    if (start) query = query.or(`ended_at.is.null,ended_at.gte.${start}`)
+    if (start) query = query.or(`ended_at.gte.${start},and(ended_at.is.null,last_interaction.gte.${start})`)
     return query
   })
 
