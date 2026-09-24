@@ -1034,6 +1034,9 @@ export function FeedbackQueue({ onOpenPage }) {
                           </select>
                         </label>
                       </header>
+                      {item.what_noticed && (
+                        <p className="feedback-item-preview">{item.what_noticed}</p>
+                      )}
 
                       {expanded && (
                         <div className="feedback-item-details">
