@@ -88,7 +88,7 @@ function scoreText(query, text) {
 function rankedFallback(query, items, textFor, limit) {
   return items
     .map(item => ({ item, score: scoreText(query, textFor(item)) }))
-    .filter(entry => entry.score >= 12)
+    .filter(entry => entry.score >= 10)
     .sort((a, b) => b.score - a.score)
     .slice(0, limit)
     .map(entry => entry.item)
