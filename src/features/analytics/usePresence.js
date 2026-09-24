@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo } from 'react'
-import { createPresenceController } from './usageTracker'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { createPresenceController, createRouteViewGuard } from './usageTracker'
 import {
   insertUsageEvent,
   startUsageSession,
@@ -16,6 +16,8 @@ function createSessionId(userId) {
 
 export function useUsageTracking(userId, routeId) {
   const sessionId = useMemo(() => createSessionId(userId), [userId])
+  const routeViewGuard = useRef(null)
+  if (!routeViewGuard.current) routeViewGuard.current = createRouteViewGuard()
 
   useEffect(() => {
     if (!userId || !sessionId) return undefined
@@ -53,7 +55,7 @@ export function useUsageTracking(userId, routeId) {
   }, [sessionId, userId])
 
   useEffect(() => {
-    if (routeId) trackEvent({ eventType: 'route_view', routeId })
+    if (routeViewGuard.current(routeId)) trackEvent({ eventType: 'route_view', routeId })
   }, [routeId, trackEvent])
 
   return { sessionId, trackEvent }
