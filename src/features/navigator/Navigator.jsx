@@ -92,7 +92,7 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {} }) {
+export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -290,6 +290,17 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
       {callContext.status === 'active' && <button type="button" className="navigator-new-call-button" onClick={() => setNewCallConfirmOpen(true)}>
         New Call
       </button>}
+    </section>
+
+    <section className="home-sandbox-launch" aria-labelledby="home-sandbox-title">
+      <div className="home-sandbox-copy">
+        <p className="eyebrow">Interactive practice</p>
+        <h2 id="home-sandbox-title">Windows Device Sandbox</h2>
+        <p>Open the Windows practice environment directly from Home.</p>
+      </div>
+      <button type="button" onClick={onOpenDeviceSandbox}>
+        Open Windows Sandbox <span aria-hidden="true">→</span>
+      </button>
     </section>
 
     <section className="navigator-top-workspace" aria-label="Live support workspace">
