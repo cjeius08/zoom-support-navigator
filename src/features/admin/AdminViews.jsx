@@ -669,6 +669,10 @@ const USAGE_PERIODS = [
 ];
 
 export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
+  const [section, setSection] = useState("overview");
+  const [supportView, setSupportView] = useState("call_notes");
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [refreshVersion, setRefreshVersion] = useState(0);
   const [period, setPeriod] = useState("daily");
   const [customStart, setCustomStart] = useState("");
   const [customEnd, setCustomEnd] = useState("");
@@ -686,9 +690,9 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
       : Promise.resolve({ profiles: [], events: [], sessions: [], presence: [], loadedAt: null }),
     [range, rangeReady],
   );
-  const state = useData(loader);
+  const state = useData(loader, refreshVersion);
   const readinessLoader = useCallback(() => loadReadinessReport(), []);
-  const readinessState = useData(readinessLoader);
+  const readinessState = useData(readinessLoader, refreshVersion);
   const customRangeError = period === "custom" && customStart && customEnd && customStart > customEnd;
 
   function resetUsageFilters() {
@@ -710,20 +714,47 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
     return String(value || "").replaceAll("_", " ");
   }
 
+  const activeFilterCount = [memberId, routeId, featureId].filter(Boolean).length;
+
   return (
     <section className="console-view usage-analytics">
-      <div className="view-heading">
+      <div className="view-heading usage-analytics-heading">
         <div>
           <p className="eyebrow">Admin only · Privacy-safe metadata</p>
           <h1>Usage Analytics</h1>
           <p>
-            Review recorded page views, feature actions, sessions, and member activity.
-            Live presence is shown separately from historical usage.
+            Detailed reporting, separated into focused views so you can find the answer you need without scrolling through every report.
           </p>
         </div>
+        <button type="button" className="usage-refresh-button" onClick={() => setRefreshVersion((value) => value + 1)}>
+          Refresh now
+        </button>
       </div>
 
-      <div className="usage-period-controls" role="group" aria-label="Usage date range">
+      <nav className="usage-section-tabs" aria-label="Usage Analytics sections">
+        {[
+          ["overview", "Overview", "Key totals and trend"],
+          ["breakdown", "Team & Tools", "Members, pages, features"],
+          ["activity", "Activity", "Recent recorded actions"],
+          ["presence", "Live Presence", "Current online state"],
+          ["support", "Support Reports", "Call notes and readiness"],
+          ["quality", "Data Quality", "Metric definitions and integrity"],
+        ].map(([id, label, description]) => (
+          <button
+            type="button"
+            key={id}
+            className={section === id ? "active" : ""}
+            aria-current={section === id ? "page" : undefined}
+            onClick={() => setSection(id)}
+          >
+            <strong>{label}</strong>
+            <small>{description}</small>
+          </button>
+        ))}
+      </nav>
+
+      <div className="usage-controls-bar">
+        <div className="usage-period-controls" role="group" aria-label="Usage date range">
         {USAGE_PERIODS.map(([id, label]) => (
           <button
             type="button"
@@ -735,6 +766,15 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
             {label}
           </button>
         ))}
+        </div>
+        <button
+          type="button"
+          className={"usage-filter-toggle" + (filtersOpen ? " active" : "")}
+          aria-expanded={filtersOpen}
+          onClick={() => setFiltersOpen((value) => !value)}
+        >
+          Filters{activeFilterCount ? " · " + activeFilterCount : ""}
+        </button>
       </div>
 
       {period === "custom" && (
@@ -760,7 +800,7 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
         </div>
       )}
 
-      <div className="usage-filter-panel" aria-label="Usage report filters">
+      {filtersOpen && <div className="usage-filter-panel" aria-label="Usage report filters">
         <div className="usage-filter-grid">
           <label>
             Team member
@@ -802,7 +842,7 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
             Dates use your browser’s local timezone. End dates include the full selected day.
           </p>
         )}
-      </div>
+      </div>}
 
       {customRangeError && (
         <p className="usage-validation-message" role="alert">The end date must be on or after the start date.</p>
@@ -811,7 +851,7 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
         <p className="usage-validation-message" role="status">Choose both a start date and an end date to load a custom report.</p>
       )}
 
-      {rangeReady && (
+      {rangeReady && section !== "support" && (
         <State state={state}>
           {(data) => {
             const report = buildUsageReport({
@@ -824,9 +864,15 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
               featureId,
             });
             const maxBucketCount = Math.max(1, ...report.activityBuckets.map((bucket) => bucket.count));
+            const topMember = [...report.users].sort(
+              (a, b) => (b.pageViews + b.featureUsage) - (a.pageViews + a.featureUsage),
+            )[0] || null;
+            const topPage = report.byPage[0] || null;
+            const topFeature = report.byFeature[0] || null;
 
             return (
               <>
+                {section === "overview" && <>
                 <div className="real-summary usage-summary" aria-label="Usage summary">
                   <div aria-label={`Total Users: ${report.totalUsers}`}>
                     <strong>{report.totalUsers}</strong>
@@ -854,7 +900,13 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
                   </div>
                 </div>
 
-                <section className="usage-report-panel" aria-labelledby="usage-trend-title">
+                <div className="usage-overview-highlights" aria-label="Usage highlights">
+                  <div><span>Most active member</span><strong>{topMember ? (topMember.username || topMember.initials || "Unknown user") : "—"}</strong><small>{topMember ? (topMember.pageViews + topMember.featureUsage) + " recorded actions" : "No activity yet"}</small></div>
+                  <div><span>Most viewed page</span><strong>{topPage ? humanize(topPage.id) : "—"}</strong><small>{topPage ? topPage.count + " page views" : "No page views yet"}</small></div>
+                  <div><span>Most used feature</span><strong>{topFeature ? humanize(topFeature.id) : "—"}</strong><small>{topFeature ? topFeature.count + " uses" : "No feature actions yet"}</small></div>
+                </div>
+
+                <section className="usage-report-panel usage-trend-panel" aria-labelledby="usage-trend-title">
                   <div className="usage-report-heading">
                     <div>
                       <p className="eyebrow">Historical usage</p>
@@ -883,8 +935,9 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
                     <p className="usage-empty-state">No usage events match this date range and filter set.</p>
                   )}
                 </section>
+                </>}
 
-                <div className="usage-detail-grid">
+                {section === "breakdown" && <div className="usage-detail-grid">
                   <section className="usage-report-panel" aria-labelledby="usage-members-title">
                     <h2 id="usage-members-title">Usage by team member</h2>
                     {report.users.length ? (
@@ -943,7 +996,9 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
                     )}
                   </section>
 
-                  <section className="usage-report-panel usage-recent-activity" aria-labelledby="usage-activity-title">
+                </div>}
+
+                {section === "activity" && <section className="usage-report-panel usage-recent-activity" aria-labelledby="usage-activity-title">
                     <h2 id="usage-activity-title">Recent activity</h2>
                     {report.recentActivity.length ? (
                       <div className="usage-table-wrap">
@@ -964,10 +1019,9 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
                     ) : (
                       <p className="usage-empty-state">No activity matches the selected filters.</p>
                     )}
-                  </section>
-                </div>
+                  </section>}
 
-                <section className="usage-report-panel usage-presence-panel" aria-labelledby="usage-presence-title">
+                {section === "presence" && <section className="usage-report-panel usage-presence-panel" aria-labelledby="usage-presence-title">
                   <div className="usage-report-heading">
                     <div>
                       <p className="eyebrow">Live status · not historical usage</p>
@@ -998,9 +1052,9 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
                   ) : (
                     <p className="usage-empty-state">No team members match the selected filters.</p>
                   )}
-                </section>
+                </section>}
 
-                <div className="usage-data-integrity" role="note">
+                {section === "quality" && <div className="usage-data-integrity" role="note">
                   <strong>Data and metric definitions</strong>
                   <ul>
                     <li>Page views count `route_view` events. Feature actions count stored feature events; navigation events are reported separately in Recent activity.</li>
@@ -1009,16 +1063,40 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
                     <li>In this report range, {report.unmatchedEventCount} event(s) have no matching session row and {report.unendedSessionCount} overlapping session(s) have no recorded end. An open session uses its last interaction only to estimate range overlap; no historical records are rewritten.</li>
                     <li>Analytics contains approved identifiers and timestamps only. Call Documentation and Readiness reports below use separate protected data.</li>
                   </ul>
-                </div>
+                </div>}
               </>
             );
           }}
         </State>
       )}
 
-      {rangeReady && <CallNotesReport range={range} onOpenNotes={onOpenSavedNotes} />}
+      {section === "support" && <>
+        <div className="usage-support-switch" role="tablist" aria-label="Support report type">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={supportView === "call_notes"}
+            className={supportView === "call_notes" ? "active" : ""}
+            onClick={() => setSupportView("call_notes")}
+          >
+            <strong>Call Documentation</strong>
+            <small>Saved call notes and activity</small>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={supportView === "readiness"}
+            className={supportView === "readiness" ? "active" : ""}
+            onClick={() => setSupportView("readiness")}
+          >
+            <strong>Readiness Lab</strong>
+            <small>Attempt history and incorrect answers</small>
+          </button>
+        </div>
 
-      <section className="readiness-admin-report" aria-labelledby="readiness-report-title">
+        {supportView === "call_notes" && rangeReady && <CallNotesReport range={range} onOpenNotes={onOpenSavedNotes} />}
+
+        {supportView === "readiness" && <section className="readiness-admin-report" aria-labelledby="readiness-report-title">
         <div className="view-heading">
           <div>
             <p className="eyebrow">Readiness validation</p>
@@ -1131,7 +1209,8 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
             </div>
           )}
         </State>
-      </section>
+      </section>}
+      </>}
     </section>
   );
 }
