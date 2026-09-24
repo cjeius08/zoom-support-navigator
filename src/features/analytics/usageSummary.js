@@ -59,10 +59,10 @@ function withinRange(value, startMs, endMs) {
   return time !== null && time >= startMs && time < endMs
 }
 
-export function sessionOverlapsRange(session, startMs, endMs, nowMs = Date.now()) {
+export function sessionOverlapsRange(session, startMs, endMs) {
   const started = parseTime(session.started_at)
-  const ended = parseTime(session.ended_at) ?? parseTime(session.last_interaction) ?? nowMs
-  return started !== null && started < endMs && ended >= startMs
+  const ended = parseTime(session.ended_at) ?? parseTime(session.last_interaction)
+  return started !== null && ended !== null && started < endMs && ended >= startMs
 }
 
 function eventMatchesFeature(event, featureId) {
@@ -183,7 +183,7 @@ export function buildUsageReport({
   const matchedSessionIds = new Set(filteredEvents.map(event => event.session_id).filter(Boolean))
   const hasActivityFilter = Boolean(routeId || featureId)
   const filteredSessions = sessions.filter(session =>
-    sessionOverlapsRange(session, startMs, endMs, nowMs)
+    sessionOverlapsRange(session, startMs, endMs)
     && (!memberId || session.user_id === memberId)
     && (!hasActivityFilter || matchedSessionIds.has(session.session_id)),
   )
@@ -204,6 +204,11 @@ export function buildUsageReport({
   const profileById = new Map(profiles.map(profile => [profile.id, profile]))
   const livePresence = new Map(presence.map(item => [item.user_id, item]))
   const activeIds = new Set([...eventsByUser.keys(), ...sessionsByUser.keys()])
+  const sessionKeys = new Set(filteredSessions.map(session => `${session.user_id}:${session.session_id}`))
+  const unmatchedEventCount = filteredEvents.filter(event =>
+    !event.session_id || !sessionKeys.has(`${event.user_id}:${event.session_id}`),
+  ).length
+  const unendedSessionCount = filteredSessions.filter(session => !session.ended_at).length
   const visibleProfiles = profiles.filter(profile => {
     if (memberId && profile.id !== memberId) return false
     if (hasActivityFilter && !activeIds.has(profile.id)) return false
@@ -289,6 +294,8 @@ export function buildUsageReport({
     pageViews: filteredEvents.filter(event => event.event_type === 'route_view').length,
     featureUsage: featureEvents.length,
     sessionCount: filteredSessions.length,
+    unmatchedEventCount,
+    unendedSessionCount,
     latestEventAt: latestEventMs ? new Date(latestEventMs).toISOString() : null,
     activityBuckets,
     byPage: orderedCounts(pageCounts),
