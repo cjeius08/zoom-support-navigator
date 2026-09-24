@@ -5200,3 +5200,267 @@ body:has(.process-document-reader) .process-document-page {
     width:100%;
   }
 }
+
+
+/* Focused feedback queue controls and responsive floating tool rail. */
+.feedback-queue-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.feedback-queue-heading > div {
+  min-width: 0;
+}
+.feedback-queue-heading h1 {
+  margin-top: 0;
+}
+.feedback-queue-heading p {
+  max-width: 48rem;
+}
+.feedback-queue-minimize {
+  flex: 0 0 auto;
+  min-height: 2.35rem;
+  padding: .48rem .72rem;
+  border: 1px solid rgba(92, 177, 232, .32);
+  border-radius: .62rem;
+  background: rgba(27, 104, 161, .14);
+  color: #d9efff;
+  font-weight: 700;
+}
+.feedback-queue-minimized-note {
+  margin-top: .6rem;
+  color: #99b2c2;
+  font-size: .82rem;
+}
+#feedback-queue-panel[hidden] {
+  display: none;
+}
+.feedback-item-row {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+}
+.feedback-item-toggle {
+  display: grid;
+  flex: 1 1 auto;
+  grid-template-columns: minmax(7rem, .8fr) minmax(10rem, 1.25fr) minmax(9rem, .85fr) auto;
+  align-items: center;
+  gap: .8rem;
+  min-width: 0;
+  padding: .15rem 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+.feedback-item-toggle:focus-visible,
+.feedback-queue-minimize:focus-visible {
+  outline: 2px solid #75c9ff;
+  outline-offset: 2px;
+}
+.feedback-item-type {
+  overflow: hidden;
+  color: #d9eaf5;
+  font-size: .82rem;
+  font-weight: 750;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+}
+.feedback-reporter,
+.feedback-item-submitter {
+  display: flex;
+  align-items: center;
+  gap: .48rem;
+  min-width: 0;
+}
+.feedback-reporter > img,
+.feedback-item-submitter > img,
+.feedback-avatar-fallback {
+  display: grid;
+  flex: 0 0 2rem;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid rgba(112, 184, 226, .25);
+  border-radius: 50%;
+  background: rgba(39, 105, 148, .28);
+  color: #d9efff;
+  object-fit: cover;
+  font-size: .68rem;
+  font-weight: 750;
+}
+.feedback-reporter > span:last-child,
+.feedback-item-submitter > div {
+  display: grid;
+  min-width: 0;
+  gap: .08rem;
+}
+.feedback-reporter strong,
+.feedback-item-submitter strong {
+  overflow: hidden;
+  color: #e6f1f8;
+  font-size: .76rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.feedback-reporter small,
+.feedback-item-submitter small {
+  color: #91a8b8;
+  font-size: .65rem;
+}
+.feedback-submitted-at {
+  overflow: hidden;
+  color: #9aafbd;
+  font-size: .68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.feedback-item-chevron {
+  color: #8ecfff;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+.feedback-item-details {
+  display: grid;
+  gap: .65rem;
+  margin-top: .55rem;
+  padding: .75rem .15rem .2rem;
+  border-top: 1px solid rgba(125, 169, 195, .15);
+}
+.feedback-item-submitter {
+  justify-self: start;
+}
+.feedback-item-description,
+.feedback-item-suggestion,
+.feedback-item-submitted {
+  display: grid;
+  gap: .2rem;
+  margin: 0;
+  color: #d8e4eb;
+  font-size: .82rem;
+  line-height: 1.5;
+}
+.feedback-item-description b,
+.feedback-item-suggestion b,
+.feedback-item-submitted b {
+  color: #9ec9e3;
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .045em;
+}
+.feedback-item-description span,
+.feedback-item-suggestion span {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.feedback-item-submitted time {
+  color: #b5c7d2;
+  font-size: .75rem;
+}
+.feedback-item .feedback-screen-context {
+  margin-top: 0;
+}
+.feedback-item .feedback-context-row small {
+  white-space: normal;
+}
+
+@media (min-width: 1101px) {
+  .documentation-dock-minimized {
+    top: calc(5.25rem + var(--tool-stack-offset, 0rem));
+    right: .85rem;
+    bottom: auto;
+    left: auto;
+    width: min(19rem, calc(100vw - 1.7rem));
+  }
+  .documentation-dock:not(.documentation-dock-minimized) {
+    right: 20.5rem;
+  }
+}
+@media (max-width: 1100px) {
+  .documentation-dock-minimized {
+    top: calc(5rem + var(--tool-stack-offset, 0rem));
+    right: .6rem;
+    bottom: auto;
+    left: auto;
+    width: 4.25rem;
+    grid-template-columns: 1fr auto;
+  }
+  .documentation-dock-minimized .documentation-dock-restore {
+    justify-content: center;
+    padding: .55rem .25rem;
+  }
+  .documentation-dock-minimized .documentation-dock-restore > span:first-child,
+  .documentation-dock-minimized .documentation-dock-restore > span[aria-hidden="true"] {
+    display: none;
+  }
+  .documentation-dock-minimized .documentation-dock-restore::after {
+    content: "▣";
+    color: #9ed8ff;
+    font-size: 1rem;
+  }
+  .documentation-dock-minimized .documentation-dock-close {
+    margin-right: .25rem;
+  }
+  .documentation-dock:not(.documentation-dock-minimized) {
+    right: 5rem;
+    left: .6rem;
+    width: auto;
+  }
+}
+@media (max-width: 480px) {
+  .documentation-dock-minimized {
+    top: calc(4.65rem + var(--tool-stack-offset, 0rem));
+    right: .45rem;
+    width: 4rem;
+  }
+  .documentation-dock:not(.documentation-dock-minimized) {
+    top: 4.9rem;
+    right: 4.7rem;
+    bottom: .6rem;
+    left: .45rem;
+    width: auto;
+  }
+  .feedback-queue-heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .feedback-queue-minimize {
+    align-self: flex-start;
+  }
+  .feedback-item-row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .feedback-item-toggle {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: .45rem .6rem;
+  }
+  .feedback-item-type {
+    grid-column: 1 / 2;
+  }
+  .feedback-item-chevron {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .feedback-reporter {
+    grid-column: 1;
+  }
+  .feedback-submitted-at {
+    grid-column: 2;
+    grid-row: 2;
+    max-width: 7.5rem;
+    text-align: right;
+  }
+  .feedback-item-row .feedback-status-control {
+    margin-left: auto;
+  }
+}
+@media (max-height: 520px) {
+  .documentation-dock-minimized {
+    top: calc(4.2rem + var(--tool-stack-offset, 0rem));
+  }
+  .documentation-dock:not(.documentation-dock-minimized) {
+    bottom: .4rem;
+  }
+}
