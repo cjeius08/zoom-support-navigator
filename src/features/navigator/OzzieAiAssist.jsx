@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { askOzzieAi, logBlockedAiRequest, reportAiAnswer } from '../../lib/aiApi'
 import { sanitizeAiText } from '../../lib/aiPrivacy'
+import { buildApprovedAiSources } from './aiCandidateSearch'
 import './ozzieAiAssist.css'
 
 const REPORT_REASONS = [
@@ -67,10 +68,15 @@ export function OzzieAiAssist({
   const [reportDetails, setReportDetails] = useState('')
   const [reportState, setReportState] = useState({ saving: false, sent: false, error: '' })
 
+  const approvedSources = useMemo(
+    () => buildApprovedAiSources(query, routeMatches, processMatches),
+    [query, routeMatches, processMatches],
+  )
+
   const candidates = useMemo(() => [
-    ...routeMatches.slice(0, 4).map(toRouteCandidate),
-    ...processMatches.slice(0, 4).map(toProcessCandidate),
-  ].slice(0, 8), [routeMatches, processMatches])
+    ...approvedSources.routes.map(toRouteCandidate),
+    ...approvedSources.processes.map(toProcessCandidate),
+  ].slice(0, 8), [approvedSources])
 
   useEffect(() => {
     setState({ loading: false, result: null, error: '' })
@@ -129,10 +135,10 @@ export function OzzieAiAssist({
   function openRecommended() {
     if (!selectedCandidate) return
     if (selectedCandidate.kind === 'common_issue') {
-      const route = routeMatches.find(item => item.id === selectedCandidate.id)
+      const route = approvedSources.routes.find(item => item.id === selectedCandidate.id)
       if (route) onOpenRoute(route)
     } else {
-      const process = processMatches.find(item => item.id === selectedCandidate.id)
+      const process = approvedSources.processes.find(item => item.id === selectedCandidate.id)
       if (process) onOpenProcess(process)
     }
   }
@@ -163,7 +169,7 @@ export function OzzieAiAssist({
         <span className="ozzie-ai-badge" aria-hidden="true">AI</span>
         <span>
           <strong>Need help interpreting the issue?</strong>
-          <small>Ask Ozzie using the same search — shorthand, typos, and natural descriptions are okay.</small>
+          <small>Ask Ozzie to interpret the same text — shorthand, typos, and natural descriptions are okay.</small>
         </span>
       </div>
       <button type="button" onClick={askOzzie} disabled={!query.trim() || state.loading}>
