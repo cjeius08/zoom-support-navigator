@@ -424,7 +424,9 @@ it('keeps only one floating tool open and stacks the other reopen controls', asy
   await user.click(within(nav).getByText('Call Flow'))
   await user.click(within(nav).getByRole('button', { name: 'Scope Check' }))
   expect(screen.getByLabelText('Readiness Lab minimized')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Restore Readiness Lab' })).toHaveAttribute('title', 'Restore Readiness Lab')
   expect(screen.getByLabelText('Call Documentation minimized')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Restore Call Documentation' })).toHaveAttribute('title', 'Restore Call Documentation')
   expect(screen.getByRole('heading', { name: 'Scope Check' })).toBeInTheDocument()
 
   const minimizedControls = [
