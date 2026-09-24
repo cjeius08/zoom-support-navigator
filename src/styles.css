@@ -5412,11 +5412,11 @@ body:has(.process-document-reader) .process-document-page {
   .documentation-dock-minimized {
     top: calc(4.65rem + var(--tool-stack-offset, 0rem));
     right: .45rem;
-    width: 4rem;
+    width: 4.75rem;
   }
   .documentation-dock:not(.documentation-dock-minimized) {
     top: 4.9rem;
-    right: 4.7rem;
+    right: 5.45rem;
     bottom: .6rem;
     left: .45rem;
     width: auto;
