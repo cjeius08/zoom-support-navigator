@@ -669,6 +669,10 @@ const USAGE_PERIODS = [
 ];
 
 export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
+  const [section, setSection] = useState("overview");
+  const [supportView, setSupportView] = useState("call_notes");
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [refreshVersion, setRefreshVersion] = useState(0);
   const [period, setPeriod] = useState("daily");
   const [customStart, setCustomStart] = useState("");
   const [customEnd, setCustomEnd] = useState("");
@@ -686,9 +690,9 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
       : Promise.resolve({ profiles: [], events: [], sessions: [], presence: [], loadedAt: null }),
     [range, rangeReady],
   );
-  const state = useData(loader);
+  const state = useData(loader, refreshVersion);
   const readinessLoader = useCallback(() => loadReadinessReport(), []);
-  const readinessState = useData(readinessLoader);
+  const readinessState = useData(readinessLoader, refreshVersion);
   const customRangeError = period === "custom" && customStart && customEnd && customStart > customEnd;
 
   function resetUsageFilters() {
