@@ -987,14 +987,16 @@ export function FeedbackQueue({ onOpenPage }) {
               <div className="feedback-list">
                 {items.map((item) => {
                   const reporter = profilesById.get(item.reporter_user_id);
-                  const reporterName = reporter?.username || reporter?.initials || "Unknown submitter";
-                  const reporterRole = reporter
-                    ? reporter.role === "creator_admin"
-                      ? "Admin"
-                      : reporter.workspace_role === "lead"
-                        ? "Lead"
-                        : "Member"
-                    : "Role unavailable";
+                  const reporterName = reporter?.username || reporter?.initials || (teamState.loading ? "Loading submitter…" : "Unknown submitter");
+                  const reporterRole = teamState.loading
+                    ? "Loading role…"
+                    : reporter
+                      ? reporter.role === "creator_admin"
+                        ? "Admin"
+                        : reporter.workspace_role === "lead"
+                          ? "Lead"
+                          : "Member"
+                      : "Role unavailable";
                   const reporterAvatar = avatarUrl(reporter?.avatar_id);
                   const expanded = expandedIds.has(item.id);
                   const submittedAt = item.created_at
