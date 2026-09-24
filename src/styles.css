@@ -5798,3 +5798,34 @@ body:has(.process-document-reader) .process-document-page {
     width: 100%;
   }
 }
+
+
+/* Admin AI Reports shortcut */
+.admin-ai-reports-shortcut {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1rem 0 1.25rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(120, 164, 198, .24);
+  border-radius: 1rem;
+  background: rgba(12, 25, 36, .72);
+}
+.admin-ai-reports-shortcut h2,
+.admin-ai-reports-shortcut p {
+  margin: 0;
+}
+.admin-ai-reports-shortcut .eyebrow {
+  margin-bottom: .2rem;
+}
+.admin-ai-reports-shortcut > div > p:last-child {
+  margin-top: .35rem;
+  color: #a9bac8;
+}
+@media (max-width: 700px) {
+  .admin-ai-reports-shortcut {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
