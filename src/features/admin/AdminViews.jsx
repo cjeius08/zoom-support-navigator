@@ -10,7 +10,7 @@ import {
 } from "../../lib/adminApi";
 import { avatarUrl } from "../profile/avatarCatalog";
 import {
-  buildUsageSummary,
+  buildUsageReport,
   dateRangeForPeriod,
   formatActiveDuration,
 } from "../analytics/usageSummary";
