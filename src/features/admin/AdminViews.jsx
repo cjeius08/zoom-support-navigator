@@ -714,20 +714,47 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
     return String(value || "").replaceAll("_", " ");
   }
 
+  const activeFilterCount = [memberId, routeId, featureId].filter(Boolean).length;
+
   return (
     <section className="console-view usage-analytics">
-      <div className="view-heading">
+      <div className="view-heading usage-analytics-heading">
         <div>
           <p className="eyebrow">Admin only · Privacy-safe metadata</p>
           <h1>Usage Analytics</h1>
           <p>
-            Review recorded page views, feature actions, sessions, and member activity.
-            Live presence is shown separately from historical usage.
+            Detailed reporting, separated into focused views so you can find the answer you need without scrolling through every report.
           </p>
         </div>
+        <button type="button" className="usage-refresh-button" onClick={() => setRefreshVersion((value) => value + 1)}>
+          Refresh now
+        </button>
       </div>
 
-      <div className="usage-period-controls" role="group" aria-label="Usage date range">
+      <nav className="usage-section-tabs" aria-label="Usage Analytics sections">
+        {[
+          ["overview", "Overview", "Key totals and trend"],
+          ["breakdown", "Team & Tools", "Members, pages, features"],
+          ["activity", "Activity", "Recent recorded actions"],
+          ["presence", "Live Presence", "Current online state"],
+          ["support", "Support Reports", "Call notes and readiness"],
+          ["quality", "Data Quality", "Metric definitions and integrity"],
+        ].map(([id, label, description]) => (
+          <button
+            type="button"
+            key={id}
+            className={section === id ? "active" : ""}
+            aria-current={section === id ? "page" : undefined}
+            onClick={() => setSection(id)}
+          >
+            <strong>{label}</strong>
+            <small>{description}</small>
+          </button>
+        ))}
+      </nav>
+
+      <div className="usage-controls-bar">
+        <div className="usage-period-controls" role="group" aria-label="Usage date range">
         {USAGE_PERIODS.map(([id, label]) => (
           <button
             type="button"
@@ -739,6 +766,15 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
             {label}
           </button>
         ))}
+        </div>
+        <button
+          type="button"
+          className={"usage-filter-toggle" + (filtersOpen ? " active" : "")}
+          aria-expanded={filtersOpen}
+          onClick={() => setFiltersOpen((value) => !value)}
+        >
+          Filters{activeFilterCount ? " · " + activeFilterCount : ""}
+        </button>
       </div>
 
       {period === "custom" && (
@@ -764,7 +800,7 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
         </div>
       )}
 
-      <div className="usage-filter-panel" aria-label="Usage report filters">
+      {filtersOpen && <div className="usage-filter-panel" aria-label="Usage report filters">
         <div className="usage-filter-grid">
           <label>
             Team member
@@ -806,7 +842,7 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
             Dates use your browser’s local timezone. End dates include the full selected day.
           </p>
         )}
-      </div>
+      </div>}
 
       {customRangeError && (
         <p className="usage-validation-message" role="alert">The end date must be on or after the start date.</p>
