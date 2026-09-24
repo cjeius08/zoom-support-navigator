@@ -851,7 +851,7 @@ export function UsageAnalytics({ onOpenSavedNotes = () => {} }) {
         <p className="usage-validation-message" role="status">Choose both a start date and an end date to load a custom report.</p>
       )}
 
-      {rangeReady && (
+      {rangeReady && section !== "support" && (
         <State state={state}>
           {(data) => {
             const report = buildUsageReport({
