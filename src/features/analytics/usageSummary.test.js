@@ -90,3 +90,31 @@ describe('detailed usage report', () => {
     expect(report.recentActivity[0].userLabel).toBe('Unknown user')
   })
 })
+
+
+describe('usage data integrity signals', () => {
+  it('flags event rows without a matching session and excludes stale unended sessions from a later range', () => {
+    const report = buildUsageReport({
+      profiles: [{ id: 'u1', username: 'agent_one', initials: 'AO' }],
+      events: [{
+        user_id: 'u1',
+        session_id: 'missing-session',
+        event_type: 'tool_open',
+        tool_id: 'search',
+        created_at: '2026-09-24T10:00:00.000Z',
+      }],
+      sessions: [
+        { session_id: 'old-open', user_id: 'u1', started_at: '2026-09-18T08:00:00.000Z', ended_at: null, last_interaction: '2026-09-18T09:00:00.000Z', active_seconds: 300 },
+        { session_id: 'current-open', user_id: 'u1', started_at: '2026-09-24T09:00:00.000Z', ended_at: null, last_interaction: '2026-09-24T10:00:00.000Z', active_seconds: 60 },
+      ],
+      presence: [],
+      start: '2026-09-24T00:00:00.000Z',
+      end: '2026-09-25T00:00:00.000Z',
+      nowMs: Date.parse('2026-09-24T10:01:00.000Z'),
+    })
+
+    expect(report.sessionCount).toBe(1)
+    expect(report.unendedSessionCount).toBe(1)
+    expect(report.unmatchedEventCount).toBe(1)
+  })
+})
