@@ -327,10 +327,40 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   line-height: 1.5;
 }
 
+.smart-search-entry-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: .65rem;
+  align-items: stretch;
+  margin-top: .9rem;
+}
+
 .smart-search-card .search-combobox {
   width: 100%;
   max-width: none;
-  margin-top: .9rem;
+  margin-top: 0;
+}
+
+.smart-search-submit {
+  min-width: 8.7rem;
+  padding: .78rem 1rem;
+  border: 1px solid rgba(88, 169, 255, .42);
+  border-radius: .72rem;
+  color: #eef7ff;
+  background: linear-gradient(145deg, #174d75, #123753);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.smart-search-submit:hover,
+.smart-search-submit:focus-visible {
+  border-color: #75baff;
+  background: linear-gradient(145deg, #1c5d8d, #164361);
+}
+
+.smart-search-submit:disabled {
+  cursor: not-allowed;
+  opacity: .45;
 }
 
 .smart-search-card .search-combobox input {
@@ -400,6 +430,14 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 @media (max-width: 700px) {
   .smart-search-card {
     padding: 1rem;
+  }
+
+  .smart-search-entry-row {
+    grid-template-columns: 1fr;
+  }
+
+  .smart-search-submit {
+    width: 100%;
   }
 
   .smart-search-examples {
