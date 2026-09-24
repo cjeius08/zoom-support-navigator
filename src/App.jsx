@@ -260,7 +260,7 @@ export default function App() {
 
   function openFeedbackTarget(item) {
     rememberCurrentPage()
-    const safeRoutes = new Set(['navigator', 'favorites', 'process_documents', 'training', 'updates', 'feedback', 'admin', 'avatar_library', 'team', 'usage', 'saved_notes', 'my_saved_notes', 'feedback_queue'])
+    const safeRoutes = new Set(['navigator', 'favorites', 'process_documents', 'training', 'updates', 'feedback', 'admin', 'avatar_library', 'team', 'usage', 'ai_reports', 'saved_notes', 'my_saved_notes', 'feedback_queue'])
     if (item?.active_common_issue) {
       setNavigatorProcessId(null)
       setNavigatorCommonIssueId(item.active_common_issue)
@@ -483,6 +483,8 @@ export default function App() {
                   ? <TeamManagement avatars={avatarLibrary}/>
                   : view === 'usage'
                     ? <UsageAnalytics onOpenSavedNotes={openSavedNotes}/>
+                    : view === 'ai_reports'
+                      ? <AIReports/>
                     : view === 'saved_notes'
                       ? <SavedNotesPage initialUserId={savedNotesUserId}/>
                       : view === 'my_saved_notes'
