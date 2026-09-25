@@ -120,10 +120,10 @@ it('sends a saved-note Open action to the dedicated saved notes page', async () 
     id: 'note-follow',
     caller_ref: 'CASE-OPEN',
     device: 'Windows',
-    outcome: 'Follow-Up Required',
+    outcome: 'Not Resolved',
     created_at: '2026-09-22T02:30:00Z',
     expires_at: '2026-12-21T02:30:00Z',
-    draft: { callerRef: 'CASE-OPEN', outcome: 'Follow-Up Required' },
+    draft: { callerRef: 'CASE-OPEN', outcome: 'Not Resolved' },
   }])
   const user = userEvent.setup()
   const onOpenSavedNotes = vi.fn()
@@ -144,12 +144,16 @@ it('shows the approved reporting options without duplicate or misspelled disposi
   expect(screen.getByLabelText(/Reason for the Call/i)).toBeInTheDocument()
   expect(screen.getByRole('option', { name: 'Join & Access' })).toBeInTheDocument()
   expect(screen.getByRole('option', { name: 'Disconnected / Dropped Call' })).toBeInTheDocument()
-  expect(screen.getByRole('button', { name: 'Referred for Additional Assistance' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Resolved' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Not Resolved' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Not Resolved | Escalated' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Callback | Resolved' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Callback | Not Resolved' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Dropped Call' })).toBeInTheDocument()
-  expect(screen.getAllByRole('button', { name: 'Resolved' })).toHaveLength(1)
+  expect(screen.queryByRole('button', { name: 'Partially Resolved' })).not.toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: 'Referred for Additional Assistance' })).not.toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: 'Follow-Up Required' })).not.toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: 'No Issue Found / General Assistance' })).not.toBeInTheDocument()
 })
 
 
