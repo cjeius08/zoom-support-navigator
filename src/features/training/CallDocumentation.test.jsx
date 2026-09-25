@@ -16,6 +16,7 @@ it('formats the approved documentation fields in a copy-ready order', () => {
     phoneNumber: '555-0100',
     dateTime: '2026-09-19T01:30',
     callerRef: 'REF-123',
+    reasonForCall: 'Audio & Video',
     device: 'Windows',
     accessContext: 'Zoom desktop app',
     exactIssue: 'Cannot hear the meeting.',
@@ -27,6 +28,7 @@ it('formats the approved documentation fields in a copy-ready order', () => {
 
   expect(text).toContain('Caller Name: Sample Caller')
   expect(text).toContain('Date and Time: 2026-09-19 01:30')
+  expect(text).toContain('Reason for the Call: Audio & Video')
   expect(text).toContain('Device / Platform: Windows')
   expect(text).toContain('Steps Attempted + Result: Selected the correct speaker; test tone worked.')
   expect(text).toContain('Recommended Contact (if referred): —')
@@ -51,6 +53,7 @@ it('lets an agent document a call and copy the generated summary from the dock',
   await user.type(screen.getByLabelText('Caller name'), 'Sample Caller')
   await user.type(screen.getByLabelText('Phone number'), '555-0100')
   await user.type(screen.getByLabelText(/Caller ref/i), 'REF-123')
+  await user.selectOptions(screen.getByLabelText('Reason for the Call'), 'Audio & Video')
   await user.selectOptions(screen.getByLabelText('Device / platform'), 'Windows')
   await user.type(screen.getByLabelText(/Device and access/i), 'Zoom desktop app')
   await user.type(screen.getByLabelText(/Exact issue/i), 'Cannot hear the meeting.')
@@ -64,6 +67,7 @@ it('lets an agent document a call and copy the generated summary from the dock',
 
   await user.click(screen.getByRole('button', { name: 'Copy documentation' }))
   expect(writeText).toHaveBeenCalledTimes(1)
+  expect(writeText.mock.calls[0][0]).toContain('Reason for the Call: Audio & Video')
   expect(writeText.mock.calls[0][0]).toContain('Exact Issue: Cannot hear the meeting.')
   expect(screen.getByRole('button', { name: 'Copied documentation' })).toBeInTheDocument()
 })
@@ -130,15 +134,22 @@ it('sends a saved-note Open action to the dedicated saved notes page', async () 
   expect(onOpenSavedNotes).toHaveBeenCalledWith('note-follow')
 })
 
-it('shows privacy and referral framing without claiming an internal escalation', () => {
+it('shows the approved reporting options without duplicate or misspelled dispositions', () => {
   render(<CallDocumentation open />)
 
   expect(screen.getByText(/Protected workspace note · retained for 90 days/i)).toBeInTheDocument()
   expect(screen.getByText(/Workspace Admin can review, manage, and delete saved notes for reporting and follow-up/i)).toBeInTheDocument()
   expect(screen.getByText(/Do not enter passwords, full payment card numbers, government IDs/i)).toBeInTheDocument()
   expect(screen.getByText(/Zoom Basic Support Boundaries, Decision Path & Referral Process/i)).toBeInTheDocument()
+  expect(screen.getByLabelText('Reason for the Call')).toBeInTheDocument()
+  expect(screen.getByRole('option', { name: 'Join & Access' })).toBeInTheDocument()
+  expect(screen.getByRole('option', { name: 'Disconnected / Dropped Call' })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Referred for Additional Assistance' })).toBeInTheDocument()
-  expect(screen.queryByRole('button', { name: /Escalated/i })).not.toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Not Resolved | Escalated' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Callback | Resolved' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Callback | Not Resolved' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Dropped Call' })).toBeInTheDocument()
+  expect(screen.getAllByRole('button', { name: 'Resolved' })).toHaveLength(1)
 })
 
 
