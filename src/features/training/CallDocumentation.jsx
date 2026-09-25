@@ -27,10 +27,6 @@ const REASON_FOR_CALL_OPTIONS = [
 
 const OUTCOMES = [
   'Resolved',
-  'Partially Resolved',
-  'Referred for Additional Assistance',
-  'Follow-Up Required',
-  'No Issue Found / General Assistance',
   'Not Resolved',
   'Not Resolved | Escalated',
   'Callback | Resolved',
