@@ -3,6 +3,12 @@ import { loadOwnCallNotes, saveOwnCallNote } from '../../lib/callNotesApi'
 import { formatCallDocumentation } from './callDocumentationFormat'
 
 const SOURCE_TITLE = 'Zoom Basic Support Boundaries, Decision Path & Referral Process'
+const GOOGLE_CALL_REPORT_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfqGpww1r9ekEJpuWRdnlBiEVSb69vQXx0m3Gc5wJrAWrtntw/viewform'
+const GOOGLE_CALL_REPORT_FIELDS = {
+  callerRef: 'entry.1395919275',
+  reasonForCall: 'entry.594573595',
+  outcome: 'entry.865679921',
+}
 
 const DEVICE_OPTIONS = [
   'Windows',
@@ -173,6 +179,22 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
     } catch {
       setCopyState('failed')
     }
+  }
+
+  function openGoogleCallReport() {
+    if (!draft.callerRef || !draft.reasonForCall || !draft.outcome) {
+      setNoteError('Add Caller ref, Reason for the Call, and Call outcome before opening the Google report.')
+      return
+    }
+
+    const params = new URLSearchParams({
+      usp: 'pp_url',
+      [GOOGLE_CALL_REPORT_FIELDS.callerRef]: draft.callerRef,
+      [GOOGLE_CALL_REPORT_FIELDS.reasonForCall]: draft.reasonForCall,
+      [GOOGLE_CALL_REPORT_FIELDS.outcome]: draft.outcome,
+    })
+    const reportUrl = `${GOOGLE_CALL_REPORT_URL}?${params.toString()}`
+    window.open(reportUrl, '_blank', 'noopener,noreferrer')
   }
 
   async function saveDocumentation() {
@@ -356,11 +378,13 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
           <button type="button" className="documentation-copy" onClick={copyDocumentation}>
             {copyState === 'copied' ? 'Copied documentation' : 'Copy documentation'}
           </button>
+          <button type="button" className="documentation-copy" onClick={openGoogleCallReport}>Open pre-filled Google report</button>
           <button type="button" className="documentation-clear" onClick={clearDocumentation}>Clear</button>
         </div>
         {noteError && <span role="alert">{noteError}</span>}
         {handoffMessage && <span className="documentation-handoff-status" role="status">{handoffMessage}</span>}
         {copyState === 'failed' && <span role="status">Copy failed. Open the preview and copy manually.</span>}
+        <small>Google report sends only Caller ref, Reason for the Call, and Call outcome. Review the pre-filled form before submitting.</small>
         <small>Source: {SOURCE_TITLE}</small>
       </footer>
     </div>
