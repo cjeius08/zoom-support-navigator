@@ -72,6 +72,43 @@ it('lets an agent document a call and copy the generated summary from the dock',
   expect(screen.getByRole('button', { name: 'Copied documentation' })).toBeInTheDocument()
 })
 
+it('opens the Google call report with the mapped Ozzie reporting fields pre-filled', async () => {
+  const user = userEvent.setup()
+  const open = vi.spyOn(window, 'open').mockImplementation(() => null)
+
+  render(<CallDocumentation open />)
+
+  await user.type(screen.getByLabelText(/Caller ref/i), 'TEST-123')
+  await user.selectOptions(screen.getByLabelText(/Reason for the Call/i), 'Audio & Video')
+  await user.click(screen.getByRole('button', { name: 'Resolved' }))
+  await user.click(screen.getByRole('button', { name: 'Open pre-filled Google report' }))
+
+  expect(open).toHaveBeenCalledTimes(1)
+  const [url, target, features] = open.mock.calls[0]
+  expect(target).toBe('_blank')
+  expect(features).toBe('noopener,noreferrer')
+  expect(url).toContain('entry.1395919275=TEST-123')
+  expect(url).toContain('entry.594573595=Audio+%26+Video')
+  expect(url).toContain('entry.865679921=Resolved')
+  expect(url).not.toContain('callerName')
+  expect(url).not.toContain('exactIssue')
+
+  open.mockRestore()
+})
+
+it('requires the three reporting fields before opening the Google report', async () => {
+  const user = userEvent.setup()
+  const open = vi.spyOn(window, 'open').mockImplementation(() => null)
+
+  render(<CallDocumentation open />)
+  await user.click(screen.getByRole('button', { name: 'Open pre-filled Google report' }))
+
+  expect(open).not.toHaveBeenCalled()
+  expect(screen.getByRole('alert')).toHaveTextContent(/Caller ref, Reason for the Call, and Call outcome/i)
+
+  open.mockRestore()
+})
+
 it('keeps the draft when the global dock is minimized or temporarily closed', async () => {
   const user = userEvent.setup()
   const { rerender } = render(<CallDocumentation open />)
