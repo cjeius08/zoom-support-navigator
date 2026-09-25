@@ -4,6 +4,7 @@ export function formatCallDocumentation(draft) {
     ['Phone Number', draft.phoneNumber],
     ['Date and Time', draft.dateTime ? draft.dateTime.replace('T', ' ') : ''],
     ['Caller Ref', draft.callerRef],
+    ['Reason for the Call', draft.reasonForCall],
     ['Device / Platform', draft.device],
     ['Device and Access', draft.accessContext],
     ['Exact Issue', draft.exactIssue],
