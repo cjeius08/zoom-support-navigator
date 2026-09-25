@@ -10,6 +10,21 @@
   },
   "updates": [
     {
+      "id": "faq-roadblock-matrix-support-reference",
+      "date": "2026-09-25",
+      "area": "Home / Agent Reference",
+      "audience": "all",
+      "title": "FAQ and Roadblock Matrix added to Home",
+      "changed": "Added two new Home reference tabs alongside Fastest Routes, Common Issues, and Process Guides. Need to Know / FAQ covers arbitrator credentials, automatic recording, password behavior, Waiting Room defaults, login-only usernames, host controls, invalid or expired meeting links, and the official Zoom Meetings troubleshooting resource. Roadblock Matrix gives agents the approved Tier 1 boundary, correct contact path, and suggested language for common escalation points, with a required escalation checklist for Gerny or the Team Leads.",
+      "checks": [
+        "On Home, confirm FAQ and Roadblock Matrix appear beside Fastest Routes, Common Issues, and Process Guides.",
+        "Open FAQ and confirm the seven Need to Know topics plus the Zoom Meetings Support Troubleshooting link are readable.",
+        "Open Roadblock Matrix and confirm all roadblocks show Agent Boundary, Who Arbitrator Should Contact, and Suggested Agent Language.",
+        "Confirm the escalation checklist includes Issue Description, Support Call Date and Time, Arbitrator’s Name, Preferred Contact Method, and Merits Hearing Date and Time.",
+        "Resize to tablet/mobile width and confirm FAQ cards, Roadblock Matrix entries, and escalation requirements remain readable without clipping."
+      ]
+    },
+    {
       "id": "flex-arbitration-zoom-support-greeting",
       "date": "2026-09-24",
       "area": "Call Flow / Call Language",

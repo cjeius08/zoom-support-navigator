@@ -7,6 +7,7 @@ import { CommonIssueDrawer } from './CommonIssueDrawer'
 import { COMMON_ISSUE_ROUTES, routeById, searchCommonIssueRoutes } from './commonIssueRoutes'
 import { FavoriteToggle } from '../favorites/FavoriteToggle'
 import { useDialogFocus } from '../../lib/useDialogFocus'
+import { ESCALATION_REQUIREMENTS, FAQ_ITEMS, ROADBLOCK_MATRIX, SUPPORT_HELPFUL_LINKS } from '../../data/supportReference'
 
 const categories = [
   ['join', 'Joining Meetings', 'Links, waiting rooms, access errors'],
@@ -137,7 +138,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
   }, [initialCommonIssueId, onResourceViewed])
 
   useEffect(() => {
-    const libraryTabLabels = { fastest: 'Fastest Routes', common: 'Common Issues', processes: 'Process Guides' }
+    const libraryTabLabels = { fastest: 'Fastest Routes', common: 'Common Issues', processes: 'Process Guides', faq: 'FAQ', roadblocks: 'Roadblock Matrix' }
     onReportContextChange({
       selected_tab: selectedRoute ? commonIssueTab : libraryTabLabels[libraryTab] || libraryTab,
       current_section: selectedRoute ? 'Common Issue drawer' : selected ? 'Process Guide drawer' : category || null,
@@ -387,6 +388,8 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
         <button type="button" role="tab" aria-selected={libraryTab === 'fastest'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('fastest')}>Fastest Routes</button>
         <button type="button" role="tab" aria-selected={libraryTab === 'common'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('common')}>Common Issues</button>
         <button type="button" role="tab" aria-selected={libraryTab === 'processes'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('processes')}>Process Guides</button>
+        <button type="button" role="tab" aria-selected={libraryTab === 'faq'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('faq')}>FAQ</button>
+        <button type="button" role="tab" aria-selected={libraryTab === 'roadblocks'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('roadblocks')}>Roadblock Matrix</button>
       </div>
 
       <div id="navigator-library-panel" className="navigator-tab-panel" role="tabpanel">
@@ -468,6 +471,75 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
                 </div>
               </section>)}
             </div>
+          </section>}
+
+          {libraryTab === 'faq' && <section className="support-reference-view" aria-labelledby="support-faq-heading">
+            <p className="eyebrow">Need to know</p>
+            <h2 id="support-faq-heading">Need to Know / FAQ</h2>
+            <p className="navigator-tab-intro">Quick reference for the account and meeting behaviors agents are most likely to explain during an arbitrator support call.</p>
+            <div className="support-faq-grid">
+              {FAQ_ITEMS.map(item => <article className="support-reference-card" key={item.label}>
+                <h3>{item.label}</h3>
+                <p>{item.answer}</p>
+                {item.points?.length > 0 && <ul>
+                  {item.points.map(point => <li key={point}>{point}</li>)}
+                </ul>}
+              </article>)}
+            </div>
+            <aside className="support-helpful-links" aria-labelledby="support-links-heading">
+              <div>
+                <p className="eyebrow">Official resource</p>
+                <h3 id="support-links-heading">Helpful links</h3>
+              </div>
+              {SUPPORT_HELPFUL_LINKS.map(link => <a key={link.url} href={link.url} target="_blank" rel="noreferrer">{link.label} ↗</a>)}
+            </aside>
+          </section>}
+
+          {libraryTab === 'roadblocks' && <section className="support-reference-view" aria-labelledby="roadblock-matrix-heading">
+            <p className="eyebrow">Tier 1 boundaries & handoff</p>
+            <h2 id="roadblock-matrix-heading">Roadblock Matrix</h2>
+            <p className="navigator-tab-intro">Use this when troubleshooting reaches an ownership boundary. Confirm what Tier 1 can do, who the arbitrator should contact, and the suggested language to use.</p>
+
+            <div className="roadblock-matrix" role="table" aria-label="Roadblock Matrix">
+              <div className="roadblock-matrix-header" role="row">
+                <span role="columnheader">Roadblock</span>
+                <span role="columnheader">Agent Boundary</span>
+                <span role="columnheader">Who Arbitrator Should Contact</span>
+                <span role="columnheader">Suggested Agent Language</span>
+              </div>
+              {ROADBLOCK_MATRIX.map(item => <article className="roadblock-matrix-row" role="row" key={item.roadblock}>
+                <div role="cell">
+                  <span className="roadblock-cell-label">Roadblock</span>
+                  <strong>{item.roadblock}</strong>
+                </div>
+                <div role="cell">
+                  <span className="roadblock-cell-label">Agent Boundary</span>
+                  <p>{item.boundary}</p>
+                </div>
+                <div role="cell">
+                  <span className="roadblock-cell-label">Who Arbitrator Should Contact</span>
+                  <p>{item.contact}</p>
+                </div>
+                <div role="cell">
+                  <span className="roadblock-cell-label">Suggested Agent Language</span>
+                  <p className="roadblock-script">“{item.language}”</p>
+                </div>
+              </article>)}
+            </div>
+
+            <section className="escalation-reference" aria-labelledby="escalation-reference-heading">
+              <div className="escalation-reference-heading">
+                <p className="eyebrow">Escalation checklist</p>
+                <h3 id="escalation-reference-heading">When escalating an issue to Gerny or the Team Leads</h3>
+                <p>Provide the following information so the next person has enough context to continue the case.</p>
+              </div>
+              <div className="escalation-requirements-grid">
+                {ESCALATION_REQUIREMENTS.map(item => <article key={item.label}>
+                  <strong>{item.label}</strong>
+                  <p>{item.detail}</p>
+                </article>)}
+              </div>
+            </section>
           </section>}
 
           {libraryTab === 'processes' && <section aria-labelledby="process-guides-heading">

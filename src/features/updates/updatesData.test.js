@@ -20,18 +20,20 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.metadata.updatePolicy).toMatch(/Developer-only work/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
   expect(data.updates[0]).toMatchObject({
-    id: 'flex-arbitration-zoom-support-greeting',
-    date: '2026-09-24',
-    area: 'Call Flow / Call Language',
+    id: 'faq-roadblock-matrix-support-reference',
+    date: '2026-09-25',
+    area: 'Home / Agent Reference',
     audience: 'all',
   })
-  expect(data.updates[1]).toMatchObject({ id: 'windows-device-sandbox-home-shortcut', audience: 'all' })
-  expect(data.updates.slice(2, 5).map(entry => entry.id)).toEqual([
+  expect(data.updates[1]).toMatchObject({ id: 'flex-arbitration-zoom-support-greeting', audience: 'all' })
+  expect(data.updates[2]).toMatchObject({ id: 'windows-device-sandbox-home-shortcut', audience: 'all' })
+  expect(data.updates.slice(3, 6).map(entry => entry.id)).toEqual([
     'process-documents-search-normalization',
     'new-call-session-reset',
     'common-issues-smart-routing',
   ])
   expect(data.updates.map(entry => entry.id)).toEqual(expect.arrayContaining([
+    'faq-roadblock-matrix-support-reference',
     'pilot-readiness-usability-pass',
     'process-documents-knowledge-library',
     'member-saved-notes-followups',
@@ -107,4 +109,17 @@ it('lists the Flex Arbitration Zoom Support opening spiel in What’s New', () =
     expect.stringMatching(/Call Language.*Opening \/ Greeting/i),
     expect.stringMatching(/Call Flow/i),
   ]))
+})
+
+
+it('lists the September 25 FAQ and Roadblock Matrix as a user-facing update', () => {
+  const path = join(cwd(), 'src/features/updates/updatesData.json')
+  const data = JSON.parse(readFileSync(path, 'utf8'))
+  const entry = data.updates.find(item => item.id === 'faq-roadblock-matrix-support-reference')
+
+  expect(entry).toMatchObject({ date: '2026-09-25', area: 'Home / Agent Reference', audience: 'all' })
+  expect(entry.changed).toMatch(/Need to Know \/ FAQ/i)
+  expect(entry.changed).toMatch(/Roadblock Matrix/i)
+  expect(entry.changed).toMatch(/Gerny or the Team Leads/i)
+  expect(entry.checks.length).toBeGreaterThanOrEqual(5)
 })

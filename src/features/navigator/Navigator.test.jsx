@@ -10,6 +10,8 @@ it('opens a source-driven Call Guide with safe copy actions before lossless sour
   expect(screen.getByRole('tab', { name: 'Fastest Routes' })).toHaveAttribute('aria-selected', 'true')
   expect(screen.getByRole('tab', { name: 'Common Issues' })).toBeInTheDocument()
   expect(screen.getByRole('tab', { name: 'Process Guides' })).toBeInTheDocument()
+  expect(screen.getByRole('tab', { name: 'FAQ' })).toBeInTheDocument()
+  expect(screen.getByRole('tab', { name: 'Roadblock Matrix' })).toBeInTheDocument()
   await user.click(screen.getByRole('tab', { name: 'Process Guides' }))
   await user.click(screen.getByRole('button', { name: /Joining Meetings/i }))
   await user.click(screen.getByRole('button', { name: /Troubleshooting When You Can’t Join a Zoom Meeting/i }))
