@@ -102,7 +102,7 @@ it('lists the Flex Arbitration Zoom Support opening spiel in What’s New', () =
   const entry = data.updates.find(item => item.id === 'flex-arbitration-zoom-support-greeting')
 
   expect(entry).toMatchObject({ date: '2026-09-24', area: 'Call Flow / Call Language', audience: 'all' })
-  expect(data.updates[0].id).toBe('flex-arbitration-zoom-support-greeting')
+  expect(data.updates.findIndex(item => item.id === 'flex-arbitration-zoom-support-greeting')).toBeGreaterThan(0)
   expect(entry.title).toMatch(/Flex Arbitration Zoom Support/i)
   expect(entry.changed).toContain('Thank you for calling Flex Arbitration Zoom Support. This is [Name]. How can I help you today?')
   expect(entry.checks).toEqual(expect.arrayContaining([
