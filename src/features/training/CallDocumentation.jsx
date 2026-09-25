@@ -14,12 +14,28 @@ const DEVICE_OPTIONS = [
   'Other / Unknown',
 ]
 
+const REASON_FOR_CALL_OPTIONS = [
+  'Join & Access',
+  'Audio & Video',
+  'Controls & Features',
+  'Install & Setup',
+  'Scheduling & Invites',
+  'General Inquiry',
+  'Wrong Number / Misrouted Call',
+  'Disconnected / Dropped Call',
+]
+
 const OUTCOMES = [
   'Resolved',
   'Partially Resolved',
   'Referred for Additional Assistance',
   'Follow-Up Required',
   'No Issue Found / General Assistance',
+  'Not Resolved',
+  'Not Resolved | Escalated',
+  'Callback | Resolved',
+  'Callback | Not Resolved',
+  'Dropped Call',
 ]
 
 function createInitialDraft() {
@@ -31,6 +47,7 @@ function createInitialDraft() {
     phoneNumber: '',
     dateTime: local,
     callerRef: '',
+    reasonForCall: '',
     device: '',
     accessContext: '',
     exactIssue: '',
@@ -81,6 +98,7 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
     draft.callerName,
     draft.phoneNumber,
     draft.callerRef,
+    draft.reasonForCall,
     draft.device,
     draft.accessContext,
     draft.exactIssue,
@@ -259,8 +277,14 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
       </details>
 
       <details className="documentation-dock-section" open>
-        <summary><span>2</span> Device and exact issue</summary>
+        <summary><span>2</span> Reason, device and exact issue</summary>
         <div className="documentation-dock-fields">
+          <Field label="Reason for the Call" hint="Select the primary call driver for reporting.">
+            <select value={draft.reasonForCall} onChange={event => update('reasonForCall', event.target.value)}>
+              <option value="">Select reason</option>
+              {REASON_FOR_CALL_OPTIONS.map(option => <option key={option} value={option}>{option}</option>)}
+            </select>
+          </Field>
           <Field label="Device / platform">
             <select value={draft.device} onChange={event => update('device', event.target.value)}>
               <option value="">Select device</option>
