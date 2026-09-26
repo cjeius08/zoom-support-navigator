@@ -309,3 +309,69 @@ it('lets the agent back out of a Process Guide step or result after a misclick',
   expect(screen.getByText('First approved check')).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Resolved \/ Done/i })).toBeInTheDocument()
 })
+
+
+it('shows possible roadblocks with an explanation after an audio Process Guide is exhausted', async () => {
+  const user = userEvent.setup()
+  const process = {
+    id: 'audio-roadblock-test',
+    title: 'Audio roadblock test',
+    purpose: 'Exercise possible roadblocks.',
+    category: 'audio',
+    referral: 'Refer after approved troubleshooting is exhausted.',
+    visualReferences: [],
+    images: [],
+    text: [
+      'Process / Step-by-Step Guide',
+      '1. Test the audio path',
+      'Complete the approved audio test.',
+    ].join('\n'),
+  }
+
+  render(<ProcessDrawer process={process} initialDevice="Windows" onClose={() => {}} />)
+  await user.click(screen.getByRole('button', { name: /Not resolved.*Next options/i }))
+
+  const roadblocks = screen.getByLabelText('Possible Tier 1 roadblocks')
+  expect(within(roadblocks).getByText(/If the approved process is exhausted/i)).toBeInTheDocument()
+  expect(within(roadblocks).getByText('Microphone, speaker, or camera not recognized by the device itself')).toBeInTheDocument()
+  expect(within(roadblocks).getByText('Device-level or managed permissions')).toBeInTheDocument()
+  expect(within(roadblocks).getByText('Possible Zoom product issue after basic troubleshooting')).toBeInTheDocument()
+
+  await user.click(within(roadblocks).getByText('Microphone, speaker, or camera not recognized by the device itself'))
+  expect(within(roadblocks).getByText(/Why this may fit:/i)).toBeInTheDocument()
+  expect(within(roadblocks).getByText(/device or operating system itself/i)).toBeInTheDocument()
+  expect(within(roadblocks).getByText(/Tier 1 boundary:/i)).toBeInTheDocument()
+  expect(within(roadblocks).getByText(/Next action:/i)).toBeInTheDocument()
+})
+
+it('uses the originating Common Issue to narrow possible roadblocks after Process Guide exhaustion', async () => {
+  const user = userEvent.setup()
+  const process = {
+    id: 'sharing-roadblock-test',
+    title: 'Sharing roadblock test',
+    purpose: 'Exercise source-route roadblocks.',
+    category: 'sharing',
+    referral: 'Refer after approved troubleshooting is exhausted.',
+    visualReferences: [],
+    images: [],
+    text: [
+      'Process / Step-by-Step Guide',
+      '1. Try Share',
+      'Use the approved sharing action.',
+    ].join('\n'),
+  }
+
+  render(<ProcessDrawer
+    process={process}
+    initialDevice="Windows"
+    initialRole="Host"
+    initialSourceRouteId="cant-share"
+    onClose={() => {}}
+  />)
+  await user.click(screen.getByRole('button', { name: /Not resolved.*Next options/i }))
+
+  const roadblocks = screen.getByLabelText('Possible Tier 1 roadblocks')
+  expect(within(roadblocks).getByText('Host-controlled feature or permission')).toBeInTheDocument()
+  expect(within(roadblocks).getByText(/Screen sharing may be limited by the current meeting-level host sharing permission/i)).toBeInTheDocument()
+  expect(within(roadblocks).getByText(/Ozzie does not select a roadblock automatically/i)).toBeInTheDocument()
+})
