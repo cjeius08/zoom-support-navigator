@@ -15,6 +15,9 @@ it.each([
   ['mic not working', 'host-audio'],
   ['no host controls', 'host-controls-missing'],
   ['meeting id not working', 'host-meeting-id-passcode'],
+  ['chat', 'host-basic-controls'],
+  ['unstable network', 'host-connectivity'],
+  ['zoom app issue', 'host-app-browser-basic'],
 ])('searches Host issues from caller language: %s', (query, expectedId) => {
   expect(searchHostTopics(query)[0]?.id).toBe(expectedId)
 })
