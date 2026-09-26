@@ -624,13 +624,13 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
           {libraryTab === 'roadblocks' && <section className="support-reference-view" aria-labelledby="roadblock-matrix-heading">
             <p className="eyebrow">Tier 1 boundaries & handoff</p>
             <h2 id="roadblock-matrix-heading">Roadblock Matrix</h2>
-            <p className="navigator-tab-intro">Use this when troubleshooting reaches an ownership boundary. Confirm what Tier 1 can do, who the arbitrator should contact, and the suggested language to use.</p>
+            <p className="navigator-tab-intro">Use this when a boundary is identified at any point. Confirm what Tier 1 can do, the correct next action or referral, and the suggested language to use.</p>
 
             <div className="roadblock-matrix" role="table" aria-label="Roadblock Matrix">
               <div className="roadblock-matrix-header" role="row">
                 <span role="columnheader">Roadblock</span>
                 <span role="columnheader">Agent Boundary</span>
-                <span role="columnheader">Who Arbitrator Should Contact</span>
+                <span role="columnheader">Next Step / Contact</span>
                 <span role="columnheader">Suggested Agent Language</span>
               </div>
               {ROADBLOCK_MATRIX.map(item => <article className="roadblock-matrix-row" role="row" key={item.roadblock}>
@@ -643,7 +643,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
                   <p>{item.boundary}</p>
                 </div>
                 <div role="cell">
-                  <span className="roadblock-cell-label">Who Arbitrator Should Contact</span>
+                  <span className="roadblock-cell-label">Next Step / Contact</span>
                   <p>{item.contact}</p>
                 </div>
                 <div role="cell">
