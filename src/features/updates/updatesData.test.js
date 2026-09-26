@@ -22,7 +22,6 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.updates.slice(0, 5).map(entry => entry.id)).toEqual([
     'smart-search-relevance-hardening',
     'common-issue-scripts-process-roadblocks',
-    'smart-search-relevance-hardening',
     'troubleshooting-back-navigation',
     'host-arbitrator-guided-support',
     'host-roadblocks-referral-alignment',
