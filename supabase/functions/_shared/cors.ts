@@ -1,4 +1,5 @@
 const defaults = 'http://127.0.0.1:5173,http://localhost:5173'
+const trustedBackupOrigins = 'https://ozzie-backup.pages.dev'
 
 export function allowedOrigin(origin: string | null, allowlist = defaults) {
   const origins = allowlist.split(',').map(value => value.trim()).filter(Boolean)
@@ -8,7 +9,7 @@ export function allowedOrigin(origin: string | null, allowlist = defaults) {
 function configuredOrigins() {
   const primary = Deno.env.get('ALLOWED_ORIGINS') ?? defaults
   const additional = Deno.env.get('ADDITIONAL_ALLOWED_ORIGINS') ?? ''
-  return [primary, additional].filter(Boolean).join(',')
+  return [primary, additional, trustedBackupOrigins].filter(Boolean).join(',')
 }
 
 export function corsHeaders(request: Request) {
