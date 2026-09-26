@@ -4,10 +4,14 @@ import { ProcessDrawer } from './ProcessDrawer'
 import { searchProcesses } from './smartSearch'
 import { LiveCallFlow, LiveCallFlowDetails } from './LiveCallFlow'
 import { CommonIssueDrawer } from './CommonIssueDrawer'
+import { HostSupportDrawer } from './HostSupportDrawer'
+import { HostLibrary } from './HostLibrary'
 import { COMMON_ISSUE_ROUTES, routeById, searchCommonIssueRoutes } from './commonIssueRoutes'
 import { FavoriteToggle } from '../favorites/FavoriteToggle'
 import { useDialogFocus } from '../../lib/useDialogFocus'
 import { ESCALATION_REQUIREMENTS, FAQ_ITEMS, ROADBLOCK_MATRIX, SUPPORT_HELPFUL_LINKS } from '../../data/supportReference'
+import { HOST_GUIDED_ROUTES } from '../../data/hostGuidedRoutes'
+import { guidedRouteForHostTopic, hostProcesses, searchHostRoadblocks, searchHostTopics } from '../../data/hostExperience'
 
 const categories = [
   ['join', 'Joining Meetings', 'Links, waiting rooms, access errors'],
@@ -20,7 +24,7 @@ const categories = [
 ]
 
 const FASTEST_ROUTE_IDS = ['cant-join', 'waiting-entry', 'cant-hear', 'cant-be-heard', 'camera-not-working']
-const EMPTY_CALL_CONTEXT = { device: null, role: null, hearingStatus: null, impact: null, status: null }
+const EMPTY_CALL_CONTEXT = { device: null, role: 'Host', hearingStatus: null, impact: null, status: null }
 
 const categoryIconPaths = {
   join: 'M5 4h9v16H5z M14 12h6 M17 9l3 3-3 3 M9 12h.01',
@@ -93,13 +97,15 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
+export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
   const [processLaunchContext, setProcessLaunchContext] = useState(null)
   const [selectedRoute, setSelectedRoute] = useState(null)
-  const [callContext, setCallContext] = useState(EMPTY_CALL_CONTEXT)
+  const [selectedHostRoute, setSelectedHostRoute] = useState(null)
+  const [selectedHostRoadblock, setSelectedHostRoadblock] = useState(null)
+  const [callContext, setCallContext] = useState(() => ({ ...EMPTY_CALL_CONTEXT, role: initialRole }))
   const [commonIssueTab, setCommonIssueTab] = useState('Find the Right Guide')
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
   const [activeSuggestion, setActiveSuggestion] = useState(-1)
@@ -141,18 +147,30 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
     const libraryTabLabels = { fastest: 'Fastest Routes', common: 'Common Issues', processes: 'Process Guides', faq: 'FAQ', roadblocks: 'Roadblock Matrix' }
     onReportContextChange({
       selected_tab: selectedRoute ? commonIssueTab : libraryTabLabels[libraryTab] || libraryTab,
-      current_section: selectedRoute ? 'Common Issue drawer' : selected ? 'Process Guide drawer' : category || null,
+      current_section: selectedHostRoute ? 'Host guided support drawer' : selectedHostRoadblock ? 'Host roadblock drawer' : selectedRoute ? 'Common Issue drawer' : selected ? 'Process Guide drawer' : category || null,
       active_device: callContext.device,
       active_caller_role: callContext.role,
-      active_common_issue: selectedRoute?.id ?? null,
+      active_common_issue: selectedHostRoute?.topicId ?? selectedHostRoadblock?.id ?? selectedRoute?.id ?? null,
       process_id: selected?.id ?? null,
       category_id: selectedRoute?.categoryId ?? selected?.category ?? category ?? null,
     })
-  }, [libraryTab, commonIssueTab, callContext.device, callContext.role, selectedRoute, selected, category, onReportContextChange])
+  }, [libraryTab, commonIssueTab, callContext.device, callContext.role, selectedHostRoute, selectedHostRoadblock, selectedRoute, selected, category, onReportContextChange])
 
-  const searchMatches = useMemo(() => query.trim() ? searchProcesses(PROCESSES, query) : [], [query])
-  const routeMatches = useMemo(() => query.trim() ? searchCommonIssueRoutes(query) : [], [query])
+  const isHost = callContext.role === 'Host'
+  const approvedHostProcesses = useMemo(() => hostProcesses(PROCESSES), [])
+  const participantSearchMatches = useMemo(() => query.trim() ? searchProcesses(PROCESSES, query) : [], [query])
+  const participantRouteMatches = useMemo(() => query.trim() ? searchCommonIssueRoutes(query) : [], [query])
+  const hostTopicMatches = useMemo(() => query.trim() ? searchHostTopics(query) : [], [query])
+  const hostRoadblockMatches = useMemo(() => query.trim() ? searchHostRoadblocks(query) : [], [query])
+  const hostProcessSearchMatches = useMemo(
+    () => query.trim() ? searchProcesses(approvedHostProcesses, query) : [],
+    [query, approvedHostProcesses],
+  )
+  const searchMatches = isHost ? hostProcessSearchMatches : participantSearchMatches
+  const routeMatches = isHost ? [] : participantRouteMatches
   const processMatches = useMemo(() => {
+    if (isHost) return searchMatches
+
     const processesById = new Map(PROCESSES.map(process => [process.id, process]))
     const related = routeMatches.flatMap(route => route.processIds ?? []).map(id => processesById.get(id)).filter(Boolean)
     const seen = new Set()
@@ -161,18 +179,26 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
       seen.add(process.id)
       return true
     })
-  }, [routeMatches, searchMatches])
+  }, [isHost, routeMatches, searchMatches])
 
-  const categoryProcesses = useMemo(() => (
-    category ? PROCESSES.filter(process => process.category === category) : []
-  ), [category])
+  const categoryProcesses = useMemo(() => {
+    if (!category) return []
+    const source = isHost ? approvedHostProcesses : PROCESSES
+    return source.filter(process => process.category === category)
+  }, [category, isHost, approvedHostProcesses])
   const fastestRoutes = useMemo(() => FASTEST_ROUTE_IDS.map(routeById).filter(Boolean), [])
 
   const suggestions = query.trim()
-    ? [
-        ...routeMatches.map(route => ({ kind: 'route', route })),
-        ...processMatches.map(process => ({ kind: 'process', process })),
-      ].slice(0, 8)
+    ? isHost
+      ? [
+          ...hostTopicMatches.map(topic => ({ kind: 'host', topic })),
+          ...hostRoadblockMatches.map(roadblock => ({ kind: 'roadblock', roadblock })),
+          ...processMatches.map(process => ({ kind: 'process', process })),
+        ].slice(0, 8)
+      : [
+          ...routeMatches.map(route => ({ kind: 'route', route })),
+          ...processMatches.map(process => ({ kind: 'process', process })),
+        ].slice(0, 8)
     : []
   const showSuggestions = suggestionsOpen && suggestions.length > 0
 
@@ -189,9 +215,16 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
     if (callContext.status === 'resolved') setCallContext({ ...EMPTY_CALL_CONTEXT })
   }
 
+  function closeHostSupport() {
+    setSelectedHostRoute(null)
+    setSelectedHostRoadblock(null)
+  }
+
   function confirmNewCall() {
     setSelected(null)
     setSelectedRoute(null)
+    setSelectedHostRoute(null)
+    setSelectedHostRoadblock(null)
     setProcessLaunchContext(null)
     setCallContext({ ...EMPTY_CALL_CONTEXT })
     setCommonIssueTab('Find the Right Guide')
@@ -222,6 +255,8 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
   function openProcess(process, toolId = 'process_card', launchContext = null) {
     if (!process) return
     setSelectedRoute(null)
+    setSelectedHostRoute(null)
+    setSelectedHostRoadblock(null)
     setCommonIssueTab('Find the Right Guide')
     setProcessLaunchContext(launchContext)
     setCallContext(current => ({ ...current, status: 'active' }))
@@ -239,6 +274,8 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
   function openRoute(route, toolId = 'common_issue', contextPatch = null) {
     if (!route) return
     setSelected(null)
+    setSelectedHostRoute(null)
+    setSelectedHostRoadblock(null)
     setProcessLaunchContext(null)
     setCallContext(current => ({ ...current, ...(contextPatch || {}), status: 'active' }))
     setCommonIssueTab('Find the Right Guide')
@@ -252,8 +289,63 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
     })
   }
 
+  function openHostGuidedRoute(guidedRoute, toolId = 'host_route') {
+    if (!guidedRoute) return
+    setSelected(null)
+    setSelectedRoute(null)
+    setSelectedHostRoadblock(null)
+    setProcessLaunchContext(null)
+    setSelectedHostRoute(guidedRoute)
+    setCallContext(current => ({ ...current, role: 'Host', status: 'active' }))
+    onTrackEvent?.({
+      eventType: 'tool_open',
+      routeId: 'navigator',
+      toolId: `host_route_${guidedRoute.id}_${toolId}`,
+    })
+  }
+
+  function openHostTopic(topic, toolId = 'host_topic') {
+    openHostGuidedRoute(guidedRouteForHostTopic(topic?.id), toolId)
+  }
+
+  function openHostRoadblock(roadblock, toolId = 'host_roadblock') {
+    if (!roadblock) return
+    setSelected(null)
+    setSelectedRoute(null)
+    setSelectedHostRoute(null)
+    setProcessLaunchContext(null)
+    setSelectedHostRoadblock(roadblock)
+    setCallContext(current => ({ ...current, role: 'Host', status: 'active' }))
+    onTrackEvent?.({
+      eventType: 'tool_open',
+      routeId: 'navigator',
+      toolId: `host_roadblock_${roadblock.id}_${toolId}`,
+    })
+  }
+
+  function selectCallerRole(role) {
+    if (role === callContext.role) return
+    setSelected(null)
+    setSelectedRoute(null)
+    setSelectedHostRoute(null)
+    setSelectedHostRoadblock(null)
+    setProcessLaunchContext(null)
+    setCallContext(current => ({ ...current, role, status: current.status || null }))
+    setQuery('')
+    setSuggestionsOpen(false)
+    setActiveSuggestion(-1)
+    setCategory(null)
+    onTrackEvent?.({
+      eventType: 'caller_role_selected',
+      routeId: 'navigator',
+      toolId: `caller_role_${role.toLowerCase()}`,
+    })
+  }
+
   function selectSuggestion(suggestion) {
-    if (suggestion.kind === 'route') openRoute(suggestion.route, 'search_suggestion')
+    if (suggestion.kind === 'host') openHostTopic(suggestion.topic, 'search_suggestion')
+    else if (suggestion.kind === 'roadblock') openHostRoadblock(suggestion.roadblock, 'search_suggestion')
+    else if (suggestion.kind === 'route') openRoute(suggestion.route, 'search_suggestion')
     else openProcess(suggestion.process, 'search_suggestion')
     setSuggestionsOpen(false)
     setActiveSuggestion(-1)
@@ -280,13 +372,22 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
     }
   }
 
-  const callContextSummary = [callContext.device, callContext.role].filter(Boolean).join(' · ')
+  const callContextSummary = callContext.status
+    ? [callContext.device, callContext.role === 'Host' ? 'Host / Arbitrator' : callContext.role].filter(Boolean).join(' · ')
+    : 'Ready for a new caller'
 
   return <section className="navigator" id="navigator" aria-label="Support Navigator">
     <section className="navigator-session-bar" aria-label="Current call session">
       <div>
         <small>Current call</small>
-        <strong>{callContextSummary || 'Ready for a new caller'}</strong>
+        <strong>{callContextSummary}</strong>
+      </div>
+      <div className="navigator-role-switch" aria-label="Caller role">
+        <span>Caller role</span>
+        <div>
+          <button type="button" aria-pressed={callContext.role === 'Host'} onClick={() => selectCallerRole('Host')}>Host / Arbitrator</button>
+          <button type="button" aria-pressed={callContext.role === 'Participant'} onClick={() => selectCallerRole('Participant')}>Participant</button>
+        </div>
       </div>
       {callContext.status === 'active' && <button type="button" className="navigator-new-call-button" onClick={() => setNewCallConfirmOpen(true)}>
         New Call
@@ -309,7 +410,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
         <div className="smart-search-heading">
           <p className="eyebrow">Support workspace</p>
           <h1 id="smart-search-title">Find the next step</h1>
-          <p>Search by caller symptom or approved process name.</p>
+          <p>{isHost ? 'Search Host/Arbitrator symptoms, approved Tier 1 roadblocks, or source-backed processes.' : 'Search by caller symptom or approved process name.'}</p>
         </div>
 
         <div className="search-combobox" onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) { setSuggestionsOpen(false); setActiveSuggestion(-1) } }}>
@@ -334,25 +435,39 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
               setSuggestionsOpen(Boolean(nextQuery.trim()))
               setActiveSuggestion(-1)
             }}
-            placeholder="Try: can’t share, can’t find chat, waiting for host…"
+            placeholder={isHost ? 'Try: no host controls, can’t share, mic not working, stop recording…' : 'Try: can’t share, can’t find chat, waiting for host…'}
           />
           {showSuggestions && <div className="search-suggestions" id="support-search-suggestions" role="listbox" aria-label="Search suggestions">
             {suggestions.map((suggestion, index) => {
-              const isRoute = suggestion.kind === 'route'
-              const item = isRoute ? suggestion.route : suggestion.process
+              const item = suggestion.topic || suggestion.roadblock || suggestion.route || suggestion.process
+              const isIssue = ['host', 'route'].includes(suggestion.kind)
+              const description = suggestion.kind === 'host'
+                ? 'Host / Arbitrator guided troubleshooting'
+                : suggestion.kind === 'roadblock'
+                  ? item.trigger
+                  : suggestion.kind === 'route'
+                    ? item.subtitle
+                    : item.purpose
+              const categoryLabel = suggestion.kind === 'host'
+                ? 'Host Guide'
+                : suggestion.kind === 'roadblock'
+                  ? 'Tier 1 Roadblock'
+                  : suggestion.kind === 'route'
+                    ? 'Common Issue'
+                    : 'Process Guide'
               return <button
                 type="button"
                 role="option"
                 id={`support-search-option-${index}`}
-                className={`search-suggestion${isRoute ? ' search-suggestion-route' : ''}`}
+                className={`search-suggestion${isIssue ? ' search-suggestion-route' : ''}`}
                 aria-selected={activeSuggestion === index}
                 tabIndex={-1}
                 key={`${suggestion.kind}-${item.id}`}
                 onMouseMove={() => setActiveSuggestion(index)}
                 onClick={() => selectSuggestion(suggestion)}
               >
-                <span className="search-suggestion-copy"><strong>{item.title}</strong><small>{isRoute ? item.subtitle : item.purpose}</small></span>
-                <span className="search-suggestion-category">{isRoute ? 'Common Issue' : 'Process Guide'}</span>
+                <span className="search-suggestion-copy"><strong>{item.title}</strong><small>{description}</small></span>
+                <span className="search-suggestion-category">{categoryLabel}</span>
               </button>
             })}
           </div>}
@@ -360,7 +475,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
 
         <div className="smart-search-examples" aria-label="Example searches">
           <span>Try</span>
-          {['cant share', 'cant find chat', 'waiting for host'].map(example => <button
+          {(isHost ? ['no host controls', 'cant share', 'mic not working', 'stop recording'] : ['cant share', 'cant find chat', 'waiting for host']).map(example => <button
             type="button"
             key={example}
             onClick={() => {
@@ -372,7 +487,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
           >{example}</button>)}
         </div>
 
-        <span className="sr-only" role="status" aria-live="polite">{query.trim() ? `${routeMatches.length} common issue ${routeMatches.length === 1 ? 'route' : 'routes'} and ${processMatches.length} related ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.` : ''}</span>
+        <span className="sr-only" role="status" aria-live="polite">{query.trim() ? (isHost ? `${hostTopicMatches.length} Host ${hostTopicMatches.length === 1 ? 'route' : 'routes'}, ${hostRoadblockMatches.length} ${hostRoadblockMatches.length === 1 ? 'roadblock' : 'roadblocks'}, and ${processMatches.length} approved ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.` : `${routeMatches.length} common issue ${routeMatches.length === 1 ? 'route' : 'routes'} and ${processMatches.length} related ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.`) : ''}</span>
       </section>
 
       <LiveCallFlow
@@ -393,7 +508,18 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
       </div>
 
       <div id="navigator-library-panel" className="navigator-tab-panel" role="tabpanel">
-        {query.trim() ? <section id="search-results" className="combined-search-results" aria-live="polite">
+        {isHost ? <HostLibrary
+          libraryTab={libraryTab}
+          query={query}
+          topicMatches={hostTopicMatches}
+          roadblockMatches={hostRoadblockMatches}
+          processMatches={processMatches}
+          processes={PROCESSES}
+          faqItems={FAQ_ITEMS}
+          onOpenTopic={topic => openHostTopic(topic, 'host_library')}
+          onOpenRoadblock={roadblock => openHostRoadblock(roadblock, 'host_library')}
+          onOpenProcess={process => openProcess(process, 'host_process')}
+        /> : query.trim() ? <section id="search-results" className="combined-search-results" aria-live="polite">
           <div className="search-results-heading">
             <p className="eyebrow">Smart Search</p>
             <h2>Results for “{query}”</h2>
@@ -498,13 +624,13 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
           {libraryTab === 'roadblocks' && <section className="support-reference-view" aria-labelledby="roadblock-matrix-heading">
             <p className="eyebrow">Tier 1 boundaries & handoff</p>
             <h2 id="roadblock-matrix-heading">Roadblock Matrix</h2>
-            <p className="navigator-tab-intro">Use this when troubleshooting reaches an ownership boundary. Confirm what Tier 1 can do, who the arbitrator should contact, and the suggested language to use.</p>
+            <p className="navigator-tab-intro">Use this when a boundary is identified at any point. Confirm what Tier 1 can do, the correct next action or referral, and the suggested language to use.</p>
 
             <div className="roadblock-matrix" role="table" aria-label="Roadblock Matrix">
               <div className="roadblock-matrix-header" role="row">
                 <span role="columnheader">Roadblock</span>
                 <span role="columnheader">Agent Boundary</span>
-                <span role="columnheader">Who Arbitrator Should Contact</span>
+                <span role="columnheader">Next Step / Contact</span>
                 <span role="columnheader">Suggested Agent Language</span>
               </div>
               {ROADBLOCK_MATRIX.map(item => <article className="roadblock-matrix-row" role="row" key={item.roadblock}>
@@ -517,7 +643,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
                   <p>{item.boundary}</p>
                 </div>
                 <div role="cell">
-                  <span className="roadblock-cell-label">Who Arbitrator Should Contact</span>
+                  <span className="roadblock-cell-label">Next Step / Contact</span>
                   <p>{item.contact}</p>
                 </div>
                 <div role="cell">
@@ -530,8 +656,8 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
             <section className="escalation-reference" aria-labelledby="escalation-reference-heading">
               <div className="escalation-reference-heading">
                 <p className="eyebrow">Escalation checklist</p>
-                <h3 id="escalation-reference-heading">When escalating an issue to Gerny or the Team Leads</h3>
-                <p>Provide the following information so the next person has enough context to continue the case.</p>
+                <h3 id="escalation-reference-heading">When submitting an Alaga escalation</h3>
+                <p>Provide the required information from the approved support-boundary process so the next reviewer has the context needed to continue.</p>
               </div>
               <div className="escalation-requirements-grid">
                 {ESCALATION_REQUIREMENTS.map(item => <article key={item.label}>
@@ -565,6 +691,23 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
         </>}
       </div>
     </section>
+    {selectedHostRoute && <HostSupportDrawer
+      route={selectedHostRoute}
+      initialDevice={callContext.device}
+      onClose={closeHostSupport}
+      onOpenGuidedRoute={routeId => openHostGuidedRoute(HOST_GUIDED_ROUTES.find(item => item.id === routeId), 'guided_redirect')}
+      onContextChange={updateCallContext}
+      onAddToDocumentation={onAddToDocumentation}
+      onTrackEvent={onTrackEvent}
+    />}
+    {selectedHostRoadblock && <HostSupportDrawer
+      roadblock={selectedHostRoadblock}
+      initialDevice={callContext.device}
+      onClose={closeHostSupport}
+      onContextChange={updateCallContext}
+      onAddToDocumentation={onAddToDocumentation}
+      onTrackEvent={onTrackEvent}
+    />}
     {selected&&<ProcessDrawer
       process={selected}
       onClose={closeSelectedProcess}
@@ -592,7 +735,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
       >
         <p className="eyebrow">Start fresh</p>
         <h2 id="new-call-confirmation-title">Start a new call?</h2>
-        <p>This clears the current device, caller role, active troubleshooting path, search, and any unsaved Call Documentation draft.</p>
+        <p>This clears the current device, active troubleshooting path, search, and any unsaved Call Documentation draft. Caller role resets to Host / Arbitrator.</p>
         <p><strong>Saved notes are not deleted.</strong> Favorites, training progress, and workspace settings also stay unchanged.</p>
         <div className="dialog-actions">
           <button type="button" onClick={() => setNewCallConfirmOpen(false)}>Cancel</button>

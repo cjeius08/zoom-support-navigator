@@ -756,7 +756,7 @@ export const COMMON_ISSUE_ROUTES = [
       },
       {
         title: 'Check calendar/contact integration only within the support boundary',
-        instruction: 'Zoom’s current guidance includes deleting and reconfiguring an existing Calendar and Contact Integration. Only guide this when the caller is authorized to manage that integration. Otherwise refer to their Zoom administrator or IT team.',
+        instruction: 'Zoom’s current guidance includes deleting and reconfiguring an existing Calendar and Contact Integration. Only guide this when the caller is authorized to manage that integration. Otherwise stop at the support boundary. For locked account-level access, submit an Alaga escalation. For personal device or network restrictions, refer to the appropriate device or network support.',
         expected: 'The integration is either safely reconfigured by an authorized caller or correctly referred without changing managed settings.',
       },
       {
@@ -766,7 +766,7 @@ export const COMMON_ISSUE_ROUTES = [
       },
     ],
     success: 'Zoom opens and connects without the secure-connection error.',
-    unresolved: 'If the error remains after the approved update/reinstall/system-update path, or the fix requires managed calendar integration, security, network, or administrator access, refer to the caller’s IT/Zoom administrator.',
+    unresolved: 'If the error remains after the approved update/reinstall/system-update path, or the fix requires managed calendar integration, security, network, or administrator access, stop at the support boundary. For locked Zoom account or administrative access, submit an Alaga escalation. For personal device or network restrictions, refer to the appropriate device manufacturer, administrator, internet provider, or network support.',
     script: '“That exact message has a specific Mac troubleshooting path. I’ll keep us to the approved steps, and I won’t change any managed settings without the right access.”',
     processIds: [
       'zoom-error-unable-to-establish-secure-connection-to-zoom',
@@ -971,7 +971,7 @@ export const COMMON_ISSUE_ROUTES = [
       },
     ],
     success: 'The caller’s next meeting uses the intended mute or audio-connection behavior.',
-    unresolved: 'If the setting is unavailable or locked by organization policy, refer to the Zoom administrator. Do not change managed policy to force the option.',
+    unresolved: 'If the setting is unavailable or locked at the account level, do not change managed policy to force the option; submit an Alaga escalation for further review.',
     script: '“Do you want to join connected to audio but muted, or do you want Zoom not to connect to audio at all? Those are two different settings.”',
     processIds: [
       'muting-your-microphone-when-joining-a-zoom-meeting',
@@ -1035,7 +1035,7 @@ export const COMMON_ISSUE_ROUTES = [
       },
     ],
     success: 'The caller joins with the intended camera state and understands whether the change is one-time or the new default.',
-    unresolved: 'If the camera option is unavailable because of organization policy or another permission boundary, refer to the appropriate Zoom administrator rather than bypassing it.',
+    unresolved: 'If the camera option is unavailable because of a locked account-level setting, do not bypass it; submit an Alaga escalation. If the device itself blocks camera access, stop at the device-permission boundary.',
     script: '“Is this how you want every meeting to start, or only this next meeting? I’ll take you to the right option so we don’t change more than you intended.”',
     processIds: [
       'setting-your-video-to-stay-on-or-off-when-joining-meetings-and-webinars',
@@ -1188,7 +1188,7 @@ export const COMMON_ISSUE_ROUTES = [
       },
     ],
     success: 'Future eligible desktop meetings connect directly to computer audio without asking the caller to choose an audio method first.',
-    unresolved: 'If the setting is unavailable or locked, refer to the Zoom administrator. If the caller sometimes needs another audio type, leave the setting off so Zoom can offer the available audio methods.',
+    unresolved: 'If the setting is unavailable or locked at the account level, submit an Alaga escalation rather than changing managed policy. If the caller sometimes needs another audio type, leave the setting off so Zoom can offer the available audio methods.',
     script: '“If you usually use the same computer speaker and microphone, we can have Zoom connect to computer audio automatically so you don’t have to choose it every time.”',
     processIds: [
       'automatically-joining-meetings-with-computer-audio',

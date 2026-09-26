@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest'
 import { ESCALATION_REQUIREMENTS, FAQ_ITEMS, ROADBLOCK_MATRIX, SUPPORT_HELPFUL_LINKS } from './supportReference'
+import { HOST_ROADBLOCKS } from './arbitratorHostSupport'
 
 it('keeps the complete arbitrator FAQ reference', () => {
   expect(FAQ_ITEMS.map(item => item.label)).toEqual([
@@ -32,4 +33,21 @@ it('keeps all Roadblock Matrix boundaries and escalation requirements', () => {
     'Preferred Contact Method',
     'Merits Hearing Date and Time',
   ])
+})
+
+
+it('keeps caller-facing roadblock guidance on the approved referral and Alaga paths', () => {
+  const callerFacing = ROADBLOCK_MATRIX.map(item => `${item.contact}\n${item.language}`).join('\n')
+  expect(callerFacing).not.toMatch(/odflexmassarbs@ogletreedeakins\.com/i)
+  expect(callerFacing).not.toMatch(/contact your organization.?s (?:IT|Zoom administrator)/i)
+
+  expect(ROADBLOCK_MATRIX.find(item => item.roadblock === 'Zoom account, sign-in, license, role, or administrative permission')?.contact)
+    .toMatch(/Alaga escalation/i)
+  expect(ROADBLOCK_MATRIX.find(item => item.roadblock === 'Unable to join after approved basic joining troubleshooting')?.contact)
+    .toMatch(/device manufacturer or internet service provider/i)
+})
+
+
+it('keeps the Host roadblock drawer and reference matrix on the same approved roadblock inventory', () => {
+  expect(HOST_ROADBLOCKS.map(item => item.title)).toEqual(ROADBLOCK_MATRIX.map(item => item.roadblock))
 })

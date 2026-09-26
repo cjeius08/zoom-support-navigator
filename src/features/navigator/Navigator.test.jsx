@@ -5,7 +5,7 @@ import { Navigator } from './Navigator'
 
 it('opens a source-driven Call Guide with safe copy actions before lossless source views', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
   expect(screen.getByRole('heading', { name: 'Live Call Flow' })).toBeInTheDocument()
   expect(screen.getByRole('tab', { name: 'Fastest Routes' })).toHaveAttribute('aria-selected', 'true')
   expect(screen.getByRole('tab', { name: 'Common Issues' })).toBeInTheDocument()
@@ -32,7 +32,7 @@ it('opens a source-driven Call Guide with safe copy actions before lossless sour
 })
 
 it('shows source-page and Zoom-visual counts on process cards', async () => {
-  const user = userEvent.setup(); render(<Navigator />)
+  const user = userEvent.setup(); render(<Navigator initialRole="Participant" />)
   await user.click(screen.getByRole('tab', { name: 'Process Guides' }))
   await user.click(screen.getByRole('button', { name: /Audio & Microphone/i }))
   expect(screen.getAllByText(/source pages?/i).length).toBeGreaterThan(0)
@@ -41,7 +41,7 @@ it('shows source-page and Zoom-visual counts on process cards', async () => {
 
 it('shows a friendly decorative icon on every support category card', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
   await user.click(screen.getByRole('tab', { name: 'Process Guides' }))
   const icons = screen.getAllByTestId('category-icon')
   expect(icons).toHaveLength(7)
@@ -50,7 +50,7 @@ it('shows a friendly decorative icon on every support category card', async () =
 
 it('offers keyboard-accessible search suggestions and opens the highlighted process', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
   const search = screen.getByRole('combobox', { name: 'Search support processes' })
 
   await user.type(search, 'camera')
@@ -68,7 +68,7 @@ it('offers keyboard-accessible search suggestions and opens the highlighted proc
 
 it('routes a typo in natural caller language to the Common Issue before process documentation', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
   const search = screen.getByRole('combobox', { name: 'Search support processes' })
 
   await user.type(search, 'cant jion')
@@ -86,7 +86,7 @@ it('routes a typo in natural caller language to the Common Issue before process 
 
 it('routes meeting-control language to the reviewed Common Issue first', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
   const search = screen.getByRole('combobox', { name: 'Search support processes' })
 
   await user.type(search, 'find a meeting control')
@@ -109,7 +109,7 @@ it.each([
   ['find a meeting control', 'Can’t find a meeting control', /Using Participant Controls in a Zoom Meeting|Zoom Meeting Controls & Icons/i],
 ])('shows Common Issues before Process Guides for %s', async (query, routeTitle, processTitle) => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
   const search = screen.getByRole('combobox', { name: 'Search support processes' })
 
   await user.type(search, query)
@@ -129,7 +129,7 @@ it.each([
 it('emits only identifier-based analytics events for support interactions', async () => {
   const user = userEvent.setup()
   const onTrackEvent = vi.fn()
-  render(<Navigator onTrackEvent={onTrackEvent} />)
+  render(<Navigator initialRole="Participant" onTrackEvent={onTrackEvent} />)
 
   await user.click(screen.getByRole('tab', { name: 'Process Guides' }))
   await user.click(screen.getByRole('button', { name: /Audio & Microphone/i }))
@@ -156,7 +156,7 @@ it('emits only identifier-based analytics events for support interactions', asyn
 
 it('keeps the top workspace compact and renders the expanded call workflow full-width below it', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
   const liveFlow = screen.getByRole('region', { name: 'Approved Ogletree Live Call Flow' })
   const search = screen.getByRole('combobox', { name: 'Search support processes' })
   const searchCard = search.closest('.smart-search-card')
@@ -185,7 +185,7 @@ it('keeps the top workspace compact and renders the expanded call workflow full-
 it('publishes selected tab, device, caller role, and active Common Issue for global reports', async () => {
   const user = userEvent.setup()
   const onReportContextChange = vi.fn()
-  render(<Navigator onReportContextChange={onReportContextChange} />)
+  render(<Navigator initialRole="Participant" onReportContextChange={onReportContextChange} />)
 
   await user.click(screen.getByRole('tab', { name: 'Common Issues' }))
   await user.click(screen.getByRole('button', { name: /My camera isn’t working/i }))
@@ -209,7 +209,7 @@ it('publishes selected tab, device, caller role, and active Common Issue for glo
 it('starts a new call only after in-app confirmation and clears the carried call context', async () => {
   const user = userEvent.setup()
   const onNewCall = vi.fn()
-  render(<Navigator onNewCall={onNewCall} />)
+  render(<Navigator initialRole="Participant" onNewCall={onNewCall} />)
 
   await user.click(screen.getByRole('tab', { name: 'Common Issues' }))
   await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
@@ -241,7 +241,7 @@ it('starts a new call only after in-app confirmation and clears the carried call
 
 it('ends the Home call session when a guided process is resolved', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
 
   expect(screen.queryByRole('button', { name: 'New Call' })).not.toBeInTheDocument()
   await user.click(screen.getByRole('tab', { name: 'Process Guides' }))
@@ -264,7 +264,7 @@ it('ends the Home call session when a guided process is resolved', async () => {
 it('shows a Home shortcut that opens the Zoom Training Environment in one click', async () => {
   const user = userEvent.setup()
   const onOpenDeviceSandbox = vi.fn()
-  render(<Navigator onOpenDeviceSandbox={onOpenDeviceSandbox} />)
+  render(<Navigator initialRole="Participant" onOpenDeviceSandbox={onOpenDeviceSandbox} />)
 
   expect(screen.getByRole('heading', { name: 'Zoom Training Environment' })).toBeInTheDocument()
   await user.click(screen.getByRole('button', { name: 'Open Zoom Training Environment' }))
