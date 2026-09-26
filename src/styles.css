@@ -6653,3 +6653,61 @@ body:has(.process-document-reader) .process-document-page {
     font-size:.94rem;
   }
 }
+
+
+/* Reversible troubleshooting navigation */
+.host-troubleshooting-back-row,
+.guide-troubleshooting-back-row {
+  display:flex;
+  align-items:center;
+  gap:.7rem;
+  min-width:0;
+  margin:0 0 .2rem;
+  padding:.2rem 0 .45rem;
+}
+.host-troubleshooting-back-row {
+  position:sticky;
+  top:-1.5rem;
+  z-index:4;
+  margin-top:-.35rem;
+  padding-top:.7rem;
+  background:linear-gradient(180deg,rgba(12,23,33,.99) 70%,rgba(12,23,33,0));
+}
+.host-troubleshooting-back-row .guide-back-step,
+.guide-troubleshooting-back-row .guide-back-step {
+  flex:0 0 auto;
+  min-height:2.55rem;
+  margin:0;
+  padding:.48rem .72rem;
+  border:1px solid rgba(111,188,242,.3)!important;
+  border-radius:.6rem;
+  background:rgba(22,98,157,.14)!important;
+  color:#b8ddf7!important;
+  font-weight:800;
+}
+.host-troubleshooting-back-row .guide-back-step:hover,
+.host-troubleshooting-back-row .guide-back-step:focus-visible,
+.guide-troubleshooting-back-row .guide-back-step:hover,
+.guide-troubleshooting-back-row .guide-back-step:focus-visible {
+  border-color:rgba(111,188,242,.6)!important;
+  background:rgba(28,119,188,.22)!important;
+  color:#eef9ff!important;
+}
+.host-troubleshooting-back-row small,
+.guide-troubleshooting-back-row small {
+  color:#8fa8b9;
+  line-height:1.35;
+}
+@media (max-width:620px) {
+  .host-troubleshooting-back-row,
+  .guide-troubleshooting-back-row {
+    align-items:stretch;
+    flex-direction:column;
+    gap:.3rem;
+  }
+  .host-troubleshooting-back-row .guide-back-step,
+  .guide-troubleshooting-back-row .guide-back-step {
+    width:100%;
+    min-height:2.75rem;
+  }
+}
