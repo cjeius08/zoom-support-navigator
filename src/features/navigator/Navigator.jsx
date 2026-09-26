@@ -656,8 +656,8 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
             <section className="escalation-reference" aria-labelledby="escalation-reference-heading">
               <div className="escalation-reference-heading">
                 <p className="eyebrow">Escalation checklist</p>
-                <h3 id="escalation-reference-heading">When escalating an issue to Gerny or the Team Leads</h3>
-                <p>Provide the following information so the next person has enough context to continue the case.</p>
+                <h3 id="escalation-reference-heading">When submitting an Alaga escalation</h3>
+                <p>Provide the required information from the approved support-boundary process so the next reviewer has the context needed to continue.</p>
               </div>
               <div className="escalation-requirements-grid">
                 {ESCALATION_REQUIREMENTS.map(item => <article key={item.label}>
