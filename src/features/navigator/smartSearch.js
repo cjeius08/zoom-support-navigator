@@ -1,6 +1,6 @@
 const STOP_WORDS = new Set([
   'a', 'an', 'the', 'is', 'are', 'am', 'my', 'our', 'their',
-  'customer', 'customers', 'zoom', 'issue', 'issues', 'problem', 'problems',
+  'customer', 'customers', 'caller', 'callers', 'user', 'users', 'zoom', 'issue', 'issues', 'problem', 'problems',
   'not', 'no', 'working', 'work', 'works', 'wont', 'doesnt', 'does', 'do',
   'i', 'me', 'myself', 'we', 'us', 'you', 'they', 'them', 'where', 'button',
   'hasnt', 'havent', 'room',
