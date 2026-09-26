@@ -6,6 +6,7 @@ import { relatedTrainingForCategory } from "../../data/trainingVideos";
 import { useDialogFocus } from "../../lib/useDialogFocus";
 import { FavoriteToggle } from "../favorites/FavoriteToggle";
 import { buildGuidedDocumentationPreview } from "./guidedDocumentation";
+import { possibleRoadblocksForProcess } from "../../data/processRoadblocks";
 
 const TABS = [
   ["quick", "Call Guide"],
@@ -73,6 +74,10 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
       device: sourceDevice,
     }),
     [process.id, initialSourceRouteId, sourceDevice],
+  );
+  const possibleRoadblocks = useMemo(
+    () => possibleRoadblocksForProcess(process, { sourceRouteId: initialSourceRouteId }),
+    [process, initialSourceRouteId],
   );
   const officialSources = useMemo(() => {
     const sources = new Map();
@@ -644,6 +649,32 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
                             <strong>No additional approved symptom route applies automatically.</strong>
                             <p>Use the documented stop/referral boundary below rather than starting unrelated troubleshooting.</p>
                           </div>
+                        )}
+
+                        {possibleRoadblocks.length > 0 && (
+                          <section className="guide-roadblock-options" aria-label="Possible Tier 1 roadblocks">
+                            <div className="guide-roadblock-options-heading">
+                              <p className="eyebrow">Possible roadblock</p>
+                              <h3>If the approved process is exhausted, check what is actually blocking the next step.</h3>
+                              <p>These are not automatic conclusions. Choose the closest boundary only when it matches what remains after the troubleshooting you completed.</p>
+                            </div>
+                            <div className="guide-roadblock-options-grid">
+                              {possibleRoadblocks.map((item) => (
+                                <details className="guide-roadblock-option" key={item.id}>
+                                  <summary>
+                                    <span>{item.title}</span>
+                                    <small>Why this may fit →</small>
+                                  </summary>
+                                  <div>
+                                    <p><strong>Why this may fit:</strong> {item.why}</p>
+                                    <p><strong>Tier 1 boundary:</strong> {item.agentBoundary}</p>
+                                    <p><strong>Next action:</strong> {item.nextAction}</p>
+                                  </div>
+                                </details>
+                              ))}
+                            </div>
+                            <small className="guide-roadblock-source-note">Roadblock boundaries follow the approved Zoom Basic Support Boundaries / Referral Process. Ozzie does not select a roadblock automatically.</small>
+                          </section>
                         )}
 
                         <div className="guide-resolution-state-actions">
