@@ -556,6 +556,12 @@ export const HOST_GUIDED_ROUTES = [
         id: 'recording-question-type',
         prompt: 'What is the arbitrator asking?',
         options: ['What does the recording indicator mean?', 'Can I stop/pause/change the recording?', 'Is recording allowed?', 'Privacy/confidentiality question'],
+        optionBranches: {
+          'What does the recording indicator mean?': { next: 'indicator-only' },
+          'Can I stop/pause/change the recording?': { next: 'roadblock', roadblockId: 'roadblock-proceeding-policy' },
+          'Is recording allowed?': { next: 'roadblock', roadblockId: 'roadblock-proceeding-policy' },
+          'Privacy/confidentiality question': { next: 'roadblock', roadblockId: 'roadblock-proceeding-policy' },
+        },
       },
     ],
     steps: [
@@ -596,15 +602,20 @@ export function validateHostGuidedRoutes() {
     if (!route.confirmBeforeProceeding?.length) errors.push(`${route.id}: missing confirmation gates`)
     if (!route.steps?.length) errors.push(`${route.id}: missing steps`)
     if (!route.documentation?.resolved || !route.documentation?.roadblock) errors.push(`${route.id}: missing documentation handoff text`)
-    for (const gate of route.confirmBeforeProceeding || []) {
-      for (const branch of [gate.yes, gate.no, gate.unsure].filter(Boolean)) {
-        if (branch.roadblockId && !roadblockIds.has(branch.roadblockId)) errors.push(`${route.id}: unknown roadblock ${branch.roadblockId}`)
+    const routeStepIds = new Set((route.steps || []).map(step => step.id))
+    const validateBranch = branch => {
+      if (!branch) return
+      if (branch.roadblockId && !roadblockIds.has(branch.roadblockId)) errors.push(`${route.id}: unknown roadblock ${branch.roadblockId}`)
+      if (branch.next && !['resolved', 'roadblock'].includes(branch.next) && !routeStepIds.has(branch.next) && !HOST_GUIDED_ROUTES.some(item => item.id === branch.next)) {
+        errors.push(`${route.id}: unknown next target ${branch.next}`)
       }
     }
+    for (const gate of route.confirmBeforeProceeding || []) {
+      for (const branch of [gate.yes, gate.no, gate.unsure].filter(Boolean)) validateBranch(branch)
+      for (const branch of Object.values(gate.optionBranches || {})) validateBranch(branch)
+    }
     for (const step of route.steps || []) {
-      for (const branch of [step.yes, step.no].filter(Boolean)) {
-        if (branch.roadblockId && !roadblockIds.has(branch.roadblockId)) errors.push(`${route.id}: unknown roadblock ${branch.roadblockId}`)
-      }
+      for (const branch of [step.yes, step.no].filter(Boolean)) validateBranch(branch)
     }
   }
   return errors
