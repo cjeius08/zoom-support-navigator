@@ -19,20 +19,33 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.metadata.updatePolicy).toMatch(/Admin-only operational or administrative changes/i)
   expect(data.metadata.updatePolicy).toMatch(/Developer-only work/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
+  expect(data.updates.slice(0, 3).map(entry => entry.id)).toEqual([
+    'troubleshooting-back-navigation',
+    'host-arbitrator-guided-support',
+    'host-roadblocks-referral-alignment',
+  ])
   expect(data.updates[0]).toMatchObject({
+    date: '2026-09-26',
+    audience: 'all',
+  })
+  expect(data.updates[3]).toMatchObject({
     id: 'faq-roadblock-matrix-support-reference',
     date: '2026-09-25',
     area: 'Home / Agent Reference',
     audience: 'all',
+    status: 'historical',
   })
-  expect(data.updates[1]).toMatchObject({ id: 'flex-arbitration-zoom-support-greeting', audience: 'all' })
-  expect(data.updates[2]).toMatchObject({ id: 'windows-device-sandbox-home-shortcut', audience: 'all' })
-  expect(data.updates.slice(3, 6).map(entry => entry.id)).toEqual([
+  expect(data.updates[4]).toMatchObject({ id: 'flex-arbitration-zoom-support-greeting', audience: 'all' })
+  expect(data.updates[5]).toMatchObject({ id: 'windows-device-sandbox-home-shortcut', audience: 'all' })
+  expect(data.updates.slice(6, 9).map(entry => entry.id)).toEqual([
     'process-documents-search-normalization',
     'new-call-session-reset',
     'common-issues-smart-routing',
   ])
   expect(data.updates.map(entry => entry.id)).toEqual(expect.arrayContaining([
+    'troubleshooting-back-navigation',
+    'host-arbitrator-guided-support',
+    'host-roadblocks-referral-alignment',
     'faq-roadblock-matrix-support-reference',
     'pilot-readiness-usability-pass',
     'process-documents-knowledge-library',
@@ -112,14 +125,49 @@ it('lists the Flex Arbitration Zoom Support opening spiel in What’s New', () =
 })
 
 
-it('lists the September 25 FAQ and Roadblock Matrix as a user-facing update', () => {
+it('keeps the initial September 25 FAQ and Roadblock Matrix entry as historical after the September 26 revision', () => {
   const path = join(cwd(), 'src/features/updates/updatesData.json')
   const data = JSON.parse(readFileSync(path, 'utf8'))
   const entry = data.updates.find(item => item.id === 'faq-roadblock-matrix-support-reference')
 
-  expect(entry).toMatchObject({ date: '2026-09-25', area: 'Home / Agent Reference', audience: 'all' })
-  expect(entry.changed).toMatch(/Need to Know \/ FAQ/i)
+  expect(entry).toMatchObject({ date: '2026-09-25', area: 'Home / Agent Reference', audience: 'all', status: 'historical' })
   expect(entry.changed).toMatch(/Roadblock Matrix/i)
-  expect(entry.changed).toMatch(/Gerny or the Team Leads/i)
+  expect(entry.changed).toMatch(/revised on September 26/i)
+  expect(entry.checks).toHaveLength(0)
+})
+
+it('lists the September 26 Host / Arbitrator support rebuild in What’s New', () => {
+  const path = join(cwd(), 'src/features/updates/updatesData.json')
+  const data = JSON.parse(readFileSync(path, 'utf8'))
+  const entry = data.updates.find(item => item.id === 'host-arbitrator-guided-support')
+
+  expect(entry).toMatchObject({ date: '2026-09-26', area: 'Home / Host & Arbitrator Support', audience: 'all' })
+  expect(entry.changed).toMatch(/Host \/ Arbitrator is now the default caller role/i)
+  expect(entry.changed).toMatch(/Participant experience remains available/i)
+  expect(entry.changed).toMatch(/confirmation-first guided troubleshooting/i)
+  expect(entry.checks.length).toBeGreaterThanOrEqual(5)
+})
+
+it('lists the September 26 roadblock and referral alignment in What’s New', () => {
+  const path = join(cwd(), 'src/features/updates/updatesData.json')
+  const data = JSON.parse(readFileSync(path, 'utf8'))
+  const entry = data.updates.find(item => item.id === 'host-roadblocks-referral-alignment')
+
+  expect(entry).toMatchObject({ date: '2026-09-26', area: 'Home / Roadblocks & Escalation', audience: 'all' })
+  expect(entry.changed).toMatch(/Alaga escalation path/i)
+  expect(entry.changed).toMatch(/welcome-email credential contact/i)
+  expect(entry.changed).toMatch(/network\/firewall\/VPN/i)
+  expect(entry.checks.length).toBeGreaterThanOrEqual(5)
+})
+
+it('lists the September 26 troubleshooting Back navigation in What’s New', () => {
+  const path = join(cwd(), 'src/features/updates/updatesData.json')
+  const data = JSON.parse(readFileSync(path, 'utf8'))
+  const entry = data.updates.find(item => item.id === 'troubleshooting-back-navigation')
+
+  expect(entry).toMatchObject({ date: '2026-09-26', area: 'Home / Troubleshooting Navigation', audience: 'all' })
+  expect(entry.changed).toMatch(/persistent ← Back control/i)
+  expect(entry.changed).toMatch(/recover from a misclick/i)
+  expect(entry.changed).toMatch(/Tier 1 roadblocks/i)
   expect(entry.checks.length).toBeGreaterThanOrEqual(5)
 })
