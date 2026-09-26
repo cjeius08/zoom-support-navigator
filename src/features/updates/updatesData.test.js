@@ -21,7 +21,6 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
   expect(data.updates.slice(0, 4).map(entry => entry.id)).toEqual([
     'common-issue-scripts-process-roadblocks',
-    'common-issue-scripts-process-roadblocks',
     'troubleshooting-back-navigation',
     'host-arbitrator-guided-support',
     'host-roadblocks-referral-alignment',
