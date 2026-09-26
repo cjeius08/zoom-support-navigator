@@ -98,7 +98,7 @@ it('covers all approved Process Guides through a Common Issue route except the a
 })
 
 it('records the current verification date in one auditable constant', () => {
-  expect(COMMON_ISSUE_VERIFIED_AT).toBe('September 23, 2026')
+  expect(COMMON_ISSUE_VERIFIED_AT).toBe('September 26, 2026')
 })
 
 
