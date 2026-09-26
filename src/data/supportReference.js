@@ -1,7 +1,7 @@
 export const FAQ_ITEMS = [
   {
     label: 'Login Credentials',
-    answer: 'Arbitrators will receive a welcome email with their username and password.',
+    answer: 'Arbitrators receive their Zoom Link, Zoom Username, and Password in a welcome email from kipsflexmassarbs@ogletreedeakins.com, in the section “Zoom (Hearing Videoconferencing) and Verbit (Court Reporter).”',
   },
   {
     label: 'Recording',
@@ -45,19 +45,19 @@ export const ROADBLOCK_MATRIX = [
   {
     roadblock: 'Waiting Room admission',
     boundary: 'Confirm the arbitrator is signed in with assigned Zoom credentials and has host controls. Waiting Room is OFF by default; if the arbitrator enabled it, guide them through admitting participants. Do not change locked account-level settings.',
-    contact: 'Tier 1 assists the signed-in arbitrator. Check whether they have already reached out to the credential contact from their welcome email. For locked account-level settings only, submit an Alaga escalation.',
+    contact: 'Tier 1 assists the signed-in arbitrator. If credential or meeting-detail verification is also involved, check whether they have already reached out to the credential contact in the welcome email from kipsflexmassarbs@ogletreedeakins.com. For locked account-level settings only, submit an Alaga escalation.',
     language: 'Waiting Room is off by default. If you turned it on, let’s confirm you’re signed in with your assigned credentials and locate the host controls to admit participants. If the setting is locked at the account level, I will submit an escalation so our team can assist you.',
   },
   {
     roadblock: 'Host-controlled feature or permission',
     boundary: 'First confirm the arbitrator is signed in using assigned credentials and has host controls. Assist directly with permitted meeting-level controls. Do not bypass locked account-level settings.',
-    contact: 'Tier 1 assists with meeting-level controls. Check whether they have already reached out to the credential contact from their welcome email. For locked account-level settings only, submit an Alaga escalation.',
+    contact: 'Tier 1 assists with meeting-level controls. If credential or meeting-detail verification is also involved, check whether they have already reached out to the credential contact in the welcome email from kipsflexmassarbs@ogletreedeakins.com. For locked account-level settings only, submit an Alaga escalation.',
     language: 'As the meeting host, you should have these controls available when signed in with your assigned credentials. Let’s check your sign-in and test the setting together. If it turns out the setting is locked at the account level, I will submit an escalation so our team can assist you.',
   },
   {
     roadblock: 'Incorrect or uncertain meeting link, ID, passcode, date, or time',
     boundary: 'Review the information the arbitrator received. Do not create, modify, or independently validate proceeding details.',
-    contact: 'First ask whether the arbitrator has reached out to the credential contact from their welcome email. If further help is needed verifying the link, passcode, date, or time, submit an Alaga escalation.',
+    contact: 'First ask whether the arbitrator has reached out to the credential contact from the welcome email sent by kipsflexmassarbs@ogletreedeakins.com. If further help is needed verifying the link, passcode, date, or time, submit an Alaga escalation.',
     language: 'We can review the details you received, but we cannot independently change or confirm proceeding details. Have you already reached out to the contact from where you received your credentials? If not, please reach out to them first. If you need further assistance verifying the link, passcode, date, or time, I can submit an escalation for our team to look into this.',
   },
   {
