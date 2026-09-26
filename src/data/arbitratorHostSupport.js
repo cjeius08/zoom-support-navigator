@@ -377,7 +377,7 @@ export const HOST_SUPPORT_TOPICS = [
     id: 'host-connectivity',
     group: 'CONNECTIVITY',
     title: 'I cannot join reliably or I keep getting disconnected',
-    searchPhrases: ['disconnecting', 'connection issue', 'internet', 'reconnecting', 'cant stay connected', 'network'],
+    searchPhrases: ['disconnecting', 'connection issue', 'internet', 'reconnecting', 'cant stay connected', 'network', 'unstable network', 'network unstable'],
     scope: 'tier1-with-roadblock',
     confirmBeforeProceeding: [
       'Is the issue failure to join, repeated disconnects, or poor meeting stability?',
