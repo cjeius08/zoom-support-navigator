@@ -603,10 +603,11 @@ export function validateHostGuidedRoutes() {
     if (!route.steps?.length) errors.push(`${route.id}: missing steps`)
     if (!route.documentation?.resolved || !route.documentation?.roadblock) errors.push(`${route.id}: missing documentation handoff text`)
     const routeStepIds = new Set((route.steps || []).map(step => step.id))
+    const routeGateIds = new Set((route.confirmBeforeProceeding || []).map(gate => gate.id))
     const validateBranch = branch => {
       if (!branch) return
       if (branch.roadblockId && !roadblockIds.has(branch.roadblockId)) errors.push(`${route.id}: unknown roadblock ${branch.roadblockId}`)
-      if (branch.next && !['resolved', 'roadblock'].includes(branch.next) && !routeStepIds.has(branch.next) && !HOST_GUIDED_ROUTES.some(item => item.id === branch.next)) {
+      if (branch.next && !['resolved', 'roadblock'].includes(branch.next) && !routeStepIds.has(branch.next) && !routeGateIds.has(branch.next) && !HOST_GUIDED_ROUTES.some(item => item.id === branch.next)) {
         errors.push(`${route.id}: unknown next target ${branch.next}`)
       }
     }
