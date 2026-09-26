@@ -1,6 +1,7 @@
 import { expect, it } from 'vitest'
 import { hostFastestTopics, hostProcesses, searchHostRoadblocks, searchHostTopics } from './hostExperience'
 import { PROCESSES } from './processes'
+import { HOST_SUPPORT_TOPICS } from './arbitratorHostSupport'
 
 it('keeps Host fastest routes arbitrator-focused', () => {
   const ids = hostFastestTopics().map(item => item.id)
@@ -43,4 +44,9 @@ it('keeps stale referral imports out of the Host Process Guide surface', () => {
   expect(combined).not.toMatch(/please contact your organization.?s IT/i)
   expect(combined).not.toMatch(/Zoom administrator/i)
   expect(combined).not.toMatch(/CONTACT IT/i)
+})
+
+
+it('has a guided Host route for every approved Host support topic', () => {
+  expect(hostTopics().map(item => item.id).sort()).toEqual(HOST_SUPPORT_TOPICS.map(item => item.id).sort())
 })
