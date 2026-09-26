@@ -526,6 +526,220 @@ export const HOST_GUIDED_ROUTES = [
     },
   },
   {
+    id: 'host-basic-controls-guided',
+    topicId: 'host-basic-controls',
+    title: 'Find or use a basic Host meeting control',
+    sourceStatus: 'client+zoom-verified',
+    sourceRefs: {
+      clientSections: ['Zoom Interface and Meeting Controls', 'Host and Meeting-Level Controls'],
+      zoom: [
+        {
+          articleId: 'KB0065164',
+          title: 'Using host and co-host controls in a meeting',
+          url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065164',
+        },
+        {
+          articleId: 'KB0065566',
+          title: 'Managing participants in a meeting',
+          url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065566',
+        },
+      ],
+    },
+    confirmBeforeProceeding: [
+      {
+        id: 'basic-control-name',
+        prompt: 'Which basic Zoom control is the arbitrator trying to locate or use?',
+        options: ['Participants', 'Chat', 'Meeting view', 'Mute / Unmute', 'Start / Stop Video', 'Reactions', 'Another basic control'],
+      },
+      {
+        id: 'basic-control-host-status',
+        prompt: 'Is the arbitrator already inside the correct hearing and signed in with the assigned Zoom credentials?',
+        yes: { next: 'basic-control-platform' },
+        no: { next: 'host-start-hearing-guided' },
+        unsure: { next: 'host-controls-guided' },
+      },
+      {
+        id: 'basic-control-platform',
+        prompt: 'Which Zoom platform are they using?',
+        options: ['Windows/macOS desktop app', 'Zoom Web App', 'Android/iOS mobile app'],
+      },
+    ],
+    steps: [
+      {
+        id: 'locate-basic-control',
+        platformInstructions: {
+          desktop: 'Move the pointer in the Zoom meeting window to show the meeting controls toolbar. Locate the requested control in the toolbar; use More when the control is not pinned to the visible toolbar.',
+          web: 'Move the pointer in the Zoom Web App meeting window to show the meeting controls toolbar. Locate the requested control in the toolbar or More menu.',
+          mobile: 'Tap the Zoom meeting window if the controls are hidden. Use the toolbar at the bottom of the meeting window and More for additional controls.',
+        },
+        confirm: 'Can the arbitrator now see the requested control?',
+        yes: { next: 'use-basic-control' },
+        no: { next: 'roadblock', roadblockId: 'roadblock-account-permission' },
+      },
+      {
+        id: 'use-basic-control',
+        instruction: 'Guide only the requested permitted meeting-level action. Do not change locked account-level settings or make proceeding decisions.',
+        confirm: 'Did the requested basic Zoom control perform the expected meeting-level action?',
+        yes: { next: 'resolved' },
+        no: { next: 'roadblock', roadblockId: 'roadblock-account-permission' },
+      },
+    ],
+    scripts: {
+      opening: 'Let’s identify the exact Zoom control you need, confirm you’re in the hearing with your assigned sign-in, and then locate that control on your device.',
+      resolved: 'The requested basic Zoom control is visible and working at the meeting level.',
+      boundary: 'The requested control remains unavailable after confirming the assigned sign-in and current meeting, so the remaining issue needs account or permission review.',
+    },
+    documentation: {
+      resolved: 'Confirmed assigned sign-in, located the requested basic Zoom meeting control, and verified the meeting-level action.',
+      roadblock: 'Confirmed assigned sign-in and correct hearing; the requested basic control remained unavailable due to an account/permission boundary.',
+    },
+  },
+  {
+    id: 'host-connectivity-guided',
+    topicId: 'host-connectivity',
+    title: 'Host cannot join reliably or keeps getting disconnected',
+    sourceStatus: 'client+zoom-verified-basic-only',
+    sourceRefs: {
+      clientSections: ['Basic Connectivity', 'Network, firewall, VPN, or security restriction'],
+      zoom: [
+        {
+          articleId: 'KB0083291',
+          title: 'Zoom Workplace app network stability indicators and messages',
+          url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0083291',
+        },
+        {
+          articleId: 'KB0060548',
+          title: 'Zoom network firewall or proxy server settings',
+          url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060548',
+        },
+      ],
+    },
+    programRules: [
+      'Tier 1 performs approved basic connectivity checks only.',
+      'Do not modify firewall, VPN, proxy, security software, managed network, or advanced network configuration.',
+    ],
+    confirmBeforeProceeding: [
+      {
+        id: 'connectivity-symptom',
+        prompt: 'What is happening?',
+        options: ['Cannot connect or join', 'Keeps disconnecting/reconnecting', 'Zoom says the network is unstable', 'Connection works but audio/video is poor'],
+      },
+      {
+        id: 'general-internet',
+        prompt: 'Does the device have normal internet access outside Zoom?',
+        yes: { next: 'network-restriction-check' },
+        no: { next: 'roadblock', roadblockId: 'roadblock-network-security' },
+        unsure: { next: 'basic-internet-check' },
+      },
+      {
+        id: 'network-restriction-check',
+        prompt: 'Is the device using a VPN, managed network, firewall/security restriction, or another environment that may require configuration changes?',
+        yes: { next: 'roadblock', roadblockId: 'roadblock-network-security' },
+        no: { next: 'basic-rejoin-check' },
+        unsure: { next: 'basic-rejoin-check' },
+      },
+    ],
+    steps: [
+      {
+        id: 'basic-internet-check',
+        instruction: 'Use a browser to confirm the device has normal internet access and can reach Zoom’s website. Do not change firewall, VPN, proxy, or security settings.',
+        confirm: 'Does normal internet access work on the device?',
+        yes: { next: 'basic-rejoin-check' },
+        no: { next: 'roadblock', roadblockId: 'roadblock-network-security' },
+      },
+      {
+        id: 'basic-rejoin-check',
+        instruction: 'Close and reopen the current Zoom meeting or app session once, then retry the approved join path. If Zoom displays an unstable-network message, note the exact message.',
+        confirm: 'Can the arbitrator now join and remain connected?',
+        yes: { next: 'resolved' },
+        no: { next: 'roadblock', roadblockId: 'roadblock-zoom-product' },
+      },
+    ],
+    scripts: {
+      opening: 'Let’s first confirm whether this is a Zoom-only connection problem or whether the device’s internet connection is also affected.',
+      resolved: 'The arbitrator can now join and remain connected after the approved basic connectivity checks.',
+      boundary: 'The approved basic connectivity checks are complete. The remaining issue requires network/security support or appears to be a Zoom product issue.',
+    },
+    documentation: {
+      resolved: 'Confirmed basic internet access, retried the Zoom connection, and verified the arbitrator could join and remain connected.',
+      roadblock: 'Completed approved basic connectivity checks; the remaining issue required network/security support or further Zoom product assistance.',
+    },
+  },
+  {
+    id: 'host-app-browser-guided',
+    topicId: 'host-app-browser-basic',
+    title: 'Zoom desktop, web, or mobile app is not behaving correctly',
+    sourceStatus: 'client+zoom-verified-basic-only',
+    sourceRefs: {
+      clientSections: ['Application and Browser Issues', 'Platform-Specific Guidance'],
+      zoom: [
+        {
+          articleId: 'KB0065831',
+          title: 'Troubleshooting issues with Zoom update and installation',
+          url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065831',
+        },
+        {
+          articleId: 'KB0058323',
+          title: 'Zoom system requirements: Zoom Web App',
+          url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0058323',
+        },
+        {
+          articleId: 'KB0078476',
+          title: 'Allowing microphone, camera, and screen share permissions in the Zoom Web App',
+          url: 'https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0078476',
+        },
+      ],
+    },
+    programRules: [
+      'Use only approved basic app/browser troubleshooting.',
+      'Do not bypass managed-device, browser, security, or administrator restrictions.',
+    ],
+    confirmBeforeProceeding: [
+      {
+        id: 'app-platform',
+        prompt: 'Which Zoom platform is the arbitrator using?',
+        options: ['Windows/macOS desktop app', 'Zoom Web App', 'Android/iOS mobile app'],
+      },
+      {
+        id: 'app-symptom',
+        prompt: 'What exactly is failing?',
+        options: ['App/browser will not open correctly', 'A meeting control is missing', 'Audio/video permission problem', 'Exact Zoom error message', 'Other basic app/browser behavior'],
+      },
+      {
+        id: 'managed-device-check',
+        prompt: 'Is a managed-device, browser, security, or administrator restriction blocking the action?',
+        yes: { next: 'roadblock', roadblockId: 'roadblock-managed-permission' },
+        no: { next: 'basic-app-relaunch' },
+        unsure: { next: 'basic-app-relaunch' },
+      },
+    ],
+    steps: [
+      {
+        id: 'basic-app-relaunch',
+        instruction: 'Close and reopen Zoom or the browser, then retry the same approved action. For the Zoom Web App, confirm the browser is supported/current and normal microphone/camera permissions are allowed when those features are needed.',
+        confirm: 'Does the Zoom app or browser now perform the expected basic action?',
+        yes: { next: 'resolved' },
+        no: { next: 'basic-platform-check' },
+      },
+      {
+        id: 'basic-platform-check',
+        instruction: 'Confirm the current app/browser meets Zoom’s supported requirements. If an update is available on a personal unmanaged device and the arbitrator is authorized to install it, use Zoom’s official update path. Do not bypass managed installation or security restrictions.',
+        confirm: 'After the approved basic app/browser check, is the issue resolved?',
+        yes: { next: 'resolved' },
+        no: { next: 'roadblock', roadblockId: 'roadblock-zoom-product' },
+      },
+    ],
+    scripts: {
+      opening: 'Let’s identify the exact Zoom app or browser behavior first, then keep the troubleshooting to the approved basic checks for that platform.',
+      resolved: 'The Zoom app or browser is working after the approved basic check.',
+      boundary: 'The approved basic app/browser checks are complete. The remaining issue requires managed-device/admin assistance or appears to be a Zoom product issue.',
+    },
+    documentation: {
+      resolved: 'Confirmed the Zoom platform, completed the approved basic app/browser checks, and verified normal operation.',
+      roadblock: 'Completed approved basic app/browser checks; the remaining issue required managed-device/admin assistance or further Zoom product support.',
+    },
+  },
+  {
     id: 'host-recording-guided',
     topicId: 'host-recording-basic',
     title: 'Recording indicator or request to stop/change recording',
