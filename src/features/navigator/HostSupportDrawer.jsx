@@ -49,6 +49,7 @@ export function HostSupportDrawer({
   const [answers, setAnswers] = useState([])
   const [attemptedSteps, setAttemptedSteps] = useState([])
   const [documentationAdded, setDocumentationAdded] = useState(false)
+  const [scriptCopyState, setScriptCopyState] = useState('idle')
   const [history, setHistory] = useState([])
 
   useDialogFocus(dialogRef, true, onClose)
@@ -63,6 +64,7 @@ export function HostSupportDrawer({
     setAnswers([])
     setAttemptedSteps([])
     setDocumentationAdded(false)
+    setScriptCopyState('idle')
     setHistory([])
   }, [route?.id, roadblock?.id, initialDevice])
 
@@ -235,6 +237,27 @@ export function HostSupportDrawer({
     })
   }
 
+  const activeSuggestedScript = phase === 'resolved'
+    ? activeRoute?.scripts?.resolved
+    : activeRoute?.scripts?.opening
+
+  async function copySuggestedScript() {
+    if (!activeSuggestedScript) return
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable')
+      await navigator.clipboard.writeText(activeSuggestedScript)
+      setScriptCopyState('copied')
+    } catch {
+      setScriptCopyState('failed')
+    }
+    window.setTimeout(() => setScriptCopyState('idle'), 1600)
+    onTrackEvent?.({
+      eventType: 'copy_action',
+      routeId: 'navigator',
+      toolId: `host_route_${activeRoute?.id || 'unknown'}_suggested_script`,
+    })
+  }
+
   function addToDocumentation(kind) {
     if (!onAddToDocumentation) return
 
@@ -327,6 +350,25 @@ export function HostSupportDrawer({
           </button>
           <small>Return to the previous confirmation or troubleshooting step.</small>
         </div>}
+
+        {phase !== 'roadblock' && activeSuggestedScript && <section className="host-common-issue-script-card" aria-label="Suggested agent script">
+          <div className="common-issue-script-heading">
+            <div>
+              <p className="eyebrow">Suggested agent script</p>
+              <h3>Source-aligned wording</h3>
+            </div>
+            <button type="button" onClick={copySuggestedScript}>
+              {scriptCopyState === 'copied' ? 'Copied ✓' : scriptCopyState === 'failed' ? 'Copy failed' : 'Copy Script'}
+            </button>
+          </div>
+          <blockquote>{activeSuggestedScript}</blockquote>
+          <div className="common-issue-script-source">
+            <span>Adapted for the live call from the approved client scope and current official Zoom Support behavior.</span>
+            {sources[0]?.url && <a href={sources[0].url} target="_blank" rel="noreferrer">
+              Verify in Zoom Support — {sources[0].title} ↗
+            </a>}
+          </div>
+        </section>}
 
         {phase === 'confirm' && currentGate && <section className="host-confirm-card">
           <p className="eyebrow">Confirm before proceeding</p>
