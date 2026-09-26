@@ -131,6 +131,11 @@ export function HostSupportDrawer({
 
   function chooseOption(option) {
     recordAnswer(currentGate?.prompt || 'Confirmation', option)
+    const optionBranch = currentGate?.optionBranches?.[option]
+    if (optionBranch) {
+      followBranch(optionBranch, { fromGate: true })
+      return
+    }
     if (gateIndex < (route?.confirmBeforeProceeding?.length || 0) - 1) {
       setGateIndex(index => index + 1)
     } else {
