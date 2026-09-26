@@ -13,8 +13,9 @@ export const HOST_FASTEST_TOPIC_IDS = [
 const HOST_PROCESS_CLASSIFICATIONS = new Set(['universal', 'system'])
 
 const SEARCH_STOP_WORDS = new Set([
-  'i', 'me', 'my', 'the', 'a', 'an', 'is', 'are', 'am', 'to', 'of', 'in', 'on', 'it',
-  'please', 'help', 'with', 'for', 'this', 'that', 'anyone', 'anybody', 'someone', 'somebody',
+  'i', 'me', 'my', 'we', 'us', 'you', 'they', 'them', 'the', 'a', 'an', 'is', 'are', 'am',
+  'to', 'of', 'in', 'on', 'it', 'no', 'not', 'please', 'help', 'with', 'for', 'this', 'that',
+  'caller', 'customer', 'user', 'meeting', 'hearing', 'anyone', 'anybody', 'someone', 'somebody',
   'everyone', 'everybody', 'working', 'work', 'works', 'issue', 'issues', 'problem', 'problems',
 ])
 
