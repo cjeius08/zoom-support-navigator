@@ -337,11 +337,13 @@ it('shows possible roadblocks with an explanation after an audio Process Guide i
   expect(within(roadblocks).getByText('Device-level or managed permissions')).toBeInTheDocument()
   expect(within(roadblocks).getByText('Possible Zoom product issue after basic troubleshooting')).toBeInTheDocument()
 
-  await user.click(within(roadblocks).getByText('Microphone, speaker, or camera not recognized by the device itself'))
-  expect(within(roadblocks).getByText(/Why this may fit:/i)).toBeInTheDocument()
-  expect(within(roadblocks).getByText(/device or operating system itself/i)).toBeInTheDocument()
-  expect(within(roadblocks).getByText(/Tier 1 boundary:/i)).toBeInTheDocument()
-  expect(within(roadblocks).getByText(/Next action:/i)).toBeInTheDocument()
+  const hardwareSummary = within(roadblocks).getByText('Microphone, speaker, or camera not recognized by the device itself')
+  await user.click(hardwareSummary)
+  const hardwareDetails = hardwareSummary.closest('details')
+  expect(within(hardwareDetails).getByText(/Why this may fit:/i)).toBeInTheDocument()
+  expect(within(hardwareDetails).getByText(/device or operating system itself/i)).toBeInTheDocument()
+  expect(within(hardwareDetails).getByText(/Tier 1 boundary:/i)).toBeInTheDocument()
+  expect(within(hardwareDetails).getByText(/Next action:/i)).toBeInTheDocument()
 })
 
 it('uses the originating Common Issue to narrow possible roadblocks after Process Guide exhaustion', async () => {
