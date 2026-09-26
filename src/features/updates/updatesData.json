@@ -10,19 +10,59 @@
   },
   "updates": [
     {
+      "id": "troubleshooting-back-navigation",
+      "date": "2026-09-26",
+      "area": "Home / Troubleshooting Navigation",
+      "audience": "all",
+      "title": "Back navigation added across troubleshooting",
+      "changed": "Added a persistent ← Back control to Host/Arbitrator guided troubleshooting and Guided Process flows so agents can recover from a misclick without restarting the path. Back can return from confirmation questions, later troubleshooting steps, resolved results, Tier 1 roadblocks, and Host-guide redirects to the exact prior troubleshooting state.",
+      "checks": [
+        "Open a Host/Arbitrator troubleshooting route, answer a confirmation, then select ← Back and confirm the previous confirmation returns.",
+        "Trigger a Tier 1 roadblock from a Host route, select ← Back, and confirm Ozzie returns to the exact question that led to the roadblock.",
+        "Advance through a Guided Process step, select ← Back, and confirm the previous troubleshooting step returns.",
+        "Mark a Guided Process resolved, select ← Back, and confirm the agent can return to the prior active troubleshooting step.",
+        "On mobile, confirm the Back control remains easy to tap and does not overlap the troubleshooting content."
+      ]
+    },
+    {
+      "id": "host-arbitrator-guided-support",
+      "date": "2026-09-26",
+      "area": "Home / Host & Arbitrator Support",
+      "audience": "all",
+      "title": "Ozzie is now Host / Arbitrator-first for live Zoom support",
+      "changed": "Reworked Home around the actual support model: the arbitrator is the Zoom host. Host / Arbitrator is now the default caller role, while the existing Participant experience remains available. Host Smart Search, Fastest Host Routes, Common Issues, FAQ, and Roadblocks now lead into confirmation-first guided troubleshooting. All approved Host support topics have a guided path covering join/access, host controls, participant management, audio/video, screen sharing, recording basics, connectivity, and desktop/web/mobile app behavior.",
+      "checks": [
+        "Open Home and confirm Host / Arbitrator is selected by default while Participant remains available.",
+        "Search “no host controls,” “mic not working,” “meeting id not working,” “unstable network,” and “zoom app issue,” and confirm each opens the matching Host route.",
+        "Open a Host route and confirm Ozzie asks what must be confirmed before showing the next troubleshooting action.",
+        "Switch to Participant and confirm the existing Participant Fastest Routes and troubleshooting content remain available.",
+        "Resize to tablet/mobile width and confirm the Host role switch, Host cards, and guided drawer remain readable and usable."
+      ]
+    },
+    {
+      "id": "host-roadblocks-referral-alignment",
+      "date": "2026-09-26",
+      "area": "Home / Roadblocks & Escalation",
+      "audience": "all",
+      "title": "Roadblocks now stop at the correct Tier 1 boundary and show the right next action",
+      "changed": "Aligned Host roadblocks with the approved Zoom Basic Support Boundaries process. A roadblock can appear immediately or after any troubleshooting confirmation. Locked Zoom account, sign-in, license, role, or admin issues use the approved Alaga escalation path; meeting-detail verification checks the welcome-email credential contact first; device hardware and managed-permission issues stop at the device boundary; network/firewall/VPN issues stop at the appropriate network/ISP boundary; and proceeding, privacy, confidentiality, and recording-policy questions are kept outside Tier 1 technical decision-making. Each roadblock shows the boundary, next action, suggested agent wording, and an optional handoff into the existing Call Documentation draft.",
+      "checks": [
+        "Search “locked setting” and confirm the roadblock points to the approved Alaga escalation path.",
+        "Search a meeting-link or passcode problem and confirm Ozzie first references the credential contact from the welcome email before further escalation.",
+        "Follow an audio/video route until the device itself does not recognize the hardware and confirm Ozzie stops Zoom troubleshooting at the device-support boundary.",
+        "Search “firewall” or “VPN” and confirm Ozzie stops at the network/security boundary instead of suggesting configuration changes.",
+        "Open a recording/privacy roadblock and confirm Ozzie provides technical-control guidance only and does not interpret proceeding or recording policy."
+      ]
+    },
+    {
       "id": "faq-roadblock-matrix-support-reference",
       "date": "2026-09-25",
       "area": "Home / Agent Reference",
       "audience": "all",
       "title": "FAQ and Roadblock Matrix added to Home",
-      "changed": "Added two new Home reference tabs alongside Fastest Routes, Common Issues, and Process Guides. Need to Know / FAQ covers arbitrator credentials, automatic recording, password behavior, Waiting Room defaults, login-only usernames, host controls, invalid or expired meeting links, and the official Zoom Meetings troubleshooting resource. Roadblock Matrix gives agents the approved Tier 1 boundary, correct contact path, and suggested language for common escalation points, with a required escalation checklist for Gerny or the Team Leads.",
-      "checks": [
-        "On Home, confirm FAQ and Roadblock Matrix appear beside Fastest Routes, Common Issues, and Process Guides.",
-        "Open FAQ and confirm the seven Need to Know topics plus the Zoom Meetings Support Troubleshooting link are readable.",
-        "Open Roadblock Matrix and confirm all roadblocks show Agent Boundary, Who Arbitrator Should Contact, and Suggested Agent Language.",
-        "Confirm the escalation checklist includes Issue Description, Support Call Date and Time, Arbitrator’s Name, Preferred Contact Method, and Merits Hearing Date and Time.",
-        "Resize to tablet/mobile width and confirm FAQ cards, Roadblock Matrix entries, and escalation requirements remain readable without clipping."
-      ]
+      "changed": "Added the first Home FAQ and Roadblock Matrix reference alongside Fastest Routes, Common Issues, and Process Guides. This entry records the initial September 25 release; the Roadblock Matrix and escalation/referral behavior were revised on September 26 and are documented in the newer Host / Arbitrator roadblock update above.",
+      "checks": [],
+      "status": "historical"
     },
     {
       "id": "flex-arbitration-zoom-support-greeting",
