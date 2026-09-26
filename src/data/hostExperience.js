@@ -12,24 +12,53 @@ export const HOST_FASTEST_TOPIC_IDS = [
 
 const HOST_PROCESS_CLASSIFICATIONS = new Set(['universal', 'system'])
 
+const SEARCH_STOP_WORDS = new Set([
+  'i', 'me', 'my', 'the', 'a', 'an', 'is', 'are', 'am', 'to', 'of', 'in', 'on', 'it',
+  'please', 'help', 'with', 'for', 'this', 'that', 'anyone', 'anybody', 'someone', 'somebody',
+  'everyone', 'everybody', 'working', 'work', 'works', 'issue', 'issues', 'problem', 'problems',
+])
+
 const SEARCH_ALIASES = {
   cant: ['cannot', 'unable'],
   cannot: ['cant', 'unable'],
   unable: ['cant', 'cannot'],
   mic: ['microphone'],
   microphone: ['mic'],
-  cam: ['camera'],
+  cam: ['camera', 'video'],
   camera: ['cam', 'video'],
+  video: ['camera'],
   sound: ['audio', 'speaker'],
+  audio: ['sound', 'speaker'],
+  speaker: ['audio', 'sound'],
   hear: ['audio', 'speaker'],
+  heard: ['hear', 'audio', 'speaker'],
   headset: ['headphones', 'bluetooth'],
   headphones: ['headset', 'bluetooth'],
   share: ['sharing', 'screen'],
   sharing: ['share', 'screen'],
+  screen: ['share', 'sharing'],
   admit: ['waiting', 'participant'],
   waiting: ['admit', 'room'],
   host: ['arbitrator'],
   arbitrator: ['host'],
+  disconnect: ['disconnecting', 'disconnected'],
+  disconnected: ['disconnect', 'disconnecting'],
+  reconnect: ['reconnecting'],
+  unstable: ['stability'],
+  login: ['signin', 'sign'],
+  signin: ['login', 'sign'],
+}
+
+const TOPIC_FIELD_WEIGHTS = {
+  title: 52,
+  searchPhrases: 70,
+  group: 10,
+}
+
+const ROADBLOCK_FIELD_WEIGHTS = {
+  title: 58,
+  searchPhrases: 76,
+  trigger: 24,
 }
 
 function normalize(value) {
@@ -41,6 +70,17 @@ function normalize(value) {
     .replace(/[^a-z0-9]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
+}
+
+function tokenize(value) {
+  const normalized = normalize(value)
+  return normalized ? normalized.split(' ') : []
+}
+
+function meaningfulTerms(query) {
+  const terms = tokenize(query)
+  const filtered = terms.filter(term => !SEARCH_STOP_WORDS.has(term))
+  return filtered.length ? filtered : terms
 }
 
 function editDistance(left, right) {
@@ -66,44 +106,116 @@ function editDistance(left, right) {
   return previous[right.length]
 }
 
-function itemText(item) {
-  return normalize([
-    item.title,
-    item.group,
-    ...(item.searchPhrases || []),
-    item.trigger,
-    item.agentBoundary,
-    item.nextAction,
-  ].filter(Boolean).join(' '))
-}
-
-function tokenMatches(term, candidate) {
-  if (candidate === term || candidate.startsWith(term) || term.startsWith(candidate)) return true
-  if (Math.max(term.length, candidate.length) >= 5 && Math.abs(term.length - candidate.length) <= 1) {
-    return editDistance(term, candidate) <= 1
+function isAdjacentTransposition(left, right) {
+  if (left.length !== right.length) return false
+  const differences = []
+  for (let index = 0; index < left.length; index += 1) {
+    if (left[index] !== right[index]) differences.push(index)
+    if (differences.length > 2) return false
   }
-  return false
+  if (differences.length !== 2) return false
+  const [first, second] = differences
+  return second === first + 1
+    && left[first] === right[second]
+    && left[second] === right[first]
 }
 
-function itemScore(item, query) {
+function tokenStrength(queryToken, candidateToken) {
+  if (queryToken === candidateToken) return 1
+
+  // Important safety guard: "hear" is an audio symptom; "hearing" is proceeding context.
+  // Treating them as a prefix match caused unrelated Host routes to surface for audio searches.
+  if ((queryToken === 'hear' && candidateToken === 'hearing') || (queryToken === 'hearing' && candidateToken === 'hear')) {
+    return 0
+  }
+
+  if (queryToken.length >= 5 && candidateToken.startsWith(queryToken) && candidateToken.length - queryToken.length <= 2) {
+    return 0.76
+  }
+
+  if (candidateToken.length >= 5 && queryToken.startsWith(candidateToken) && queryToken.length - candidateToken.length <= 2) {
+    return 0.72
+  }
+
+  if (Math.min(queryToken.length, candidateToken.length) >= 4 && Math.abs(queryToken.length - candidateToken.length) <= 1) {
+    if (isAdjacentTransposition(queryToken, candidateToken)) return 0.86
+    if (editDistance(queryToken, candidateToken) === 1) return 0.82
+  }
+
+  return 0
+}
+
+function variantsFor(term) {
+  return [
+    { value: term, strength: 1 },
+    ...(SEARCH_ALIASES[term] || []).map(value => ({ value, strength: 0.92 })),
+  ]
+}
+
+function bestTokenStrength(term, candidates) {
+  let best = 0
+  for (const variant of variantsFor(term)) {
+    for (const candidate of candidates) {
+      const strength = tokenStrength(variant.value, candidate) * variant.strength
+      if (strength > best) best = strength
+      if (best === 1) return best
+    }
+  }
+  return best
+}
+
+function normalizedPhrases(item) {
+  return [item.title, ...(item.searchPhrases || [])].map(normalize).filter(Boolean)
+}
+
+function phraseScore(item, query) {
   const normalizedQuery = normalize(query)
   if (!normalizedQuery) return 0
-  const text = itemText(item)
-  if (text.includes(normalizedQuery)) return 1000 - text.indexOf(normalizedQuery)
 
-  const tokens = text.split(' ')
-  const queryTerms = normalizedQuery.split(' ').filter(term => !['i', 'my', 'the', 'a', 'an', 'is', 'are', 'to', 'of', 'in', 'on', 'it', 'not'].includes(term))
-  let score = 0
+  const terms = meaningfulTerms(query)
+  const meaningfulPhrase = terms.join(' ')
+  const phrases = normalizedPhrases(item)
 
-  for (const term of queryTerms) {
-    const variants = [term, ...(SEARCH_ALIASES[term] || [])]
-    const matched = variants.some(variant => tokens.some(candidate => tokenMatches(variant, candidate)))
-    if (!matched) return 0
-    score += 25
+  if (normalize(item.title) === normalizedQuery) return 1200
+  if (phrases.some(phrase => phrase === normalizedQuery)) return 1120
+  if (meaningfulPhrase && phrases.some(phrase => phrase === meaningfulPhrase)) return 1080
+  if (meaningfulPhrase.length >= 5 && phrases.some(phrase => phrase.includes(meaningfulPhrase))) return 920
+  if (normalizedQuery.length >= 5 && phrases.some(phrase => phrase.includes(normalizedQuery))) return 900
+  return 0
+}
+
+function fieldTokens(item, field) {
+  if (field === 'searchPhrases') return tokenize((item.searchPhrases || []).join(' '))
+  return tokenize(item[field])
+}
+
+function scoreItem(item, query, weights) {
+  const terms = meaningfulTerms(query)
+  if (!terms.length) return 0
+
+  let score = phraseScore(item, query)
+
+  for (const term of terms) {
+    let bestTermScore = 0
+    for (const [field, weight] of Object.entries(weights)) {
+      const strength = bestTokenStrength(term, fieldTokens(item, field))
+      bestTermScore = Math.max(bestTermScore, strength * weight)
+    }
+
+    // All meaningful terms must be supported. This prevents a generic word like
+    // "cant" from surfacing unrelated topics when the actual symptom is "hear".
+    if (bestTermScore === 0) return 0
+    score += bestTermScore
   }
 
-  if (normalize(item.title).includes(queryTerms[0] || '')) score += 20
   return score
+}
+
+function ranked(items, query, weights) {
+  return items
+    .map((item, sourceIndex) => ({ item, sourceIndex, score: scoreItem(item, query, weights) }))
+    .filter(result => result.score > 0)
+    .sort((left, right) => right.score - left.score || left.sourceIndex - right.sourceIndex)
 }
 
 export function guidedRouteForHostTopic(topicId) {
@@ -134,17 +246,17 @@ export function hostFaqItems(faqItems) {
 }
 
 export function searchHostTopics(query) {
-  return hostTopics()
-    .map((item, sourceIndex) => ({ item, sourceIndex, score: itemScore(item, query) }))
-    .filter(result => result.score > 0)
-    .sort((left, right) => right.score - left.score || left.sourceIndex - right.sourceIndex)
-    .map(result => result.item)
+  return ranked(hostTopics(), query, TOPIC_FIELD_WEIGHTS).map(result => result.item)
 }
 
 export function searchHostRoadblocks(query) {
-  return HOST_ROADBLOCKS
-    .map((item, sourceIndex) => ({ item, sourceIndex, score: itemScore(item, query) }))
-    .filter(result => result.score > 0)
-    .sort((left, right) => right.score - left.score || left.sourceIndex - right.sourceIndex)
-    .map(result => result.item)
+  return ranked(HOST_ROADBLOCKS, query, ROADBLOCK_FIELD_WEIGHTS).map(result => result.item)
+}
+
+// Used by Smart Search QA so dropdown ordering can be audited independently of rendering.
+export function searchHostPrimaryMatches(query) {
+  return [
+    ...ranked(hostTopics(), query, TOPIC_FIELD_WEIGHTS).map(result => ({ kind: 'host', item: result.item, score: result.score })),
+    ...ranked(HOST_ROADBLOCKS, query, ROADBLOCK_FIELD_WEIGHTS).map(result => ({ kind: 'roadblock', item: result.item, score: result.score })),
+  ].sort((left, right) => right.score - left.score || (left.kind === 'host' ? -1 : 1))
 }
