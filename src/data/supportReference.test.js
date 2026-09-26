@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest'
 import { ESCALATION_REQUIREMENTS, FAQ_ITEMS, ROADBLOCK_MATRIX, SUPPORT_HELPFUL_LINKS } from './supportReference'
+import { HOST_ROADBLOCKS } from './arbitratorHostSupport'
 
 it('keeps the complete arbitrator FAQ reference', () => {
   expect(FAQ_ITEMS.map(item => item.label)).toEqual([
@@ -44,4 +45,9 @@ it('keeps caller-facing roadblock guidance on the approved referral and Alaga pa
     .toMatch(/Alaga escalation/i)
   expect(ROADBLOCK_MATRIX.find(item => item.roadblock === 'Unable to join after approved basic joining troubleshooting')?.contact)
     .toMatch(/device manufacturer or internet service provider/i)
+})
+
+
+it('keeps the Host roadblock drawer and reference matrix on the same approved roadblock inventory', () => {
+  expect(HOST_ROADBLOCKS.map(item => item.title)).toEqual(ROADBLOCK_MATRIX.map(item => item.roadblock))
 })
