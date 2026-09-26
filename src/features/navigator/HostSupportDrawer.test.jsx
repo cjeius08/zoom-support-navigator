@@ -46,3 +46,51 @@ it('adds a direct roadblock to the existing Call Documentation handoff without c
   expect(onAddToDocumentation.mock.calls[0][0].exactIssue).toMatch(/Zoom account, sign-in, license/i)
   expect(onAddToDocumentation.mock.calls[0][0].resolutionNextSteps).toMatch(/Suggested wording/i)
 })
+
+
+it('lets the agent go back after a confirmation misclick', async () => {
+  const user = userEvent.setup()
+  const route = HOST_GUIDED_ROUTES.find(item => item.id === 'host-waiting-room-guided')
+  render(<HostSupportDrawer route={route} onClose={() => {}} />)
+
+  expect(screen.getByText(/Is the arbitrator signed in with assigned credentials/i)).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Yes' }))
+  expect(screen.getByText(/Is Waiting Room enabled/i)).toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: /Back to previous troubleshooting step/i }))
+  expect(screen.getByText(/Is the arbitrator signed in with assigned credentials/i)).toBeInTheDocument()
+  expect(screen.queryByText(/Is Waiting Room enabled/i)).not.toBeInTheDocument()
+})
+
+it('returns from an immediate roadblock to the exact previous confirmation', async () => {
+  const user = userEvent.setup()
+  const route = HOST_GUIDED_ROUTES.find(item => item.id === 'host-audio-guided')
+  render(<HostSupportDrawer route={route} onClose={() => {}} />)
+
+  await user.click(screen.getByRole('button', { name: 'Others cannot hear the arbitrator' }))
+  await user.click(screen.getByRole('button', { name: 'USB headset/device' }))
+  await user.click(screen.getByRole('button', { name: 'No' }))
+
+  expect(screen.getByText('Tier 1 roadblock')).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: /Back to previous troubleshooting step/i }))
+
+  expect(screen.getByText(/Does the computer or mobile device itself recognize/i)).toBeInTheDocument()
+  expect(screen.queryByText('Tier 1 roadblock')).not.toBeInTheDocument()
+})
+
+it('keeps Back navigation when troubleshooting redirects into another Host guide', async () => {
+  const user = userEvent.setup()
+  const route = HOST_GUIDED_ROUTES.find(item => item.id === 'host-controls-guided')
+  render(<HostSupportDrawer route={route} onClose={() => {}} />)
+
+  await user.click(screen.getByRole('button', { name: 'Yes' }))
+  expect(screen.getByText(/already inside the correct hearing/i)).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'No' }))
+
+  expect(screen.getByRole('heading', { name: /Start or join the hearing as host/i })).toBeInTheDocument()
+  expect(screen.getByText(/signed in to Zoom using the assigned credentials/i)).toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: /Back to previous troubleshooting step/i }))
+  expect(screen.getByRole('heading', { name: /Host controls are missing/i })).toBeInTheDocument()
+  expect(screen.getByText(/already inside the correct hearing/i)).toBeInTheDocument()
+})
