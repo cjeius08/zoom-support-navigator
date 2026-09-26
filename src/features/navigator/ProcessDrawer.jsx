@@ -46,6 +46,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
   const [selectedRoute, setSelectedRoute] = useState("");
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [outcome, setOutcome] = useState("active");
+  const [troubleshootingHistory, setTroubleshootingHistory] = useState([]);
   const [documentationPreviewOpen, setDocumentationPreviewOpen] = useState(false);
   const [documentationAdded, setDocumentationAdded] = useState(false);
   const dialogRef = useRef(null);
@@ -136,6 +137,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
     setOutcome("active");
     setDocumentationPreviewOpen(false);
     setDocumentationAdded(false);
+    setTroubleshootingHistory([]);
   }, [process.id, defaultPlatform]);
 
   function copyLabel(id, defaultLabel) {
@@ -182,6 +184,38 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
     setOutcome("active");
     setDocumentationPreviewOpen(false);
     setDocumentationAdded(false);
+    setTroubleshootingHistory([]);
+  }
+
+  function rememberTroubleshootingState() {
+    setTroubleshootingHistory((current) => [
+      ...current,
+      {
+        selectedRoute,
+        currentStepIndex,
+        outcome,
+        documentationPreviewOpen,
+        documentationAdded,
+      },
+    ]);
+  }
+
+  function goBackTroubleshooting() {
+    const previous = troubleshootingHistory[troubleshootingHistory.length - 1];
+    if (!previous) return;
+    setTroubleshootingHistory((current) => current.slice(0, -1));
+    setSelectedRoute(previous.selectedRoute);
+    setCurrentStepIndex(previous.currentStepIndex);
+    setOutcome(previous.outcome);
+    setDocumentationPreviewOpen(previous.documentationPreviewOpen);
+    setDocumentationAdded(previous.documentationAdded);
+    onTrackEvent?.({
+      eventType: "guide_back",
+      routeId: "navigator",
+      processId: process.id,
+      categoryId: process.category,
+      toolId: "previous_troubleshooting_step",
+    });
   }
 
   function selectPlatform(platform) {
@@ -200,8 +234,12 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
   }
 
   function selectGuideRoute(routeId) {
+    rememberTroubleshootingState();
     setSelectedRoute(routeId);
-    resetProgress();
+    setCurrentStepIndex(0);
+    setOutcome("active");
+    setDocumentationPreviewOpen(false);
+    setDocumentationAdded(false);
     onTrackEvent?.({
       eventType: "guide_path_selected",
       routeId: "navigator",
@@ -212,6 +250,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
   }
 
   function markResolved() {
+    rememberTroubleshootingState();
     setDocumentationPreviewOpen(false);
     setDocumentationAdded(false);
     setOutcome("resolved");
@@ -226,6 +265,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
   }
 
   function markNotResolved() {
+    rememberTroubleshootingState();
     if (currentStepIndex < activeSteps.length - 1) {
       setCurrentStepIndex((index) => index + 1);
       return;
@@ -354,6 +394,19 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
         >
           {tab === "quick" && (
             <section className="call-guide guided-process" aria-label="Call Guide">
+              {troubleshootingHistory.length > 0 && (
+                <div className="guide-troubleshooting-back-row">
+                  <button
+                    type="button"
+                    className="guide-back-step"
+                    aria-label="Back to previous troubleshooting step"
+                    onClick={goBackTroubleshooting}
+                  >
+                    ← Back
+                  </button>
+                  <small>Return to the previous troubleshooting step or result.</small>
+                </div>
+              )}
               <div className="section-heading">
                 <div>
                   <p className="eyebrow">Live-call assist</p>
@@ -531,15 +584,6 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
                         </button>
                       </div>
 
-                      {currentStepIndex > 0 && (
-                        <button
-                          type="button"
-                          className="guide-back-step"
-                          onClick={() => setCurrentStepIndex((index) => Math.max(0, index - 1))}
-                        >
-                          ← Previous step
-                        </button>
-                      )}
                     </article>
                   )}
 
