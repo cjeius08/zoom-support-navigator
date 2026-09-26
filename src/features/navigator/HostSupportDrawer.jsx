@@ -18,7 +18,15 @@ function documentationDevice(device) {
 }
 
 function nextStepIndex(route, next) {
-  return route.steps?.findIndex(step => step.id === next) ?? -1
+  return route?.steps?.findIndex(step => step.id === next) ?? -1
+}
+
+function routeById(id) {
+  return HOST_GUIDED_ROUTES.find(item => item.id === id) || null
+}
+
+function roadblockById(id) {
+  return HOST_ROADBLOCKS.find(item => item.id === id) || null
 }
 
 export function HostSupportDrawer({
@@ -33,6 +41,7 @@ export function HostSupportDrawer({
 }) {
   const dialogRef = useRef(null)
   const [device, setDevice] = useState(initialDevice || null)
+  const [activeRoute, setActiveRoute] = useState(route)
   const [gateIndex, setGateIndex] = useState(0)
   const [stepIndex, setStepIndex] = useState(0)
   const [phase, setPhase] = useState(roadblock ? 'roadblock' : 'confirm')
@@ -40,11 +49,13 @@ export function HostSupportDrawer({
   const [answers, setAnswers] = useState([])
   const [attemptedSteps, setAttemptedSteps] = useState([])
   const [documentationAdded, setDocumentationAdded] = useState(false)
+  const [history, setHistory] = useState([])
 
   useDialogFocus(dialogRef, true, onClose)
 
   useEffect(() => {
     setDevice(initialDevice || null)
+    setActiveRoute(route)
     setGateIndex(0)
     setStepIndex(0)
     setPhase(roadblock ? 'roadblock' : 'confirm')
@@ -52,21 +63,59 @@ export function HostSupportDrawer({
     setAnswers([])
     setAttemptedSteps([])
     setDocumentationAdded(false)
+    setHistory([])
   }, [route?.id, roadblock?.id, initialDevice])
 
-  const currentGate = route?.confirmBeforeProceeding?.[gateIndex] || null
-  const currentStep = route?.steps?.[stepIndex] || null
+  const currentGate = activeRoute?.confirmBeforeProceeding?.[gateIndex] || null
+  const currentStep = activeRoute?.steps?.[stepIndex] || null
   const platform = platformForDevice(device)
   const platformInstruction = currentStep?.platformInstructions?.[platform] || null
 
-  const sources = useMemo(() => route?.sourceRefs?.zoom || [], [route])
+  const sources = useMemo(() => activeRoute?.sourceRefs?.zoom || [], [activeRoute])
+
+  function snapshot() {
+    return {
+      routeId: activeRoute?.id || null,
+      phase,
+      gateIndex,
+      stepIndex,
+      roadblockId: activeRoadblock?.id || null,
+      answersLength: answers.length,
+      attemptedStepsLength: attemptedSteps.length,
+      documentationAdded,
+    }
+  }
+
+  function rememberCurrentState() {
+    setHistory(current => [...current, snapshot()])
+  }
+
+  function goBack() {
+    const previous = history[history.length - 1]
+    if (!previous) return
+
+    setHistory(current => current.slice(0, -1))
+    setActiveRoute(previous.routeId ? routeById(previous.routeId) : null)
+    setPhase(previous.phase)
+    setGateIndex(previous.gateIndex)
+    setStepIndex(previous.stepIndex)
+    setActiveRoadblock(previous.roadblockId ? roadblockById(previous.roadblockId) : null)
+    setAnswers(current => current.slice(0, previous.answersLength))
+    setAttemptedSteps(current => current.slice(0, previous.attemptedStepsLength))
+    setDocumentationAdded(previous.documentationAdded)
+    onTrackEvent?.({
+      eventType: 'host_troubleshooting_back',
+      routeId: 'navigator',
+      toolId: previous.routeId || previous.roadblockId || 'previous_step',
+    })
+  }
 
   function recordAnswer(label, value) {
     setAnswers(current => [...current, { label, value }])
   }
 
   function openRoadblock(id) {
-    const match = HOST_ROADBLOCKS.find(item => item.id === id)
+    const match = roadblockById(id)
     if (!match) return
     setActiveRoadblock(match)
     setPhase('roadblock')
@@ -76,6 +125,20 @@ export function HostSupportDrawer({
       routeId: 'navigator',
       toolId: id,
     })
+  }
+
+  function openGuidedRoute(id) {
+    const target = routeById(id)
+    if (target) {
+      setActiveRoute(target)
+      setGateIndex(0)
+      setStepIndex(0)
+      setPhase('confirm')
+      setActiveRoadblock(null)
+      setDocumentationAdded(false)
+      return
+    }
+    onOpenGuidedRoute?.(id)
   }
 
   function followBranch(branch, { fromGate = false } = {}) {
@@ -90,13 +153,13 @@ export function HostSupportDrawer({
       return
     }
 
-    if (branch?.next && HOST_GUIDED_ROUTES.some(item => item.id === branch.next)) {
-      onOpenGuidedRoute?.(branch.next)
+    if (branch?.next && routeById(branch.next)) {
+      openGuidedRoute(branch.next)
       return
     }
 
     if (branch?.next) {
-      const index = nextStepIndex(route, branch.next)
+      const index = nextStepIndex(activeRoute, branch.next)
       if (index >= 0) {
         setStepIndex(index)
         setPhase('steps')
@@ -104,7 +167,7 @@ export function HostSupportDrawer({
       }
     }
 
-    if (fromGate && gateIndex < (route?.confirmBeforeProceeding?.length || 0) - 1) {
+    if (fromGate && gateIndex < (activeRoute?.confirmBeforeProceeding?.length || 0) - 1) {
       setGateIndex(index => index + 1)
       return
     }
@@ -115,28 +178,30 @@ export function HostSupportDrawer({
       return
     }
 
-    if (stepIndex < (route?.steps?.length || 0) - 1) {
+    if (stepIndex < (activeRoute?.steps?.length || 0) - 1) {
       setStepIndex(index => index + 1)
       return
     }
 
     setPhase('roadblock')
-    setActiveRoadblock(HOST_ROADBLOCKS.find(item => item.id === 'roadblock-zoom-product') || null)
+    setActiveRoadblock(roadblockById('roadblock-zoom-product'))
   }
 
   function chooseGate(value, branch = null) {
+    rememberCurrentState()
     recordAnswer(currentGate?.prompt || 'Confirmation', value)
     followBranch(branch, { fromGate: true })
   }
 
   function chooseOption(option) {
+    rememberCurrentState()
     recordAnswer(currentGate?.prompt || 'Confirmation', option)
     const optionBranch = currentGate?.optionBranches?.[option]
     if (optionBranch) {
       followBranch(optionBranch, { fromGate: true })
       return
     }
-    if (gateIndex < (route?.confirmBeforeProceeding?.length || 0) - 1) {
+    if (gateIndex < (activeRoute?.confirmBeforeProceeding?.length || 0) - 1) {
       setGateIndex(index => index + 1)
     } else {
       setPhase('steps')
@@ -145,6 +210,7 @@ export function HostSupportDrawer({
   }
 
   function confirmStep(result) {
+    rememberCurrentState()
     const instruction = platformInstruction || currentStep?.instruction || ''
     setAttemptedSteps(current => [
       ...current,
@@ -173,7 +239,7 @@ export function HostSupportDrawer({
     if (!onAddToDocumentation) return
 
     const block = kind === 'roadblock' ? activeRoadblock : null
-    const issue = route?.title || block?.title || 'Host Zoom assistance'
+    const issue = activeRoute?.title || block?.title || 'Host Zoom assistance'
     const answered = answers.length
       ? `Confirmed before proceeding:\n${answers.map(item => `- ${item.label}: ${item.value}`).join('\n')}`
       : ''
@@ -182,21 +248,21 @@ export function HostSupportDrawer({
       : ''
     const stepsResult = [answered, attempted, block?.documentationSummary || ''].filter(Boolean).join('\n\n')
     const resolutionNextSteps = kind === 'resolved'
-      ? route?.documentation?.resolved || 'Resolved within approved Tier 1 Zoom support.'
+      ? activeRoute?.documentation?.resolved || 'Resolved within approved Tier 1 Zoom support.'
       : [
           block?.nextAction ? `Next action: ${block.nextAction}` : '',
           block?.script ? `Suggested wording: ${block.script}` : '',
         ].filter(Boolean).join('\n\n')
 
     onAddToDocumentation({
-      id: `host-${route?.id || block?.id || 'support'}-${Date.now()}`,
+      id: `host-${activeRoute?.id || block?.id || 'support'}-${Date.now()}`,
       device: documentationDevice(device),
       exactIssue: issue,
       stepsResult,
       resolutionNextSteps,
       outcome: kind === 'resolved' ? 'Resolved' : '',
       meta: {
-        hostGuidedRouteId: route?.id || null,
+        hostGuidedRouteId: activeRoute?.id || null,
         roadblockId: block?.id || null,
         result: kind,
       },
@@ -211,7 +277,7 @@ export function HostSupportDrawer({
 
   const title = activeRoadblock && phase === 'roadblock'
     ? activeRoadblock.title
-    : route?.title || roadblock?.title || 'Host support'
+    : activeRoute?.title || roadblock?.title || 'Host support'
 
   return <div className="drawer-backdrop" role="presentation" onMouseDown={event => event.target === event.currentTarget && onClose()}>
     <aside
@@ -250,6 +316,18 @@ export function HostSupportDrawer({
       </div>
 
       <div className="drawer-content host-support-content">
+        {history.length > 0 && <div className="host-troubleshooting-back-row">
+          <button
+            type="button"
+            className="guide-back-step host-troubleshooting-back"
+            aria-label="Back to previous troubleshooting step"
+            onClick={goBack}
+          >
+            ← Back
+          </button>
+          <small>Return to the previous confirmation or troubleshooting step.</small>
+        </div>}
+
         {phase === 'confirm' && currentGate && <section className="host-confirm-card">
           <p className="eyebrow">Confirm before proceeding</p>
           <h3>{currentGate.prompt}</h3>
@@ -267,7 +345,7 @@ export function HostSupportDrawer({
             <button type="button" onClick={() => chooseGate('No', currentGate.no)}>No</button>
             {currentGate.unsure && <button type="button" onClick={() => chooseGate('Not sure', currentGate.unsure)}>Not sure</button>}
           </div>}
-          <small>Confirmation {gateIndex + 1} of {route.confirmBeforeProceeding.length}</small>
+          <small>Confirmation {gateIndex + 1} of {activeRoute.confirmBeforeProceeding.length}</small>
         </section>}
 
         {phase === 'steps' && currentStep && <section className="host-step-card">
@@ -290,8 +368,6 @@ export function HostSupportDrawer({
               <button type="button" className="guide-not-resolved" onClick={() => confirmStep('no')}>No / not resolved</button>
             </div>
           </>}
-
-          {stepIndex > 0 && <button type="button" className="guide-back-step" onClick={() => setStepIndex(index => Math.max(0, index - 1))}>← Previous step</button>}
         </section>}
 
         {phase === 'resolved' && <section className="guide-resolution-state resolved host-resolution-card" role="status">
@@ -299,7 +375,7 @@ export function HostSupportDrawer({
           <div>
             <p className="eyebrow">Resolved within Tier 1</p>
             <h3>Stop troubleshooting here.</h3>
-            <p>{route?.documentation?.resolved || 'The approved Host path resolved the issue.'}</p>
+            <p>{activeRoute?.documentation?.resolved || 'The approved Host path resolved the issue.'}</p>
             <button type="button" onClick={() => addToDocumentation('resolved')}>{documentationAdded ? 'Added to Call Documentation ✓' : 'Add to Call Documentation'}</button>
           </div>
         </section>}
@@ -319,7 +395,7 @@ export function HostSupportDrawer({
           <button type="button" onClick={() => addToDocumentation('roadblock')}>{documentationAdded ? 'Added to Call Documentation ✓' : 'Add roadblock to Call Documentation'}</button>
         </section>}
 
-        {route && sources.length > 0 && <details className="host-source-details">
+        {activeRoute && sources.length > 0 && <details className="host-source-details">
           <summary>Official Zoom sources</summary>
           <div>
             {sources.map(source => <a key={source.url} href={source.url} target="_blank" rel="noreferrer">{source.title} ↗</a>)}
