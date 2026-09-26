@@ -97,7 +97,7 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
+export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -105,7 +105,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
   const [selectedRoute, setSelectedRoute] = useState(null)
   const [selectedHostRoute, setSelectedHostRoute] = useState(null)
   const [selectedHostRoadblock, setSelectedHostRoadblock] = useState(null)
-  const [callContext, setCallContext] = useState(EMPTY_CALL_CONTEXT)
+  const [callContext, setCallContext] = useState(() => ({ ...EMPTY_CALL_CONTEXT, role: initialRole }))
   const [commonIssueTab, setCommonIssueTab] = useState('Find the Right Guide')
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
   const [activeSuggestion, setActiveSuggestion] = useState(-1)
