@@ -10,6 +10,21 @@
   },
   "updates": [
     {
+      "id": "smart-search-relevance-hardening",
+      "date": "2026-09-26",
+      "area": "Home / Smart Search",
+      "audience": "all",
+      "title": "Smart Search relevance hardened for live-call safety",
+      "changed": "Fixed a Host / Arbitrator Smart Search relevance bug that could surface unrelated troubleshooting or roadblock results for a caller symptom. Search now separates the audio symptom “hear” from proceeding-context “hearing,” ignores conversational filler such as “anyone” or “caller,” removes unsafe short-prefix matches, and requires every meaningful symptom term to be supported before a Host topic or roadblock can match. The shared Process search received the same semantic guard. Added regression coverage for audio, camera, screen sharing, host controls, meeting ID, Waiting Room, network, app/browser, and direct roadblock searches.",
+      "checks": [
+        "On Home with Host / Arbitrator selected, search “I can’t hear anyone” and confirm My microphone, speaker, or headset is not working is the first result.",
+        "Confirm the same audio search does not show the screen-sharing Host Guide or Unable to join roadblock.",
+        "Search “no sound,” “camera not working,” “can’t share screen,” “no host controls,” and “unstable network,” and confirm the matching Host Guide is first.",
+        "Search “firewall” and “locked setting” and confirm the matching Tier 1 Roadblock remains directly searchable.",
+        "Switch to Participant and confirm existing symptom/typo Smart Search behavior still works."
+      ]
+    },
+    {
       "id": "common-issue-scripts-process-roadblocks",
       "date": "2026-09-26",
       "area": "Common Issues / Process Guides",
