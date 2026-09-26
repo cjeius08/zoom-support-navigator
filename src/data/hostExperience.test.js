@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { hostFastestTopics, hostProcesses, searchHostRoadblocks, searchHostTopics } from './hostExperience'
+import { hostFastestTopics, hostProcesses, hostTopics, searchHostRoadblocks, searchHostTopics } from './hostExperience'
 import { PROCESSES } from './processes'
 import { HOST_SUPPORT_TOPICS } from './arbitratorHostSupport'
 
