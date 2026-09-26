@@ -34,6 +34,7 @@ export function CommonIssueDrawer({
   onToggleFavorite = () => {},
 }) {
   const [tab, setTab] = useState('quick')
+  const [scriptCopyState, setScriptCopyState] = useState('idle')
   const dialogRef = useRef(null)
   useDialogFocus(dialogRef, true, onClose)
 
@@ -51,6 +52,7 @@ export function CommonIssueDrawer({
   useEffect(() => {
     setTab('quick')
     setSelectedState(null)
+    setScriptCopyState('idle')
   }, [route.id])
 
   const routeHasDeviceBoundary = Array.isArray(route.supportedDevices) && route.supportedDevices.length > 0
@@ -102,6 +104,24 @@ export function CommonIssueDrawer({
             ? `${selectedDevice} selected · approved guide gap`
             : `${selectedDevice} selected`
 
+
+  async function copySuggestedScript() {
+    if (!route.script) return
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable')
+      await navigator.clipboard.writeText(route.script.replace(/^“|”$/g, ''))
+      setScriptCopyState('copied')
+    } catch {
+      setScriptCopyState('failed')
+    }
+    window.setTimeout(() => setScriptCopyState('idle'), 1600)
+    onTrackEvent?.({
+      eventType: 'copy_action',
+      routeId: 'navigator',
+      categoryId: route.categoryId,
+      toolId: `common_issue_${route.id}_suggested_script`,
+    })
+  }
 
   function startRecommendedGuide() {
     if (!recommendedProcess) return
@@ -247,6 +267,24 @@ export function CommonIssueDrawer({
             <ol className="common-issue-confirm-list">
               {route.confirm.slice(0, 3).map(question => <li key={question}>{question}</li>)}
             </ol>
+          </section>
+          <section className="common-issue-script-card" aria-label="Suggested agent script">
+            <div className="common-issue-script-heading">
+              <div>
+                <p className="eyebrow">Suggested agent script</p>
+                <h3>Source-aligned wording</h3>
+              </div>
+              <button type="button" onClick={copySuggestedScript}>
+                {scriptCopyState === 'copied' ? 'Copied ✓' : scriptCopyState === 'failed' ? 'Copy failed' : 'Copy Script'}
+              </button>
+            </div>
+            <blockquote>{route.script}</blockquote>
+            <div className="common-issue-script-source">
+              <span>Based on the current Zoom behavior documented for this issue; wording is adapted for a live support call, not copied verbatim.</span>
+              {preferredSource?.url && <a href={preferredSource.url} target="_blank" rel="noreferrer">
+                Verify in Zoom Support — {preferredSource.title} ↗
+              </a>}
+            </div>
           </section>
 
           {route.redirectNotes?.length > 0 && <section className="common-issue-section route-switches">

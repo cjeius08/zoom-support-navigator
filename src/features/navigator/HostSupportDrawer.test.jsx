@@ -94,3 +94,16 @@ it('keeps Back navigation when troubleshooting redirects into another Host guide
   expect(screen.getByRole('heading', { name: /Host controls are missing/i })).toBeInTheDocument()
   expect(screen.getByText(/already inside the correct hearing/i)).toBeInTheDocument()
 })
+
+
+it('shows the Host Common Issue suggested script with its official Zoom source', () => {
+  const route = HOST_GUIDED_ROUTES.find(item => item.id === 'host-controls-guided')
+  render(<HostSupportDrawer route={route} onClose={() => {}} />)
+
+  const dialog = screen.getByRole('dialog', { name: /Host controls are missing/i })
+  const scriptCard = within(dialog).getByLabelText('Suggested agent script')
+  expect(within(scriptCard).getByText(/meeting host/i)).toBeInTheDocument()
+  expect(within(scriptCard).getByRole('link', { name: /Verify in Zoom Support/i }))
+    .toHaveAttribute('href', expect.stringContaining('KB0065164'))
+  expect(within(scriptCard).getByRole('button', { name: 'Copy Script' })).toBeInTheDocument()
+})

@@ -220,7 +220,7 @@ it('keeps authoritative sources visible but secondary to the quick route', async
 
   expect(within(dialog).getByRole('link', { name: /Official Zoom Support/i })).toHaveAttribute('href', expect.stringContaining('support.zoom.com'))
   expect(within(dialog).getByText(/Zoom Camera Troubleshooting During a Meeting/i)).toBeInTheDocument()
-  expect(within(dialog).getByText(/Verified against official Zoom Support: September 23, 2026/i)).toBeInTheDocument()
+  expect(within(dialog).getByText(/Verified against official Zoom Support: September 26, 2026/i)).toBeInTheDocument()
 })
 
 
@@ -362,4 +362,43 @@ it('routes Can’t Join to the mobile joining guide on iPhone and Android', asyn
 
   await user.click(within(dialog).getByRole('button', { name: 'Windows' }))
   expect(within(dialog).getByRole('heading', { name: /Troubleshooting When You Can’t Join a Zoom Meeting/i })).toBeInTheDocument()
+})
+
+
+it('shows a source-aligned suggested script in every Common Issue', async () => {
+  for (const route of COMMON_ISSUE_ROUTES) {
+    expect(route.script).toBeTruthy()
+    expect(route.primarySource?.url).toMatch(/^https:\/\/support\.zoom\.com\//)
+  }
+
+  const user = userEvent.setup()
+  render(<Navigator initialRole="Participant" />)
+  await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
+
+  const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
+  const scriptCard = within(dialog).getByLabelText('Suggested agent script')
+  expect(within(scriptCard).getByText(/check the audio path first/i)).toBeInTheDocument()
+  expect(within(scriptCard).getByRole('link', { name: /Verify in Zoom Support/i }))
+    .toHaveAttribute('href', expect.stringContaining('KB0060836'))
+  expect(within(scriptCard).getByRole('button', { name: 'Copy Script' })).toBeInTheDocument()
+})
+
+it('keeps source-backed wording aligned with current Zoom distinctions', () => {
+  const meetingControls = COMMON_ISSUE_ROUTES.find(item => item.id === 'meeting-controls')
+  expect(meetingControls.script).toMatch(/visible controls and More/i)
+
+  const transfer = COMMON_ISSUE_ROUTES.find(item => item.id === 'transfer-device')
+  expect(transfer.script).toMatch(/same Zoom account/i)
+
+  const muted = COMMON_ISSUE_ROUTES.find(item => item.id === 'join-muted')
+  expect(muted.script).toMatch(/connected to audio but muted/i)
+  expect(muted.script).toMatch(/not to connect to audio/i)
+
+  const multipleChannels = COMMON_ISSUE_ROUTES.find(item => item.id === 'multiple-audio-input-channels')
+  expect(multipleChannels.script).toMatch(/at least three input channels/i)
+  expect(multipleChannels.script).toMatch(/save/i)
+
+  const preJoin = COMMON_ISSUE_ROUTES.find(item => item.id === 'participants-before-join')
+  expect(preJoin.script).toMatch(/Zoom plan/i)
+  expect(preJoin.script).toMatch(/Zoom Calendar/i)
 })

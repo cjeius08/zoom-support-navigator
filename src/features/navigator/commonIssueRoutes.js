@@ -1,6 +1,6 @@
 import { normalizeSearchText, searchProcesses } from './smartSearch'
 
-export const COMMON_ISSUE_VERIFIED_AT = 'September 23, 2026'
+export const COMMON_ISSUE_VERIFIED_AT = 'September 26, 2026'
 
 export const COMMON_ISSUE_ROUTES = [
   {
@@ -1316,7 +1316,7 @@ export const COMMON_ISSUE_ROUTES = [
     ],
     success: 'The caller can see the participants Zoom reports as already joined before entering the eligible scheduled meeting.',
     unresolved: 'If all stated requirements are met but participant information remains unavailable, follow the organization’s Zoom Calendar/escalation path. Do not change account or calendar integration settings outside the caller’s authorization.',
-    script: '“Before we assume nobody is there, let’s confirm whether your account and Zoom Calendar setup support the pre-join participant view.”',
+    script: '“Before we assume nobody is there, let’s confirm whether your Zoom plan and Zoom Calendar setup support the pre-join participant view.”',
     processIds: [
       'viewing-participants-already-in-a-meeting-before-joining',
       'zoom-basic-support-boundaries-decision-path-referral-process',

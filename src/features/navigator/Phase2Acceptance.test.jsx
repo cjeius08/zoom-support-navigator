@@ -65,8 +65,8 @@ it('freezes the approved route and Process Guide inventories', () => {
   expect(PROCESSES).toHaveLength(27)
 })
 
-it('records the September 23 source-routing audit', () => {
-  expect(COMMON_ISSUE_VERIFIED_AT).toBe('September 23, 2026')
+it('records the September 26 source-routing audit', () => {
+  expect(COMMON_ISSUE_VERIFIED_AT).toBe('September 26, 2026')
 })
 
 it('keeps every route discoverable from caller language', () => {

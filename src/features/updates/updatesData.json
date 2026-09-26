@@ -10,6 +10,21 @@
   },
   "updates": [
     {
+      "id": "common-issue-scripts-process-roadblocks",
+      "date": "2026-09-26",
+      "area": "Common Issues / Process Guides",
+      "audience": "all",
+      "title": "Common Issues now include suggested scripts, and exhausted Process Guides show possible roadblocks",
+      "changed": "Added source-aligned Suggested Agent Script cards to Common Issues, with a direct link back to the current official Zoom Support article used for that issue. Host / Arbitrator Common Issues now show the approved opening or resolved wording during the guided flow as well. When a Guided Process reaches the end without resolving the issue, Ozzie now shows relevant possible Tier 1 roadblocks with an explanation of why each one may fit, the support boundary, and the correct next action. Ozzie does not select a roadblock automatically; the agent still confirms which boundary matches the remaining issue.",
+      "checks": [
+        "Open a Participant Common Issue such as I can’t hear anyone and confirm Suggested Agent Script appears with Copy Script and a Verify in Zoom Support link.",
+        "Open a Host / Arbitrator Common Issue and confirm the source-aligned suggested wording appears before the confirmation/troubleshooting path.",
+        "Open a Process Guide, exhaust the approved steps, and confirm a Possible roadblock section appears below the next approved-path choices.",
+        "Expand a possible roadblock and confirm Why this may fit, Tier 1 boundary, and Next action are shown.",
+        "Confirm the roadblock section states that Ozzie does not select a roadblock automatically."
+      ]
+    },
+    {
       "id": "troubleshooting-back-navigation",
       "date": "2026-09-26",
       "area": "Home / Troubleshooting Navigation",

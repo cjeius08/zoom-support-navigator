@@ -19,7 +19,8 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.metadata.updatePolicy).toMatch(/Admin-only operational or administrative changes/i)
   expect(data.metadata.updatePolicy).toMatch(/Developer-only work/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
-  expect(data.updates.slice(0, 3).map(entry => entry.id)).toEqual([
+  expect(data.updates.slice(0, 4).map(entry => entry.id)).toEqual([
+    'common-issue-scripts-process-roadblocks',
     'troubleshooting-back-navigation',
     'host-arbitrator-guided-support',
     'host-roadblocks-referral-alignment',
@@ -28,16 +29,16 @@ it('keeps workspace metadata and update history complete and newest-first', () =
     date: '2026-09-26',
     audience: 'all',
   })
-  expect(data.updates[3]).toMatchObject({
+  expect(data.updates[4]).toMatchObject({
     id: 'faq-roadblock-matrix-support-reference',
     date: '2026-09-25',
     area: 'Home / Agent Reference',
     audience: 'all',
     status: 'historical',
   })
-  expect(data.updates[4]).toMatchObject({ id: 'flex-arbitration-zoom-support-greeting', audience: 'all' })
-  expect(data.updates[5]).toMatchObject({ id: 'windows-device-sandbox-home-shortcut', audience: 'all' })
-  expect(data.updates.slice(6, 9).map(entry => entry.id)).toEqual([
+  expect(data.updates[5]).toMatchObject({ id: 'flex-arbitration-zoom-support-greeting', audience: 'all' })
+  expect(data.updates[6]).toMatchObject({ id: 'windows-device-sandbox-home-shortcut', audience: 'all' })
+  expect(data.updates.slice(7, 10).map(entry => entry.id)).toEqual([
     'process-documents-search-normalization',
     'new-call-session-reset',
     'common-issues-smart-routing',
@@ -169,5 +170,19 @@ it('lists the September 26 troubleshooting Back navigation in What’s New', () 
   expect(entry.changed).toMatch(/persistent ← Back control/i)
   expect(entry.changed).toMatch(/recover from a misclick/i)
   expect(entry.changed).toMatch(/Tier 1 roadblocks/i)
+  expect(entry.checks.length).toBeGreaterThanOrEqual(5)
+})
+
+
+it('lists the September 26 Common Issue scripts and Process roadblock guidance in What’s New', () => {
+  const path = join(cwd(), 'src/features/updates/updatesData.json')
+  const data = JSON.parse(readFileSync(path, 'utf8'))
+  const entry = data.updates.find(item => item.id === 'common-issue-scripts-process-roadblocks')
+
+  expect(entry).toMatchObject({ date: '2026-09-26', area: 'Common Issues / Process Guides', audience: 'all' })
+  expect(entry.changed).toMatch(/Suggested Agent Script/i)
+  expect(entry.changed).toMatch(/official Zoom Support article/i)
+  expect(entry.changed).toMatch(/possible Tier 1 roadblocks/i)
+  expect(entry.changed).toMatch(/does not select a roadblock automatically/i)
   expect(entry.checks.length).toBeGreaterThanOrEqual(5)
 })
