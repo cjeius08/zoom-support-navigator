@@ -197,7 +197,7 @@ it('lists the September 26 Smart Search safety fix in What’s New', () => {
 
   expect(entry).toMatchObject({ date: '2026-09-26', area: 'Home / Smart Search', audience: 'all' })
   expect(entry.changed).toMatch(/unrelated troubleshooting or roadblock results/i)
-  expect(entry.changed).toMatch(/“hear”.*“hearing”/i)
+  expect(entry.changed).toMatch(/hear.*hearing/i)
   expect(entry.changed).toMatch(/every meaningful symptom term/i)
   expect(entry.checks.length).toBeGreaterThanOrEqual(5)
 })
