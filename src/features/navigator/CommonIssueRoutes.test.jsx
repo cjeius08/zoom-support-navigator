@@ -15,7 +15,7 @@ it('gives Common Issue tabs their own row above the content panel', () => {
 
 it('preserves the five Fastest Routes and exposes all nineteen reviewed routes under Common Issues', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
 
   expect(screen.getByRole('button', { name: /Can’t join the meeting/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /I can’t hear anyone/i })).toBeInTheDocument()
@@ -43,7 +43,7 @@ it('preserves the five Fastest Routes and exposes all nineteen reviewed routes u
 
 it('classifies cannot-hear as an audio-output symptom before assuming connection trouble', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
 
   await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
 
@@ -55,7 +55,7 @@ it('classifies cannot-hear as an audio-output symptom before assuming connection
 
 it('keeps waiting-for-host and Waiting Room as separate meeting states', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
 
   await user.click(screen.getByRole('button', { name: /I’m waiting to get in/i }))
 
@@ -68,7 +68,7 @@ it('keeps waiting-for-host and Waiting Room as separate meeting states', async (
 
 it('routes natural caller language directly to the common issue guide', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
   const search = screen.getByRole('combobox', { name: 'Search support processes' })
 
   await user.type(search, 'they cant hear me')
@@ -110,7 +110,7 @@ it.each([
   ['unable to establish secure connection', 'Zoom says “Unable to establish secure connection”'],
 ])('shows the intended Batch 3 Common Issue first in autocomplete for %s', async (query, title) => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
   const search = screen.getByRole('combobox', { name: 'Search support processes' })
 
   await user.type(search, query)
@@ -129,7 +129,7 @@ it.each([
   ['who is already in the meeting', 'Who is already in the meeting?'],
 ])('shows the intended Batch 4 Common Issue first in autocomplete for %s', async (query, title) => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
   const search = screen.getByRole('combobox', { name: 'Search support processes' })
 
   await user.type(search, query)
@@ -197,7 +197,7 @@ it('keeps camera join preferences explicit about default versus one-time behavio
 
 it('uses the Phase 1 device and role context inside a common issue route', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
 
   await user.click(screen.getByRole('button', { name: /They can’t hear me/i }))
 
@@ -211,7 +211,7 @@ it('uses the Phase 1 device and role context inside a common issue route', async
 
 it('keeps authoritative sources visible but secondary to the quick route', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
 
   await user.click(screen.getByRole('button', { name: /My camera isn’t working/i }))
   const dialog = screen.getByRole('dialog', { name: /My camera isn’t working/i })
@@ -268,7 +268,7 @@ it('uses Zoom’s documented manual join address instead of an alternate hostnam
 
 it('routes an iPhone no-sound symptom to the approved mobile audio process', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
 
   await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
   const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
@@ -281,7 +281,7 @@ it('routes an iPhone no-sound symptom to the approved mobile audio process', asy
 
 it('routes a Windows no-sound symptom to the approved desktop audio process', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
 
   await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
   const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
@@ -293,7 +293,7 @@ it('routes a Windows no-sound symptom to the approved desktop audio process', as
 
 it('prompts for device context before exposing device-specific checks', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
 
   await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
   const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
@@ -316,7 +316,7 @@ it('keeps every Common Issue recommendation inside its approved Process Document
 
 it('shows the mobile Zoom source first when an iPhone audio route is selected', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
 
   await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
   const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
@@ -332,7 +332,7 @@ it('shows the mobile Zoom source first when an iPhone audio route is selected', 
 
 it('switches the visible official source when the selected audio device changes', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
 
   await user.click(screen.getByRole('button', { name: /I can’t hear anyone/i }))
   const dialog = screen.getByRole('dialog', { name: /I can’t hear anyone/i })
@@ -348,7 +348,7 @@ it('switches the visible official source when the selected audio device changes'
 
 it('routes Can’t Join to the mobile joining guide on iPhone and Android', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
 
   await user.click(screen.getByRole('button', { name: /Can’t join the meeting/i }))
   const dialog = screen.getByRole('dialog', { name: /Can’t join the meeting/i })
