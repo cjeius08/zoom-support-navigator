@@ -37,4 +37,16 @@ describe('smart support search', () => {
   it('keeps exact title-oriented matches ahead of broader fuzzy matches', () => {
     expect(searchProcesses(PROCESSES, 'bluetooth')[0]?.id).toBe('using-bluetooth-headphones-with-zoom-on-android-ios')
   })
+
+  it('ignores conversational filler without losing the actual symptom', () => {
+    expect(idsFor("I can't hear anyone")).toContain('zoom-audio-troubleshooting')
+    expect(idsFor('caller cannot hear anybody')).toContain('zoom-audio-troubleshooting')
+  })
+
+  it('does not treat the audio verb "hear" as the proceeding word "hearing"', () => {
+    const results = searchProcesses(PROCESSES, 'hear').slice(0, 8)
+    expect(results.some(process => /audio|speaker|microphone/i.test(process.title))).toBe(true)
+    expect(results[0]?.id).not.toBe('zoom-basic-support-boundaries-decision-path-referral-process')
+  })
+
 })

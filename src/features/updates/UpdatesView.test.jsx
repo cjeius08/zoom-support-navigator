@@ -4,6 +4,7 @@ import { UpdatesView } from './UpdatesView'
 
 it('shows user-facing changes while hiding admin-only release notes from members and leads', () => {
   render(<UpdatesView isAdmin={false} />)
+  expect(screen.getByRole('heading', { name: 'Smart Search relevance hardened for live-call safety' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Common Issues now include suggested scripts, and exhausted Process Guides show possible roadblocks' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Back navigation added across troubleshooting' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Ozzie is now Host / Arbitrator-first for live Zoom support' })).toBeInTheDocument()

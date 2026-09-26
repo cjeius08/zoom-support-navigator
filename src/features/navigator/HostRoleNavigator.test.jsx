@@ -55,3 +55,37 @@ it('makes Tier 1 roadblocks directly searchable and documentation-ready', async 
   expect(onAddToDocumentation).toHaveBeenCalledTimes(1)
   expect(onAddToDocumentation.mock.calls[0][0].resolutionNextSteps).toMatch(/internet service provider or device\/network support/i)
 })
+
+
+it('shows the correct Host audio guide first for "I can’t hear anyone" and suppresses unrelated results', async () => {
+  const user = userEvent.setup()
+  render(<Navigator />)
+
+  const search = screen.getByRole('combobox', { name: 'Search support processes' })
+  await user.type(search, "I can't hear anyone")
+
+  const listbox = screen.getByRole('listbox', { name: 'Search suggestions' })
+  const options = within(listbox).getAllByRole('option')
+
+  expect(options[0]).toHaveTextContent(/My microphone, speaker, or headset is not working/i)
+  expect(within(listbox).queryByRole('option', { name: /I need to share my screen or allow a participant to share/i })).not.toBeInTheDocument()
+  expect(within(listbox).queryByRole('option', { name: /Unable to join after approved basic joining troubleshooting/i })).not.toBeInTheDocument()
+})
+
+it.each([
+  ['no sound', /My microphone, speaker, or headset is not working/i],
+  ['camera not working', /My camera is not working/i],
+  ["can't share screen", /I need to share my screen or allow a participant to share/i],
+  ['no host controls', /I do not see my host controls/i],
+  ['unstable network', /I cannot join reliably or I keep getting disconnected/i],
+])('puts the expected Host guide first for %s', async (query, expectedName) => {
+  const user = userEvent.setup()
+  const { unmount } = render(<Navigator />)
+
+  const search = screen.getByRole('combobox', { name: 'Search support processes' })
+  await user.type(search, query)
+  const listbox = screen.getByRole('listbox', { name: 'Search suggestions' })
+  expect(within(listbox).getAllByRole('option')[0]).toHaveTextContent(expectedName)
+
+  unmount()
+})

@@ -1,9 +1,11 @@
 const STOP_WORDS = new Set([
   'a', 'an', 'the', 'is', 'are', 'am', 'my', 'our', 'their',
-  'customer', 'customers', 'zoom', 'issue', 'issues', 'problem', 'problems',
+  'customer', 'customers', 'caller', 'callers', 'user', 'users', 'zoom', 'issue', 'issues', 'problem', 'problems',
   'not', 'no', 'working', 'work', 'works', 'wont', 'doesnt', 'does', 'do',
   'i', 'me', 'myself', 'we', 'us', 'you', 'they', 'them', 'where', 'button',
   'hasnt', 'havent', 'room',
+  'anyone', 'anybody', 'someone', 'somebody', 'everyone', 'everybody',
+  'please', 'help', 'with', 'for',
 ])
 
 const SEARCH_ALIASES = {
@@ -128,10 +130,18 @@ function prefixStrength(queryToken, candidateToken) {
 function fuzzyStrength(queryToken, candidateToken) {
   if (queryToken === candidateToken) return 1
 
+  // "hear" is an audio symptom while "hearing" is often proceeding context.
+  // Do not let prefix matching collapse those meanings.
+  if ((queryToken === 'hear' && candidateToken === 'hearing') || (queryToken === 'hearing' && candidateToken === 'hear')) return 0
+
   const prefixMatch = prefixStrength(queryToken, candidateToken)
   if (prefixMatch) return prefixMatch
 
-  if (candidateToken.length >= 4 && queryToken.startsWith(candidateToken)) return 0.8
+  if (
+    candidateToken.length >= 4
+    && queryToken.startsWith(candidateToken)
+    && queryToken.length - candidateToken.length <= 2
+  ) return 0.8
   if (isAdjacentTransposition(queryToken, candidateToken)) return 0.8
 
   const longest = Math.max(queryToken.length, candidateToken.length)
