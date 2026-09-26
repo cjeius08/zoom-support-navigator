@@ -4,6 +4,9 @@ import { UpdatesView } from './UpdatesView'
 
 it('shows user-facing changes while hiding admin-only release notes from members and leads', () => {
   render(<UpdatesView isAdmin={false} />)
+  expect(screen.getByRole('heading', { name: 'Back navigation added across troubleshooting' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Ozzie is now Host / Arbitrator-first for live Zoom support' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Roadblocks now stop at the correct Tier 1 boundary and show the right next action' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'New Call now starts a clean support session' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Common Issues now helps you find the right approved guide' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Process Guides now give device-specific troubleshooting one step at a time' })).toBeInTheDocument()
