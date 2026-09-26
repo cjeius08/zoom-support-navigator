@@ -27,8 +27,9 @@ it('opens a roadblock immediately when a confirmation hits a Tier 1 boundary', a
   await user.click(screen.getByRole('button', { name: 'No' }))
 
   expect(screen.getByText('Tier 1 roadblock')).toBeInTheDocument()
-  expect(screen.getByRole('heading', { name: /not recognized by the device itself/i })).toBeInTheDocument()
-  expect(screen.getByText(/device manufacturer or appropriate hardware support/i)).toBeInTheDocument()
+  const roadblockCard = screen.getByText('Tier 1 roadblock').closest('.host-roadblock-card')
+  expect(within(roadblockCard).getByRole('heading', { name: /not recognized by the device itself/i })).toBeInTheDocument()
+  expect(within(roadblockCard).getByText(/device manufacturer or appropriate hardware support/i)).toBeInTheDocument()
 })
 
 it('adds a direct roadblock to the existing Call Documentation handoff without changing the form', async () => {
