@@ -9,6 +9,7 @@ afterEach(() => cleanup())
 async function openRouteWithContext({ device, role, routeName, state }) {
   const user = userEvent.setup()
   render(<Navigator />)
+  await user.click(screen.getByRole('button', { name: 'Participant' }))
   await user.click(screen.getByRole('tab', { name: 'Common Issues' }))
   await user.click(screen.getByRole('button', { name: routeName }))
   const dialog = screen.getByRole('dialog')
