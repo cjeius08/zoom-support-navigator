@@ -79,7 +79,8 @@ it('carries a related training selection through the full app route', async () =
   const user = userEvent.setup()
   render(<App />)
 
-  await user.click(await screen.findByRole('tab', { name: 'Process Guides' }))
+  await user.click(await screen.findByRole('button', { name: 'Participant' }))
+  await user.click(screen.getByRole('tab', { name: 'Process Guides' }))
   await user.click(screen.getByRole('button', { name: /Joining Meetings/i }))
   await user.click(screen.getByRole('button', { name: /Troubleshooting When You Can’t Join a Zoom Meeting/i }))
   await user.click(screen.getByRole('button', { name: 'How to Join a Zoom Meeting' }))
@@ -97,7 +98,7 @@ it('exposes exactly one main landmark in the authenticated Navigator', async () 
 
 it('shows copy feedback only on the clicked control and reports clipboard failure inline', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
   await user.click(screen.getByRole('tab', { name: 'Process Guides' }))
   await user.click(screen.getByRole('button', { name: /Joining Meetings/i }))
   await user.click(screen.getByRole('button', { name: /Troubleshooting When You Can’t Join a Zoom Meeting/i }))
@@ -115,7 +116,7 @@ it('shows copy feedback only on the clicked control and reports clipboard failur
 
 it('traps focus in the process drawer and restores focus to its opener on Escape', async () => {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
   await user.click(screen.getByRole('tab', { name: 'Process Guides' }))
   await user.click(screen.getByRole('button', { name: /Joining Meetings/i }))
   const opener = screen.getByRole('button', { name: /Troubleshooting When You Can’t Join a Zoom Meeting/i })
