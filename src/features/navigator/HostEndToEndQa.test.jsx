@@ -96,8 +96,9 @@ it('captures a mid-troubleshooting meeting-details roadblock and its approved ne
   await user.click(within(dialog).getByRole('button', { name: 'No / not resolved' }))
 
   expect(within(dialog).getByText('Tier 1 roadblock')).toBeInTheDocument()
-  expect(within(dialog).getByRole('heading', { name: /Incorrect or uncertain meeting link/i })).toBeInTheDocument()
-  expect(within(dialog).getByText(/welcome email from kipsflexmassarbs@ogletreedeakins.com/i)).toBeInTheDocument()
+  const meetingRoadblock = within(dialog).getByText('Tier 1 roadblock').closest('.host-roadblock-card')
+  expect(within(meetingRoadblock).getByRole('heading', { name: /Incorrect or uncertain meeting link/i })).toBeInTheDocument()
+  expect(within(meetingRoadblock).getByText(/welcome email from kipsflexmassarbs@ogletreedeakins.com/i)).toBeInTheDocument()
   await user.click(within(dialog).getByRole('button', { name: /Add roadblock to Call Documentation/i }))
 
   const dock = await waitFor(() => documentationDock())
@@ -118,9 +119,10 @@ it('stops immediately on a recording-setting or policy request instead of forcin
   await user.click(within(dialog).getByRole('button', { name: 'Can I stop/pause/change the recording?' }))
 
   expect(within(dialog).getByText('Tier 1 roadblock')).toBeInTheDocument()
-  expect(within(dialog).getByRole('heading', { name: /Privacy, recording, confidentiality, or proceeding-policy question/i })).toBeInTheDocument()
+  const recordingRoadblock = within(dialog).getByText('Tier 1 roadblock').closest('.host-roadblock-card')
+  expect(within(recordingRoadblock).getByRole('heading', { name: /Privacy, recording, confidentiality, or proceeding-policy question/i })).toBeInTheDocument()
   expect(within(dialog).queryByText(/Approved troubleshooting/i)).not.toBeInTheDocument()
-  expect(within(dialog).getByText(/cannot interpret privacy, recording, confidentiality, or proceeding rules/i)).toBeInTheDocument()
+  expect(within(recordingRoadblock).getByText(/cannot interpret privacy, recording, confidentiality, or proceeding rules/i)).toBeInTheDocument()
 })
 
 it('redirects a Host who is not inside the hearing to the Host start/join guide without falling into Participant guidance', async () => {
