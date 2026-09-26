@@ -46,7 +46,7 @@ const FROZEN_PROCESS_IDS = [
 
 async function openFromSearch({ query, device, role, state }) {
   const user = userEvent.setup()
-  render(<Navigator />)
+  render(<Navigator initialRole="Participant" />)
   const search = screen.getByRole('combobox', { name: 'Search support processes' })
   await user.type(search, query)
   const listbox = screen.getByRole('listbox', { name: 'Search suggestions' })
