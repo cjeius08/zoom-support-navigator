@@ -34,3 +34,13 @@ it('hides participant-only and review-gap processes from Host mode', () => {
   expect(ids.has('enabling-and-managing-multiple-audio-input-channels-in-zoom')).toBe(false)
   expect(ids.has('testing-your-audio-settings-for-zoom-meetings')).toBe(true)
 })
+
+
+it('keeps stale referral imports out of the Host Process Guide surface', () => {
+  const visible = hostProcesses(PROCESSES)
+  const combined = visible.map(process => [process.text, process.sourceText, process.referral].filter(Boolean).join('\n')).join('\n')
+  expect(combined).not.toMatch(/odflexmassarbs@ogletreedeakins\.com/i)
+  expect(combined).not.toMatch(/please contact your organization.?s IT/i)
+  expect(combined).not.toMatch(/Zoom administrator/i)
+  expect(combined).not.toMatch(/CONTACT IT/i)
+})
