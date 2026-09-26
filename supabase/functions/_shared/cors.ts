@@ -5,8 +5,14 @@ export function allowedOrigin(origin: string | null, allowlist = defaults) {
   return origin && origins.includes(origin) ? origin : null
 }
 
+function configuredOrigins() {
+  const primary = Deno.env.get('ALLOWED_ORIGINS') ?? defaults
+  const additional = Deno.env.get('ADDITIONAL_ALLOWED_ORIGINS') ?? ''
+  return [primary, additional].filter(Boolean).join(',')
+}
+
 export function corsHeaders(request: Request) {
-  const origin = allowedOrigin(request.headers.get('Origin'), Deno.env.get('ALLOWED_ORIGINS') ?? defaults)
+  const origin = allowedOrigin(request.headers.get('Origin'), configuredOrigins())
   return {
     ...(origin ? { 'Access-Control-Allow-Origin': origin, Vary: 'Origin' } : {}),
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
