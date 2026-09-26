@@ -19,8 +19,10 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.metadata.updatePolicy).toMatch(/Admin-only operational or administrative changes/i)
   expect(data.metadata.updatePolicy).toMatch(/Developer-only work/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
-  expect(data.updates.slice(0, 4).map(entry => entry.id)).toEqual([
+  expect(data.updates.slice(0, 5).map(entry => entry.id)).toEqual([
+    'smart-search-relevance-hardening',
     'common-issue-scripts-process-roadblocks',
+    'smart-search-relevance-hardening',
     'troubleshooting-back-navigation',
     'host-arbitrator-guided-support',
     'host-roadblocks-referral-alignment',
@@ -29,16 +31,16 @@ it('keeps workspace metadata and update history complete and newest-first', () =
     date: '2026-09-26',
     audience: 'all',
   })
-  expect(data.updates[4]).toMatchObject({
+  expect(data.updates[5]).toMatchObject({
     id: 'faq-roadblock-matrix-support-reference',
     date: '2026-09-25',
     area: 'Home / Agent Reference',
     audience: 'all',
     status: 'historical',
   })
-  expect(data.updates[5]).toMatchObject({ id: 'flex-arbitration-zoom-support-greeting', audience: 'all' })
-  expect(data.updates[6]).toMatchObject({ id: 'windows-device-sandbox-home-shortcut', audience: 'all' })
-  expect(data.updates.slice(7, 10).map(entry => entry.id)).toEqual([
+  expect(data.updates[6]).toMatchObject({ id: 'flex-arbitration-zoom-support-greeting', audience: 'all' })
+  expect(data.updates[7]).toMatchObject({ id: 'windows-device-sandbox-home-shortcut', audience: 'all' })
+  expect(data.updates.slice(8, 11).map(entry => entry.id)).toEqual([
     'process-documents-search-normalization',
     'new-call-session-reset',
     'common-issues-smart-routing',
@@ -184,5 +186,18 @@ it('lists the September 26 Common Issue scripts and Process roadblock guidance i
   expect(entry.changed).toMatch(/official Zoom Support article/i)
   expect(entry.changed).toMatch(/possible Tier 1 roadblocks/i)
   expect(entry.changed).toMatch(/does not select a roadblock automatically/i)
+  expect(entry.checks.length).toBeGreaterThanOrEqual(5)
+})
+
+
+it('lists the September 26 Smart Search safety fix in What’s New', () => {
+  const path = join(cwd(), 'src/features/updates/updatesData.json')
+  const data = JSON.parse(readFileSync(path, 'utf8'))
+  const entry = data.updates.find(item => item.id === 'smart-search-relevance-hardening')
+
+  expect(entry).toMatchObject({ date: '2026-09-26', area: 'Home / Smart Search', audience: 'all' })
+  expect(entry.changed).toMatch(/unrelated troubleshooting or roadblock results/i)
+  expect(entry.changed).toMatch(/“hear”.*“hearing”/i)
+  expect(entry.changed).toMatch(/every meaningful symptom term/i)
   expect(entry.checks.length).toBeGreaterThanOrEqual(5)
 })
