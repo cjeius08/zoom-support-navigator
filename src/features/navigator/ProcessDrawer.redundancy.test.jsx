@@ -271,3 +271,41 @@ it('previews only completed troubleshooting before explicitly handing it to Call
   expect(onAddToDocumentation.mock.calls[0][0].stepsResult).not.toContain('Check operating system audio')
   expect(within(preview).getByText(/Added to draft/i)).toBeInTheDocument()
 })
+
+
+it('lets the agent back out of a Process Guide step or result after a misclick', async () => {
+  const user = userEvent.setup()
+  const process = {
+    id: 'back-navigation-process',
+    title: 'Back navigation test process',
+    purpose: 'Verify reversible troubleshooting.',
+    category: 'support',
+    referral: 'Refer after approved troubleshooting is exhausted.',
+    visualReferences: [],
+    images: [],
+    text: [
+      'Process / Step-by-Step Guide',
+      '1. First approved check',
+      'Complete the first check.',
+      '2. Second approved check',
+      'Complete the second check.',
+    ].join('\n'),
+  }
+
+  render(<ProcessDrawer process={process} onClose={() => {}} />)
+
+  expect(screen.getByText('First approved check')).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: /Not resolved.*Next step/i }))
+  expect(screen.getByText('Second approved check')).toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: /Back to previous troubleshooting step/i }))
+  expect(screen.getByText('First approved check')).toBeInTheDocument()
+  expect(screen.queryByText('Second approved check')).not.toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: /Resolved \/ Done/i }))
+  expect(screen.getByText(/Stop here/i)).toBeInTheDocument()
+
+  await user.click(screen.getByRole('button', { name: /Back to previous troubleshooting step/i }))
+  expect(screen.getByText('First approved check')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: /Resolved \/ Done/i })).toBeInTheDocument()
+})
