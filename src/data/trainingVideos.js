@@ -1,3 +1,5 @@
+import { FLEX_HUB_VIDEOS } from './flexHubReference'
+
 const PLAYLIST_ID = 'PLKpRxBfeD1kGl3UM5cE6oOOFf67mZN0fg'
 
 const source = [
@@ -46,7 +48,8 @@ export const TRAINING_VIDEOS = source.map(([videoId, title, usefulFor, relatedCa
   relatedCategories,
 }))
 
-export const TRAINING_CATEGORIES = ['All', ...new Set(TRAINING_VIDEOS.flatMap((video) => video.relatedCategories))]
+export const ALL_TRAINING_VIDEOS = [...TRAINING_VIDEOS, ...FLEX_HUB_VIDEOS]
+export const TRAINING_CATEGORIES = ['All', ...new Set(ALL_TRAINING_VIDEOS.flatMap(video => video.relatedCategories))]
 
 export function trainingEmbedUrl(videoId) {
   return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0`

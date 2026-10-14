@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
-import { TRAINING_VIDEOS } from '../../data/trainingVideos'
+import { ALL_TRAINING_VIDEOS, TRAINING_VIDEOS } from '../../data/trainingVideos'
 import { TrainingResources } from './TrainingResources'
 
 describe('Training & Resources', () => {
@@ -263,3 +263,16 @@ it('closes the video player when the Close video button is clicked', async () =>
     expect(screen.getByTitle('Zoom Training Environment')).toBeInTheDocument()
     expect(trackEvent).not.toHaveBeenCalled()
   })
+
+it('lists Flex Arbitration Hub videos in Video Library and links externally', async () => {
+  const user = userEvent.setup()
+  render(<TrainingResources />)
+  await user.click(screen.getByRole('tab',{name:'Video Library'}))
+  await user.selectOptions(screen.getByRole('combobox',{name:'Filter training by category'}),'Flex Arbitration Hub')
+  expect(screen.getByText(/2 videos available/)).toBeInTheDocument()
+  expect(ALL_TRAINING_VIDEOS).toHaveLength(33)
+  const button = screen.getAllByRole('button',{name:'Open Video'})[0]
+  await user.click(button)
+  const dialog = screen.getByRole('dialog')
+  expect(within(dialog).getByRole('link',{name:/Open on Synthesia/})).toHaveAttribute('href',expect.stringContaining('share.synthesia.io'))
+})
