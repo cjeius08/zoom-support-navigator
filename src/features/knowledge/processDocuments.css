@@ -272,3 +272,31 @@
     gap: .35rem;
   }
 }
+
+/* Source-text documents: readable without modifying the existing screenshot/page reader. */
+.process-document-source-disclosure {
+  margin: 1.15rem auto 0;
+  width: min(100%, 72rem);
+  padding: .95rem 1.2rem;
+  border: 1px solid rgba(171, 190, 199, .4);
+  border-left: 4px solid #5b8990;
+  border-radius: .7rem;
+  background: rgba(91, 137, 144, .1);
+  color: inherit;
+  line-height: 1.6;
+}
+.process-document-transcription {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.75;
+  font-size: 1rem;
+  max-width: 76ch;
+  margin: 0 auto;
+  padding: 0 0 .5rem;
+  color: inherit;
+}
+.process-document-pages > article.process-document-page {
+  background: var(--surface, #13232d);
+  color: var(--text, inherit);
+}
+.process-document-reader > .process-document-back { margin-top: .9rem; }

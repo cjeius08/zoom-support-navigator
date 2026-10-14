@@ -470,7 +470,7 @@ export default function App() {
             onOpenCommonIssue={openFavoriteCommonIssue}
           />
         : view === 'process_documents'
-          ? <ProcessDocuments onTrackEvent={trackEvent} onReportContextChange={updateReportContext}/>
+          ? <ProcessDocuments onTrackEvent={trackEvent} onReportContextChange={updateReportContext} onOpenReference={navigate}/>
         : view === 'flex_hub'
           ? <FlexHubReference onOpenVideo={openTraining} onReportContextChange={updateReportContext} trackEvent={trackEvent}/>
         : view === 'training'
