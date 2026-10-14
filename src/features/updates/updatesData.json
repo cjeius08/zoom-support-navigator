@@ -10,6 +10,21 @@
   },
   "updates": [
     {
+      "id": "admin-home-live-visitors",
+      "date": "2026-10-15",
+      "area": "Admin / Home",
+      "audience": "admin",
+      "title": "Live visitors counter on Home (Admin only)",
+      "changed": "Admin only: A compact “Live visitors: N” indicator now appears at the upper-right of Home, with a green status dot. Click it to see which team members are active or idle, including initials, role and latest available Ozzie page. The count represents unique recently active accounts, not browser tabs. It refreshes every 30 seconds using Ozzie's existing Supabase heartbeat and presence permissions; an unavailable query displays — instead of falsely reporting zero. No new tracking of caller details or sensitive content has been added.",
+      "checks": [
+        "Sign in as Admin and open Home; confirm a small Live visitors count appears above the Current Call card without obscuring existing cards.",
+        "Click the count to see currently active and idle users with initials, roles and latest available page; click outside or press Escape to close it.",
+        "With an agent account, verify the indicator and member list are not visible and cannot be queried for other users under existing RLS.",
+        "Open Ozzie in two tabs as the same user and confirm the count is one distinct user, not two tabs.",
+        "Check the indicator refreshes automatically and displays —, not 0, if the presence service is unavailable."
+      ]
+    },
+    {
       "id": "flex-hub-source-import-process-documents",
       "date": "2026-10-14",
       "area": "Knowledge / Process Documents",
