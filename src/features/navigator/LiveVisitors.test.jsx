@@ -16,7 +16,7 @@ it('shows the compact count without requiring a dashboard and reveals names only
   await user.click(counter)
   const popover=screen.getByRole('region',{name:'Currently online team members'})
   expect(within(popover).getByText('Jon')).toBeInTheDocument()
-  expect(within(popover).getByText(/Last login:/)).toBeInTheDocument()
+  expect(within(popover).getAllByText(/Last login:/)).toHaveLength(3)
   expect(within(popover).getByText(/Oct 15, 2026/)).toBeInTheDocument()
   expect(within(popover).getByText('Lead')).toBeInTheDocument()
   expect(within(popover).getByText('Admin')).toBeInTheDocument()
