@@ -61,3 +61,15 @@
 .live-visitors-footnote { color: #b3c8ce; font-size: .7rem; line-height: 1.5; margin: .7rem 0 0; }
 .home-live-visitors :is(button,a):focus-visible { outline: 2px solid #9cd5db; outline-offset: 3px; }
 @media(max-width: 650px) { .home-live-visitors-row { margin: 0 0 -.25rem; } }
+
+/* Last successful authentication, not idle/heartbeat activity. */
+.live-visitor-login,
+.live-visitor-login-date {
+  display: block;
+  font-size: .71rem;
+  line-height: 1.4;
+  margin-top: .25rem;
+  color: #d7e7e9;
+}
+.live-visitor-login-date { color: #b3c8ce; font-size: .68rem; margin-top: .08rem; }
+.live-visitor-person { min-height: 4.6rem; }

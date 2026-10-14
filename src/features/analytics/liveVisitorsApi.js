@@ -38,5 +38,14 @@ export async function loadLiveVisitors() {
       if (!error) events = data || []
     } catch { /* The online count still works without page labels. */ }
   }
-  return buildLiveVisitorSnapshot({ profiles: profiles || [], presence, events })
+  // Login timestamps require an Admin-only SECURITY DEFINER RPC reading auth.users.
+  // If it is unavailable, preserve live counts but show "unavailable" for login details.
+  let lastLogins = []
+  try {
+    const { data, error } = await supabase.rpc('zoom_admin_live_visitor_logins', {
+      requested_user_ids: userIds,
+    })
+    if (!error) lastLogins = data || []
+  } catch { /* Exact login timestamps are optional; never estimate from activity. */ }
+  return buildLiveVisitorSnapshot({ profiles: profiles || [], presence, events, lastLogins })
 }

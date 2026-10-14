@@ -15,13 +15,14 @@
       "area": "Admin / Home",
       "audience": "admin",
       "title": "Live visitors counter on Home (Admin only)",
-      "changed": "Admin only: A compact “Live visitors: N” indicator now appears at the upper-right of Home, with a green status dot. Click it to see which team members are active or idle, including initials, role and latest available Ozzie page. The count represents unique recently active accounts, not browser tabs. It refreshes every 30 seconds using Ozzie's existing Supabase heartbeat and presence permissions; an unavailable query displays — instead of falsely reporting zero. No new tracking of caller details or sensitive content has been added.",
+      "changed": "Admin only: A compact “Live visitors: N” indicator now appears at the upper-right of Home, with a green status dot. Click it to see which team members are active or idle, including initials, role and latest available Ozzie page. The count represents unique recently active accounts, not browser tabs. It refreshes every 30 seconds using Ozzie's existing Supabase heartbeat and presence permissions; an unavailable query displays — instead of falsely reporting zero. No new tracking of caller details or sensitive content has been added. The click-to-view member list now includes each person's last successful sign-in in relative form (for example, “3 hours ago”) and exact date/time in the viewing Admin's local timezone. The timestamp comes from Supabase Auth, not from heartbeat or last activity. If not recorded or unavailable, the UI says “Unavailable.” The Admin-only RPC verifies permissions on the server.",
       "checks": [
         "Sign in as Admin and open Home; confirm a small Live visitors count appears above the Current Call card without obscuring existing cards.",
         "Click the count to see currently active and idle users with initials, roles and latest available page; click outside or press Escape to close it.",
         "With an agent account, verify the indicator and member list are not visible and cannot be queried for other users under existing RLS.",
         "Open Ozzie in two tabs as the same user and confirm the count is one distinct user, not two tabs.",
-        "Check the indicator refreshes automatically and displays —, not 0, if the presence service is unavailable."
+        "Check the indicator refreshes automatically and displays —, not 0, if the presence service is unavailable.",
+        "Open the Admin Home Live Visitors popover: verify Last login relative duration and full local date/time appear for available Auth records, and no timestamp is estimated from activity if unavailable."
       ]
     },
     {

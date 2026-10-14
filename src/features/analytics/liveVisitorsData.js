@@ -31,8 +31,9 @@ export function visitorPage(routeId) {
   return PAGE_NAMES[routeId] || 'Page not available'
 }
 
-export function buildLiveVisitorSnapshot({ profiles = [], presence = [], events = [], nowMs = Date.now() }) {
+export function buildLiveVisitorSnapshot({ profiles = [], presence = [], events = [], lastLogins = [], nowMs = Date.now() }) {
   const byUser = new Map(profiles.map(profile => [profile.id, profile]))
+  const loginByUser = new Map(lastLogins.map(entry => [entry.user_id, entry.last_sign_in_at]))
   const latestBySession = new Map()
   // The query is descending; only route-view events from the current session are displayed.
   for (const event of events) {
@@ -59,6 +60,7 @@ export function buildLiveVisitorSnapshot({ profiles = [], presence = [], events 
       page: visitorPage(latestBySession.get(row.session_id + ':' + row.user_id)),
       state,
       lastInteraction: row.last_interaction,
+      lastLoginAt: loginByUser.get(row.user_id) || null,
     }
     ;(state === 'active' ? active : idle).push(person)
   }

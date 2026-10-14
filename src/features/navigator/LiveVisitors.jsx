@@ -1,9 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { loadLiveVisitors } from '../analytics/liveVisitorsApi'
+import { formatLastLogin } from '../analytics/liveVisitorsTime'
 import './liveVisitors.css'
 
 const REFRESH_MS = 30_000
 const EMPTY = { active: [], idle: [], activeCount: 0 }
+
+function VisitorPerson({ person }) {
+  const login = formatLastLogin(person.lastLoginAt)
+  return <div className="live-visitor-person">
+    <span className="live-visitor-avatar">{person.initials}</span>
+    <div>
+      <strong>{person.username}</strong>
+      <small>{person.role} · {person.page}</small>
+      <span className="live-visitor-login">Last login: {login.relative}</span>
+      {login.absolute && <span className="live-visitor-login-date">{login.absolute}</span>}
+    </div>
+    <span className={person.state === 'idle' ? 'live-visitor-state idle' : 'live-visitor-state'} title={person.state === 'idle' ? 'Idle' : 'Active'}>●</span>
+  </div>
+}
 
 export function LiveVisitors({ loadVisitors = loadLiveVisitors }) {
   const [snapshot, setSnapshot] = useState(EMPTY)
@@ -75,17 +90,9 @@ export function LiveVisitors({ loadVisitors = loadLiveVisitors }) {
         : !ready ? <p className="live-visitors-message">Checking current activity…</p>
         : snapshot.active.length === 0 && snapshot.idle.length === 0 ? <p className="live-visitors-message">No active or idle team members detected.</p>
         : <div className="live-visitors-people">
-          {snapshot.active.map(person => <div className="live-visitor-person" key={person.id}>
-            <span className="live-visitor-avatar">{person.initials}</span>
-            <div><strong>{person.username}</strong><small>{person.role} · {person.page}</small></div>
-            <span className="live-visitor-state" title="Active">●</span>
-          </div>)}
+          {snapshot.active.map(person => <VisitorPerson key={person.id} person={{ ...person, state: 'active' }} />)}
           {snapshot.idle.length > 0 && <div className="live-visitors-subheading">Idle (not counted as active)</div>}
-          {snapshot.idle.map(person => <div className="live-visitor-person" key={person.id}>
-            <span className="live-visitor-avatar">{person.initials}</span>
-            <div><strong>{person.username}</strong><small>{person.role} · {person.page}</small></div>
-            <span className="live-visitor-state idle" title="Idle">●</span>
-          </div>)}
+          {snapshot.idle.map(person => <VisitorPerson key={person.id} person={{ ...person, state: 'idle' }} />)}
         </div>}
       <p className="live-visitors-footnote">Based on recent Ozzie activity. Updates every 30 seconds; presence heartbeat runs every 60 seconds.</p>
     </section>}
