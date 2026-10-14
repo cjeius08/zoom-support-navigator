@@ -20,7 +20,7 @@ export function ProcessDocuments({ onTrackEvent, onReportContextChange = () => {
 
   const documents = useMemo(
     () => PROCESSES
-      .filter(process => process.images?.length > 0)
+      .filter(process => process.images?.length > 0 || process.sourceText?.length > 0)
       .slice()
       .sort((a, b) => a.title.localeCompare(b.title)),
     [],
@@ -65,7 +65,7 @@ export function ProcessDocuments({ onTrackEvent, onReportContextChange = () => {
           <span aria-hidden="true">←</span>
           Back to Process Documents
         </button>
-        <span>{selected.images.length} {selected.images.length === 1 ? 'page' : 'pages'}</span>
+        <span>{selected.images?.length ? `${selected.images.length} ${selected.images.length === 1 ? 'page' : 'pages'}` : 'Full source text'}</span>
       </div>
 
       <header className="process-document-reader-heading">
@@ -74,12 +74,12 @@ export function ProcessDocuments({ onTrackEvent, onReportContextChange = () => {
         <p>{selected.purpose}</p>
         <div className="process-document-meta">
           <span>{categoryLabels[selected.category] || selected.category}</span>
-          <span>{selected.images.length} source {selected.images.length === 1 ? 'page' : 'pages'}</span>
+          <span>{selected.images?.length ? `${selected.images.length} source ${selected.images.length === 1 ? 'page' : 'pages'}` : 'Complete source text'}</span>
         </div>
       </header>
 
       <div className="process-document-pages">
-        {selected.images.map((image, index) => <figure key={image} className="process-document-page">
+        {(selected.images?.length > 0 ? selected.images : []).map((image, index) => <figure key={image} className="process-document-page">
           <figcaption>
             <span>Page {index + 1} of {selected.images.length}</span>
             <a href={assetUrl(image)} target="_blank" rel="noreferrer">Open full size</a>
@@ -90,6 +90,10 @@ export function ProcessDocuments({ onTrackEvent, onReportContextChange = () => {
             alt={`${selected.title} source page ${index + 1}`}
           />
         </figure>)}
+        {!selected.images?.length && selected.sourceText && <article className="process-document-page" style={{ padding: 22, background: 'var(--surface, #fff)', borderRadius: 14 }}>
+          <p><strong>Complete approved source text</strong> — the original document wording is preserved. Page layout and branding are not reproduced in this text view.</p>
+          <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', lineHeight: 1.65 }}>{selected.sourceText}</div>
+        </article>}
       </div>
     </section>
   }
@@ -129,7 +133,7 @@ export function ProcessDocuments({ onTrackEvent, onReportContextChange = () => {
         <strong>{process.title}</strong>
         <p>{process.purpose}</p>
         <span className="process-document-card-footer">
-          <span>{process.images.length} {process.images.length === 1 ? 'page' : 'pages'}</span>
+          <span>{process.images?.length ? `${process.images.length} ${process.images.length === 1 ? 'page' : 'pages'}` : 'Full source text'}</span>
           <b>Open document →</b>
         </span>
       </button>)}

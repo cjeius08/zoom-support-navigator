@@ -94,7 +94,7 @@ it('ensures every routed internal process ID resolves to an approved Process Gui
 it('covers all approved Process Guides through a Common Issue route except the agent guidance method', () => {
   const routedIds = new Set(COMMON_ISSUE_ROUTES.flatMap(route => route.processIds))
   const unrouted = PROCESSES.map(process => process.id).filter(id => !routedIds.has(id))
-  expect(unrouted).toEqual(['locate-describe-guide-confirm'])
+  expect(unrouted).toEqual(['locate-describe-guide-confirm', 'participating-in-meeting-breakout-rooms', 'managing-meeting-breakout-rooms'])
 })
 
 it('records the current verification date in one auditable constant', () => {

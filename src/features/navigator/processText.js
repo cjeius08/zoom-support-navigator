@@ -414,7 +414,7 @@ export function buildCallGuide(process) {
   }
   removeEmptyRouteIntro()
 
-  const usableSteps = steps.filter(stepHasContent)
+  const usableSteps = steps.filter(step => stepHasContent(step) || (process?.sourceFormat === 'section-steps' && !step.routeIntro))
   const allScripts = [...usableSteps.flatMap((step) => step.scripts), ...globalScripts]
   const sourceLines = [...usableSteps.flatMap((step) => [...step.instructions, ...step.confirmations]), ...callouts.flatMap((callout) => callout.lines)]
   const questionLines = sourceLines.filter((line) => /^(ask|confirm|determine|clarify|identify)\b/i.test(line))

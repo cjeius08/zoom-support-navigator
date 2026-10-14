@@ -166,7 +166,13 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
     () => query.trim() ? searchProcesses(approvedHostProcesses, query) : [],
     [query, approvedHostProcesses],
   )
-  const searchMatches = isHost ? hostProcessSearchMatches : participantSearchMatches
+  const searchMatches = useMemo(() => {
+    const matches = isHost ? hostProcessSearchMatches : participantSearchMatches
+    const broadBreakout = /^(?:meeting )?breakout(?: rooms?)?$/i.test(query.trim())
+    if (!broadBreakout) return matches
+    const priorityId = isHost ? 'managing-meeting-breakout-rooms' : 'participating-in-meeting-breakout-rooms'
+    return [...matches].sort((left, right) => Number(right.id === priorityId) - Number(left.id === priorityId))
+  }, [isHost, query, hostProcessSearchMatches, participantSearchMatches])
   const routeMatches = isHost ? [] : participantRouteMatches
   const processMatches = useMemo(() => {
     if (isHost) return searchMatches

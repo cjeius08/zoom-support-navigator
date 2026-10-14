@@ -750,7 +750,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
                   <section className="guide-source-trace">
                     <p className="eyebrow">Source traceability</p>
                     <h3>Approved process first. Official Zoom Support where available.</h3>
-                    <p>The concise Call Guide reorganizes the approved Process Document; the Full Process and Source Pages remain unchanged.</p>
+                    <p>The Call Guide reorganizes approved source instructions. Full Process preserves the approved text; Source Pages display original page images when available or the complete source text otherwise.</p>
                     {officialSources.length > 0 && (
                       <div>
                         {officialSources.map((source, index) => (
@@ -864,6 +864,14 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
                       />
                     </figure>
                   ))}
+                </div>
+              ) : process.sourceText ? (
+                <div className="source-pages">
+                  <article className="full-process" aria-label="Complete source document text">
+                    <h3>Full source text</h3>
+                    <p>Original approved wording retained; page layout is not reproduced in this text view.</p>
+                    <div style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', lineHeight: 1.65 }}>{process.sourceText}</div>
+                  </article>
                 </div>
               ) : (
                 <div className="empty-state">
