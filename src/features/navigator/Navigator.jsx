@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
+import { FLEX_HUB_SEARCH_ENTRY, matchesFlexHubReference } from '../../data/flexHubReference'
+import '../knowledge/flexHubReference.css'
 import { ProcessDrawer } from './ProcessDrawer'
 import { searchProcesses } from './smartSearch'
 import { LiveCallFlow, LiveCallFlowDetails } from './LiveCallFlow'
@@ -97,7 +99,7 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
+export function Navigator({ onOpenTraining, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -194,7 +196,8 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
   }, [category, isHost, approvedHostProcesses])
   const fastestRoutes = useMemo(() => FASTEST_ROUTE_IDS.map(routeById).filter(Boolean), [])
 
-  const suggestions = query.trim()
+  const hubMatch = matchesFlexHubReference(query)
+  const baseSuggestions = query.trim()
     ? isHost
       ? [
           ...hostTopicMatches.map(topic => ({ kind: 'host', topic })),
@@ -206,6 +209,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
           ...processMatches.map(process => ({ kind: 'process', process })),
         ].slice(0, 8)
     : []
+  const suggestions = hubMatch ? [{ kind: 'flex_hub', reference: FLEX_HUB_SEARCH_ENTRY }, ...baseSuggestions].slice(0, 8) : baseSuggestions
   const showSuggestions = suggestionsOpen && suggestions.length > 0
 
   function updateCallContext(patch = {}) {
@@ -349,7 +353,8 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
   }
 
   function selectSuggestion(suggestion) {
-    if (suggestion.kind === 'host') openHostTopic(suggestion.topic, 'search_suggestion')
+    if (suggestion.kind === 'flex_hub') onOpenFlexHub()
+    else if (suggestion.kind === 'host') openHostTopic(suggestion.topic, 'search_suggestion')
     else if (suggestion.kind === 'roadblock') openHostRoadblock(suggestion.roadblock, 'search_suggestion')
     else if (suggestion.kind === 'route') openRoute(suggestion.route, 'search_suggestion')
     else openProcess(suggestion.process, 'search_suggestion')
@@ -445,16 +450,16 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
           />
           {showSuggestions && <div className="search-suggestions" id="support-search-suggestions" role="listbox" aria-label="Search suggestions">
             {suggestions.map((suggestion, index) => {
-              const item = suggestion.topic || suggestion.roadblock || suggestion.route || suggestion.process
+              const item = suggestion.reference || suggestion.topic || suggestion.roadblock || suggestion.route || suggestion.process
               const isIssue = ['host', 'route'].includes(suggestion.kind)
-              const description = suggestion.kind === 'host'
+              const description = suggestion.kind === 'flex_hub' ? item.purpose : suggestion.kind === 'host'
                 ? 'Host / Arbitrator guided troubleshooting'
                 : suggestion.kind === 'roadblock'
                   ? item.trigger
                   : suggestion.kind === 'route'
                     ? item.subtitle
                     : item.purpose
-              const categoryLabel = suggestion.kind === 'host'
+              const categoryLabel = suggestion.kind === 'flex_hub' ? 'Knowledge Reference' : suggestion.kind === 'host'
                 ? 'Host Guide'
                 : suggestion.kind === 'roadblock'
                   ? 'Tier 1 Roadblock'
@@ -479,6 +484,7 @@ export function Navigator({ onOpenTraining, onTrackEvent, onAddToDocumentation =
           </div>}
         </div>
 
+        {hubMatch && <div className="hub-search-action"><button type="button" onClick={onOpenFlexHub}>Flex Arbitration Hub Reference — open the approved PMI, onboarding, scheduling, and recording rules →</button></div>}
         <div className="smart-search-examples" aria-label="Example searches">
           <span>Try</span>
           {(isHost ? ['no host controls', 'cant share', 'mic not working', 'stop recording'] : ['cant share', 'cant find chat', 'waiting for host']).map(example => <button

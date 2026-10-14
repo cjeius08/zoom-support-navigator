@@ -17,6 +17,7 @@ import { FeedbackPage } from './features/feedback/FeedbackPage'
 import { UpdatesView } from './features/updates/UpdatesView'
 import { FavoritesView } from './features/favorites/FavoritesView'
 import { ProcessDocuments } from './features/knowledge/ProcessDocuments'
+import { FlexHubReference } from './features/knowledge/FlexHubReference'
 import { useFavorites } from './features/favorites/useFavorites'
 import { useRecentlyViewed } from './features/favorites/useRecentlyViewed'
 import { OzzieWelcome } from './features/onboarding/OzzieWelcome'
@@ -260,7 +261,7 @@ export default function App() {
 
   function openFeedbackTarget(item) {
     rememberCurrentPage()
-    const safeRoutes = new Set(['navigator', 'favorites', 'process_documents', 'training', 'updates', 'feedback', 'admin', 'avatar_library', 'team', 'usage', 'saved_notes', 'my_saved_notes', 'feedback_queue'])
+    const safeRoutes = new Set(['navigator', 'favorites', 'process_documents', 'flex_hub', 'training', 'updates', 'feedback', 'admin', 'avatar_library', 'team', 'usage', 'saved_notes', 'my_saved_notes', 'feedback_queue'])
     if (item?.active_common_issue) {
       setNavigatorProcessId(null)
       setNavigatorCommonIssueId(item.active_common_issue)
@@ -439,6 +440,7 @@ export default function App() {
     const content = view === 'navigator'
       ? <Navigator
           onOpenTraining={openTraining}
+          onOpenFlexHub={() => navigate('flex_hub')}
           onOpenDeviceSandbox={openDeviceSandbox}
           onTrackEvent={trackEvent}
           onAddToDocumentation={addToCallDocumentation}
@@ -469,6 +471,8 @@ export default function App() {
           />
         : view === 'process_documents'
           ? <ProcessDocuments onTrackEvent={trackEvent} onReportContextChange={updateReportContext}/>
+        : view === 'flex_hub'
+          ? <FlexHubReference onOpenVideo={openTraining} onReportContextChange={updateReportContext} trackEvent={trackEvent}/>
         : view === 'training'
           ? <TrainingResources initialVideoId={trainingVideoId} initialTarget={trainingTarget} onReportContextChange={updateReportContext} trackEvent={trackEvent}/>
           : view === 'updates'

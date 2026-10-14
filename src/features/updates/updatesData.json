@@ -10,6 +10,22 @@
   },
   "updates": [
     {
+      "id": "flex-hub-agent-reference-videos",
+      "date": "2026-10-14",
+      "area": "Knowledge / Flex Arbitration Hub · Training & Resources / Video Library",
+      "audience": "all",
+      "title": "Flex Arbitration Hub agent reference and two training videos",
+      "changed": "NEW: Added a dedicated Flex Arbitration Hub – Agent Reference Guide covering SharePoint Hub access, signing in with the Welcome Email address, Zoom username/password information, the one-PMI-link rule across every hearing, inviting/rescheduling participants, meeting option rules, and the strict requirement to keep recording active. Find it through the top navigation: Knowledge → Flex Arbitration Hub. From Home, Smart Search for “Flex Arbitration Hub”, “PMI”, or “hearing scheduling” and open the Knowledge Reference result. Added TWO source-provided videos to the existing Training & Resources → Video Library under the new Flex Arbitration Hub category: Flex SP Site Overview (Arbitrator) (Synthesia) and Flex Mass Arbitration SharePoint Hub Overview Session (15:40) (Vimeo). Both open at their original providers and may require appropriate access. On the Hub reference page, use Related video guides → Go to Video Library. Existing Process Guides, Zoom training videos, and Call Documentation are unchanged. The separately marked internal-only escalation address is not published in public frontend code.",
+      "checks": [
+        "Open Knowledge → Flex Arbitration Hub; verify onboarding, Zoom credentials, scheduling/PMI, recording rule, and internal escalation reminder.",
+        "From Home Smart Search enter “Flex Arbitration Hub” or “PMI” and open the Knowledge Reference result.",
+        "Open Knowledge → Training & Resources → Video Library, filter Flex Arbitration Hub, and verify both Synthesia and Vimeo entries.",
+        "From the Flex Arbitration Hub page, choose either Related video guide, then use Open on Synthesia / Vimeo in the Video Library viewer.",
+        "Verify the 31 existing YouTube videos still work; no new changes to guided documentation or Google Sheet reporting.",
+        "Check What’s New / Updates as a regular agent and verify this entry explains both the additions and their navigation paths."
+      ]
+    },
+    {
       "id": "meeting-breakout-room-process-guides",
       "date": "2026-10-14",
       "area": "Knowledge / Process Guides",
