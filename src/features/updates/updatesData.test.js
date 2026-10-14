@@ -39,7 +39,7 @@ it('keeps workspace metadata and update history complete and newest-first', () =
     status: 'historical',
   })
   expect(data.updates[7]).toMatchObject({ id: 'flex-arbitration-zoom-support-greeting', audience: 'all' })
-  expect(data.updates[7]).toMatchObject({ id: 'windows-device-sandbox-home-shortcut', audience: 'all' })
+  expect(data.updates[8]).toMatchObject({ id: 'windows-device-sandbox-home-shortcut', audience: 'all' })
   expect(data.updates.slice(9, 12).map(entry => entry.id)).toEqual([
     'process-documents-search-normalization',
     'new-call-session-reset',

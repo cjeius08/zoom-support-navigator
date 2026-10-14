@@ -170,7 +170,7 @@ it('states the eligibility requirements before promising pre-join participant vi
 it('maps every approved process either to a Common Issue route or to the approved agent guidance method', () => {
   const routedIds = new Set(COMMON_ISSUE_ROUTES.flatMap(route => route.processIds))
   const unrouted = PROCESSES.map(process => process.id).filter(id => !routedIds.has(id))
-  expect(unrouted).toEqual(['locate-describe-guide-confirm'])
+  expect(unrouted).toEqual(['locate-describe-guide-confirm', 'participating-in-meeting-breakout-rooms', 'managing-meeting-breakout-rooms'])
 })
 
 it('keeps the secure-connection route Mac-specific and exposes the internal-vs-Zoom sequence discrepancy', () => {

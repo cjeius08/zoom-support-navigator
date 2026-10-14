@@ -61,8 +61,9 @@ async function openFromSearch({ query, device, role, state }) {
 it('freezes the approved route and Process Guide inventories', () => {
   expect(COMMON_ISSUE_ROUTES.map(route => route.id)).toEqual(FROZEN_ROUTE_IDS)
   expect(COMMON_ISSUE_ROUTES).toHaveLength(19)
-  expect(PROCESSES.map(process => process.id)).toEqual(FROZEN_PROCESS_IDS)
-  expect(PROCESSES).toHaveLength(27)
+  expect(PROCESSES.slice(0, 27).map(process => process.id)).toEqual(FROZEN_PROCESS_IDS)
+  expect(PROCESSES.slice(27).map(process => process.id)).toEqual(['participating-in-meeting-breakout-rooms', 'managing-meeting-breakout-rooms'])
+  expect(PROCESSES).toHaveLength(29)
 })
 
 it('records the September 26 source-routing audit', () => {
