@@ -73,7 +73,7 @@ it('imports both breakout room guides and the safe Hub reference without duplica
   expect(hubCard).toBeVisible()
   await user.click(hubCard)
   expect(screen.getByText(/Arbitrators CANNOT stop or turn off recordings/)).toBeInTheDocument()
-  expect(screen.getByText(/internal-only escalation email address is withheld/)).toBeInTheDocument()
+  expect(screen.getByText(/escalation email address is withheld/)).toBeInTheDocument()
   expect(document.body.textContent).not.toContain('odflexmassarbs@')
   await user.click(screen.getByRole('button',{name:/Open guided Flex Arbitration Hub reference/}))
   expect(onOpenReference).toHaveBeenCalledWith('flex_hub')
