@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildLiveVisitorSnapshot, visitorPage, visitorRole } from './liveVisitorsData'
+import { buildLiveVisitorSnapshot, sortVisitorsByLastLogin, visitorPage, visitorRole } from './liveVisitorsData'
 
 const now = Date.parse('2026-10-15T00:00:00.000Z')
 const iso = millis => new Date(now - millis).toISOString()
@@ -38,5 +38,45 @@ describe('admin live visitors snapshot', () => {
   it('does not count offline presence or phantom users', () => {
     const result = buildLiveVisitorSnapshot({profiles, presence:[{...presence[0],state:'offline'}, {user_id:'unknown',session_id:'x',state:'active',last_heartbeat:iso(0),last_interaction:iso(0)}], nowMs:now})
     expect(result.activeCount).toBe(0)
+  })
+})
+
+
+describe('live visitors order by last successful login', () => {
+  const records = [
+    { id: 'first', username: 'Zoe', state: 'active', lastLoginAt: '2026-10-14T23:30:00Z' },
+    { id: 'latest', username: 'Mia', state: 'idle', lastLoginAt: '2026-10-15T05:15:00Z' },
+    { id: 'missing', username: 'Alex', state: 'active', lastLoginAt: null },
+    { id: 'earlier', username: 'James', state: 'active', lastLoginAt: '2026-10-13T09:00:00Z' },
+    { id: 'invalid', username: 'Ben', state: 'idle', lastLoginAt: 'unavailable' },
+  ]
+
+  it('sorts newest to oldest across active and idle, keeping missing/invalid timestamps last', () => {
+    const ordered = sortVisitorsByLastLogin(records)
+    expect(ordered.map(person => person.id)).toEqual(['latest', 'first', 'earlier', 'missing', 'invalid'])
+    expect(records[0].id).toBe('first')
+  })
+
+  it('breaks equal timestamp ties deterministically by name, regardless of input order', () => {
+    const timestamp = '2026-10-15T05:15:00Z'
+    expect(sortVisitorsByLastLogin([
+      { id: '2', username: 'Zelda', lastLoginAt: timestamp },
+      { id: '1', username: 'Anna', lastLoginAt: timestamp },
+    ]).map(person => person.username)).toEqual(['Anna', 'Zelda'])
+  })
+
+  it('keeps the active count and current presence states unchanged', () => {
+    const data = buildLiveVisitorSnapshot({
+      profiles,
+      presence: presence.slice(0, 2),
+      lastLogins: [
+        { user_id: 'one', last_sign_in_at: '2026-10-14T09:00:00Z' },
+        { user_id: 'two', last_sign_in_at: '2026-10-15T05:15:00Z' },
+      ],
+      nowMs: now,
+    })
+    expect(data.activeCount).toBe(1)
+    expect(sortVisitorsByLastLogin([...data.active, ...data.idle]).map(person => person.id))
+      .toEqual(['two', 'one'])
   })
 })
