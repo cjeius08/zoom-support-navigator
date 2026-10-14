@@ -3,6 +3,7 @@ import { PROCESSES } from '../../data/processes'
 import { FLEX_HUB_SEARCH_ENTRY, matchesFlexHubReference } from '../../data/flexHubReference'
 import '../knowledge/flexHubReference.css'
 import { ProcessDrawer } from './ProcessDrawer'
+import { LiveVisitors } from './LiveVisitors'
 import { searchProcesses } from './smartSearch'
 import { LiveCallFlow, LiveCallFlowDetails } from './LiveCallFlow'
 import { CommonIssueDrawer } from './CommonIssueDrawer'
@@ -99,7 +100,7 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ onOpenTraining, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
+export function Navigator({ isAdmin = false, onOpenTraining, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -388,6 +389,7 @@ export function Navigator({ onOpenTraining, onOpenFlexHub = () => {}, onTrackEve
     : 'Ready for a new caller'
 
   return <section className="navigator" id="navigator" aria-label="Support Navigator">
+    {isAdmin && <div className="home-live-visitors-row"><LiveVisitors /></div>}
     <section className="navigator-session-bar" aria-label="Current call session">
       <div>
         <small>Current call</small>

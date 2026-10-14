@@ -439,6 +439,7 @@ export default function App() {
   if (profile) {
     const content = view === 'navigator'
       ? <Navigator
+          isAdmin={profile.role === 'creator_admin'}
           onOpenTraining={openTraining}
           onOpenFlexHub={() => navigate('flex_hub')}
           onOpenDeviceSandbox={openDeviceSandbox}
