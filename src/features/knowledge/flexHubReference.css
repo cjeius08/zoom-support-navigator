@@ -40,3 +40,116 @@
 .training-external-thumbnail strong{font-size:1.25rem}
 .training-external-thumbnail span{font-size:.85rem;font-weight:700}
 @media(max-width:780px){.flex-hub-important,.flex-hub-topic-grid,.flex-hub-video-grid{grid-template-columns:1fr}}
+
+
+/*
+ * Contrast correction for the Flex Arbitration Hub reference.
+ * The workspace uses pale-on-dark inherited text colors while --surface is
+ * undefined. The original var(--surface, #fff) cards therefore rendered
+ * pale text on white. Scope a complete, independent card palette here.
+ * This also protects the page when other workspace themes are selected.
+ */
+.flex-hub-view {
+  --hub-card: #f7f9fa;
+  --hub-card-alt: #edf3f5;
+  --hub-ink: #19364b;
+  --hub-muted: #465f70;
+  --hub-eyebrow: #305d69;
+  --hub-link: #245a6c;
+  --hub-border: #ccd8dc;
+}
+
+/* Keep the page's photo-backed heading, but separate content surfaces. */
+.flex-hub-view .flex-hub-important > div,
+.flex-hub-view .flex-hub-topic,
+.flex-hub-view .flex-hub-private,
+.flex-hub-view .flex-hub-videos,
+.flex-hub-view .flex-hub-source-list {
+  background: var(--hub-card);
+  color: var(--hub-ink);
+  border-color: var(--hub-border);
+}
+
+.flex-hub-view .flex-hub-important > div {
+  border-left-color: #527f8a;
+}
+
+.flex-hub-view .flex-hub-important strong,
+.flex-hub-view .flex-hub-topic h2,
+.flex-hub-view .flex-hub-private strong,
+.flex-hub-view .flex-hub-videos h2,
+.flex-hub-view .flex-hub-video-grid strong,
+.flex-hub-view .flex-hub-source-list summary {
+  color: var(--hub-ink);
+}
+
+.flex-hub-view .flex-hub-important p,
+.flex-hub-view .flex-hub-topic li,
+.flex-hub-view .flex-hub-private p,
+.flex-hub-view .flex-hub-videos p,
+.flex-hub-view .flex-hub-source-list p,
+.flex-hub-view .flex-hub-source-list li {
+  color: var(--hub-muted);
+}
+
+.flex-hub-view .flex-hub-important small,
+.flex-hub-view .flex-hub-topic-heading small,
+.flex-hub-view .flex-hub-video-grid small {
+  color: var(--hub-eyebrow);
+  opacity: 1;
+}
+
+.flex-hub-view .flex-hub-topic-heading > span {
+  color: var(--hub-eyebrow);
+}
+.flex-hub-view .flex-hub-topic-heading {
+  border-bottom-color: var(--hub-border);
+}
+.flex-hub-view .flex-hub-topic li::marker {
+  color: #547985;
+}
+
+.flex-hub-view .flex-hub-jump a,
+.flex-hub-view .flex-hub-links a {
+  background: var(--hub-card);
+  border-color: var(--hub-border);
+  color: var(--hub-link);
+}
+.flex-hub-view .flex-hub-jump a:hover,
+.flex-hub-view .flex-hub-links a:hover,
+.flex-hub-view .flex-hub-jump a:focus-visible,
+.flex-hub-view .flex-hub-links a:focus-visible {
+  background: var(--hub-card-alt);
+  border-color: #6b9ca8;
+}
+
+.flex-hub-view .flex-hub-video-grid button {
+  background: var(--hub-card-alt);
+  border-color: var(--hub-border);
+  color: var(--hub-ink);
+}
+.flex-hub-view .flex-hub-video-grid button:hover,
+.flex-hub-view .flex-hub-video-grid button:focus-visible {
+  border-color: #547f8e;
+  background: #e5eff1;
+}
+.flex-hub-view .flex-hub-video-grid em {
+  color: var(--hub-link);
+}
+.flex-hub-view .flex-hub-video-icon {
+  background: #d7e8ec;
+  color: #215365;
+}
+.flex-hub-view .flex-hub-kicker {
+  color: #eff6f7;
+  background: rgba(14, 25, 34, .58);
+  border-color: rgba(204, 227, 233, .48);
+}
+
+/* Ensure keyboard focus remains visible over both the photo and cards. */
+.flex-hub-view a:focus-visible,
+.flex-hub-view button:focus-visible,
+.flex-hub-view summary:focus-visible {
+  outline: 3px solid #6baabc;
+  outline-offset: 3px;
+}
