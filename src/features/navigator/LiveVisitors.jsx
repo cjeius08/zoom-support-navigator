@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { loadLiveVisitors } from '../analytics/liveVisitorsApi'
 import { formatLastLogin } from '../analytics/liveVisitorsTime'
+import { sortVisitorsByLastLogin } from '../analytics/liveVisitorsData'
 import './liveVisitors.css'
 
 const REFRESH_MS = 30_000
@@ -67,6 +68,7 @@ export function LiveVisitors({ loadVisitors = loadLiveVisitors }) {
     return () => { document.removeEventListener('pointerdown', dismiss); document.removeEventListener('keydown', escape) }
   }, [open])
 
+  const visitors = sortVisitorsByLastLogin([...(snapshot.active || []), ...(snapshot.idle || [])])
   const countText = error ? '—' : ready ? String(snapshot.activeCount) : '…'
   return <div className="home-live-visitors" ref={wrapper}>
     <button
@@ -89,12 +91,10 @@ export function LiveVisitors({ loadVisitors = loadLiveVisitors }) {
       {error ? <p className="live-visitors-message" role="status">Live presence unavailable. The count is not zero; try refreshing.</p>
         : !ready ? <p className="live-visitors-message">Checking current activity…</p>
         : snapshot.active.length === 0 && snapshot.idle.length === 0 ? <p className="live-visitors-message">No active or idle team members detected.</p>
-        : <div className="live-visitors-people">
-          {snapshot.active.map(person => <VisitorPerson key={person.id} person={{ ...person, state: 'active' }} />)}
-          {snapshot.idle.length > 0 && <div className="live-visitors-subheading">Idle (not counted as active)</div>}
-          {snapshot.idle.map(person => <VisitorPerson key={person.id} person={{ ...person, state: 'idle' }} />)}
+        : <div className="live-visitors-people" aria-label="Visitors sorted by last login, newest first">
+          {visitors.map(person => <VisitorPerson key={person.id} person={person} />)}
         </div>}
-      <p className="live-visitors-footnote">Based on recent Ozzie activity. Updates every 30 seconds; presence heartbeat runs every 60 seconds.</p>
+      <p className="live-visitors-footnote">Sorted by last login (newest first); unavailable login dates appear last. Active count is based on recent Ozzie activity. Updates every 30 seconds.</p>
     </section>}
   </div>
 }

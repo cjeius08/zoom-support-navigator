@@ -31,6 +31,23 @@ export function visitorPage(routeId) {
   return PAGE_NAMES[routeId] || 'Page not available'
 }
 
+// Show the most recent successful sign-in first across both active and idle users.
+// Authentication timestamps are independent from heartbeat and interaction times.
+export function sortVisitorsByLastLogin(visitors = []) {
+  return [...visitors].sort((a, b) => {
+    const aTime = a.lastLoginAt ? Date.parse(a.lastLoginAt) : NaN
+    const bTime = b.lastLoginAt ? Date.parse(b.lastLoginAt) : NaN
+    const aValid = Number.isFinite(aTime)
+    const bValid = Number.isFinite(bTime)
+
+    if (aValid && bValid && aTime !== bTime) return bTime - aTime
+    if (aValid !== bValid) return aValid ? -1 : 1
+
+    const byName = String(a.username || a.initials || '').localeCompare(String(b.username || b.initials || ''))
+    return byName || String(a.id || '').localeCompare(String(b.id || ''))
+  })
+}
+
 export function buildLiveVisitorSnapshot({ profiles = [], presence = [], events = [], lastLogins = [], nowMs = Date.now() }) {
   const byUser = new Map(profiles.map(profile => [profile.id, profile]))
   const loginByUser = new Map(lastLogins.map(entry => [entry.user_id, entry.last_sign_in_at]))
