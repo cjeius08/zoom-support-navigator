@@ -10,6 +10,21 @@
   },
   "updates": [
     {
+      "id": "flex-hub-source-import-process-documents",
+      "date": "2026-10-14",
+      "area": "Knowledge / Process Documents",
+      "audience": "all",
+      "title": "New guide sources together in Process Documents",
+      "changed": "The two approved breakout-room source documents — Participating in Meeting Breakout Rooms and Managing Meeting Breakout Rooms — remain available as full source text under Knowledge → Process Documents. NEW: The Flex Arbitration Hub – Agent Reference Guide is now listed in that same searchable library (Knowledge → Process Documents → search “Flex Arbitration Hub” or “PMI”). Open its source-text view for Hub access, Welcome Email, PMI scheduling, participant invitations, and recording policy, with the explicitly internal-only escalation email withheld from this publicly hosted copy. Use “Open guided Flex Arbitration Hub reference” to navigate to the separate quick-reference page. Original Word page layouts are not yet embedded; existing Process Guide workflows, Smart Search, Video Library, and Call Documentation remain unchanged.",
+      "checks": [
+        "Open Knowledge → Process Documents and search “breakout rooms”; verify Participating and Managing each appear once and retain the complete source text.",
+        "Search “Flex Arbitration Hub” or “PMI” and open the Flex Arbitration Hub – Agent Reference Guide in Process Documents.",
+        "Verify the document includes the same PMI link rule, Welcome Email login instructions, and strict no-stop-recording rule, while withholding the Alaga-only escalation address.",
+        "From the source reader, click “Open guided Flex Arbitration Hub reference” to open the dedicated Knowledge page.",
+        "Confirm older original source-page images, Process Guides, Video Library, and existing Google Sheet reporting behavior remain intact."
+      ]
+    },
+    {
       "id": "flex-hub-agent-reference-videos",
       "date": "2026-10-14",
       "area": "Knowledge / Flex Arbitration Hub · Training & Resources / Video Library",

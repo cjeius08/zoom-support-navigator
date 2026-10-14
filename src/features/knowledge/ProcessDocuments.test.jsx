@@ -58,3 +58,32 @@ it.each(['cant join', "can't join", 'can’t join'])(
       .toBeVisible()
   },
 )
+
+it('imports both breakout room guides and the safe Hub reference without duplicate source records', async () => {
+  const user = userEvent.setup()
+  const onOpenReference = vi.fn()
+  render(<ProcessDocuments onOpenReference={onOpenReference} />)
+  const search=screen.getByRole('searchbox', {name:'Find a process document'})
+  await user.type(search,'breakout rooms')
+  expect(screen.getByText('Participating in Meeting Breakout Rooms', {selector:'strong'})).toBeVisible()
+  expect(screen.getByText('Managing Meeting Breakout Rooms', {selector:'strong'})).toBeVisible()
+  await user.clear(search)
+  await user.type(search,'PMI')
+  const hubCard=screen.getByText('Flex Arbitration Hub – Agent Reference Guide',{selector:'strong'}).closest('button')
+  expect(hubCard).toBeVisible()
+  await user.click(hubCard)
+  expect(screen.getByText(/Arbitrators CANNOT stop or turn off recordings/)).toBeInTheDocument()
+  expect(screen.getByText(/internal-only escalation email address is withheld/)).toBeInTheDocument()
+  expect(document.body.textContent).not.toContain('odflexmassarbs@')
+  await user.click(screen.getByRole('button',{name:/Open guided Flex Arbitration Hub reference/}))
+  expect(onOpenReference).toHaveBeenCalledWith('flex_hub')
+})
+
+it('keeps breakout room original source text available in Process Documents', async () => {
+  const user = userEvent.setup()
+  render(<ProcessDocuments />)
+  const search=screen.getByRole('searchbox',{name:'Find a process document'})
+  await user.type(search,'Participating in Meeting Breakout Rooms')
+  await user.click(screen.getByText('Participating in Meeting Breakout Rooms',{selector:'strong'}).closest('button'))
+  expect(screen.getByText(/Leave Breakout Room/)).toBeInTheDocument()
+})
