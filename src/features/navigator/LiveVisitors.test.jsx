@@ -7,7 +7,7 @@ it('shows the compact count without requiring a dashboard and reveals names only
   const user = userEvent.setup()
   const load = vi.fn().mockResolvedValue({
     activeCount: 2,
-    active: [{id:'1',initials:'JR',username:'Jon',role:'Agent',page:'Home'}, {id:'2',initials:'MC',username:'Lead',role:'Lead',page:'Knowledge'}],
+    active: [{id:'1',initials:'JR',username:'Jon',role:'Agent',page:'Home',lastLoginAt:'2026-10-15T03:00:00Z'}, {id:'2',initials:'MC',username:'Lead',role:'Lead',page:'Knowledge'}],
     idle: [{id:'3',initials:'AA',username:'Admin',role:'Admin',page:'Reports'}],
   })
   render(<LiveVisitors loadVisitors={load} />)
@@ -16,6 +16,8 @@ it('shows the compact count without requiring a dashboard and reveals names only
   await user.click(counter)
   const popover=screen.getByRole('region',{name:'Currently online team members'})
   expect(within(popover).getByText('Jon')).toBeInTheDocument()
+  expect(within(popover).getByText(/Last login:/)).toBeInTheDocument()
+  expect(within(popover).getByText(/Oct 15, 2026/)).toBeInTheDocument()
   expect(within(popover).getByText('Lead')).toBeInTheDocument()
   expect(within(popover).getByText('Admin')).toBeInTheDocument()
   expect(within(popover).getByText(/Idle \(not counted as active\)/)).toBeInTheDocument()

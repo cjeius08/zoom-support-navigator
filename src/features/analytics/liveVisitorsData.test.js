@@ -26,7 +26,10 @@ describe('admin live visitors snapshot', () => {
       { user_id: 'one', session_id: 'stale-session', route_id: 'admin' },
       { user_id: 'two', session_id: 's2', route_id: 'training' },
     ]
-    const result = buildLiveVisitorSnapshot({ profiles, presence, events, nowMs: now })
+    const lastLogins = [{ user_id: 'one', last_sign_in_at: iso(10_800_000) }]
+    const result = buildLiveVisitorSnapshot({ profiles, presence, events, lastLogins, nowMs: now })
+    expect(result.active[0].lastLoginAt).toBe(iso(10_800_000))
+    expect(result.idle[0].lastLoginAt).toBeNull()
     expect(result.active[0]).toMatchObject({ initials: 'JA', role: 'Agent', page: 'Home' })
     expect(result.idle[0]).toMatchObject({ role: 'Lead', page: 'Training & Resources' })
     expect(visitorPage('not-a-route')).toBe('Page not available')
