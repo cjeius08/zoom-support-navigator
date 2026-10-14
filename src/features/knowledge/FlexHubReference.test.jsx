@@ -52,7 +52,7 @@ it('keeps Hub information high contrast regardless of inherited workspace text t
   // The old styling omitted an explicit text color and resulted in white-on-white.
   const css = readFileSync(join(cwd(), 'src/features/knowledge/flexHubReference.css'), 'utf8')
   const colorOf = name => {
-    const value = css.match(new RegExp(name + ':\\\\s*(#[0-9a-fA-F]{6})\\\\s*;'))
+    const value = css.match(new RegExp(name + ':\\s*(#[0-9a-fA-F]{6})\\s*;'))
     expect(value, name).not.toBeNull()
     return value[1]
   }
