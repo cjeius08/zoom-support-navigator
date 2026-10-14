@@ -39,15 +39,31 @@ const normalize = (text) => text.replace(/\s+/g, ' ').trim()
 const hash = (text) => createHash('sha256').update(normalize(text)).digest('hex')
 
 describe('source-backed process content', () => {
-  it('matches the complete content of all 27 approved source documents', () => {
-    expect(PROCESSES).toHaveLength(27)
+  it('preserves all 27 previously approved source documents when adding new guides', () => {
+    expect(PROCESSES).toHaveLength(29)
     expect(Object.keys(SOURCE_HASHES)).toHaveLength(27)
-    for (const process of PROCESSES) expect(hash(process.sourceText ?? process.text), process.id).toBe(SOURCE_HASHES[process.id])
+    for (const [id, sha] of Object.entries(SOURCE_HASHES)) {
+      const process = PROCESSES.find(item => item.id === id)
+      expect(process, id).toBeTruthy()
+      expect(hash(process.sourceText ?? process.text), id).toBe(sha)
+    }
+    const added = PROCESSES.filter(item => /^(participating-in|managing)-meeting-breakout-rooms$/.test(item.id))
+    expect(added).toHaveLength(2)
+    for (const process of added) {
+      expect(process.sourceText).toMatch(/Breakout Rooms/i)
+      expect(process.text).toMatch(/Process \/ Step-by-Step Guide/)
+      expect(process.category).toBe('controls')
+    }
   })
 
   it('keeps source-page assets in document order and available to the viewer', () => {
     for (const process of PROCESSES) {
       const pages = process.images ?? []
+      if (process.sourceFormat === 'section-steps') {
+        expect(process.sourceText.length, process.id).toBeGreaterThan(2000)
+        expect(pages, process.id).toHaveLength(0)
+        continue
+      }
       expect(pages.length, process.id).toBeGreaterThan(0)
       const pageNumbers = pages.map(image => Number(image.match(/-page-(\d+)\.png$/)?.[1]))
       expect(pageNumbers, process.id).toEqual(pages.map((_, index) => index + 1))

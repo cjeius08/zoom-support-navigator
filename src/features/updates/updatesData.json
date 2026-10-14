@@ -10,6 +10,21 @@
   },
   "updates": [
     {
+      "id": "meeting-breakout-room-process-guides",
+      "date": "2026-10-14",
+      "area": "Knowledge / Process Guides",
+      "audience": "all",
+      "title": "New Zoom breakout room guides for participants and meeting hosts",
+      "changed": "Added two new approved meeting breakout room Process Guides without removing existing procedures: Participating in Meeting Breakout Rooms (joining assigned rooms, self-selection, asking for host help, and returning to the main session) and Managing Meeting Breakout Rooms (host/co-host setup, assignment, opening, monitoring, and closing). Both guides are available under Process Guides → Meeting Controls and through Smart Search, with full approved document text accessible in Process Documents. Host/Arbitrator searches prioritize Managing for broad breakout-room queries; Participant searches prioritize Participating. Agents must respect host-controlled permissions, supported devices, and Leave Room versus Leave Meeting.",
+      "checks": [
+        "On Home with Host / Arbitrator selected, search “breakout room” and verify both guides appear with Managing first.",
+        "Search “create breakout room” and “assign participants” and verify Managing Meeting Breakout Rooms appears.",
+        "Switch caller role to Participant, search “breakout room” and verify Participating appears first. Search “join breakout room” and “ask for help” to find participant instructions.",
+        "Open both Process Guides and confirm their Call Guide, Full Process, Source Pages source-text fallback, and optional Add to Call Documentation draft.",
+        "Go to Knowledge → Process Documents and verify both complete source texts are available. Confirm existing guides and Google reporting workflow are unaffected."
+      ]
+    },
+    {
       "id": "smart-search-relevance-hardening",
       "date": "2026-09-26",
       "area": "Home / Smart Search",

@@ -174,6 +174,8 @@ export const PROCESS_ROLE_COVERAGE = [
   ['zoom-camera-troubleshooting-during-a-meeting', 'universal', ['host-camera']],
   ['zoom-error-unable-to-establish-secure-connection-to-zoom', 'review-gap', ['host-connectivity', 'host-app-browser-basic']],
   ['zoom-meeting-controls-icons', 'role-sensitive', ['host-controls-missing', 'host-basic-controls']],
+  ['participating-in-meeting-breakout-rooms', 'universal', ['host-basic-controls']],
+  ['managing-meeting-breakout-rooms', 'universal', ['host-basic-controls']],
 ].map(([id, classification, hostTopicIds]) => ({ id, classification, hostTopicIds }))
 
 export const FAQ_ROLE_COVERAGE = [
