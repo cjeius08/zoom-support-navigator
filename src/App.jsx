@@ -43,6 +43,7 @@ import './features/theme/readabilityFlows.css'
 import './features/theme/readabilityDocumentation.css'
 import './features/theme/readabilityAdmin.css'
 import './pilotReadiness.css'
+import './features/theme/zoomReadability.css'
 
 const EMPTY_REPORT_CONTEXT = {
   selected_tab: null,
