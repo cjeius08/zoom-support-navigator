@@ -328,3 +328,161 @@ html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-ov
 
 /* No changes to how the approved Ozzie logo, login background, or the
    original mascot are rendered. */
+/* Batch 1 follow-up — feedback queue and profile dialog contrast.
+ * These two screens still had legacy light-on-dark child colors after their
+ * enclosing panels became solid off-white. Preserve component structure.
+ */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-queue {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-queue :is(
+  .feedback-queue-heading h1,
+  .feedback-reporter strong,
+  .feedback-item-submitter strong,
+  .feedback-item-toggle,
+  .feedback-item-description,
+  .feedback-item-suggestion,
+  .feedback-item-submitted,
+  .feedback-screen-context dd
+) {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-queue :is(
+  .feedback-queue-heading p,
+  .feedback-queue-minimized-note,
+  .feedback-item-preview,
+  .feedback-list article > p,
+  .feedback-list article > p + p,
+  .feedback-reporter small,
+  .feedback-item-submitter small,
+  .feedback-submitted-at,
+  .feedback-item-submitted time,
+  .feedback-context-row small,
+  .feedback-history ul,
+  .feedback-history li,
+  .feedback-screen-context dt
+) {
+  color: var(--read-body);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-queue :is(
+  .feedback-item-type,
+  .feedback-item-chevron,
+  .feedback-item-description b,
+  .feedback-item-suggestion b,
+  .feedback-item-submitted b,
+  .feedback-screen-context > summary
+) {
+  color: var(--read-link);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-queue .feedback-avatar-fallback {
+  background: var(--read-selected);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-queue .feedback-item-details {
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-queue .feedback-status-control select {
+  background: var(--read-input);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-queue .feedback-context-row button {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-queue .feedback-item-toggle:is(:hover,:focus-visible) {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-queue .feedback-list article:focus-within {
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-queue :is(
+  .feedback-item-type,
+  .feedback-item-preview,
+  .feedback-reporter strong,
+  .feedback-reporter small
+) {
+  overflow-wrap: break-word;
+}
+
+/* My Profile keeps the same five actions. Match their text and hover/focus
+ * states to the panel background in both themes, including nested menus. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .profile-panel {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .profile-panel .profile-summary {
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .profile-panel :is(
+  .profile-summary h2,
+  .profile-summary strong,
+  .theme-picker h3,
+  .theme-option strong,
+  h3
+) {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .profile-panel :is(
+  .profile-summary p,
+  .theme-picker-copy p,
+  .theme-option small,
+  label
+) {
+  color: var(--read-body);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .profile-panel .profile-actions button {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border: 1px solid var(--read-border);
+  white-space: normal;
+  line-height: 1.4;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .profile-panel .profile-actions button:is(:hover,:focus-visible) {
+  background: var(--read-hover);
+  color: var(--read-ink);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .profile-panel :is(
+  .theme-option,
+  .theme-picker-actions button,
+  .avatar-picker button,
+  .dialog-actions button[type="button"]
+) {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .profile-panel :is(
+  .theme-option,
+  .theme-picker-actions button,
+  .avatar-picker button,
+  .dialog-actions button[type="button"]
+):is(:hover,:focus-visible) {
+  color: var(--read-ink);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .profile-panel .theme-option[aria-pressed="true"],
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .profile-panel .avatar-picker button[aria-pressed="true"] {
+  background: var(--read-selected);
+  color: var(--read-ink);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .profile-panel .dialog-actions button:not([type="button"]) {
+  background: var(--read-button);
+  color: var(--read-on-button);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .profile-panel :is(
+  .profile-actions button,
+  .theme-option,
+  .theme-picker-actions button,
+  .avatar-picker button,
+  .dialog-actions button
+):focus-visible {
+  outline: 3px solid var(--read-ring);
+  outline-offset: 2px;
+}
