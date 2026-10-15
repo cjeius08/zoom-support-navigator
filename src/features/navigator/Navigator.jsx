@@ -100,7 +100,7 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ isAdmin = false, onOpenTraining, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
+export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = false, onOpenTraining, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -389,7 +389,19 @@ export function Navigator({ isAdmin = false, onOpenTraining, onOpenFlexHub = () 
     : 'Ready for a new caller'
 
   return <section className="navigator" id="navigator" aria-label="Support Navigator">
-    {isAdmin && <div className="home-live-visitors-row"><LiveVisitors /></div>}
+    <div className="home-utilities-row" aria-label="Home display controls">
+      <div className="home-appearance-toggle" role="group" aria-label="Display mode">
+        <button type="button" aria-label="Day Mode" title="Day Mode" aria-pressed={theme === 'day'} onClick={() => onThemeChange('day')}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M19.07 4.93l-1.41 1.41M6.34 17.66l-1.41 1.41"/></svg>
+          <span>Day</span>
+        </button>
+        <button type="button" aria-label="Night Mode" title="Night Mode" aria-pressed={theme === 'night'} onClick={() => onThemeChange('night')}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 14.3A9 9 0 0 1 9.7 3.2 9 9 0 1 0 20.8 14.3Z"/></svg>
+          <span>Night</span>
+        </button>
+      </div>
+      {isAdmin && <LiveVisitors />}
+    </div>
     <section className="navigator-session-bar" aria-label="Current call session">
       <div>
         <small>Current call</small>

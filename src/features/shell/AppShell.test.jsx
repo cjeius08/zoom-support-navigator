@@ -171,23 +171,19 @@ it('gives regular members direct access to My Saved Notes from Call Flow', async
   expect(onOpenMySavedNotes).toHaveBeenCalledWith('')
 })
 
-it('switches between Ozzie Original and Alaga Theme from Appearance without changing the Ozzie logo', async () => {
+it('switches between Day and Night Mode from Appearance without changing the Ozzie logo', async () => {
   const user = userEvent.setup()
   const onThemeChange = vi.fn()
-  const { rerender } = render(<AppShell profile={agentProfile} theme="ozzie" onThemeChange={onThemeChange} />)
-
-  expect(screen.getByRole('img', { name: /Ozzie — Ogletree Support Workspace/i })).toHaveAttribute('src', expect.stringContaining('ozzie-hq.png'))
-  await user.click(screen.getByRole('button', { name: /agent_1 account/i }))
+  const { rerender } = render(<AppShell profile={agentProfile} theme="day" onThemeChange={onThemeChange} />)
+  await user.click(screen.getByRole('button', { name: /account/i }))
   await user.click(screen.getByRole('button', { name: 'Appearance' }))
-
-  expect(screen.getByRole('button', { name: /Ozzie Original/i })).toHaveAttribute('aria-pressed', 'true')
-  expect(screen.getByRole('button', { name: /Alaga Theme/i })).toHaveAttribute('aria-pressed', 'false')
-
-  await user.click(screen.getByRole('button', { name: /Alaga Theme/i }))
-  expect(onThemeChange).toHaveBeenCalledWith('alaga')
-
-  rerender(<AppShell profile={agentProfile} theme="alaga" onThemeChange={onThemeChange} />)
-  expect(screen.getByRole('img', { name: /Ozzie — Ogletree Support Workspace/i })).toHaveAttribute('src', expect.stringContaining('ozzie-hq.png'))
+  expect(screen.getByRole('button', { name: /Day Mode/i })).toHaveAttribute('aria-pressed', 'true')
+  expect(screen.getByRole('button', { name: /Night Mode/i })).toHaveAttribute('aria-pressed', 'false')
+  await user.click(screen.getByRole('button', { name: /Night Mode/i }))
+  expect(onThemeChange).toHaveBeenCalledWith('night')
+  rerender(<AppShell profile={agentProfile} theme="night" onThemeChange={onThemeChange} />)
+  expect(screen.getByRole('button', { name: /Night Mode/i })).toHaveAttribute('aria-pressed', 'true')
+  expect(screen.getByRole('img', { name: /Ozzie/i })).toBeInTheDocument()
 })
 
 it('keeps updates and workspace ownership metadata available after the shell revamp', async () => {

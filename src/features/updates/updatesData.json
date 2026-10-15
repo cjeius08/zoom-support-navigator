@@ -10,6 +10,21 @@
   },
   "updates": [
     {
+      "id": "ozzie-2-day-night-modes",
+      "date": "2026-10-15",
+      "area": "Appearance / Home",
+      "audience": "all",
+      "title": "Ozzie Day & Night Mode — one-click Home toggle",
+      "changed": "Replaced the Ozzie Original and Alaga appearance choices with two approved workspace modes: Day Mode (bright, sharp professional office background, pale grey/ivory cards and subtle turquoise accents) and Night Mode (crisp premium legal-library image with charcoal/slate surfaces and warm highlights). The original Ozzie owl wordmark, existing layout, tools and workflows are unchanged. Switching themes no longer adds a blur filter to the background image. On Home, use the small Day / Night toggle above the Current Call bar. You can also choose either theme from Profile → Appearance. The preference is remembered on the current browser/device. Older saved Ozzie settings migrate automatically.",
+      "checks": [
+        "Open Home and switch Day ↔ Night using the compact top-right toggle; inspect crisp background edges and text contrast.",
+        "Open Profile → Appearance and confirm only Day Mode and Night Mode are offered.",
+        "Reload and confirm the selected mode persists; both options use the original Ozzie logo.",
+        "Check Smart Search, approved Call Flow, Call Documentation, Google Sheet handoff, Readiness Lab, Flex Arbitration Hub, and Admin Live Visitors for readability and unchanged behavior.",
+        "Test desktop and mobile widths, especially search autocomplete/dropdown and floating tools."
+      ]
+    },
+    {
       "id": "admin-home-live-visitors",
       "date": "2026-10-15",
       "area": "Admin / Home",

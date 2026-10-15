@@ -9,5 +9,8 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './tests/setup.js',
     css: true,
+    // Avoid jsdom interaction-test timeouts from too many concurrent heavy suites.
+    // Assertions and individual test timeouts remain unchanged.
+    maxWorkers: 2,
   },
 })
