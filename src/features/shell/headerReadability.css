@@ -1,0 +1,156 @@
+/* Only Ozzie's header/navigation are restyled at this checkpoint.
+ * Preserve original horizontal nav position, mobile drawer, and full-brand artwork.
+ * Day/Night photo backgrounds remain sharp (no backdrop blur).
+ */
+html[data-theme="day"] .app-header.app-header-horizontal,
+html[data-theme="night"] .app-header.app-header-horizontal {
+  background: var(--ozzie-header-surface) !important;
+  border-bottom: 1px solid var(--ozzie-header-rule) !important;
+  color: var(--ozzie-text-primary);
+  backdrop-filter: none !important;
+  box-shadow: 0 2px 16px rgba(10, 29, 40, .08) !important;
+}
+html[data-theme="night"] .app-header.app-header-horizontal {
+  box-shadow: 0 3px 20px rgba(0, 0, 0, .18) !important;
+}
+
+/* Header typography is explicit so older fixed light/dark selectors can't win. */
+html[data-theme="day"] .app-header-horizontal :is(button, summary, strong, small, span),
+html[data-theme="night"] .app-header-horizontal :is(button, summary, strong, small, span) {
+  font-family: var(--ozzie-ui-font);
+}
+
+html[data-theme="day"] .app-header-horizontal :is(.topnav-link, .topnav-dropdown > summary),
+html[data-theme="night"] .app-header-horizontal :is(.topnav-link, .topnav-dropdown > summary) {
+  color: var(--ozzie-text-primary);
+  font-size: .91rem;
+  font-weight: 700;
+}
+html[data-theme="day"] .app-header-horizontal :is(.topnav-link, .topnav-dropdown > summary):is(:hover, :focus-visible),
+html[data-theme="night"] .app-header-horizontal :is(.topnav-link, .topnav-dropdown > summary):is(:hover, :focus-visible),
+html[data-theme="day"] .app-header-horizontal .topnav-dropdown[open] > summary,
+html[data-theme="night"] .app-header-horizontal .topnav-dropdown[open] > summary {
+  background: var(--ozzie-nav-hover);
+  color: var(--ozzie-text-primary);
+}
+html[data-theme="day"] .app-header-horizontal :is(.topnav-link.active, .topnav-dropdown.active > summary),
+html[data-theme="night"] .app-header-horizontal :is(.topnav-link.active, .topnav-dropdown.active > summary) {
+  background: var(--ozzie-nav-selected);
+  color: var(--ozzie-text-primary);
+}
+html[data-theme="day"] .app-header-horizontal :is(.topnav-link.active, .topnav-dropdown.active > summary)::after,
+html[data-theme="night"] .app-header-horizontal :is(.topnav-link.active, .topnav-dropdown.active > summary)::after {
+  background: var(--ozzie-accent);
+  height: 3px;
+}
+html[data-theme="day"] .app-header-horizontal .top-navigation,
+html[data-theme="night"] .app-header-horizontal .top-navigation {
+  border-bottom-color: var(--ozzie-header-rule);
+}
+html[data-theme="day"] .app-header-horizontal .topnav-chevron,
+html[data-theme="night"] .app-header-horizontal .topnav-chevron {
+  stroke: currentColor;
+}
+
+/* Solid dropdowns keep links legible against the full-detail office/library photo. */
+html[data-theme="day"] .app-header-horizontal .topnav-menu,
+html[data-theme="night"] .app-header-horizontal .topnav-menu {
+  background: var(--ozzie-nav-surface);
+  border: 1px solid var(--ozzie-border);
+  color: var(--ozzie-text-primary);
+  box-shadow: 0 16px 30px rgba(8, 23, 31, .21);
+  backdrop-filter: none;
+}
+html[data-theme="day"] .app-header-horizontal .topnav-menu > button,
+html[data-theme="night"] .app-header-horizontal .topnav-menu > button {
+  background: transparent;
+  color: var(--ozzie-text-primary);
+}
+html[data-theme="day"] .app-header-horizontal .topnav-menu > button:is(:hover, :focus-visible, [aria-pressed="true"]),
+html[data-theme="night"] .app-header-horizontal .topnav-menu > button:is(:hover, :focus-visible, [aria-pressed="true"]) {
+  background: var(--ozzie-nav-hover);
+  border-color: var(--ozzie-header-rule);
+}
+html[data-theme="day"] .app-header-horizontal .topnav-menu strong,
+html[data-theme="night"] .app-header-horizontal .topnav-menu strong {
+  color: var(--ozzie-text-primary);
+}
+html[data-theme="day"] .app-header-horizontal .topnav-menu small,
+html[data-theme="night"] .app-header-horizontal .topnav-menu small {
+  color: var(--ozzie-text-body);
+}
+html[data-theme="day"] .app-header-horizontal .topnav-menu svg,
+html[data-theme="night"] .app-header-horizontal .topnav-menu svg {
+  stroke: var(--ozzie-nav-icon);
+}
+
+/* Account badge stays recognizable and clickable; name and role remain readable. */
+html[data-theme="day"] .app-header-horizontal .account-menu,
+html[data-theme="night"] .app-header-horizontal .account-menu {
+  background: var(--ozzie-nav-surface);
+  color: var(--ozzie-text-primary);
+  border: 1px solid var(--ozzie-border);
+}
+html[data-theme="day"] .app-header-horizontal .account-menu:is(:hover, :focus-visible),
+html[data-theme="night"] .app-header-horizontal .account-menu:is(:hover, :focus-visible) {
+  background: var(--ozzie-nav-hover);
+  border-color: var(--ozzie-accent);
+}
+html[data-theme="day"] .app-header-horizontal .account-menu .account-copy,
+html[data-theme="night"] .app-header-horizontal .account-menu .account-copy {
+  color: var(--ozzie-text-primary);
+}
+html[data-theme="day"] .app-header-horizontal .account-menu small,
+html[data-theme="night"] .app-header-horizontal .account-menu small {
+  color: var(--ozzie-text-body);
+}
+html[data-theme="day"] .app-header-horizontal :is(button, summary):focus-visible,
+html[data-theme="night"] .app-header-horizontal :is(button, summary):focus-visible {
+  outline: 2px solid var(--ozzie-focus-ring);
+  outline-offset: 3px;
+}
+
+/* Compact header on tablets/phones. Only adjust the menu's color, not behavior. */
+@media (max-width: 800px), (hover: none) and (pointer: coarse) {
+  html[data-theme="day"] .app-header-horizontal .top-navigation,
+  html[data-theme="night"] .app-header-horizontal .top-navigation {
+    background: var(--ozzie-nav-surface);
+    color: var(--ozzie-text-primary);
+    border: 1px solid var(--ozzie-border);
+    backdrop-filter: none;
+  }
+  html[data-theme="day"] .app-header-horizontal .menu-toggle,
+  html[data-theme="night"] .app-header-horizontal .menu-toggle {
+    background: var(--ozzie-nav-surface);
+    color: var(--ozzie-text-primary);
+    border: 1px solid var(--ozzie-border);
+  }
+  html[data-theme="day"] .app-header-horizontal .menu-toggle:hover,
+  html[data-theme="night"] .app-header-horizontal .menu-toggle:hover {
+    background: var(--ozzie-nav-hover);
+  }
+  html[data-theme="day"] .app-header-horizontal .topnav-menu,
+  html[data-theme="night"] .app-header-horizontal .topnav-menu {
+    background: var(--ozzie-nav-hover);
+    box-shadow: none;
+  }
+}
+
+/* Carefully enlarge the existing full logo (~10%) without repositioning it.
+ * Logo artwork, dimensions ratio, nav centering and account positions stay.
+ */
+.ozzie-brand-dock { width: clamp(9.6rem, 11vw, 11.6rem); }
+@media (max-width: 1120px) and (min-width: 801px) {
+  .ozzie-brand-dock { width: 11.2rem; }
+}
+@media (max-width: 800px), (hover: none) and (pointer: coarse) {
+  .app-header-brand-row { grid-template-columns: minmax(5.8rem, 7.6rem) auto minmax(0, auto); }
+  .ozzie-brand-dock { width: min(100%, 7.6rem); }
+}
+@media (max-width: 470px) {
+  .app-header-brand-row { grid-template-columns: 5.55rem auto auto; }
+  .ozzie-brand-dock { width: 5.55rem; }
+}
+@media (min-width: 801px) and (hover: hover) and (pointer: fine) {
+  .ozzie-brand-dock { width: 11.6rem; }
+}

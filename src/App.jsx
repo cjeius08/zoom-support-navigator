@@ -35,6 +35,8 @@ import './features/theme/themeSystem.css'
 import './features/theme/dayNight.css'
 import './features/theme/typography.css'
 import './features/theme/logoLock.css'
+import './features/theme/foundation.css'
+import './features/shell/headerReadability.css'
 import './pilotReadiness.css'
 
 const EMPTY_REPORT_CONTEXT = {
