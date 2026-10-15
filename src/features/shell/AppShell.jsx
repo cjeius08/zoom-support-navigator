@@ -432,12 +432,12 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
         <button type="button" className="theme-option" data-theme-option="day" aria-pressed={theme === 'day'} onClick={() => onThemeChange('day')}>
           <span className="theme-preview-swatch" aria-hidden="true"><span></span><span></span><span></span></span>
           <strong>☀ Day Mode</strong>
-          <small>Clean off-white Dashboard background, white cards, and muted turquoise accents.</small>
+          <small>Pale-blue workspace background, white cards, and clear blue accents.</small>
         </button>
         <button type="button" className="theme-option" data-theme-option="night" aria-pressed={theme === 'night'} onClick={() => onThemeChange('night')}>
           <span className="theme-preview-swatch" aria-hidden="true"><span></span><span></span><span></span></span>
           <strong>☾ Night Mode</strong>
-          <small>Deep charcoal Dashboard background, slate cards, and softly contrasted text.</small>
+          <small>Near-black workspace background, dark cards, bright text, and blue highlights.</small>
         </button>
       </div>
       <div className="theme-picker-actions"><button type="button" onClick={() => setAppearanceOpen(false)}>Back to Profile</button></div>
