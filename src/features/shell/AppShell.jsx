@@ -305,7 +305,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           className={`topnav-link ${currentView === 'navigator' ? 'active' : ''}`}
           aria-current={currentView === 'navigator' ? 'page' : undefined}
           onClick={event => navigateFromHeader(event, 'navigator')}
-        >Home</button>
+        >Dashboard</button>
 
         <NavDropdown label="Call Flow" active={callFlowActive}>
           <button type="button" aria-label="Call Documentation" aria-pressed={liveTools.documentation !== 'closed'} onClick={event => openToolFromHeader(event, 'documentation')}><Icon type="documentation" /><span><strong>Call Documentation</strong><small>Capture notes without leaving your current page.</small></span></button>
@@ -401,18 +401,18 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     {profileOpen && <div className="modal-backdrop" role="presentation" onClick={event => event.target === event.currentTarget && closeProfile()}><div ref={profileDialogRef} tabIndex={-1} className="profile-panel" role="dialog" aria-modal="true" aria-labelledby="profile-title"><div className="profile-summary">{avatarUrl(profile.avatar_id, avatars) ? <img src={avatarUrl(profile.avatar_id, avatars)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}<div><h2 id="profile-title">My Profile</h2><strong>{profile.username}</strong><p>{profile.initials} · {accountRoleLabel}</p></div></div>{message && <p className="success-message" role="status">{message}</p>}{profileError && <p id="profile-error" role="alert">{profileError}</p>}{avatarOpen ? <AvatarPicker selectedId={profile.avatar_id} avatars={avatars} onCancel={() => setAvatarOpen(false)} onSave={async id => { setMessage(''); setProfileError(''); setProfileErrorField(''); try { await onAvatarChange?.(id); setAvatarOpen(false); setMessage('Avatar updated.') } catch (avatarError) { setProfileError(avatarError?.message || 'Could not update avatar.') } }} /> : passwordOpen ? <form onSubmit={submitPassword} noValidate><h3>Change Password</h3><label>New password<input name="password" type="password" autoComplete="new-password" disabled={passwordSaving} aria-invalid={profileErrorField === 'password' ? 'true' : undefined} aria-describedby={profileErrorField === 'password' ? 'profile-error' : undefined} /></label><label>Confirm password<input name="confirm" type="password" autoComplete="new-password" disabled={passwordSaving} aria-invalid={profileErrorField === 'confirm' ? 'true' : undefined} aria-describedby={profileErrorField === 'confirm' ? 'profile-error' : undefined} /></label><div className="dialog-actions"><button type="button" disabled={passwordSaving} onClick={() => setPasswordOpen(false)}>Cancel</button><button disabled={passwordSaving}>{passwordSaving ? 'Saving…' : 'Save Password'}</button></div></form> : appearanceOpen ? <section className="theme-picker" aria-labelledby="appearance-title">
       <div className="theme-picker-copy">
         <h3 id="appearance-title">Appearance</h3>
-        <p>Choose Day or Night Mode. Your choice is saved and is also available as a one-click toggle on Home. Ozzie's layout, logo, and tools stay unchanged.</p>
+        <p>Choose Day or Night Mode. Your choice is saved and is also available as a one-click toggle on Dashboard. Ozzie's layout, logo, and tools stay unchanged.</p>
       </div>
       <div className="theme-options" role="group" aria-label="Workspace theme">
         <button type="button" className="theme-option" data-theme-option="day" aria-pressed={theme === 'day'} onClick={() => onThemeChange('day')}>
           <span className="theme-preview-swatch" aria-hidden="true"><span></span><span></span><span></span></span>
           <strong>☀ Day Mode</strong>
-          <small>Clean off-white Home background, white cards, and muted turquoise accents.</small>
+          <small>Clean off-white Dashboard background, white cards, and muted turquoise accents.</small>
         </button>
         <button type="button" className="theme-option" data-theme-option="night" aria-pressed={theme === 'night'} onClick={() => onThemeChange('night')}>
           <span className="theme-preview-swatch" aria-hidden="true"><span></span><span></span><span></span></span>
           <strong>☾ Night Mode</strong>
-          <small>Deep charcoal Home background, slate cards, and softly contrasted text.</small>
+          <small>Deep charcoal Dashboard background, slate cards, and softly contrasted text.</small>
         </button>
       </div>
       <div className="theme-picker-actions"><button type="button" onClick={() => setAppearanceOpen(false)}>Back to Profile</button></div>
