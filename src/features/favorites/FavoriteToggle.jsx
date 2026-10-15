@@ -1,3 +1,5 @@
+import { OzzieBrandImage } from '../../components/OzzieBrandImage'
+
 export function FavoriteToggle({
   active = false,
   busy = false,
@@ -20,12 +22,7 @@ export function FavoriteToggle({
       onToggle?.()
     }}
   >
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path
-        d="M12 3.4 14.6 8.7l5.8.8-4.2 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.2-4.1 5.8-.8L12 3.4Z"
-        fill={active ? 'currentColor' : 'none'}
-      />
-    </svg>
+    <OzzieBrandImage variant="owl" className="favorite-ozzie-mark" alt="" aria-hidden="true" draggable={false} />
     {!compact && <span>{busy ? 'Saving…' : active ? 'Saved' : 'Save'}</span>}
   </button>
 }
