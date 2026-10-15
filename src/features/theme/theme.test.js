@@ -7,41 +7,39 @@ import { applyTheme, normalizeTheme, readStoredTheme, storeTheme, THEME_STORAGE_
 afterEach(() => {
   window.localStorage.clear()
   delete document.documentElement.dataset.theme
+  document.documentElement.style.removeProperty('color-scheme')
 })
 
-it('falls back to Ozzie Original for missing or invalid preferences', () => {
-  expect(normalizeTheme(null)).toBe('ozzie')
-  expect(normalizeTheme('anything-else')).toBe('ozzie')
-  expect(readStoredTheme()).toBe('ozzie')
+it('defaults to Day Mode and migrates legacy theme preferences', () => {
+  expect(normalizeTheme(null)).toBe('day')
+  expect(normalizeTheme('anything-else')).toBe('day')
+  expect(normalizeTheme('ozzie')).toBe('day')
+  expect(normalizeTheme('alaga')).toBe('night')
+  expect(readStoredTheme()).toBe('day')
 })
 
-it('stores and applies the Alaga color theme without changing product identity data', () => {
-  expect(storeTheme('alaga')).toBe('alaga')
-  expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe('alaga')
-  expect(document.documentElement.dataset.theme).toBe('alaga')
-  expect(readStoredTheme()).toBe('alaga')
+it('stores Night Mode and applies the corresponding color scheme', () => {
+  expect(storeTheme('night')).toBe('night')
+  expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe('night')
+  expect(document.documentElement.dataset.theme).toBe('night')
+  expect(document.documentElement.style.colorScheme).toBe('dark')
+  expect(readStoredTheme()).toBe('night')
 })
 
-it('can instantly return to Ozzie Original', () => {
-  storeTheme('alaga')
-  expect(applyTheme('ozzie')).toBe('ozzie')
-  expect(document.documentElement.dataset.theme).toBe('ozzie')
+it('can instantly return to Day Mode from Night Mode', () => {
+  storeTheme('night')
+  expect(applyTheme('day')).toBe('day')
+  expect(document.documentElement.dataset.theme).toBe('day')
+  expect(document.documentElement.style.colorScheme).toBe('light')
 })
 
-
-it('keeps Alaga color-only while covering major workspace surfaces', () => {
-  const css = readFileSync(join(cwd(), 'src/features/theme/themeSystem.css'), 'utf8')
-
-  expect(css).toContain('var(--login-workspace-image)')
-  expect(css).toContain('var(--workspace-image)')
-  expect(css).toMatch(/html\[data-theme="alaga"\] \.training-section-tabs button\[aria-selected="true"\]/)
-  expect(css).toMatch(/html\[data-theme="alaga"\] \.readiness-progress-track i/)
-  expect(css).toMatch(/html\[data-theme="alaga"\] \.updates-version-pill/)
-  expect(css).toMatch(/html\[data-theme="alaga"\] \.avatar-library-panel/)
-  expect(css).toMatch(/html\[data-theme="alaga"\] \.documentation-dock \.documentation-copy/)
-  expect(css).toMatch(/html\[data-theme="alaga"\] \.navigator-library-tabs button\[aria-selected="true"\]/)
-  expect(css).toMatch(/html\[data-theme="alaga"\] \.route-card/)
-  expect(css).toMatch(/html\[data-theme="alaga"\] \.common-issue-step-number/)
-  expect(css).toMatch(/html\[data-theme="alaga"\] \.common-issue-context-options button\[aria-pressed="true"\]/)
-  expect(css).not.toMatch(/html\[data-theme="alaga"\][\s\S]*?\.ozzie-brand-dock img\s*\{[^}]*display\s*:/)
+it('preserves the approved full-detail background imagery without blurring it', () => {
+  const css = readFileSync(join(cwd(), 'src/features/theme/dayNight.css'), 'utf8')
+  const shell = readFileSync(join(cwd(), 'src/features/shell/AppShell.jsx'), 'utf8')
+  expect(css).toMatch(/html\[data-theme="day"\] \.app-shell::before/)
+  expect(css).toMatch(/html\[data-theme="night"\] \.app-shell::before/)
+  expect(css).not.toMatch(/\.app-shell::(?:before|after)\s*\{[^}]*backdrop-filter:\s*blur\(/)
+  expect(shell).toContain('assets/ozzie-day-office.png')
+  expect(shell).toContain('assets/ozzie-night-library.png')
+  expect(shell).toContain("assetUrl('assets/ozzie-hq.png')")
 })

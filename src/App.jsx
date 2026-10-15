@@ -31,6 +31,7 @@ import './features/shell/responsiveShell.css'
 import './features/shell/headerNavRevamp.css'
 import './features/shell/loginRevamp.css'
 import './features/theme/themeSystem.css'
+import './features/theme/dayNight.css'
 import './pilotReadiness.css'
 
 const EMPTY_REPORT_CONTEXT = {
@@ -439,6 +440,8 @@ export default function App() {
   if (profile) {
     const content = view === 'navigator'
       ? <Navigator
+          theme={theme}
+          onThemeChange={changeTheme}
           isAdmin={profile.role === 'creator_admin'}
           onOpenTraining={openTraining}
           onOpenFlexHub={() => navigate('flex_hub')}
