@@ -53,7 +53,7 @@ it('keeps Member and Lead on the standard workspace surface', () => {
   )
 
   expect(screen.getByRole('button', { name: /member_1 account/i })).toHaveTextContent('Member')
-  expect(screen.getByRole('navigation')).toHaveTextContent('Home')
+  expect(screen.getByRole('navigation')).toHaveTextContent('Dashboard')
   expect(screen.getByRole('navigation')).toHaveTextContent('Favorites')
   expect(screen.getByRole('navigation')).toHaveTextContent('Training & Resources')
   expect(screen.getByRole('navigation')).toHaveTextContent('Process Documents')
@@ -88,7 +88,7 @@ it('keeps the creator-admin surface complete', () => {
   expect(screen.getByRole('navigation')).toHaveTextContent('Feedback Queue')
 })
 
-it('hides Back on Home and keeps it available on inner pages across desktop and mobile', async () => {
+it('hides Back on Dashboard and keeps it available on inner pages across desktop and mobile', async () => {
   const user = userEvent.setup()
   const onBack = () => {}
 
