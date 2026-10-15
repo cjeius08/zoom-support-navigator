@@ -75,11 +75,15 @@ html:is([data-theme="day"],[data-theme="night"]) .global-feedback-dialog [role="
 }
 /* Dropdown entries scroll within the viewport when the desktop window
  * becomes short at 100% or 125% zoom; hover and keyboard still work. */
-html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-dropdown .topnav-menu {
-  max-height: min(70dvh,33rem);
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+@media (max-width: 800px), (hover: none) and (pointer: coarse) {
+  /* Only the in-flow touch menu scrolls. Desktop hover menus must retain
+   * their transparent gap-bridge outside the popup (otherwise hover closes). */
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-dropdown .topnav-menu {
+    max-height: min(70dvh,33rem);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
 }
 html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-menu > button {
   min-width: 0;
