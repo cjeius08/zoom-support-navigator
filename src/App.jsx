@@ -52,6 +52,8 @@ import './features/theme/workspaceBatch3.css'
 import './features/theme/workspaceBatch4.css'
 import './features/shell/headerBatch5.css'
 import './features/dashboard/dashboardBatch6.css'
+import './features/dashboard/dashboardReference.css'
+import './features/shell/headerReference.css'
 
 const EMPTY_REPORT_CONTEXT = {
   selected_tab: null,
@@ -461,6 +463,8 @@ export default function App() {
       ? <Navigator
           profile={profile}
           onOpenFavorites={() => navigate('favorites')}
+          onOpenFeedback={() => navigate('feedback')}
+          onOpenUpdates={() => navigate('updates')}
           theme={theme}
           onThemeChange={changeTheme}
           isAdmin={profile.role === 'creator_admin'}
@@ -522,6 +526,11 @@ export default function App() {
         profile={profile}
         currentView={view}
         onNavigate={navigate}
+        onDashboardSearch={() => {
+          navigate('navigator')
+          window.requestAnimationFrame(() => document.querySelector('input[aria-label="Search support processes"]')?.focus())
+        }}
+        onDashboardUpdates={() => navigate('updates')}
         onBack={goBack}
         canGoBack={navigationHistory.length > 0}
         onOpenReadinessResource={openReadinessResource}
