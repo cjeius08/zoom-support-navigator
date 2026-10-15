@@ -51,6 +51,7 @@ import './features/theme/batch2Cleanup.css'
 import './features/theme/workspaceBatch3.css'
 import './features/theme/workspaceBatch4.css'
 import './features/shell/headerBatch5.css'
+import './features/dashboard/dashboardBatch6.css'
 
 const EMPTY_REPORT_CONTEXT = {
   selected_tab: null,
@@ -458,6 +459,8 @@ export default function App() {
   if (profile) {
     const content = view === 'navigator'
       ? <Navigator
+          profile={profile}
+          onOpenFavorites={() => navigate('favorites')}
           theme={theme}
           onThemeChange={changeTheme}
           isAdmin={profile.role === 'creator_admin'}
