@@ -1,0 +1,206 @@
+/* Ozzie targeted visual fix: Smart Search + Host/Arbitrator guided drawer.
+ * Source audit: accessibility-ui.css hardcoded #fff/#c7d4df inside suggestions,
+ * styles.css hardcoded navy Back gradient and pale Host script captions.
+ * Scope to authenticated Day/Night themes; do not alter data, navigation,
+ * search ranking, modal focus, device selection, or drawer layout behavior.
+ */
+
+/* Smart Search: background and ALL descendant text must use the same theme. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .smart-search-card .search-suggestions {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border: 1px solid var(--read-border);
+  box-shadow: 0 14px 36px rgba(12,29,41,.14);
+  backdrop-filter: none;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .smart-search-card .search-suggestion {
+  color: var(--read-ink);
+  background: var(--read-bg);
+  border-color: transparent;
+  min-width: 0;
+  height: auto;
+  grid-template-columns: minmax(0,1fr) auto;
+  align-items: start;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .smart-search-card .search-suggestion:is(:hover,:focus-visible,[aria-selected="true"]) {
+  color: var(--read-ink);
+  background: var(--read-selected);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .smart-search-card .search-suggestion-copy {
+  min-width: 0;
+  max-width: 100%;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .smart-search-card .search-suggestion-copy strong {
+  color: var(--read-ink);
+  font-size: var(--ozzie-legible-body,1rem);
+  line-height: 1.42;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .smart-search-card .search-suggestion-copy small {
+  display: block;
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.45;
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .smart-search-card .search-suggestion-category {
+  color: var(--read-link);
+  background: var(--read-soft);
+  border: 1px solid var(--read-border);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.32;
+  max-width: min(10rem, 100%);
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+@media (max-width: 700px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .smart-search-card .search-suggestion {
+    grid-template-columns: minmax(0,1fr);
+    gap: .35rem;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .smart-search-card .search-suggestion-category {
+    justify-self: start;
+  }
+}
+
+/* Caller role switch: selected Host/Arbitrator must never show white text on
+ * pale blue in Day mode; keep pressed state unmistakable in Night mode too. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .navigator-role-switch > span {
+  color: var(--read-link);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .navigator-role-switch button {
+  color: var(--read-ink);
+  background: var(--read-soft);
+  border-color: var(--read-border);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.35;
+  white-space: normal;
+  height: auto;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .navigator-role-switch button[aria-pressed="true"] {
+  color: var(--read-ink);
+  background: var(--read-selected);
+  border-color: var(--read-ring);
+  box-shadow: inset 0 0 0 1px var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .navigator-role-switch button:is(:hover,:focus-visible) {
+  color: var(--read-ink);
+  border-color: var(--read-ring);
+}
+
+/* Host drawer: keep its current structure and UI actions; fix only colors. */
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer :is(
+  .drawer-header,.drawer-content,.host-support-context,.host-confirm-card,
+  .host-step-card,.host-roadblock-card,.host-source-details
+) {
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-support-context {
+  background: var(--read-bg);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-device-options button {
+  color: var(--read-ink);
+  background: var(--read-soft);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-device-options button[aria-pressed="true"] {
+  color: var(--read-ink);
+  background: var(--read-selected);
+  border-color: var(--read-ring);
+}
+
+/* The sticky Back row's original dark gradient hid its description on Day. */
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-troubleshooting-back-row {
+  background: linear-gradient(180deg,var(--read-bg) 72%,transparent);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-troubleshooting-back-row small {
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.42;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-troubleshooting-back-row .guide-back-step {
+  color: var(--read-ink) !important;
+  background: var(--read-soft) !important;
+  border-color: var(--read-border) !important;
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-troubleshooting-back-row .guide-back-step:is(:hover,:focus-visible) {
+  color: var(--read-ink) !important;
+  background: var(--read-hover) !important;
+  border-color: var(--read-ring) !important;
+}
+
+/* Suggested agent script card: old grey-blue gradient + almost-white source
+ * captions looked washed out. Give every layer intentional readable contrast. */
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-common-issue-script-card {
+  color: var(--read-ink);
+  background: var(--read-soft);
+  border: 1px solid var(--read-border);
+  border-left: 3px solid var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-common-issue-script-card .common-issue-script-heading :is(h3,.eyebrow) {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-common-issue-script-card .common-issue-script-heading .eyebrow {
+  color: var(--read-link);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-common-issue-script-card .common-issue-script-heading button {
+  color: var(--read-on-button);
+  background: var(--read-button);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-common-issue-script-card blockquote {
+  color: var(--read-ink);
+  background: var(--read-bg);
+  border: 1px solid var(--read-border);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-common-issue-script-card .common-issue-script-source {
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.45;
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-common-issue-script-card .common-issue-script-source :is(span,a) {
+  color: var(--read-body);
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-common-issue-script-card .common-issue-script-source a {
+  color: var(--read-link);
+  text-decoration: underline;
+  text-underline-offset: .15em;
+}
+
+/* Confirm, trouble, sources: original --read wrappers stay; child labels
+ * use contrasting ink on both themes even at reduced browser zoom. */
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer :is(
+  .host-confirm-card > small,.host-step-instruction,.host-roadblock-card dd,
+  .host-roadblock-script blockquote,.host-device-required p
+) {
+  color: var(--read-body);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer :is(
+  .host-step-confirm span,.host-roadblock-card dt,.host-source-details summary,
+  .host-source-details a,.host-roadblock-script > span
+) {
+  color: var(--read-link);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-step-confirm {
+  background: var(--read-soft);
+  border-left-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer :is(
+  .host-device-options button,.host-choice-grid button,.host-step-actions button,
+  .host-source-details summary,.common-issue-script-heading button,
+  .host-troubleshooting-back-row .guide-back-step
+):focus-visible {
+  outline: 3px solid var(--read-ring);
+  outline-offset: 2px;
+}
