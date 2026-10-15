@@ -14,6 +14,7 @@ import { FavoriteToggle } from '../favorites/FavoriteToggle'
 import { useDialogFocus } from '../../lib/useDialogFocus'
 import { ESCALATION_REQUIREMENTS, FAQ_ITEMS, ROADBLOCK_MATRIX, SUPPORT_HELPFUL_LINKS } from '../../data/supportReference'
 import { HOST_GUIDED_ROUTES } from '../../data/hostGuidedRoutes'
+import { HOST_ROADBLOCKS } from '../../data/arbitratorHostSupport'
 import { guidedRouteForHostTopic, hostProcesses, searchHostRoadblocks, searchHostTopics } from '../../data/hostExperience'
 
 const categories = [
@@ -138,6 +139,30 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
 
   useEffect(() => {
     if (!initialCommonIssueId) return
+    // Host shortcuts reuse the existing allowed common_issue Favorites type,
+    // with a namespaced ID to avoid collisions with Participant routes.
+    if (initialCommonIssueId.startsWith('host:')) {
+      const topicId = initialCommonIssueId.slice('host:'.length)
+      const route = guidedRouteForHostTopic(topicId)
+      if (!route) return
+      setSelected(null)
+      setSelectedRoute(null)
+      setSelectedHostRoadblock(null)
+      setSelectedHostRoute(route)
+      setCallContext(current => ({ ...current, role: 'Host', status: 'active' }))
+      return
+    }
+    if (initialCommonIssueId.startsWith('host-roadblock:')) {
+      const roadblockId = initialCommonIssueId.slice('host-roadblock:'.length)
+      const roadblock = HOST_ROADBLOCKS.find(item => item.id === roadblockId)
+      if (!roadblock) return
+      setSelected(null)
+      setSelectedRoute(null)
+      setSelectedHostRoute(null)
+      setSelectedHostRoadblock(roadblock)
+      setCallContext(current => ({ ...current, role: 'Host', status: 'active' }))
+      return
+    }
     const route = routeById(initialCommonIssueId)
     if (!route) return
     setSelected(null)
@@ -545,6 +570,9 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
           onOpenTopic={topic => openHostTopic(topic, 'host_library')}
           onOpenRoadblock={roadblock => openHostRoadblock(roadblock, 'host_library')}
           onOpenProcess={process => openProcess(process, 'host_process')}
+          isFavorite={isFavorite}
+          isFavoriteBusy={isFavoriteBusy}
+          onToggleFavorite={onToggleFavorite}
         /> : query.trim() ? <section id="search-results" className="combined-search-results" aria-live="polite">
           <div className="search-results-heading">
             <p className="eyebrow">Smart Search</p>
