@@ -24,7 +24,7 @@ function UploadPreview({ title, files, urls }) {
     <div className="avatar-upload-preview-grid">
       {files.map((file, index) => <article key={`${file.name}-${file.lastModified}-${index}`}>
         {urls[index] ? <img src={urls[index]} alt="" /> : <span className="avatar-upload-preview-fallback">IMG</span>}
-        <span>{file.name}</span>
+        <span title={file.name}>{file.name}</span>
       </article>)}
     </div>
   </section>
@@ -258,7 +258,7 @@ export function AvatarLibraryManagement({ isAdmin, onChanged }) {
             <span className="sr-only">Select {avatar.id}</span>
           </label>
           <img src={avatar.src} alt="" loading="lazy" />
-          <span className="avatar-library-card-id">{avatar.id}</span>
+          <span className="avatar-library-card-id" title={avatar.id}>{avatar.id}</span>
           <button type="button" className="danger-action" onClick={() => setConfirmIds([avatar.id])} disabled={Boolean(busy)} aria-label={`Delete ${avatar.id}`}>Delete</button>
         </article>)}
       </div>}
