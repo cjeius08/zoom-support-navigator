@@ -112,7 +112,7 @@ html[data-theme="night"] .app-shell-horizontal {
   --ref-page: #08090c;
   --ref-card: #111217;
   --ref-border: #353944;
-  --ref-blue: #3679f8;
+  --ref-blue: #2665df; /* White button text >= 4.5:1 */
   --ref-blue-hover: #265ed1;
   --ref-text: #f4f5f8;
   --ref-muted: #c4c9d4;
