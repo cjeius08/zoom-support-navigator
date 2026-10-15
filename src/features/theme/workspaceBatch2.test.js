@@ -77,7 +77,7 @@ describe('Batch 2 — compact feedback, analytics and data quality', () => {
   })
 
   it('retains a readable typography floor without giving compact cards fixed heights', () => {
-    expect(css).toContain('/* Last-mile typography: readable labels at 67%, never fixed-height clipping. */')
+    expect(css).toContain('/* Last-mile typography: readable labels at 67%, never fixed-height clipping.')
     for (const selector of [
       '.usage-summary span',
       '.usage-overview-highlights small',
