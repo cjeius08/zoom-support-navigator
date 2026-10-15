@@ -83,4 +83,36 @@ describe('Ozzie UI Batch 1 — authenticated Day/Night', () => {
     expect(css).toContain(':focus-visible')
     expect(css).not.toMatch(/pointer-events:\s*none\s*!important/)
   })
+
+  it('restores legible feedback queue text and profile actions on pale surfaces', () => {
+    const patch = css.split('/* Batch 1 follow-up — feedback queue and profile dialog contrast.')[1]
+    expect(patch).toBeTruthy()
+    for (const selector of [
+      '.feedback-item-type',
+      '.feedback-item-preview',
+      '.feedback-reporter strong',
+      '.feedback-reporter small',
+      '.feedback-submitted-at',
+      '.feedback-item-description',
+      '.feedback-screen-context > summary',
+      '.feedback-status-control select',
+      '.profile-actions button',
+      '.theme-picker-actions button',
+      '.theme-option[aria-pressed="true"]',
+      '.dialog-actions button:not([type="button"])',
+    ]) {
+      expect(patch, selector).toContain(selector)
+    }
+    for (const theme of ['day', 'night']) {
+      expect(ratio(token(theme, '--read-soft'), token(theme, '--read-ink'))).toBeGreaterThanOrEqual(4.5)
+      expect(ratio(token(theme, '--read-bg'), token(theme, '--read-body'))).toBeGreaterThanOrEqual(4.5)
+    }
+    expect(patch).toContain('background: var(--read-hover)')
+    expect(patch).toContain('color: var(--read-ink)')
+    expect(patch).not.toContain('.access-card')
+    expect(patch).not.toContain('grid-template-columns')
+    expect(patch).not.toMatch(/pointer-events:\s*none\s*!important/)
+  })
+
+
 })
