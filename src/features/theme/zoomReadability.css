@@ -1,0 +1,292 @@
+/* Ozzie readability floor for desktop browser zoom (including 67%).
+ * A browser zoom of 67% shrinks CSS text by about one-third. Earlier compact
+ * labels reached .52-.72rem; keep readable typography without stretching the
+ * entire UI, replacing the brand, or changing any support workflows.
+ * Tokens gently step up at wide CSS viewports (common when zoomed out).
+ */
+.app-shell-horizontal {
+  --ozzie-legible-meta: .9rem;
+  --ozzie-legible-body: 1rem;
+  --ozzie-legible-title: 1.12rem;
+}
+@media (min-width: 1400px) {
+  .app-shell-horizontal {
+    --ozzie-legible-meta: 1rem;
+    --ozzie-legible-body: 1.125rem;
+    --ozzie-legible-title: 1.25rem;
+  }
+}
+
+/* Use the existing top navigation. Keep it single-row on desktop, with
+   text-based dropdown details large enough to read when zoomed out. */
+.app-shell-horizontal .top-navigation :is(.topnav-link,.topnav-dropdown > summary) {
+  font-size: var(--ozzie-legible-meta) !important;
+  line-height: 1.35;
+}
+.app-shell-horizontal .topnav-menu :is(strong,small),
+.app-shell-horizontal .account-menu :is(strong,small),
+.app-shell-horizontal .workspace-meta-footer {
+  font-size: var(--ozzie-legible-meta) !important;
+  line-height: 1.45;
+}
+
+/* Prevent microprint in all authenticated content. This includes the separate
+   floating Documentation / Scope Check / Readiness windows, not the login. */
+.app-shell-horizontal :is(
+  .navigator,
+  .process-drawer,
+  .host-support-drawer,
+  .documentation-dock,
+  .console-view,
+  .training-roadmap,
+  .training-viewer,
+  .process-documents-view,
+  .flex-hub-view,
+  .readiness-lab-dock,
+  .scope-check-dock,
+  .live-call-flow,
+  .live-call-workflow-panel,
+  .profile-panel
+) small {
+  font-size: var(--ozzie-legible-meta) !important;
+  line-height: 1.45;
+}
+
+/* Navigation dashboard, searches, route cards, FAQ and Roadblock Matrix. */
+.app-shell-horizontal :is(
+  .eyebrow,
+  .smart-search-examples > span,
+  .navigator-session-bar small,
+  .route-group > h3,
+  .route-card > span:first-child,
+  .route-card b,
+  .process-card b,
+  .process-meta span,
+  .search-result-block-heading > span,
+  .result-type-badge,
+  .host-topic-card > span,
+  .host-roadblock-result-card > span,
+  .host-topic-card b,
+  .host-roadblock-result-card b,
+  .roadblock-matrix-header,
+  .roadblock-cell-label,
+  .category-grid button > span:not(.category-icon)
+) {
+  font-size: var(--ozzie-legible-meta) !important;
+  line-height: 1.4;
+}
+.app-shell-horizontal :is(
+  .navigator-library-tabs button,
+  .smart-search-examples button,
+  .navigator-new-call-button,
+  .navigator-role-switch button,
+  .navigator-role-switch > span
+) {
+  font-size: var(--ozzie-legible-meta) !important;
+}
+.app-shell-horizontal :is(
+  .navigator-tab-intro,
+  .search-results-heading > p:last-child,
+  .route-card small,
+  .process-card > span:not(.result-type-badge),
+  .category-grid button > span:not(.category-icon),
+  .support-reference-card p,
+  .support-reference-card li,
+  .support-reference-grid > article p,
+  .support-reference-grid > article li,
+  .roadblock-matrix-row p,
+  .escalation-requirements-grid p,
+  .host-topic-card small,
+  .host-roadblock-result-card small
+) {
+  font-size: var(--ozzie-legible-body) !important;
+  line-height: 1.52;
+  overflow-wrap: anywhere;
+}
+.app-shell-horizontal :is(
+  .route-card strong,
+  .process-card > strong,
+  .host-topic-card strong,
+  .host-roadblock-result-card strong,
+  .support-reference-card h3,
+  .support-reference-grid > article h3,
+  .roadblock-matrix-row strong
+) {
+  font-size: var(--ozzie-legible-title) !important;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* Guide content should remain legible after opening a card. */
+.app-shell-horizontal :is(
+  .process-drawer,
+  .host-support-drawer,
+  .process-documents-view,
+  .flex-hub-view
+) :is(p,li,blockquote,figcaption,summary,dt,dd) {
+  font-size: var(--ozzie-legible-body);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+.app-shell-horizontal :is(
+  .process-drawer,
+  .host-support-drawer,
+  .process-documents-view,
+  .flex-hub-view
+) :is(.process-category,.host-support-context small,.host-step-confirm span,.host-roadblock-card dt,.host-roadblock-script > span) {
+  font-size: var(--ozzie-legible-meta) !important;
+}
+
+/* Documentation, Scope Check and Readiness are critical live-call tools.
+   Correct previous .52-.69rem instructions, metadata and option text. */
+.app-shell-horizontal :is(
+  .documentation-dock-kicker,
+  .documentation-dock-field > span,
+  .documentation-dock-field > small,
+  .documentation-dock-footer > span,
+  .documentation-dock-footer > small,
+  .documentation-dock-restore small,
+  .readiness-progress span,
+  .readiness-progress strong,
+  .readiness-part-rail button > span,
+  .readiness-part-rail small,
+  .readiness-question > header span,
+  .readiness-question > header small,
+  .readiness-result,
+  .readiness-answer-options button > span,
+  .readiness-find-card span,
+  .readiness-find-card small,
+  .readiness-question-nav span,
+  .readiness-part-result > span,
+  .readiness-next-parts li > span,
+  .readiness-next-parts li small,
+  .scope-check-footer small,
+  .scope-decision > span,
+  .scope-handoff-card span
+) {
+  font-size: var(--ozzie-legible-meta) !important;
+  line-height: 1.42;
+}
+.app-shell-horizontal :is(
+  .documentation-dock-field :is(input,select,textarea),
+  .documentation-dock :is(.documentation-copy,.documentation-clear),
+  .scope-options button,
+  .scope-reset,
+  .scope-handoff-language button,
+  .readiness-part-rail button,
+  .readiness-answer-options button,
+  .readiness-find-card button,
+  .readiness-check-answer,
+  .readiness-question-nav button,
+  .readiness-part-result button
+) {
+  font-size: var(--ozzie-legible-meta) !important;
+  line-height: 1.45;
+}
+.app-shell-horizontal :is(
+  .documentation-dock-privacy span,
+  .readiness-part-summary p,
+  .readiness-answer-options button p,
+  .readiness-feedback p,
+  .readiness-next-parts li strong,
+  .scope-key-principle > span,
+  .scope-question p,
+  .scope-decision p,
+  .scope-handoff-boundary p,
+  .scope-handoff-documentation p
+) {
+  font-size: var(--ozzie-legible-body) !important;
+  line-height: 1.52;
+}
+.app-shell-horizontal :is(
+  .readiness-question > h3,
+  .readiness-part-rail strong,
+  .readiness-find-card strong
+) {
+  font-size: var(--ozzie-legible-title) !important;
+  line-height: 1.4;
+}
+
+/* Training modules and visual lessons previously contained .55rem footnotes. */
+.app-shell-horizontal :is(
+  .training-roadmap,
+  .training-viewer,
+  .guided-lesson-picker,
+  .guided-lesson-split,
+  .guided-lesson-footer,
+  .guided-lesson-sources
+) :is(button,small,figcaption,summary) {
+  font-size: var(--ozzie-legible-meta) !important;
+  line-height: 1.48;
+}
+.app-shell-horizontal :is(
+  .training-roadmap,
+  .guided-lesson-split,
+  .guided-flow-stage,
+  .guided-takeaways,
+  .guided-remember
+) :is(p,li) {
+  font-size: var(--ozzie-legible-body) !important;
+  line-height: 1.52;
+}
+
+/* Reports, feedback, user management and change log. Preserve responsive grids
+   and allow long values to wrap rather than disappear at increased font sizes. */
+.app-shell-horizontal :is(
+  .usage-user-row dt,
+  .usage-user-identity small,
+  .usage-section-tabs button small,
+  .usage-overview-highlights span,
+  .usage-presence-summary span,
+  .usage-chart-column,
+  .feedback-context-row small,
+  .feedback-reporter small,
+  .feedback-item-submitter small,
+  .feedback-submitted-at,
+  .feedback-screen-context dt,
+  .team-list small,
+  .readiness-summary-grid dt,
+  .update-card-meta span,
+  .update-card time,
+  .console-metadata dt
+) {
+  font-size: var(--ozzie-legible-meta) !important;
+  line-height: 1.42;
+}
+.app-shell-horizontal :is(
+  .usage-user-row dd,
+  .usage-privacy-note,
+  .feedback-list p,
+  .report-panel p,
+  .update-card p,
+  .update-card li,
+  .console-metadata dd,
+  .team-list article > div strong
+) {
+  font-size: var(--ozzie-legible-body) !important;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.app-shell-horizontal .usage-user-row dd {
+  white-space: normal;
+  text-overflow: clip;
+  overflow: visible;
+}
+
+/* Higher text size should grow the card, not truncate its content. */
+.app-shell-horizontal :is(
+  .route-card,
+  .process-card,
+  .host-topic-card,
+  .host-roadblock-result-card,
+  .support-reference-card,
+  .roadblock-matrix-row,
+  .readiness-question,
+  .update-card
+) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Keep the same control visibility for users who prefer reduced motion. No new
+   animation or layout transform is introduced by this typography pass. */
