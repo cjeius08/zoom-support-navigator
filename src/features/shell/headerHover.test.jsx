@@ -1,9 +1,21 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { AppShell } from './AppShell'
 
 const profile = { username: 'agent', initials: 'AG', role: 'agent', workspace_role: 'member' }
+
+/* jsdom may not implement PointerEvent: use a browser-like pointer shim so
+ * React receives pointerType="mouse"/"touch" in these interaction tests. */
+beforeAll(() => {
+  vi.stubGlobal('PointerEvent', class PointerEventShim extends MouseEvent {
+    constructor(type, init = {}) {
+      super(type, init)
+      this.pointerType = init.pointerType || ''
+    }
+  })
+})
+afterAll(() => vi.unstubAllGlobals())
 
 describe('Batch 5 correction — hover to open desktop navigation', () => {
   it('opens a dropdown after a short mouse hover and closes after a short leave grace period', () => {
