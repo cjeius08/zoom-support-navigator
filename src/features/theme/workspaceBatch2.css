@@ -460,3 +460,140 @@ html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback
 html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-queue .feedback-item-toggle {
   height: auto;
 }
+/* Batch 2 follow-up: semantic contrast across all report states and themes.
+ * Older styles assumed dark glass cards, leaving pale helper text on newly
+ * solid Day cards. Apply to both themes without changing density or semantics.
+ */
+html[data-theme="day"] {
+  --batch2-warning-ink: #85500b;
+  --batch2-error-ink: #9b342a;
+  --batch2-success-ink: #146448;
+}
+html[data-theme="night"] {
+  --batch2-warning-ink: #ffd28a;
+  --batch2-error-ink: #ffb8ae;
+  --batch2-success-ink: #b0e5c6;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics :is(
+  .usage-range-note,
+  .usage-privacy-note,
+  .usage-empty-state,
+  .usage-report-heading p:last-child,
+  .usage-summary span,
+  .usage-overview-highlights span,
+  .usage-overview-highlights small,
+  .usage-presence-summary span,
+  .usage-chart-column small
+) {
+  color: var(--read-body);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics :is(
+  .usage-report-heading h2,
+  .usage-report-panel > h2,
+  .usage-summary strong,
+  .usage-overview-highlights strong,
+  .usage-presence-summary strong,
+  .usage-chart-column strong
+) {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics :is(
+  .usage-section-tabs button,
+  .usage-period-controls button,
+  .usage-filter-toggle,
+  .usage-refresh-button,
+  .usage-reset-button,
+  .usage-support-switch button
+) {
+  color: var(--read-ink);
+  background: var(--read-bg);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics :is(
+  .usage-section-tabs button.active,
+  .usage-period-controls button.active,
+  .usage-filter-toggle.active,
+  .usage-support-switch button.active
+) {
+  color: var(--read-ink);
+  background: var(--read-selected);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics .usage-section-tabs button:is(:hover,:focus-visible),
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics .usage-support-switch button:is(:hover,:focus-visible) {
+  color: var(--read-ink);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics .usage-section-tabs button :is(strong,small),
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics .usage-support-switch button strong {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics .usage-section-tabs button small,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics .usage-section-tabs button.active small,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics .usage-support-switch button small {
+  color: var(--read-body);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics :is(
+  .usage-controls-bar,
+  .usage-filter-panel,
+  .usage-report-panel,
+  .usage-data-integrity,
+  .usage-summary > div,
+  .usage-overview-highlights > div,
+  .usage-presence-summary > div
+) {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics .usage-data-integrity li {
+  color: var(--read-body);
+  background: var(--read-soft);
+  border-color: var(--read-border);
+  border-left-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics .usage-filter-grid :is(label,select),
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics .usage-custom-range label {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics :is(
+  .usage-filter-grid select,
+  .usage-custom-range input
+) {
+  background: var(--read-input);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+
+/* Error and validation copy have meaning: do not convert them to neutral ink. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics .usage-validation-message {
+  color: var(--batch2-warning-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) :is(
+  .app-shell-horizontal .feedback-page,
+  .global-feedback-dialog
+) [role="alert"] {
+  color: var(--batch2-error-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-page .empty-state {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-page .empty-state :is(h2,p) {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-page .empty-state button {
+  background: var(--read-button);
+  color: var(--read-on-button);
+}
+html:is([data-theme="day"],[data-theme="night"]) :is(
+  .app-shell-horizontal .feedback-form-panel,
+  .global-feedback-dialog
+) :is(button,select,textarea):disabled {
+  opacity: .75;
+  cursor: not-allowed;
+}
+
+/* No fixed heights, no blanket button/text color overrides outside Batch 2,
+ * no hidden elements, and no changes to tabs, report queries or permissions. */
