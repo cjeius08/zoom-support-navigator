@@ -62,7 +62,7 @@ describe('Batch 7 reference screenshot layout and working actions',()=>{
     expect(onDashboardUpdates).toHaveBeenCalledTimes(1)
   })
   it('protects 67% zoom and narrow widths, both themes, real routes and prior Login',()=>{
-    expect(dashboardCss).toContain('grid-template-columns:repeat(5,minmax(0,1fr))')
+    expect(dashboardCss).toMatch(/grid-template-columns:\s*repeat\(5,\s*minmax\(0,\s*1fr\)\)/)
     expect(dashboardCss).toContain('grid-template-columns:repeat(4,minmax(0,1fr))')
     expect(dashboardCss).toContain('@media (max-width:620px)')
     expect(dashboardCss).toContain('var(--ref-card)')
