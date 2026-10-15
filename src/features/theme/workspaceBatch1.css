@@ -1,0 +1,330 @@
+/* Ozzie UI Batch 1 — authenticated Day/Night workspace surfaces.
+ * Scope: visual background, surface, text and control contrast only.
+ * Keep: login scene, artwork, navigation, interaction, business data and layout.
+ * Follow-up batches own spacing, dashboard and avatar grid density.
+ */
+html[data-theme="day"] .app-shell-horizontal {
+  --ozzie-bg-page: #f5f7fa;
+  --dn-surface: #ffffff;
+  --dn-surface-strong: #ffffff;
+  --dn-surface-soft: #edf3f5;
+  --dn-border: #b6cbd4;
+  --dn-text: #173249;
+  --dn-muted: #435d6c;
+  --dn-shadow: 0 6px 20px rgba(30, 58, 75, .07);
+  --batch-danger-bg: #fbeaea;
+  --batch-danger-ink: #862c33;
+  --batch-danger-border: #d9a8ac;
+}
+html[data-theme="night"] .app-shell-horizontal {
+  --ozzie-bg-page: #111820;
+  --dn-surface: #1d2833;
+  --dn-surface-strong: #1d2833;
+  --dn-surface-soft: #283a47;
+  --dn-border: #607883;
+  --dn-text: #f1f6f8;
+  --dn-muted: #d2e1e5;
+  --dn-shadow: 0 8px 26px rgba(0, 0, 0, .18);
+  --batch-danger-bg: #4d2933;
+  --batch-danger-ink: #ffcbcf;
+  --batch-danger-border: #98656a;
+}
+
+/* The photo is scoped to the login presentation only; its assets are retained.
+ * The authenticated shell already has the right view/data/role boundaries.
+ * This rule works for Home AND every other signed-in view, not just navigator. */
+html[data-theme="day"] body { background: #f5f7fa; }
+html[data-theme="night"] body { background: #111820; }
+html:is([data-theme="day"],[data-theme="night"]) .app-shell.app-shell-horizontal {
+  background: var(--ozzie-bg-page) !important;
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell.app-shell-horizontal::before,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell.app-shell-horizontal::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .app-main,
+  .navigator,
+  .console-view,
+  .feedback-page,
+  .usage-analytics,
+  .team-management,
+  .avatar-library-management,
+  .saved-notes-page,
+  .updates-view
+) {
+  color: var(--read-ink);
+}
+
+/* Text hierarchy; do not recolor semantic status/error labels. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .console-view > h1,
+  .console-view > h2,
+  .view-heading h1,
+  .view-heading h2,
+  .feedback-form-panel h2,
+  .avatar-library-upload-group h2,
+  .avatar-library-panel h2,
+  .feedback-list h3,
+  .usage-data-integrity > strong,
+  .usage-report-panel h2,
+  .update-card h2
+) { color: var(--read-ink); }
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .feedback-page > p:not(.eyebrow),
+  .view-heading > p:not(.eyebrow),
+  .view-heading > div > p:not(.eyebrow),
+  .usage-range-note,
+  .usage-privacy-note,
+  .saved-notes-result-count,
+  .avatar-library-toolbar > div:first-child > span,
+  .avatar-selection-count,
+  .update-details p,
+  .update-details li
+) { color: var(--read-body); }
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .eyebrow {
+  color: var(--read-link);
+}
+
+/* Missing solid surfaces in the existing theme. Original dimensions stay put. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .feedback-form-panel,
+  .global-feedback-dialog,
+  .global-feedback-context-preview,
+  .feedback-screen-context,
+  .empty-state,
+  .usage-filter-panel,
+  .usage-report-panel,
+  .usage-controls-bar,
+  .usage-overview-highlights > div,
+  .usage-presence-summary > div,
+  .usage-data-integrity,
+  .usage-support-switch button,
+  .avatar-library-upload-group,
+  .avatar-library-panel,
+  .avatar-library-card,
+  .avatar-upload-preview-grid article,
+  .saved-note-card,
+  .saved-notes-filter-card,
+  .saved-notes-summary > button,
+  .saved-notes-summary > div,
+  .team-list article,
+  .feedback-list article,
+  .console-metadata > div,
+  .update-card,
+  .updates-policy,
+  .profile-panel
+) {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+/* Light/dark nested areas are distinct but never photo-transparent. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .avatar-file-picker,
+  .avatar-library-checkbox,
+  .saved-note-meta > div,
+  .saved-note-details pre,
+  .feedback-screen-context,
+  .global-feedback-context-preview,
+  .usage-chart-bar-track
+) {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .feedback-form-panel label,
+  .avatar-file-picker,
+  .avatar-file-picker > span,
+  .saved-notes-filter-card label,
+  .usage-filter-grid label,
+  .usage-custom-range label,
+  .feedback-status-control label,
+  .console-metadata dd,
+  .saved-note-time strong,
+  .saved-note-meta dd,
+  .usage-data-integrity strong,
+  .usage-presence-summary strong,
+  .usage-overview-highlights strong,
+  .usage-support-switch button strong,
+  .avatar-library-toolbar h2,
+  .update-card h2,
+  .updates-policy strong
+) { color: var(--read-ink); }
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .avatar-library-toolbar span,
+  .avatar-selection-count,
+  .avatar-upload-preview-grid article,
+  .avatar-library-card-id,
+  .saved-notes-summary span,
+  .saved-note-meta dt,
+  .saved-note-time small,
+  .saved-note-person small,
+  .saved-notes-filter-card label > span,
+  .usage-data-integrity,
+  .usage-data-integrity li,
+  .usage-overview-highlights span,
+  .usage-overview-highlights small,
+  .usage-presence-summary span,
+  .usage-support-switch button small,
+  .console-metadata dt,
+  .update-card time,
+  .updates-policy p
+) { color: var(--read-body); }
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .update-area,
+  .updates-policy span,
+  .update-details h3,
+  .saved-note-details summary
+) { color: var(--read-link); }
+
+/* Feedback and admin input surface: never dark text over a dark glass card or
+   native white controls with pale text. Also covers the global feedback modal. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .feedback-form-panel,
+  .global-feedback-dialog,
+  .avatar-library-management,
+  .usage-analytics,
+  .team-management,
+  .saved-notes-page,
+  .profile-panel
+) :is(input:not([type="checkbox"]), select, textarea) {
+  background: var(--read-input);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .feedback-form-panel,
+  .global-feedback-dialog,
+  .avatar-library-management,
+  .usage-analytics,
+  .team-management,
+  .saved-notes-page,
+  .profile-panel
+) :is(input, textarea)::placeholder {
+  color: var(--read-muted);
+  opacity: 1;
+}
+html[data-theme="day"] .app-shell-horizontal :is(.feedback-form-panel,.global-feedback-dialog,.avatar-library-management,.usage-analytics,.team-management,.saved-notes-page,.profile-panel) :is(input,select,textarea) { color-scheme: light; }
+html[data-theme="night"] .app-shell-horizontal :is(.feedback-form-panel,.global-feedback-dialog,.avatar-library-management,.usage-analytics,.team-management,.saved-notes-page,.profile-panel) :is(input,select,textarea) { color-scheme: dark; }
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .feedback-form-panel,
+  .global-feedback-dialog,
+  .avatar-library-management,
+  .usage-analytics,
+  .team-management,
+  .saved-notes-page
+) select option {
+  color: var(--read-ink);
+  background: var(--read-input);
+}
+/* Override native file picker controls explicitly. Checkbox stays visible
+   against the new pale Avatar Library cards. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-file-picker input[type="file"] {
+  color: var(--read-body);
+  background: transparent;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-file-picker input[type="file"]::file-selector-button {
+  color: var(--read-ink);
+  background: var(--read-soft);
+  border: 1px solid var(--read-border);
+  border-radius: .45rem;
+  padding: .3rem .55rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-checkbox {
+  border: 1px solid var(--read-border);
+}
+
+/* Action states stay legible and distinguish "primary" from "destructive".
+   Do not alter saving, confirmation, selected or disabled business logic. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .feedback-form-panel,
+  .global-feedback-dialog
+) .dialog-actions button[type="button"] {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border: 1px solid var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .feedback-form-panel,
+  .global-feedback-dialog
+) .dialog-actions button:not([type="button"]),
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-upload-group .primary-action {
+  background: var(--read-button);
+  color: var(--read-on-button);
+  border: 1px solid var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .avatar-library-actions button:not(.danger-action),
+  .usage-support-switch button:not(.active)
+) {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .usage-support-switch button.active,
+  .saved-notes-summary > button.active,
+  .saved-notes-summary > button:focus-visible
+) {
+  background: var(--read-selected);
+  color: var(--read-ink);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .avatar-library-card .danger-action,
+  .saved-note-card > footer .danger-action,
+  .avatar-library-actions .danger-action
+) {
+  color: var(--batch-danger-ink);
+  background: var(--batch-danger-bg);
+  border: 1px solid var(--batch-danger-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .avatar-library-card .danger-action,
+  .saved-note-card > footer .danger-action,
+  .avatar-library-actions .danger-action
+):disabled {
+  opacity: .72;
+  cursor: not-allowed;
+}
+/* Keep native focus/hover semantics, plus readable on-surface emphasis. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .avatar-library-card .danger-action,
+  .saved-note-card > footer .danger-action,
+  .avatar-library-actions .danger-action,
+  .feedback-form-panel button,
+  .avatar-file-picker input
+):focus-visible {
+  outline: 3px solid var(--read-ring);
+  outline-offset: 2px;
+}
+
+/* Small data cards have fixed legacy truncation. Allow text to wrap at 67%
+   instead of overlapping or disappearing, without changing grid dimensions. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .usage-overview-highlights > div,
+  .usage-summary > div,
+  .console-metadata > div,
+  .avatar-library-card,
+  .saved-note-card
+) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-overview-highlights strong {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.35;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-overview-highlights small {
+  line-height: 1.45;
+}
+
+/* No changes to how the approved Ozzie logo, login background, or the
+   original mascot are rendered. */
