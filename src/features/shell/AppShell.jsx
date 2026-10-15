@@ -294,6 +294,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           <span>Menu</span>
         </button>
 
+        <div className="ozzie-header-right-rail">
         <div className="ozzie-header-actions">
           <button type="button" className="header-search-button" aria-label="Search Ozzie" onClick={onDashboardSearch}>
             <HeaderIcon type="search" /><span>Search Ozzie...</span>
@@ -308,6 +309,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           <span className="account-copy"><strong>{profile.username}</strong><small>{accountRoleLabel}</small></span>
           <svg className="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg>
         </button>
+        </div>
       </div>
 
       <nav
