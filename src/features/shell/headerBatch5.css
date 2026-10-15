@@ -270,3 +270,24 @@ html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-head
     transition: none !important;
   }
 }
+/* Batch 5 hover-navigation correction: user-requested menu animation, not ambient shimmer.
+ * Header stays premium/static; the dropdown itself fades/slides on mouse hover.
+ * A transparent pointer bridge closes the .8rem menu gap on desktop so the
+ * submenu does not vanish between the header label and menu entries.
+ */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header.app-header-horizontal {
+  background: linear-gradient(110deg,var(--b5-header-base),var(--b5-header-sheen) 50%,var(--b5-header-base)) !important;
+  background-size: 100% 100% !important;
+  animation: none !important;
+}
+@media (min-width: 801px) and (hover: hover) and (pointer: fine) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-dropdown[open] .topnav-menu::before {
+    content: "";
+    position: absolute;
+    top: -.85rem;
+    right: 0;
+    left: 0;
+    height: .9rem;
+    background: transparent;
+  }
+}
