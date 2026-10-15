@@ -328,3 +328,86 @@ html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel .roadb
     border-color: var(--read-border);
   }
 }
+/* Host guide and roadblock drawer readability after opening a library card.
+   The parent drawer now uses theme surfaces, so its original pale-on-black
+   nested labels, steps, and controls must match those surfaces too. */
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer :is(
+  .host-support-context,
+  .host-confirm-card,
+  .host-step-card,
+  .host-roadblock-card,
+  .host-source-details,
+  .host-device-required
+) {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer :is(
+  .host-step-confirm,
+  .host-roadblock-script
+) {
+  background: var(--read-soft);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer :is(
+  .host-support-context strong,
+  .host-step-confirm strong,
+  .host-confirm-card h3,
+  .host-step-card h3,
+  .host-roadblock-card h3
+) {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer :is(
+  .host-step-instruction,
+  .host-roadblock-card dd,
+  .host-roadblock-script blockquote,
+  .host-device-required p,
+  .host-confirm-card > small
+) {
+  color: var(--read-body);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer :is(
+  .host-support-context small,
+  .host-step-confirm span,
+  .host-roadblock-card dt,
+  .host-roadblock-script > span,
+  .host-source-details summary,
+  .host-source-details a
+) {
+  color: var(--read-link);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer :is(
+  .host-support-context small,
+  .host-step-confirm span,
+  .host-roadblock-card dt,
+  .host-roadblock-script > span
+) {
+  font-size: .75rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer :is(
+  .host-device-options button,
+  .host-choice-grid button,
+  .host-confirm-card form button,
+  .host-step-actions button,
+  .host-roadblock-card > button,
+  .host-resolution-card button
+) {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer :is(
+  .host-device-options button[aria-pressed="true"],
+  .host-choice-grid button[aria-pressed="true"]
+) {
+  background: var(--read-selected);
+  color: var(--read-ink);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .host-support-drawer .host-confirm-card input {
+  background: var(--read-input);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
