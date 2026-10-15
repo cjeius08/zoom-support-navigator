@@ -19,31 +19,32 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.metadata.updatePolicy).toMatch(/Admin-only operational or administrative changes/i)
   expect(data.metadata.updatePolicy).toMatch(/Developer-only work/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
-  expect(data.updates[0]).toMatchObject({ id: 'admin-home-live-visitors', date: '2026-10-15', audience: 'admin' })
-  expect(data.updates[1]).toMatchObject({ id: 'flex-hub-source-import-process-documents', date: '2026-10-14', audience: 'all' })
-  expect(data.updates[2]).toMatchObject({ id: 'flex-hub-agent-reference-videos', date: '2026-10-14', audience: 'all' })
-  expect(data.updates[3]).toMatchObject({ id: 'meeting-breakout-room-process-guides', date: '2026-10-14', audience: 'all' })
-  expect(data.updates.slice(4, 9).map(entry => entry.id)).toEqual([
+  expect(data.updates[0]).toMatchObject({ id: 'ozzie-2-day-night-modes', date: '2026-10-15', audience: 'all' })
+  expect(data.updates[1]).toMatchObject({ id: 'admin-home-live-visitors', date: '2026-10-15', audience: 'admin' })
+  expect(data.updates[2]).toMatchObject({ id: 'flex-hub-source-import-process-documents', date: '2026-10-14', audience: 'all' })
+  expect(data.updates[3]).toMatchObject({ id: 'flex-hub-agent-reference-videos', date: '2026-10-14', audience: 'all' })
+  expect(data.updates[4]).toMatchObject({ id: 'meeting-breakout-room-process-guides', date: '2026-10-14', audience: 'all' })
+  expect(data.updates.slice(5, 10).map(entry => entry.id)).toEqual([
     'smart-search-relevance-hardening',
     'common-issue-scripts-process-roadblocks',
     'troubleshooting-back-navigation',
     'host-arbitrator-guided-support',
     'host-roadblocks-referral-alignment',
   ])
-  expect(data.updates[4]).toMatchObject({
+  expect(data.updates[5]).toMatchObject({
     date: '2026-09-26',
     audience: 'all',
   })
-  expect(data.updates[9]).toMatchObject({
+  expect(data.updates[10]).toMatchObject({
     id: 'faq-roadblock-matrix-support-reference',
     date: '2026-09-25',
     area: 'Home / Agent Reference',
     audience: 'all',
     status: 'historical',
   })
-  expect(data.updates[10]).toMatchObject({ id: 'flex-arbitration-zoom-support-greeting', audience: 'all' })
-  expect(data.updates[11]).toMatchObject({ id: 'windows-device-sandbox-home-shortcut', audience: 'all' })
-  expect(data.updates.slice(12, 15).map(entry => entry.id)).toEqual([
+  expect(data.updates[11]).toMatchObject({ id: 'flex-arbitration-zoom-support-greeting', audience: 'all' })
+  expect(data.updates[12]).toMatchObject({ id: 'windows-device-sandbox-home-shortcut', audience: 'all' })
+  expect(data.updates.slice(13, 16).map(entry => entry.id)).toEqual([
     'process-documents-search-normalization',
     'new-call-session-reset',
     'common-issues-smart-routing',
