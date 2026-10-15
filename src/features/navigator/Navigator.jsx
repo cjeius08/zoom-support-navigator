@@ -15,6 +15,7 @@ import { useDialogFocus } from '../../lib/useDialogFocus'
 import { ESCALATION_REQUIREMENTS, FAQ_ITEMS, ROADBLOCK_MATRIX, SUPPORT_HELPFUL_LINKS } from '../../data/supportReference'
 import { HOST_GUIDED_ROUTES } from '../../data/hostGuidedRoutes'
 import { HOST_ROADBLOCKS } from '../../data/arbitratorHostSupport'
+import { DashboardWelcome } from '../dashboard/DashboardWelcome'
 import { guidedRouteForHostTopic, hostProcesses, searchHostRoadblocks, searchHostTopics } from '../../data/hostExperience'
 
 const categories = [
@@ -101,7 +102,7 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = false, onOpenTraining, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
+export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = false, onOpenTraining = () => {}, onOpenFavorites = () => {}, profile = null, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -117,6 +118,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   const [callFlowExpanded, setCallFlowExpanded] = useState(false)
   const [newCallConfirmOpen, setNewCallConfirmOpen] = useState(false)
   const newCallDialogRef = useRef(null)
+  const searchInputRef = useRef(null)
 
   useDialogFocus(newCallDialogRef, newCallConfirmOpen, () => setNewCallConfirmOpen(false))
 
@@ -418,6 +420,13 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
     : 'Ready for a new caller'
 
   return <section className="navigator" id="navigator" aria-label="Support Navigator">
+    <DashboardWelcome
+      username={profile?.username || ''}
+      roleLabel={isAdmin ? 'Admin' : profile?.workspace_role === 'lead' ? 'Lead' : 'Member'}
+      onSearch={() => searchInputRef.current?.focus()}
+      onOpenTraining={onOpenTraining}
+      onOpenFavorites={onOpenFavorites}
+    />
     <div className="home-utilities-row" aria-label="Home display controls">
       <div className="home-appearance-toggle" role="group" aria-label="Display mode">
         <button type="button" aria-label="Day Mode" title="Day Mode" aria-pressed={theme === 'day'} onClick={() => onThemeChange('day')}>
@@ -473,6 +482,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
             <path d="m16.2 16.2 4.3 4.3" />
           </svg>
           <input
+            ref={searchInputRef}
             role="combobox"
             aria-label="Search support processes"
             aria-autocomplete="list"
