@@ -1,0 +1,249 @@
+/* Ozzie Batch 6 — Tabler-inspired dashboard entry for all signed-in roles.
+ * New welcome is composed above existing Smart Search, Call Flow and support
+ * library. Neither the underlying navigator route nor live-call state changes.
+ * Ozzie owl illustration is separate from the approved header logo artwork.
+ */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-wrap {
+  display: grid;
+  gap: .65rem;
+  width: 100%;
+  min-width: 0;
+  margin: 0 0 .2rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(9rem, 13.5rem);
+  align-items: center;
+  gap: .75rem;
+  min-width: 0;
+  min-height: 13.5rem;
+  padding: clamp(1rem,2.1vw,1.65rem) clamp(1.05rem,2.5vw,2rem);
+  color: var(--read-ink);
+  background: linear-gradient(112deg,var(--read-bg) 0%,var(--read-bg) 49%,var(--read-soft) 100%);
+  border: 1px solid var(--read-border);
+  border-radius: 1rem;
+  box-shadow: var(--dn-shadow);
+  overflow: hidden;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-hero::before {
+  content: "";
+  position: absolute;
+  width: 18rem;
+  height: 18rem;
+  top: -7rem;
+  right: -4rem;
+  z-index: -1;
+  border: 1px solid var(--read-border);
+  border-radius: 50%;
+  opacity: .35;
+  pointer-events: none;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-copy {
+  display: grid;
+  justify-items: start;
+  align-content: center;
+  gap: .52rem;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-eyebrow {
+  margin: 0;
+  color: var(--read-link);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  font-weight: 750;
+  line-height: 1.4;
+  letter-spacing: .055em;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-hero h1 {
+  margin: 0;
+  color: var(--read-ink);
+  font-size: clamp(1.7rem,2.75vw,2.4rem);
+  font-weight: 780;
+  line-height: 1.16;
+  letter-spacing: -.035em;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-subtitle {
+  max-width: 58ch;
+  margin: 0;
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-body,1rem);
+  line-height: 1.52;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-subtitle strong {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: .32rem;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-actions button {
+  min-height: 2.55rem;
+  min-width: 0;
+  padding: .52rem .85rem;
+  border: 1px solid var(--read-border);
+  border-radius: .6rem;
+  font-size: var(--ozzie-legible-meta,.9rem);
+  font-weight: 730;
+  line-height: 1.4;
+  white-space: normal;
+  text-align: left;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-hero-primary {
+  color: var(--read-on-button);
+  background: var(--read-button);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-hero-primary:is(:hover,:focus-visible) {
+  color: var(--read-on-button);
+  filter: brightness(1.08);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-hero-secondary {
+  color: var(--read-ink);
+  background: var(--read-soft);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-hero-secondary:is(:hover,:focus-visible) {
+  background: var(--read-selected);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-mascot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  justify-self: end;
+  width: min(100%,12.4rem);
+  min-width: 0;
+  min-height: 9.5rem;
+  padding: .3rem;
+  background: radial-gradient(ellipse at 50% 65%,var(--read-selected),transparent 70%);
+  border-radius: 50%;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-mascot img {
+  display: block;
+  width: 100%;
+  max-width: 11rem;
+  height: 10.5rem;
+  object-fit: contain;
+  object-position: center;
+  border: 0;
+  filter: none;
+  opacity: 1;
+}
+
+/* Real quick actions, not decorative fake metrics. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: .65rem;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut {
+  display: grid;
+  grid-template-columns: 2.35rem minmax(0,1fr) auto;
+  align-items: center;
+  gap: .62rem;
+  min-width: 0;
+  min-height: 4.55rem;
+  padding: .75rem .85rem;
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border: 1px solid var(--read-border);
+  border-radius: .82rem;
+  text-align: left;
+  box-shadow: 0 3px 10px rgba(26,57,71,.04);
+  transition: background-color .15s ease,border-color .15s ease;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut:is(:hover,:focus-visible) {
+  background: var(--read-hover);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut-icon {
+  display: grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: .62rem;
+  background: var(--read-selected);
+  color: var(--read-link);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.85;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut-copy {
+  display: grid;
+  gap: .15rem;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut-copy strong {
+  color: var(--read-ink);
+  font-size: var(--ozzie-legible-body,1rem);
+  font-weight: 720;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut-copy small {
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut-arrow {
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--read-link);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-wrap :is(button):focus-visible {
+  outline: 3px solid var(--read-ring);
+  outline-offset: 2px;
+}
+
+/* At the zoomed-out breakpoint, avoid fixed widths and five-line titles.
+ * Stack the mascot below 620 CSS pixels so call tools never get squeezed. */
+@media (max-width:1020px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcuts {
+    grid-template-columns: repeat(auto-fit,minmax(min(100%,15rem),1fr));
+  }
+}
+@media (max-width:620px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-hero {
+    grid-template-columns: minmax(0,1fr);
+    padding: 1rem;
+    gap: .5rem;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-mascot {
+    justify-self: center;
+    width: 7.5rem;
+    min-height: 0;
+    padding: 0;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-mascot img {
+    height: 7rem;
+  }
+}
+@media (max-width:420px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcuts {
+    grid-template-columns: minmax(0,1fr);
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-actions button {
+    flex: 1 1 10rem;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut {
+    transition: none;
+  }
+}
