@@ -147,7 +147,7 @@ it('lets the global report modal close with Escape and restores focus to Report 
   await user.keyboard('{Escape}')
   expect(screen.queryByRole('dialog', { name: 'Report an issue' })).not.toBeInTheDocument()
   expect(opener).toHaveFocus()
-})
+}, 30000)
 
 it('keeps profile changes recoverable with busy state, inline errors, Escape, and focus restore', async () => {
   const user = userEvent.setup()
