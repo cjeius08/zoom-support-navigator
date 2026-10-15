@@ -55,6 +55,7 @@ import './features/dashboard/dashboardBatch6.css'
 import './features/dashboard/dashboardReference.css'
 import './features/shell/headerReference.css'
 import './features/shell/headerOverlapFix.css'
+import './features/theme/linearBlueBlack.css'
 
 const EMPTY_REPORT_CONTEXT = {
   selected_tab: null,
