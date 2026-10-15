@@ -102,7 +102,7 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = false, onOpenTraining = () => {}, onOpenFavorites = () => {}, profile = null, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
+export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = false, onOpenTraining = () => {}, onOpenFavorites = () => {}, onOpenFeedback = () => {}, onOpenUpdates = () => {}, profile = null, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -423,6 +423,9 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
     <DashboardWelcome
       username={profile?.username || ''}
       roleLabel={isAdmin ? 'Admin' : profile?.workspace_role === 'lead' ? 'Lead' : 'Member'}
+      isAdmin={isAdmin}
+      onOpenFeedback={onOpenFeedback}
+      onOpenUpdates={onOpenUpdates}
       onSearch={() => searchInputRef.current?.focus()}
       onOpenTraining={onOpenTraining}
       onOpenFavorites={onOpenFavorites}
