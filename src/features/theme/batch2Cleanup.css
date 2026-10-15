@@ -1,0 +1,274 @@
+/* Batch 2 focused cleanup: visible official Ozzie Favorites, readable Training
+ * cards in Day Mode, and legible destructive action labels at 67% zoom.
+ * Visual-only overrides. Nothing alters Supabase, note retention or deletion.
+ */
+
+/* Brand-only icon in Favorites; keep the original button, click, busy,
+ * aria-label and aria-pressed behavior. Host cards also expose this button. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .favorite-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  flex: 0 0 auto;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  color: var(--read-ink);
+  background: var(--read-bg);
+  border: 1px solid var(--read-border);
+  opacity: 1;
+  box-shadow: 0 2px 8px rgba(8,30,40,.12);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .favorite-toggle:is(:hover,:focus-visible) {
+  color: var(--read-ink);
+  background: var(--read-hover);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .favorite-toggle.is-favorite {
+  color: var(--read-ink);
+  background: var(--read-selected);
+  border: 2px solid var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .favorite-toggle:disabled {
+  opacity: .76;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .favorite-toggle .favorite-ozzie-mark {
+  display: block;
+  flex: 0 0 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  max-width: none;
+  object-fit: contain;
+  opacity: 1;
+  filter: none;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .favorite-toggle-compact {
+  width: 2.85rem;
+  min-width: 2.85rem;
+  height: 2.85rem;
+  padding: .45rem;
+  border-radius: 50%;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .favorite-card-toggle,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .favorite-saved-card > .favorite-toggle {
+  z-index: 5;
+  top: .55rem;
+  right: .55rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .host-favorite-card {
+  position: relative;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .host-favorite-card > :is(.host-topic-card,.host-roadblock-result-card,.process-card) {
+  width: 100%;
+  height: 100%;
+  padding-right: 3.95rem;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .host-favorite-card > :is(.host-topic-card,.host-roadblock-result-card,.process-card) :is(strong,small,span,b) {
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .favorites-empty-ozzie {
+  display: block;
+  width: 3rem;
+  height: 3rem;
+  object-fit: contain;
+  margin: auto;
+}
+
+/* Training & Resources — the Day theme previously left legacy navy gradient
+ * backgrounds on roadmap modules, lesson panels and communications cards.
+ * Only retheme card surfaces; leave thumbnails and video-player interiors alone. */
+html[data-theme="day"] .app-shell-horizontal .training-library :is(
+  .training-card,.training-roadmap-intro,.roadmap-module > article,
+  .training-roadmap-reinforcement,.guided-lessons-intro,
+  .guided-lesson-panel,.guided-remember,.guided-flow-stage,
+  .guided-lesson-split > article,.guided-takeaways > article,
+  .guided-practice-note,.device-walkthrough-intro,
+  .device-walkthrough-panel,.device-walkthrough-section,
+  .device-quick-facts > div,.device-platform-notes,.device-expected,
+  .device-coming-next,.communication-intro,.communication-panel,
+  .communication-phrase-card,.communication-framework-card,
+  .communication-self-check,.communication-avoid-panel,
+  .communication-avoid-side,.communication-use-side,
+  .scenario-script-detail,.scenario-script-card,
+  .scenario-call-flow-note,.scenario-route-anchor,
+  .scenario-discovery-result,.training-external-media
+) {
+  background: var(--read-bg) !important;
+  color: var(--read-ink) !important;
+  border-color: var(--read-border) !important;
+  box-shadow: 0 3px 12px rgba(30,58,75,.055);
+}
+html[data-theme="day"] .app-shell-horizontal .training-library :is(
+  .roadmap-module-coming > article,.device-platform-notes,
+  .guided-remember,.guided-practice-note,.scenario-call-flow-note,
+  .scenario-route-anchor,.communication-self-check
+) {
+  background: var(--read-soft) !important;
+}
+html[data-theme="day"] .app-shell-horizontal .training-library :is(
+  .training-card h2,.roadmap-module h3,.training-roadmap-reinforcement h3,
+  .guided-lesson-panel h3,.guided-remember strong,.device-walkthrough-panel h3,
+  .device-walkthrough-section h3,.communication-panel h3,
+  .communication-phrase-card h4,.communication-framework-card h4,
+  .scenario-script-card h4,.scenario-script-detail h3,
+  .roadmap-module article > footer strong
+) {
+  color: var(--read-ink) !important;
+}
+html[data-theme="day"] .app-shell-horizontal .training-library :is(
+  .training-card p,.roadmap-objective,.roadmap-coming-note,
+  .roadmap-module article > footer small,.training-roadmap-intro > div > p:last-child,
+  .training-roadmap-reinforcement p:last-child,
+  .guided-lessons-intro p:not(.eyebrow),.guided-lesson-panel p:not(.eyebrow),
+  .device-walkthrough-panel p:not(.eyebrow),
+  .device-walkthrough-section p:not(.eyebrow),
+  .communication-panel p:not(.eyebrow),.communication-intro p:not(.eyebrow),
+  .scenario-script-card p:not(.eyebrow),.scenario-script-detail p:not(.eyebrow),
+  .training-viewer > p,.library-count
+) {
+  color: var(--read-body) !important;
+}
+html[data-theme="day"] .app-shell-horizontal .training-library :is(
+  .roadmap-skills span,.training-tags span,
+  .roadmap-status,.device-verified,.playlist-label,
+  .communication-source-stamp,.scenario-route-id
+) {
+  color: var(--read-link) !important;
+  background: var(--read-soft);
+  border-color: var(--read-border);
+}
+html[data-theme="day"] .app-shell-horizontal .training-library :is(
+  .roadmap-rail > span,.guided-flow-marker
+) {
+  color: var(--read-ink) !important;
+  background: var(--read-selected) !important;
+  border-color: var(--read-ring) !important;
+}
+html[data-theme="day"] .app-shell-horizontal .training-library :is(
+  .training-section-tabs,.guided-lesson-picker,
+  .communication-mode-tabs,.communication-section-picker,
+  .scenario-script-picker,.device-selector
+) {
+  background: var(--read-soft) !important;
+  border-color: var(--read-border) !important;
+}
+html[data-theme="day"] .app-shell-horizontal .training-library :is(
+  .training-section-tabs,.guided-lesson-picker,
+  .communication-mode-tabs,.communication-section-picker,
+  .scenario-script-picker,.device-selector
+) button {
+  color: var(--read-ink) !important;
+  border-color: var(--read-border);
+  background: var(--read-bg);
+  white-space: normal;
+}
+html[data-theme="day"] .app-shell-horizontal .training-library :is(
+  .training-section-tabs,.guided-lesson-picker,
+  .communication-mode-tabs,.communication-section-picker,
+  .scenario-script-picker,.device-selector
+) button[aria-selected="true"],
+html[data-theme="day"] .app-shell-horizontal .training-library .device-selector button[aria-pressed="true"] {
+  color: var(--read-ink) !important;
+  background: var(--read-selected) !important;
+  border-color: var(--read-ring) !important;
+}
+html[data-theme="day"] .app-shell-horizontal .training-library :is(
+  .roadmap-module article > footer button,
+  .training-roadmap-reinforcement button,
+  .guided-lesson-footer button,
+  .device-sandbox-launch,
+  .communication-copy,
+  .training-card button
+) {
+  color: var(--read-on-button) !important;
+  background: var(--read-button) !important;
+  border: 1px solid var(--read-ring) !important;
+}
+html[data-theme="day"] .app-shell-horizontal .training-library :is(
+  .training-controls input,.training-controls select
+) {
+  color: var(--read-ink) !important;
+  background: var(--read-input) !important;
+  border-color: var(--read-border) !important;
+}
+html[data-theme="day"] .app-shell-horizontal .training-library .training-viewer {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme="day"] .app-shell-horizontal .training-library .training-viewer :is(h2,p) {
+  color: var(--read-ink);
+}
+html[data-theme="day"] .app-shell-horizontal .training-library .training-viewer a {
+  color: var(--read-link);
+}
+html[data-theme="day"] .app-shell-horizontal .training-library .viewer-navigation button {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border: 1px solid var(--read-border);
+}
+html[data-theme="day"] .app-shell-horizontal .training-library .training-tags span,
+html[data-theme="day"] .app-shell-horizontal .training-library .roadmap-skills span {
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.4;
+  white-space: normal;
+}
+
+/* Delete labels were globally forced to #ffd5d5!important, which became
+ * almost invisible on Day cards. Override that legacy rule deliberately with
+ * theme-specific, contrast-tested red ink and solid red-tinted surfaces.
+ * Scope to Admin Saved Notes and Avatar Library ONLY. */
+html[data-theme="day"] .app-shell-horizontal {
+  --cleanup-delete-ink: #862c33;
+  --cleanup-delete-bg: #fff0f0;
+  --cleanup-delete-border: #b65f68;
+}
+html[data-theme="night"] .app-shell-horizontal {
+  --cleanup-delete-ink: #ffd8dd;
+  --cleanup-delete-bg: #4c2933;
+  --cleanup-delete-border: #c88991;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .saved-notes-page .saved-note-card > footer button.danger-action,
+  .avatar-library-management .avatar-library-card button.danger-action,
+  .avatar-library-management .avatar-library-actions button.danger-action,
+  .avatar-library-management .avatar-delete-dialog button.danger-action
+) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.4rem;
+  padding: .45rem .7rem;
+  font-size: var(--ozzie-legible-meta,.9rem);
+  font-weight: 750;
+  line-height: 1.35;
+  letter-spacing: 0;
+  text-shadow: none;
+  white-space: normal;
+  color: var(--cleanup-delete-ink) !important;
+  background: var(--cleanup-delete-bg) !important;
+  border: 1px solid var(--cleanup-delete-border) !important;
+  opacity: 1;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .saved-notes-page .saved-note-card > footer button.danger-action,
+  .avatar-library-management .avatar-library-card button.danger-action,
+  .avatar-library-management .avatar-library-actions button.danger-action,
+  .avatar-library-management .avatar-delete-dialog button.danger-action
+):is(:hover,:focus-visible) {
+  color: var(--cleanup-delete-ink) !important;
+  background: var(--cleanup-delete-bg) !important;
+  border-color: var(--read-ring) !important;
+  outline-offset: 2px;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .saved-notes-page .saved-note-card > footer button.danger-action,
+  .avatar-library-management .avatar-library-card button.danger-action,
+  .avatar-library-management .avatar-library-actions button.danger-action,
+  .avatar-library-management .avatar-delete-dialog button.danger-action
+):disabled {
+  opacity: .78;
+  cursor: not-allowed;
+}
