@@ -1,0 +1,268 @@
+/* Ozzie Batch 7 screenshot reference: exact section order, blue/cream palette,
+   compact card geometry, 5 authentic updates and four working shortcuts.
+   Only authenticated shell and dashboard: existing support flows remain below. */
+html[data-theme="day"] .app-shell-horizontal {
+  --ref-page: #f6f9fd; --ref-card: #fff; --ref-border: #dfe8f2;
+  --ref-blue: #0868f7; --ref-blue-hover: #0057df;
+  --ref-text: #0d224b; --ref-muted: #4b6185;
+  --ref-sky: #e9f4ff; --ref-warm: #fff9ed;
+  --ref-shadow: 0 4px 15px rgba(37,77,132,.035);
+}
+html[data-theme="night"] .app-shell-horizontal {
+  --ref-page: #111820; --ref-card: #192a35; --ref-border: #4e6675;
+  --ref-blue: #176df2; --ref-blue-hover: #3984ff;
+  --ref-text: #f1f6f8; --ref-muted: #d2e1e5;
+  --ref-sky: #233f58; --ref-warm: #352e29;
+  --ref-shadow: 0 5px 19px rgba(0,0,0,.18);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell.app-shell-horizontal {
+  background: var(--ref-page) !important;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-main.app-main-horizontal {
+  padding-top: .85rem !important;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-main-horizontal .navigator {
+  max-width: 104rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-wrap {
+  display: flex; flex-direction: column; gap: .72rem; margin-bottom: .7rem;
+  font-family: Candara, "Segoe UI", Arial, sans-serif;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-feature-grid {
+  display: grid; grid-template-columns: minmax(0,2fr) minmax(0,1.14fr);
+  gap: .75rem; align-items: stretch; min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-hero {
+  display: grid; grid-template-columns: minmax(0,1.12fr) minmax(0,.98fr);
+  align-items: center; min-height: 14rem; gap: .3rem; isolation: isolate;
+  padding: 1.22rem 1.5rem; border: 1px solid var(--ref-border);
+  border-radius: .84rem; background: linear-gradient(128deg,var(--ref-card) 0%,var(--ref-sky) 88%);
+  box-shadow: var(--ref-shadow); overflow: hidden;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-hero::before {
+  width: 24rem; height: 24rem; right: -7rem; top: -8rem;
+  border: none; opacity: .38; background: radial-gradient(circle,var(--read-selected),transparent 68%);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-copy {
+  position: relative; z-index: 2; gap: .48rem; max-width: 40rem; align-content: center;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-eyebrow {
+  color: var(--ref-muted); letter-spacing: .07em; font-size: var(--ozzie-legible-meta,.9rem);
+  font-weight: 800;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-role-label {
+  font-weight: 600; letter-spacing: .01em;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-hero h1 {
+  color: var(--ref-text); font-size: clamp(1.8rem,3.1vw,3rem);
+  font-weight: 800; letter-spacing: -.035em; line-height: 1.08;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-subtitle {
+  max-width: 45ch; color: var(--ref-muted); font-size: clamp(.92rem,1.15vw,1.13rem);
+  line-height: 1.42; overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-actions {
+  gap: .5rem; margin-top: .35rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-actions button,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-feedback-button {
+  min-height: 2.65rem; padding: .59rem .95rem;
+  border-radius: .6rem; font-size: var(--ozzie-legible-body,1rem);
+  font-weight: 750; line-height: 1.32; white-space: normal; cursor: pointer;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-hero-primary,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-feedback-button {
+  background: var(--ref-blue) !important; color: #fff !important; border: 1px solid var(--ref-blue) !important;
+  box-shadow: 0 2px 5px rgba(0,90,210,.1);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-hero-primary:hover,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-feedback-button:hover {
+  background: var(--ref-blue-hover) !important;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-hero-secondary {
+  color: var(--ref-blue); background: var(--ref-card); border: 1px solid var(--ref-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-mascot {
+  position: relative; z-index: 1; justify-self: stretch; align-self: stretch;
+  display: grid; place-items: end center; width: 100%; min-height: 0; padding: 0;
+  background: none; border-radius: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-mascot img {
+  display: block; width: 100%; max-width: 21rem; height: 14rem;
+  object-fit: contain; object-position: center bottom;
+  filter: none; opacity: 1;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-feedback-card {
+  display: grid; grid-template-columns: minmax(0,1fr);
+  position: relative; min-width: 0; min-height: 14rem;
+  overflow: hidden; isolation: isolate; gap: .65rem;
+  padding: 1.2rem 1.15rem .7rem; border: 1px solid var(--ref-border);
+  border-radius: .84rem; background: var(--ref-warm); box-shadow: var(--ref-shadow);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-feedback-copy {
+  display: flex; flex-direction: column; align-items: flex-start; gap: .4rem;
+  position: relative; z-index: 2; max-width: min(73%,22rem); min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-feedback-icon {
+  display: grid; place-items: center; width: 2.65rem; height: 2.65rem;
+  color: #0764e8; background: #e4efff; border-radius: .6rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-feedback-icon svg {
+  width: 1.4rem; height: 1.4rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-feedback-card h2 {
+  color: var(--ref-text); font-size: clamp(1.15rem,1.72vw,1.58rem);
+  line-height: 1.16; font-weight: 800; margin: .05rem 0 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-feedback-card p {
+  color: var(--ref-muted); font-size: var(--ozzie-legible-body,1rem);
+  line-height: 1.4; margin: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-feedback-button {
+  display: flex; align-items: center; justify-content: center; gap: .4rem; margin-top: .16rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-feedback-button svg {
+  width: 1.2rem; height: 1.2rem; fill: none;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-feedback-mascot {
+  position: absolute; width: 39%; height: 72%; right: -.65rem; bottom: 1.9rem;
+  object-fit: contain; object-position: center bottom; z-index: 1;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-feedback-footnote {
+  position: relative; z-index: 3; align-self: end; grid-column: 1;
+  padding: .46rem .65rem; color: var(--ref-muted);
+  font-size: var(--ozzie-legible-meta,.9rem); line-height: 1.35;
+  background: var(--ref-card); border: 1px solid var(--ref-border); border-radius: .58rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.dashboard-updates-section,.dashboard-shortcuts-section) {
+  display: grid; min-width: 0; gap: .55rem;
+  padding: .82rem .92rem; background: var(--ref-card);
+  border: 1px solid var(--ref-border); border-radius: .82rem; box-shadow: var(--ref-shadow);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-section-heading {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .45rem .65rem; min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-section-symbol {
+  display: grid; place-items: center; color: var(--ref-blue); font-size: 1.4rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-section-symbol svg {
+  width: 1.3rem; height: 1.3rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-section-heading h2 {
+  color: var(--ref-text); margin: 0; font-size: 1.25rem; font-weight: 800; line-height: 1.3;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-section-heading p {
+  color: var(--ref-muted); font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.38; margin: 0 .3rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-section-heading > button {
+  margin-left: auto; color: var(--ref-blue); background: transparent;
+  border: 0; font-size: var(--ozzie-legible-meta,.9rem); font-weight: 750;
+  padding: .35rem .5rem; border-radius: .4rem; white-space: normal;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-section-heading > button:hover {
+  background: var(--ref-sky);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-updates-grid {
+  display: grid; grid-template-columns: repeat(5,minmax(0,1fr));
+  gap: .65rem; min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-update-card {
+  display: flex; flex-direction: column; gap: .35rem; min-width: 0;
+  min-height: 8.3rem; padding: .68rem .75rem;
+  color: var(--ref-text); background: var(--ref-card);
+  border: 1px solid var(--ref-border); border-radius: .72rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-update-top {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .4rem;
+  min-width: 0; margin-bottom: .16rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-update-icon {
+  display: grid; place-items: center; width: 2.1rem; height: 2.1rem;
+  background: #e8f1ff; color: #066aff; border-radius: .55rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-update-green .dashboard-update-icon {background:#e1faeb;color:#00a35b;}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-update-violet .dashboard-update-icon {background:#f0ebff;color:#7850e3;}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-update-amber .dashboard-update-icon {background:#fff3cf;color:#bf8300;}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-update-rose .dashboard-update-icon {background:#ffeaf1;color:#d92c6b;}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-update-icon svg {width:1.18rem;height:1.18rem;}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-update-top time {
+  font-size: var(--ozzie-legible-meta,.9rem); color: var(--ref-muted);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-update-tag {
+  margin-left: auto; color:#0766dc; background:#e8f2ff;
+  border-radius:.45rem; font-size:.79rem; padding:.23rem .42rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-update-card h3 {
+  color: var(--ref-text); font-size: clamp(.92rem,1.08vw,1.08rem);
+  line-height:1.28; font-weight:800; margin:.12rem 0 0;
+  overflow-wrap:anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-update-card p {
+  color:var(--ref-muted); font-size:var(--ozzie-legible-meta,.9rem);
+  line-height:1.4; margin:0; overflow-wrap:anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcuts {
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.65rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut {
+  display:grid; grid-template-columns:2.65rem minmax(0,1fr) auto; align-items:center;
+  min-width:0; gap:.68rem; min-height:4.6rem; padding:.65rem .75rem;
+  background:var(--ref-card); color:var(--ref-text);
+  border:1px solid var(--ref-border); border-radius:.72rem; box-shadow:none;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut-icon {
+  width:2.65rem; height:2.65rem; border-radius:.7rem; color:#fff;background:#0868f7;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut-favorites .dashboard-shortcut-icon {
+  background:#fff1c5; color:#e3a300;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut-training .dashboard-shortcut-icon {
+  background:#ece5ff; color:#7249e8;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut-feedback .dashboard-shortcut-icon {
+  background:#d7fae8; color:#00a45d;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut-copy strong {
+  color:var(--ref-text); font-size:var(--ozzie-legible-body,1rem);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut-copy small {
+  color:var(--ref-muted); font-size:var(--ozzie-legible-meta,.9rem);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut-arrow {
+  color:var(--ref-muted);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-wrap button:focus-visible {
+  outline:3px solid var(--ref-blue);outline-offset:2px;
+}
+/* Keep Ozzie functional at desktop 100%, 67% and compact mobile widths. */
+@media (max-width:1350px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-updates-grid {
+    grid-template-columns:repeat(auto-fit,minmax(min(100%,12rem),1fr));
+  }
+}
+@media (max-width:1060px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-feature-grid {
+    grid-template-columns:minmax(0,1fr);
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcuts {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-hero {
+    min-height:12rem;
+  }
+}
+@media (max-width:620px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-hero {
+    grid-template-columns:minmax(0,1fr); padding:1rem; gap:0;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-welcome-mascot img {
+    height:7.5rem;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcuts {
+    grid-template-columns:minmax(0,1fr);
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-feedback-copy {
+    max-width:72%;
+  }
+}
