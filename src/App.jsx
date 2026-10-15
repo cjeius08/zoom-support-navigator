@@ -22,6 +22,7 @@ import { useFavorites } from './features/favorites/useFavorites'
 import { useRecentlyViewed } from './features/favorites/useRecentlyViewed'
 import { OzzieWelcome } from './features/onboarding/OzzieWelcome'
 import { assetUrl } from './lib/assetUrl'
+import { OzzieBrandImage } from './components/OzzieBrandImage'
 import { useUsageTracking } from './features/analytics/usePresence'
 import { completeWorkspaceNavigation, createWorkspaceNavigationState, resolveWorkspaceNavigationState, startWorkspaceNavigation } from './lib/workspaceNavigationHistory'
 import { applyTheme, readStoredTheme, storeTheme } from './features/theme/theme'
@@ -33,6 +34,7 @@ import './features/shell/loginRevamp.css'
 import './features/theme/themeSystem.css'
 import './features/theme/dayNight.css'
 import './features/theme/typography.css'
+import './features/theme/logoLock.css'
 import './pilotReadiness.css'
 
 const EMPTY_REPORT_CONTEXT = {
@@ -551,11 +553,7 @@ export default function App() {
       </section>
 
       <aside className="login-brand-panel" aria-label="Ozzie workspace introduction">
-        <img
-          className="login-brand-logo"
-          src={assetUrl('assets/ozzie-hq.png?v=8071125')}
-          alt="Ozzie — Ogletree Support Workspace"
-        />
+        <OzzieBrandImage variant="full" className="login-brand-logo" />
         <p className="login-brand-support">Your guide to faster answers<br />and better support.</p>
         <p className="login-brand-script">One workspace.<br />Clearer paths.<br />Faster answers.</p>
       </aside>
