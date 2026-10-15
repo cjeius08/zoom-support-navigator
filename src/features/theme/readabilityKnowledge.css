@@ -1,0 +1,150 @@
+/* Process Documents — both theme modes must use matching surface + ink. */
+html[data-theme] .process-documents-view,
+html[data-theme] .process-document-reader { color: var(--read-ink); }
+html[data-theme] .process-documents-heading,
+html[data-theme] .process-document-reader-heading,
+html[data-theme] .process-document-reader-toolbar {
+  border-color: var(--read-border);
+}
+html[data-theme] .process-documents-heading h1,
+html[data-theme] .process-document-reader-heading h1,
+html[data-theme] .process-document-empty h2 { color: var(--read-ink); }
+html[data-theme] .process-documents-heading p:not(.eyebrow),
+html[data-theme] .process-document-reader-heading > p:not(.eyebrow),
+html[data-theme] .process-document-library-status,
+html[data-theme] .process-document-reader-toolbar > span { color: var(--read-body); }
+html[data-theme] .process-document-count,
+html[data-theme] .process-document-meta span {
+  background: var(--read-soft);
+  border-color: var(--read-border);
+  color: var(--read-ink);
+}
+html[data-theme] .process-document-search,
+html[data-theme] .process-document-search label { color: var(--read-body); }
+html[data-theme] .process-document-search input {
+  background: var(--read-input);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .process-document-search input::placeholder { color: var(--read-muted); opacity: 1; }
+html[data-theme] .process-document-card {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .process-document-card:is(:hover,:focus-visible) {
+  background: var(--read-hover);
+  border-color: var(--read-ring);
+}
+html[data-theme] .process-document-card strong { color: var(--read-ink); }
+html[data-theme] .process-document-card p,
+html[data-theme] .process-document-card-footer { color: var(--read-body); }
+html[data-theme] .process-document-card-category,
+html[data-theme] .process-document-card-footer b { color: var(--read-link); }
+html[data-theme] .process-document-card-footer { border-color: var(--read-border); }
+html[data-theme] .process-document-reader-toolbar {
+  background: var(--read-bg);
+  backdrop-filter: none;
+}
+html[data-theme] .process-document-back {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .process-document-back:is(:hover,:focus-visible) {
+  background: var(--read-hover);
+  border-color: var(--read-ring);
+}
+html[data-theme] .process-document-source-disclosure {
+  background: var(--read-soft);
+  border-color: var(--read-border);
+  border-left-color: var(--read-ring);
+  color: var(--read-body);
+}
+html[data-theme] .process-document-pages > article.process-document-page {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .process-document-transcription,
+html[data-theme] .process-document-page > p {
+  color: var(--read-body);
+}
+html[data-theme] .process-document-page figcaption {
+  background: var(--read-soft);
+  color: var(--read-body);
+  border-color: var(--read-border);
+}
+html[data-theme] .process-document-page a { color: var(--read-link); }
+html[data-theme] .process-document-empty {
+  color: var(--read-body);
+  border-color: var(--read-border);
+}
+html[data-theme] .process-document-reader :is(button,a,input):focus-visible,
+html[data-theme] .process-documents-view :is(button,a,input):focus-visible {
+  outline: 3px solid var(--read-ring);
+  outline-offset: 3px;
+}
+
+/* Flex Hub: preserve all four source sections, navigation jumps, video actions. */
+html[data-theme] .flex-hub-view {
+  --hub-card: var(--read-bg);
+  --hub-card-alt: var(--read-soft);
+  --hub-ink: var(--read-ink);
+  --hub-muted: var(--read-body);
+  --hub-eyebrow: var(--read-muted);
+  --hub-link: var(--read-link);
+  --hub-border: var(--read-border);
+}
+html[data-theme] .flex-hub-view .flex-hub-kicker {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .flex-hub-view .flex-hub-important > div,
+html[data-theme] .flex-hub-view .flex-hub-topic,
+html[data-theme] .flex-hub-view .flex-hub-private,
+html[data-theme] .flex-hub-view .flex-hub-videos,
+html[data-theme] .flex-hub-view .flex-hub-source-list {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .flex-hub-view .flex-hub-important p,
+html[data-theme] .flex-hub-view .flex-hub-topic li,
+html[data-theme] .flex-hub-view .flex-hub-private p,
+html[data-theme] .flex-hub-view .flex-hub-videos p,
+html[data-theme] .flex-hub-view .flex-hub-source-list li { color: var(--read-body); }
+html[data-theme] .flex-hub-view .flex-hub-important small,
+html[data-theme] .flex-hub-view .flex-hub-topic-heading small,
+html[data-theme] .flex-hub-view .flex-hub-video-grid small {
+  color: var(--read-muted);
+  opacity: 1;
+}
+html[data-theme] .flex-hub-view :is(.flex-hub-jump a,.flex-hub-links a) {
+  background: var(--read-soft);
+  color: var(--read-link);
+  border-color: var(--read-border);
+}
+html[data-theme] .flex-hub-view .flex-hub-video-grid button {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .flex-hub-view .flex-hub-video-grid button:is(:hover,:focus-visible) {
+  background: var(--read-hover);
+  border-color: var(--read-ring);
+}
+html[data-theme] .flex-hub-view :is(.flex-hub-topic-heading,.flex-hub-source-list) {
+  border-color: var(--read-border);
+}
+html[data-theme] .flex-hub-view :is(.flex-hub-topic-heading > span,.flex-hub-video-grid em) {
+  color: var(--read-link);
+}
+html[data-theme] .hub-search-action,
+html[data-theme] .training-external-media {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .hub-search-action button { color: var(--read-link); }
