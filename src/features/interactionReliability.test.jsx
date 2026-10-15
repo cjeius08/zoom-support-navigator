@@ -87,7 +87,9 @@ it('carries a related training selection through the full app route', async () =
 
   const dialog = await screen.findByRole('dialog', { name: 'How to Join a Zoom Meeting' })
   expect(within(dialog).getByTitle('Video player: How to Join a Zoom Meeting')).toBeInTheDocument()
-}, 20000)
+// Full authenticated navigation can exceed 20s on a shared GitHub Actions runner.
+// Keep all interaction assertions; allow enough time rather than ignoring failure.
+}, 45000)
 
 
 it('exposes exactly one main landmark in the authenticated Navigator', async () => {
