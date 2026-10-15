@@ -143,3 +143,188 @@ html[data-theme] .process-drawer :is(button,a,input,select,textarea):focus-visib
   outline: 3px solid var(--read-ring);
   outline-offset: 2px;
 }
+/* Navigator library readability parity — five tabs, both caller roles.
+   Keep layout, background photo, source data, and click behaviors unchanged.
+   Day/Night solid card surfaces prevent pale legacy text on light cards. */
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .navigator-library-tabs button {
+  color: var(--read-body);
+}
+html:is([data-theme="day"],[data-theme="night"]) .navigator-library-tabs button:is(:hover,:focus-visible) {
+  color: var(--read-ink);
+  background: var(--read-hover);
+}
+html:is([data-theme="day"],[data-theme="night"]) .navigator-library-tabs button[aria-selected="true"] {
+  color: var(--read-ink);
+  background: var(--read-selected);
+  border-bottom-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel :is(h2,.search-result-block-heading h3) {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel :is(.navigator-tab-intro,.search-results-heading > p:last-child,.navigator-empty-state) {
+  color: var(--read-body);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel :is(.eyebrow,.route-group > h3) {
+  color: var(--read-link);
+}
+
+/* Route, process, category, FAQ, and Host cards share theme-matched ink/surfaces. */
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel :is(
+  .route-card,
+  .process-card,
+  .category-grid button,
+  .support-reference-card,
+  .support-reference-grid > article,
+  .host-topic-card,
+  .host-roadblock-result-card,
+  .escalation-requirements-grid article
+) {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel :is(
+  .route-card,
+  .process-card,
+  .category-grid button,
+  .host-topic-card,
+  .host-roadblock-result-card
+):is(:hover,:focus-visible) {
+  background: var(--read-hover);
+  color: var(--read-ink);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel .category-grid button[aria-pressed="true"] {
+  background: var(--read-selected);
+  color: var(--read-ink);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel :is(
+  .route-card,
+  .process-card,
+  .category-grid button,
+  .host-topic-card,
+  .host-roadblock-result-card,
+  .support-reference-card,
+  .support-reference-grid > article,
+  .escalation-requirements-grid article
+) :is(strong,h3) {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel :is(
+  .route-card small,
+  .process-card > span:not(.category-icon),
+  .category-grid button > span:not(.category-icon),
+  .host-topic-card small,
+  .host-roadblock-result-card small,
+  .support-reference-card p,
+  .support-reference-card li,
+  .support-reference-grid > article p,
+  .support-reference-grid > article li,
+  .escalation-requirements-grid p
+) {
+  color: var(--read-body);
+  font-size: .875rem;
+  line-height: 1.5;
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel :is(
+  .route-card > span:first-child,
+  .host-topic-card > span,
+  .host-roadblock-result-card > span,
+  .route-card b,
+  .process-card b,
+  .host-topic-card b,
+  .host-roadblock-result-card b
+) {
+  color: var(--read-link);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel :is(
+  .route-card > span:first-child,
+  .host-topic-card > span,
+  .host-roadblock-result-card > span
+) {
+  font-size: .75rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel .result-type-badge {
+  color: var(--read-link) !important; /* Overrides legacy forced pale badge text. */
+  background: var(--read-soft);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel .process-meta span {
+  color: var(--read-body);
+  background: var(--read-soft);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel .search-result-block-heading > span,
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel .navigator-empty-state {
+  background: var(--read-soft);
+  border-color: var(--read-border);
+  color: var(--read-ink);
+}
+
+/* Host-mode FAQ uses plain articles rather than the regular FAQ card class. */
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel .support-reference-grid > article {
+  padding: 1rem;
+  border: 1px solid var(--read-border);
+  border-radius: .9rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel :is(
+  .support-helpful-links,
+  .escalation-reference
+) {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel :is(
+  .support-helpful-links h3,
+  .escalation-reference-heading h3,
+  .escalation-requirements-grid strong
+) {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel :is(
+  .support-helpful-links a
+) {
+  color: var(--read-link);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel .escalation-reference-heading > p:last-child {
+  color: var(--read-body);
+}
+
+/* Standard Roadblock Matrix: old pale-on-dark constants must not leak into Day. */
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel .roadblock-matrix-header {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel .roadblock-matrix-row {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel .roadblock-matrix-row > div {
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel .roadblock-matrix-row strong {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel :is(
+  .roadblock-matrix-row p,
+  .roadblock-cell-label
+) {
+  color: var(--read-body);
+  line-height: 1.5;
+}
+html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel .roadblock-matrix-row .roadblock-script {
+  color: var(--read-body) !important; /* Legacy script rule also has !important. */
+}
+@media (min-width: 981px) {
+  html:is([data-theme="day"],[data-theme="night"]) #navigator-library-panel .roadblock-matrix {
+    background: var(--read-bg);
+    border-color: var(--read-border);
+  }
+}
