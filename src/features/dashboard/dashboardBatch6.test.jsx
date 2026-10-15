@@ -66,7 +66,7 @@ describe('Ozzie Batch 6 — genuine Dashboard welcome for every authenticated ro
   it('renders the same dashboard for member, lead, and admin without exposing admin menu to members', () => {
     const { rerender } = render(<Navigator profile={{ username: 'member', workspace_role: 'member' }} isAdmin={false} />)
     const hero = screen.getByRole('heading', { name: 'Welcome back!' }).closest('section')
-    expect(hero).toHaveTextContent('YOUR OZZIE WORKSPACE')
+    expect(hero).toHaveTextContent('OZZIE — OGLETREE SUPPORT WORKSPACE')
     expect(hero).toHaveTextContent('Member')
     rerender(<Navigator profile={{ username: 'lead', workspace_role: 'lead' }} isAdmin={false} />)
     expect(hero).toHaveTextContent('Lead')
