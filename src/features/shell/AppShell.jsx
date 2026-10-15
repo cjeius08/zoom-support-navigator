@@ -37,9 +37,54 @@ function usesCompactNavigation() {
 }
 
 function NavDropdown({ label, active = false, children }) {
+  const closeTimer = useRef(null)
+
+  function cancelPendingClose() {
+    if (closeTimer.current !== null) {
+      window.clearTimeout(closeTimer.current)
+      closeTimer.current = null
+    }
+  }
+
+  useEffect(() => () => {
+    if (closeTimer.current !== null) window.clearTimeout(closeTimer.current)
+  }, [])
+
+  function openOnMouseHover(event) {
+    if (event.pointerType !== 'mouse' || usesCompactNavigation()) return
+    cancelPendingClose()
+    const dropdown = event.currentTarget
+    dropdown.open = true
+    // Keep one dropdown visible when moving between header labels.
+    dropdown.closest('nav')?.querySelectorAll('details.topnav-dropdown[open]').forEach(other => {
+      if (other !== dropdown) other.open = false
+    })
+  }
+
+  function closeAfterMouseLeaves(event) {
+    if (event.pointerType !== 'mouse' || usesCompactNavigation()) return
+    const dropdown = event.currentTarget
+    cancelPendingClose()
+    // A short grace period allows movement across the trigger/menu gap.
+    closeTimer.current = window.setTimeout(() => {
+      closeTimer.current = null
+      if (!dropdown.contains(document.activeElement)) dropdown.open = false
+    }, 220)
+  }
+
   return <details
     name="ozzie-primary-navigation"
     className={`topnav-dropdown ${active ? 'active' : ''}`}
+    onPointerEnter={openOnMouseHover}
+    onPointerLeave={closeAfterMouseLeaves}
+    onKeyDown={event => {
+      if (event.key === 'Escape' && event.currentTarget.open) {
+        event.stopPropagation()
+        cancelPendingClose()
+        event.currentTarget.open = false
+        event.currentTarget.querySelector('summary')?.focus()
+      }
+    }}
     onToggle={event => {
       if (!event.currentTarget.open) return
       const navigation = event.currentTarget.closest('nav')
