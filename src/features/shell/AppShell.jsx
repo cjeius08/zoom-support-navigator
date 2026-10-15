@@ -68,7 +68,9 @@ function NavDropdown({ label, active = false, children }) {
     // A short grace period allows movement across the trigger/menu gap.
     closeTimer.current = window.setTimeout(() => {
       closeTimer.current = null
-      if (!dropdown.contains(document.activeElement)) dropdown.open = false
+      // Keyboard users can stay inside a menu; a mouse-focused summary can close.
+      const focusInsideMenu = dropdown.contains(document.activeElement) && document.activeElement !== dropdown.querySelector('summary')
+      if (!focusInsideMenu) dropdown.open = false
     }, 220)
   }
 
