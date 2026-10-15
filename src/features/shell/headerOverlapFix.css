@@ -188,6 +188,7 @@ html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-he
    remains clickable, and the bell and account remain visible. */
 @media (min-width: 801px) and (max-width: 1550px) {
   html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail .header-search-button {
+    display: flex !important;
     width: 2.6rem;
     max-width: 2.6rem;
     min-width: 2.6rem;
