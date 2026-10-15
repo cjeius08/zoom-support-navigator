@@ -31,6 +31,11 @@ function Icon({ type }) {
   return <svg data-testid="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d={paths[type] || paths.feedback} /></svg>
 }
 
+function usesCompactNavigation() {
+  if (typeof window === 'undefined') return false
+  return window.innerWidth <= 800 || window.matchMedia?.('(hover: none) and (pointer: coarse)')?.matches === true
+}
+
 function NavDropdown({ label, active = false, children }) {
   return <details
     name="ozzie-primary-navigation"
@@ -63,7 +68,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     scope_check: 'closed',
     readiness: 'closed',
   })
-  const [compactNav, setCompactNav] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 800)
+  const [compactNav, setCompactNav] = useState(usesCompactNavigation)
   useEffect(() => {
     if (!documentationHandoff?.id) return
     setLiveTools(current => {
@@ -153,14 +158,19 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   }
 
   useEffect(() => {
+    const pointerQuery = window.matchMedia?.('(hover: none) and (pointer: coarse)')
     const updateCompactNav = () => {
-      const compact = window.innerWidth <= 800
+      const compact = usesCompactNavigation()
       setCompactNav(compact)
       if (!compact) setOpen(false)
     }
     window.addEventListener('resize', updateCompactNav)
+    pointerQuery?.addEventListener?.('change', updateCompactNav)
     updateCompactNav()
-    return () => window.removeEventListener('resize', updateCompactNav)
+    return () => {
+      window.removeEventListener('resize', updateCompactNav)
+      pointerQuery?.removeEventListener?.('change', updateCompactNav)
+    }
   }, [])
 
   useDialogFocus(profileDialogRef, profileOpen, closeProfile)
