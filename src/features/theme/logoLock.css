@@ -1,0 +1,22 @@
+/* Official Ozzie logo: display the approved artwork, never recolor or blur it.
+ * The brand plate gives the navy logo enough contrast on Day and Night scenes.
+ * CSS does not alter layout structure or brand image aspect ratio. */
+html[data-theme="day"] .ozzie-brand-dock,
+html[data-theme="night"] .ozzie-brand-dock {
+  background-color: rgba(255, 255, 255, .96);
+  border: 1px solid rgba(185, 205, 213, .50);
+}
+html[data-theme="day"] .ozzie-brand-dock img,
+html[data-theme="night"] .ozzie-brand-dock img,
+.login-brand-logo {
+  filter: none !important;
+  opacity: 1 !important;
+  object-fit: contain;
+}
+.login-brand-logo {
+  background: rgba(250, 252, 253, .96);
+  border: 1px solid rgba(214, 232, 236, .55);
+  border-radius: .9rem;
+  padding: .45rem .65rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .16);
+}

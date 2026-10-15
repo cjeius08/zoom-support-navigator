@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { assetUrl } from '../../lib/assetUrl'
+import { OzzieBrandImage } from '../../components/OzzieBrandImage'
 import { avatarUrl } from '../profile/avatarCatalog'
 import { AvatarPicker } from '../profile/AvatarPicker'
 import { CONSOLE_METADATA, formatShortConsoleDate, lastUpdatedForAudience } from '../updates/updatesData'
@@ -197,7 +198,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     <header className="app-header app-header-horizontal">
       <div className="app-header-brand-row">
         <div className="ozzie-brand-dock" aria-label="Ozzie — Ogletree Support Workspace">
-          <img src={assetUrl('assets/ozzie-hq.png')} alt="Ozzie — Ogletree Support Workspace" />
+          <OzzieBrandImage variant="full" />
         </div>
 
         <button
