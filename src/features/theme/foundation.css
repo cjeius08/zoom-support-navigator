@@ -1,0 +1,40 @@
+/* Ozzie 2.0 — shared semantic tokens for Day and Night.
+ * The tokens are published now; cards and page layouts are intentionally not restyled
+ * in this checkpoint. Section-specific updates can consume these later.
+ * Don't replace the brand PNG's lettering with CSS text. */
+html[data-theme="day"] {
+  --ozzie-bg-page: #e7eff2;
+  --ozzie-bg-card: #f9fbfb;
+  --ozzie-bg-card-soft: #f1f6f7;
+  --ozzie-text-primary: #173249;
+  --ozzie-text-body: #496272;
+  --ozzie-text-muted: #566f7c;
+  --ozzie-border: #c2d2d9;
+  --ozzie-accent: #2d7480;
+  --ozzie-accent-hover: #256672;
+  --ozzie-focus-ring: #2d7480;
+  --ozzie-header-surface: rgba(246, 250, 251, .87);
+  --ozzie-nav-surface: rgba(250, 252, 252, .97);
+  --ozzie-nav-hover: #e6eff1;
+  --ozzie-nav-selected: #dcebed;
+  --ozzie-nav-icon: #286c78;
+  --ozzie-header-rule: #b9ccd3;
+}
+html[data-theme="night"] {
+  --ozzie-bg-page: #101922;
+  --ozzie-bg-card: #172630;
+  --ozzie-bg-card-soft: #223540;
+  --ozzie-text-primary: #f1f6f7;
+  --ozzie-text-body: #c0cdd3;
+  --ozzie-text-muted: #b5c9d0;
+  --ozzie-border: rgba(168, 194, 204, .38);
+  --ozzie-accent: #92c6d0;
+  --ozzie-accent-hover: #a8d5dc;
+  --ozzie-focus-ring: #92c6d0;
+  --ozzie-header-surface: rgba(19, 31, 41, .88);
+  --ozzie-nav-surface: #1a2a35;
+  --ozzie-nav-hover: #2b4552;
+  --ozzie-nav-selected: #2a4a56;
+  --ozzie-nav-icon: #9bcdd6;
+  --ozzie-header-rule: #47606c;
+}
