@@ -150,11 +150,11 @@ export function SavedNotesPage({ initialUserId = '' }) {
 
     {state.loading ? <p>Loading protected saved notes…</p> : state.error ? <p role="alert">{state.error}</p> : <>
       <div className="saved-notes-summary" aria-label="Saved notes summary">
-        <button type="button" className={!followUpOnly ? 'active' : ''} onClick={() => setFollowUpOnly(false)}>
+        <button type="button" className={!followUpOnly ? 'active' : ''} aria-pressed={!followUpOnly} onClick={() => setFollowUpOnly(false)}>
           <strong>{report.notes.length}</strong>
           <span>All Saved Notes</span>
         </button>
-        <button type="button" className={followUpOnly ? 'active follow-up' : 'follow-up'} onClick={() => setFollowUpOnly(true)}>
+        <button type="button" className={followUpOnly ? 'active follow-up' : 'follow-up'} aria-pressed={followUpOnly} onClick={() => setFollowUpOnly(true)}>
           <strong>{report.followUps}</strong>
           <span>Follow-Up Required</span>
         </button>
