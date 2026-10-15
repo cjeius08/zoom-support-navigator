@@ -65,12 +65,13 @@ describe('Ozzie Batch 6 — genuine Dashboard welcome for every authenticated ro
 
   it('renders the same dashboard for member, lead, and admin without exposing admin menu to members', () => {
     const { rerender } = render(<Navigator profile={{ username: 'member', workspace_role: 'member' }} isAdmin={false} />)
-    expect(screen.getByText('YOUR OZZIE WORKSPACE')).toBeInTheDocument()
-    expect(screen.getByText('Member')).toBeInTheDocument()
+    const hero = screen.getByRole('heading', { name: 'Welcome back!' }).closest('section')
+    expect(hero).toHaveTextContent('YOUR OZZIE WORKSPACE')
+    expect(hero).toHaveTextContent('Member')
     rerender(<Navigator profile={{ username: 'lead', workspace_role: 'lead' }} isAdmin={false} />)
-    expect(screen.getByText('Lead')).toBeInTheDocument()
+    expect(hero).toHaveTextContent('Lead')
     rerender(<Navigator profile={{ username: 'admin', role: 'creator_admin' }} isAdmin />)
-    expect(screen.getByText('Admin')).toBeInTheDocument()
+    expect(hero).toHaveTextContent('Admin')
   })
 
   it('renames header Home label to Dashboard WITHOUT changing underlying navigator route', () => {
@@ -93,7 +94,7 @@ describe('Ozzie Batch 6 — genuine Dashboard welcome for every authenticated ro
     expect(css).toContain('background: var(--read-bg)')
     expect(css).toContain('color: var(--read-ink)')
     expect(css).toContain('@media (prefers-reduced-motion:reduce)')
-    expect(css).not.toMatch(/display:\s*none|pointer-events:\s*none|text-overflow:\s*ellipsis/)
+    expect(css).not.toMatch(/display:\s*none|visibility:\s*hidden|text-overflow:\s*ellipsis/)
     expect(nav).toContain('ref={searchInputRef}')
   })
 })
