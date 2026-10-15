@@ -102,7 +102,7 @@ export function DashboardWelcome({
         <h2 id="dashboard-shortcuts-title">Quick Access</h2>
         <p>Jump into the tools and resources you use most.</p>
       </div>
-      <div className="dashboard-shortcuts" aria-label="Dashboard quick access">
+      <section className="dashboard-shortcuts" aria-label="Dashboard quick access">
         {QUICK_LINKS.map(item => <button
           type="button"
           key={item.key}
@@ -117,7 +117,7 @@ export function DashboardWelcome({
           </span>
           <span className="dashboard-shortcut-arrow" aria-hidden="true">›</span>
         </button>)}
-      </div>
+      </section>
     </section>
   </div>
 }
