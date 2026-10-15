@@ -23,7 +23,9 @@ describe('Batch 5 premium Ozzie header refinement',()=>{
   })
 
   it('uses understated motion, contained active bars and honors reduced motion',()=>{
-    expect(css).toContain('animation: ozzie-b5-header-drift 36s ease-in-out infinite alternate !important')
+    expect(css).toContain('/* Batch 5 hover-navigation correction: user-requested menu animation, not ambient shimmer.')
+    expect(css).toMatch(/hover-navigation correction:[\s\S]*?animation: none !important/s)
+    expect(css).toContain('animation: ozzie-b5-menu-reveal .17s ease-out both')
     expect(css).toContain('@keyframes ozzie-b5-header-drift')
     expect(css).toContain('bottom: .17rem')
     expect(css).toContain('background: var(--read-ring)')
