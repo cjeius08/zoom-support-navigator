@@ -37,38 +37,46 @@ function usesCompactNavigation() {
 }
 
 function NavDropdown({ label, active = false, children }) {
+  const openTimer = useRef(null)
   const closeTimer = useRef(null)
 
-  function cancelPendingClose() {
-    if (closeTimer.current !== null) {
-      window.clearTimeout(closeTimer.current)
-      closeTimer.current = null
+  function cancelTimer(timer) {
+    if (timer.current !== null) {
+      window.clearTimeout(timer.current)
+      timer.current = null
     }
   }
 
   useEffect(() => () => {
+    if (openTimer.current !== null) window.clearTimeout(openTimer.current)
     if (closeTimer.current !== null) window.clearTimeout(closeTimer.current)
   }, [])
 
   function openOnMouseHover(event) {
     if (event.pointerType !== 'mouse' || usesCompactNavigation()) return
-    cancelPendingClose()
+    cancelTimer(closeTimer)
+    cancelTimer(openTimer)
     const dropdown = event.currentTarget
-    dropdown.open = true
-    // Keep one dropdown visible when moving between header labels.
-    dropdown.closest('nav')?.querySelectorAll('details.topnav-dropdown[open]').forEach(other => {
-      if (other !== dropdown) other.open = false
-    })
+    // Slight intent delay prevents accidentally opening a menu while sweeping
+    // across the header and keeps native summary clicks working unchanged.
+    openTimer.current = window.setTimeout(() => {
+      openTimer.current = null
+      dropdown.open = true
+      dropdown.closest('nav')?.querySelectorAll('details.topnav-dropdown[open]').forEach(other => {
+        if (other !== dropdown) other.open = false
+      })
+    }, 110)
   }
 
   function closeAfterMouseLeaves(event) {
     if (event.pointerType !== 'mouse' || usesCompactNavigation()) return
     const dropdown = event.currentTarget
-    cancelPendingClose()
-    // A short grace period allows movement across the trigger/menu gap.
+    cancelTimer(openTimer)
+    cancelTimer(closeTimer)
+    // Short grace period while crossing the header/dropdown gap.
     closeTimer.current = window.setTimeout(() => {
       closeTimer.current = null
-      // Keyboard users can stay inside a menu; a mouse-focused summary can close.
+      // Keep the menu while keyboard focus is inside a submenu option.
       const focusInsideMenu = dropdown.contains(document.activeElement) && document.activeElement !== dropdown.querySelector('summary')
       if (!focusInsideMenu) dropdown.open = false
     }, 220)
@@ -82,7 +90,8 @@ function NavDropdown({ label, active = false, children }) {
     onKeyDown={event => {
       if (event.key === 'Escape' && event.currentTarget.open) {
         event.stopPropagation()
-        cancelPendingClose()
+        cancelTimer(openTimer)
+        cancelTimer(closeTimer)
         event.currentTarget.open = false
         event.currentTarget.querySelector('summary')?.focus()
       }
