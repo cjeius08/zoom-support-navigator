@@ -75,4 +75,26 @@ describe('Batch 2 — compact feedback, analytics and data quality', () => {
     expect(css).not.toContain('.avatar-library-card')
     expect(css).not.toContain('.team-list')
   })
+
+  it('retains a readable typography floor without giving compact cards fixed heights', () => {
+    expect(css).toContain('/* Last-mile typography: readable labels at 67%, never fixed-height clipping. */')
+    for (const selector of [
+      '.usage-summary span',
+      '.usage-overview-highlights small',
+      '.usage-section-tabs button strong',
+      '.usage-chart-column small',
+      '.usage-data-integrity li',
+      '.feedback-item-type',
+      '.feedback-status-control select',
+    ]) {
+      expect(css, selector).toContain(selector)
+    }
+    expect(css).toContain('font-size: var(--ozzie-legible-meta) !important')
+    expect(css).toContain('font-size: var(--ozzie-legible-body) !important')
+    expect(css).toContain('white-space: normal')
+    expect(css).toContain('overflow-wrap: break-word')
+    expect(css).toContain('height: auto')
+  })
+
+
 })
