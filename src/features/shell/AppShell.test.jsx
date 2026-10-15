@@ -61,7 +61,7 @@ it('shows the planned horizontal navigation and role-aware account controls', ()
   render(<AppShell profile={{ username: 'ja_admin', initials: 'JA', role: 'creator_admin', avatar_id: 'avatar_001' }} />)
 
   const navigation = screen.getByRole('navigation', { name: 'Primary navigation' })
-  expect(navigation).toHaveTextContent('Home')
+  expect(navigation).toHaveTextContent('Dashboard')
   expect(navigation).toHaveTextContent('Call Flow')
   expect(navigation).toHaveTextContent('Knowledge')
   expect(navigation).toHaveTextContent('Readiness Lab')
@@ -97,12 +97,12 @@ it('keeps Ozzie standalone at the top-left instead of inside a sidebar', () => {
   expect(screen.queryByText('Tier 1 Zoom Support')).not.toBeInTheDocument()
 })
 
-it('renames Navigator to Home without changing the navigator route', async () => {
+it('renames Home to Dashboard without changing the navigator route', async () => {
   const user = userEvent.setup()
   const onNavigate = vi.fn()
 
   render(<AppShell profile={agentProfile} onNavigate={onNavigate} currentView="navigator" />)
-  const home = screen.getByRole('button', { name: 'Home' })
+  const home = screen.getByRole('button', { name: 'Dashboard' })
   expect(home).toHaveAttribute('aria-current', 'page')
   expect(screen.queryByText('Navigator')).not.toBeInTheDocument()
 
@@ -157,7 +157,7 @@ it('keeps Lead as a title without granting admin navigation', () => {
   expect(screen.queryByText('Team Management')).not.toBeInTheDocument()
   expect(screen.queryByText('Avatar Library')).not.toBeInTheDocument()
   expect(screen.queryByText('Usage Analytics')).not.toBeInTheDocument()
-  expect(screen.getByRole('navigation')).toHaveTextContent('Home')
+  expect(screen.getByRole('navigation')).toHaveTextContent('Dashboard')
   expect(screen.getByRole('navigation')).toHaveTextContent('Training & Resources')
 })
 
