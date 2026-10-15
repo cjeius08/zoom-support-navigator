@@ -46,6 +46,7 @@ import './pilotReadiness.css'
 import './features/theme/zoomReadability.css'
 import './features/theme/workspaceBatch1.css'
 import './features/theme/workspaceBatch2.css'
+import './features/theme/readabilitySearchHostFix.css'
 
 const EMPTY_REPORT_CONTEXT = {
   selected_tab: null,
