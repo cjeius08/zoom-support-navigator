@@ -99,7 +99,7 @@ describe('Batch 2 — compact feedback, analytics and data quality', () => {
 
 
   it('contrast patch keeps neutral, selected and warning copy legible in both themes', () => {
-    const patch = css.split('/* Batch 2 follow-up: semantic contrast across all report states and themes. */')[1]
+    const patch = css.split('/* Batch 2 follow-up: semantic contrast across all report states and themes.')[1]
     expect(patch).toBeTruthy()
     for (const selector of [
       '.usage-empty-state',
