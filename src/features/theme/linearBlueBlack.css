@@ -1,0 +1,466 @@
+/* Ozzie Batch 8 — unified screenshot-blue Day + Linear-inspired near-black Night.
+ * Visual layer ONLY. Inherits previous role gates, data, search, forms and
+ * accessibility semantics. Imported last so older teal palettes cannot leak
+ * into authenticated content. Deliberately excludes the login/access shell.
+ *
+ * Readability contrast is checked with linearBlueBlack.test.js. */
+html[data-theme="day"],
+html[data-theme="day"] .app-shell-horizontal {
+  color-scheme: light;
+  --read-bg: #ffffff;
+  --read-soft: #edf4ff;
+  --read-input: #ffffff;
+  --read-ink: #102348;
+  --read-body: #405979;
+  --read-muted: #536b8d;
+  --read-link: #0956bd;
+  --read-border: #cad9ee;
+  --read-selected: #e2eeff;
+  --read-hover: #eaf3ff;
+  --read-ring: #1468e8;
+  --read-button: #0866ed;
+  --read-on-button: #ffffff;
+  --dn-text: #102348;
+  --dn-muted: #405979;
+  --dn-surface: #ffffff;
+  --dn-surface-strong: #ffffff;
+  --dn-surface-soft: #edf4ff;
+  --dn-border: #cad9ee;
+  --dn-shadow: 0 3px 14px rgba(24,75,149,.055);
+  --dn-accent: #0b62dc;
+  --dn-accent-hover: #0752b9;
+  --dn-focus: #1769df;
+  --ozzie-bg-page: #f4f8ff;
+  --ozzie-bg-card: #ffffff;
+  --ozzie-bg-card-soft: #edf4ff;
+  --ozzie-text-primary: #102348;
+  --ozzie-text-body: #405979;
+  --ozzie-text-muted: #536b8d;
+  --ozzie-border: #cad9ee;
+  --ozzie-accent: #0b62dc;
+  --ozzie-accent-hover: #0752b9;
+  --ozzie-focus-ring: #1769df;
+  --ozzie-header-surface: #ffffff;
+  --ozzie-nav-surface: #ffffff;
+  --ozzie-nav-hover: #eaf3ff;
+  --ozzie-nav-selected: #e2eeff;
+  --ozzie-nav-icon: #0b62dc;
+  --ozzie-header-rule: #cad9ee;
+  --ref-page: #f4f8ff;
+  --ref-card: #ffffff;
+  --ref-border: #dae5f5;
+  --ref-blue: #0866ed;
+  --ref-blue-hover: #0753c8;
+  --ref-text: #102348;
+  --ref-muted: #405979;
+  --ref-sky: #e8f3ff;
+  --ref-warm: #fff9ef;
+  --ref-shadow: 0 4px 16px rgba(24,75,149,.045);
+  --theme-page: #f4f8ff;
+  --theme-card: #ffffff;
+  --theme-raised: #f5f9ff;
+  --theme-ink: #102348;
+  --theme-subtle: #405979;
+  --theme-border: #cad9ee;
+  --theme-blue: #0866ed;
+  --theme-blue-ink: #0956bd;
+  --theme-blue-soft: #e8f3ff;
+  --theme-header: #ffffff;
+}
+html[data-theme="night"],
+html[data-theme="night"] .app-shell-horizontal {
+  color-scheme: dark;
+  --read-bg: #111217;
+  --read-soft: #1a1c24;
+  --read-input: #0e1015;
+  --read-ink: #f4f5f8;
+  --read-body: #c4c9d4;
+  --read-muted: #adb6c8;
+  --read-link: #a0bfff;
+  --read-border: #383c48;
+  --read-selected: #1b2c4e;
+  --read-hover: #212632;
+  --read-ring: #85adff;
+  --read-button: #2665df;
+  --read-on-button: #ffffff;
+  --dn-text: #f4f5f8;
+  --dn-muted: #c4c9d4;
+  --dn-surface: #111217;
+  --dn-surface-strong: #111217;
+  --dn-surface-soft: #1a1c24;
+  --dn-border: #383c48;
+  --dn-shadow: 0 2px 16px rgba(0,0,0,.36);
+  --dn-accent: #93b8ff;
+  --dn-accent-hover: #bad0ff;
+  --dn-focus: #85adff;
+  --ozzie-bg-page: #08090c;
+  --ozzie-bg-card: #111217;
+  --ozzie-bg-card-soft: #1a1c24;
+  --ozzie-text-primary: #f4f5f8;
+  --ozzie-text-body: #c4c9d4;
+  --ozzie-text-muted: #adb6c8;
+  --ozzie-border: #383c48;
+  --ozzie-accent: #93b8ff;
+  --ozzie-accent-hover: #bad0ff;
+  --ozzie-focus-ring: #85adff;
+  --ozzie-header-surface: #0e0f13;
+  --ozzie-nav-surface: #111217;
+  --ozzie-nav-hover: #212632;
+  --ozzie-nav-selected: #1b2c4e;
+  --ozzie-nav-icon: #a0bfff;
+  --ozzie-header-rule: #383c48;
+  --ref-page: #08090c;
+  --ref-card: #111217;
+  --ref-border: #353944;
+  --ref-blue: #3679f8;
+  --ref-blue-hover: #265ed1;
+  --ref-text: #f4f5f8;
+  --ref-muted: #c4c9d4;
+  --ref-sky: #151e30;
+  --ref-warm: #19171b;
+  --ref-shadow: 0 3px 16px rgba(0,0,0,.28);
+  --theme-page: #08090c;
+  --theme-card: #111217;
+  --theme-raised: #191b21;
+  --theme-ink: #f4f5f8;
+  --theme-subtle: #c4c9d4;
+  --theme-border: #383c48;
+  --theme-blue: #3679f8;
+  --theme-blue-ink: #a0bfff;
+  --theme-blue-soft: #1b2c4e;
+  --theme-header: #0e0f13;
+}
+
+/* Canvas, toolbar and main workspace. Login's photographic presentation
+ * is untouched: these rules all require a signed-in shell. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell.app-shell-horizontal,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-main.app-main-horizontal {
+  background: var(--theme-page) !important;
+  color: var(--theme-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header.app-header-horizontal {
+  background: var(--theme-header) !important;
+  border-bottom: 1px solid var(--theme-border) !important;
+  color: var(--theme-ink);
+  box-shadow: 0 2px 12px rgba(0,0,0,.055) !important;
+}
+html[data-theme="night"] .app-shell-horizontal .app-header.app-header-horizontal {
+  box-shadow: 0 2px 16px rgba(0,0,0,.32) !important;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .top-navigation {
+  background: transparent;
+  border-color: var(--theme-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.topnav-link,.topnav-dropdown > summary) {
+  color: var(--theme-subtle);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.topnav-link.active,.topnav-dropdown.active > summary) {
+  background: var(--theme-blue-soft);
+  border-color: var(--theme-blue-soft);
+  color: var(--theme-blue-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.topnav-link:hover,.topnav-dropdown > summary:hover,.topnav-dropdown[open] > summary) {
+  background: var(--read-hover);
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-menu {
+  background: var(--theme-card);
+  border-color: var(--theme-border);
+  color: var(--theme-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-menu > button[aria-current="page"] {
+  background: var(--theme-blue-soft);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-menu :is(strong,small) {
+  color: var(--theme-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-menu small {
+  color: var(--theme-subtle);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.header-search-button,.header-updates-button,.account-menu) {
+  background: var(--theme-card);
+  border-color: var(--theme-border);
+  color: var(--theme-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .header-search-button span {
+  color: var(--theme-subtle);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.header-search-button:hover,.header-updates-button:hover,.account-menu:hover) {
+  background: var(--read-hover);
+  color: var(--theme-ink);
+}
+html[data-theme="night"] .app-shell-horizontal .ozzie-brand-dock {
+  background: #ffffff;
+  border: 1px solid #dce5f0;
+  border-radius: .55rem;
+}
+/* Main panes: shared solid surfaces remove legacy teal/glassy gradients while
+ * retaining existing dimensions, overflow behavior and selected states. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .navigator-session-bar, .home-sandbox-launch, .smart-search-card,
+  .live-call-flow-approved, .navigator-library, .navigator-tab-panel,
+  .route-card, .process-card, .support-reference-card,
+  .host-topic-card, .host-roadblock-result-card,
+  .training-card, .training-viewer, .training-roadmap-intro,
+  .training-roadmap, .feedback-form-panel, .feedback-card,
+  .usage-filter-panel, .usage-report-panel, .usage-controls-bar,
+  .feedback-list article, .report-panel, .team-list article,
+  .admin-shortcuts button, .real-summary > div, .admin-account-overview,
+  .saved-note-card, .saved-notes-filter-card, .saved-notes-summary > button,
+  .avatar-library-panel, .avatar-library-upload-group, .avatar-library-card,
+  .process-document-card, .process-document-detail,
+  .updates-policy, .update-card, .profile-panel,
+  .console-card, .roadblock-matrix-row, .search-results-panel
+) {
+  background: var(--theme-card) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--theme-ink);
+}
+/* Make the blue call-workspace accent visible across the exact three regions
+ * in the first screenshot, instead of the old turquoise button/cards. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .navigator-session-bar, .home-sandbox-launch, .smart-search-card,
+  .live-call-flow-approved
+) {
+  border: 1px solid var(--theme-border) !important;
+  box-shadow: var(--dn-shadow);
+}
+html[data-theme="day"] .app-shell-horizontal .home-sandbox-launch {
+  background: linear-gradient(105deg,#ffffff,#eef5ff) !important;
+  border-left: 3px solid #1b75f5 !important;
+}
+html[data-theme="night"] .app-shell-horizontal .home-sandbox-launch {
+  background: linear-gradient(108deg,#111217,#141b2b) !important;
+  border-left: 3px solid #5795ff !important;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .navigator-session-bar small, .navigator-role-switch > span,
+  .home-sandbox-launch .eyebrow, .smart-search-heading .eyebrow,
+  .live-call-flow-heading-approved .eyebrow
+) {
+  color: var(--theme-blue-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .navigator-session-bar strong, .home-sandbox-launch h2,
+  .smart-search-heading h1, .live-call-flow-heading-approved h2
+) {
+  color: var(--theme-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .navigator-session-bar, .home-sandbox-copy, .smart-search-heading,
+  .live-call-flow-heading-approved
+) p {
+  color: var(--theme-subtle);
+}
+
+/* Buttons: preserve red Delete, green Success, alerts and dangerous actions;
+ * only regular primary CTAs switch to screenshot blue. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .primary-action, .home-sandbox-launch > button, .documentation-copy,
+  .training-card-body > button, .related-training > button,
+  .new-call-confirm-dialog .primary-action
+) {
+  background: var(--read-button) !important;
+  color: var(--read-on-button) !important;
+  border-color: var(--read-button) !important;
+  box-shadow: none;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .primary-action, .home-sandbox-launch > button, .documentation-copy
+):hover {
+  background: var(--ref-blue-hover) !important;
+  color: #ffffff !important;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .navigator-role-switch button, .navigator-library-tabs button,
+  .smart-search-examples button, .home-appearance-toggle button,
+  .training-section-tabs button, .usage-section-tabs button
+) {
+  color: var(--theme-ink);
+  border-color: var(--theme-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .navigator-role-switch button[aria-pressed="true"],
+  .navigator-library-tabs button[aria-selected="true"],
+  .home-appearance-toggle button[aria-pressed="true"],
+  .training-section-tabs button[aria-selected="true"],
+  .usage-section-tabs button.active
+) {
+  background: var(--theme-blue-soft) !important;
+  border-color: var(--read-ring) !important;
+  color: var(--theme-blue-ink) !important;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .navigator-role-switch button:hover, .smart-search-examples button:hover,
+  .navigator-library-tabs button:hover, .training-section-tabs button:hover
+) {
+  background: var(--read-hover);
+  color: var(--theme-ink);
+}
+
+/* Inputs and dropdowns across ALL signed-in pages, dialogs and tools.
+ * Inherit consistent native-option colors and visible placeholder text. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .smart-search-card, .feedback-form-panel, .saved-notes-page,
+  .team-management, .avatar-library-management, .usage-analytics,
+  .training-controls, .profile-panel, .documentation-dock,
+  .scope-check-dock, .readiness-lab-dock, .process-drawer,
+  .process-document-search, .console-view, .search-combobox
+) :is(input:not([type="checkbox"]),textarea,select) {
+  background: var(--read-input);
+  color: var(--theme-ink);
+  border-color: var(--theme-border);
+  color-scheme: inherit;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(input, textarea)::placeholder {
+  color: var(--read-muted);
+  opacity: 1;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal select option {
+  background: var(--read-input);
+  color: var(--theme-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .search-suggestions, .process-drawer, .training-viewer,
+  .documentation-dock, .scope-check-dock, .readiness-lab-dock,
+  .profile-panel, .admin-dialog
+) {
+  background: var(--theme-card);
+  color: var(--theme-ink);
+  border-color: var(--theme-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .search-suggestion, .search-suggestion-copy strong,
+  .process-drawer h2, .training-viewer h2, .profile-panel h2,
+  .documentation-dock h2, .scope-check-dock h2
+) {
+  color: var(--theme-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .search-suggestion-copy small, .process-drawer p,
+  .training-card p, .view-heading p, .feedback-page > p,
+  .usage-privacy-note, .update-card p, .saved-note-person small,
+  .workspace-meta-footer
+) {
+  color: var(--theme-subtle);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .search-suggestion:hover, .search-suggestion[aria-selected="true"]
+) {
+  background: var(--read-selected);
+  color: var(--theme-ink);
+  border-color: var(--read-ring);
+}
+/* Additional hardcoded teal panels in Training, Calls and Admin should
+ * not revert to dark/light mismatched surfaces. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .host-topic-card > div, .host-roadblock-result-card > div,
+  .roadblock-matrix-header, .usage-data-integrity,
+  .saved-note-meta > div, .console-metadata > div,
+  .feedback-screen-context, .process-document-library-status
+) {
+  background: var(--theme-raised);
+  color: var(--theme-ink);
+  border-color: var(--theme-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .eyebrow, .process-card b, .route-card b, .source-pages a,
+  .process-document-card-category, .training-tags span
+) {
+  color: var(--theme-blue-ink);
+}
+
+/* Screenshot's hero, feedback, five update cards and four shortcuts retain
+ * their purposeful color variation on BOTH modes; only swap palette tokens. */
+html[data-theme="night"] .app-shell-horizontal .dashboard-welcome-hero {
+  background: linear-gradient(113deg,#10151f 0%,#17243d 100%) !important;
+  border-color: var(--theme-border);
+}
+html[data-theme="night"] .app-shell-horizontal .dashboard-feedback-card {
+  background: linear-gradient(115deg,#19171b,#211b18) !important;
+  border-color: var(--theme-border);
+}
+html[data-theme="night"] .app-shell-horizontal .dashboard-update-card,
+html[data-theme="night"] .app-shell-horizontal .dashboard-shortcut {
+  background: #15161c;
+  border-color: var(--theme-border);
+}
+html[data-theme="night"] .app-shell-horizontal .dashboard-feedback-footnote {
+  background: #1d1b20;
+  border-color: var(--theme-border);
+  color: var(--theme-subtle);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-shortcut:is(:hover,:focus-visible) {
+  background: var(--read-hover);
+  border-color: var(--read-ring);
+}
+
+/* Global Feedback dialog is mounted directly under body, OUTSIDE AppShell.
+ * Keep explicit root selectors so both modes stay readable there too. */
+html:is([data-theme="day"],[data-theme="night"]) :is(
+  .global-feedback-dialog, .global-feedback-dialog .feedback-form-panel,
+  .global-feedback-context-preview
+) {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .global-feedback-dialog :is(
+  h2, h3, label, strong
+) {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .global-feedback-dialog :is(
+  p, small, .feedback-modal-description
+) {
+  color: var(--read-body);
+}
+html:is([data-theme="day"],[data-theme="night"]) .global-feedback-dialog :is(
+  input:not([type="checkbox"]), textarea, select
+) {
+  background: var(--read-input);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .global-feedback-dialog :is(
+  input, textarea
+)::placeholder {
+  color: var(--read-muted);
+  opacity: 1;
+}
+html:is([data-theme="day"],[data-theme="night"]) .global-feedback-dialog :is(
+  button[type="submit"], .primary-action
+) {
+  background: var(--read-button);
+  border-color: var(--read-button);
+  color: #ffffff;
+}
+html:is([data-theme="day"],[data-theme="night"]) .global-feedback-dialog :is(
+  button[type="button"]:not(.danger-action)
+) {
+  background: var(--read-soft);
+  border-color: var(--read-border);
+  color: var(--read-ink);
+}
+
+/* Keyboard contrast, selected state, destructive controls and status colors
+ * are never covered by global generic button/paragraph recoloring. */
+html:is([data-theme="day"],[data-theme="night"]) :is(
+  .app-shell-horizontal, .global-feedback-dialog
+) :is(button,input,textarea,select,a,summary):focus-visible {
+  outline: 3px solid var(--read-ring);
+  outline-offset: 2px;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(
+  .danger-action, .saved-note-delete, .avatar-library-card .danger-action
+) {
+  color: var(--cleanup-delete-ink) !important;
+  background: var(--cleanup-delete-bg) !important;
+  border-color: var(--cleanup-delete-border) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal * {
+    scroll-behavior: auto;
+  }
+}
