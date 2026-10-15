@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { HOST_ROADBLOCKS, HOST_SUPPORT_TOPICS } from '../../data/arbitratorHostSupport'
+import { OzzieBrandImage } from '../../components/OzzieBrandImage'
 import { PROCESSES } from '../../data/processes'
 import { routeById } from '../navigator/commonIssueRoutes'
 import { FavoriteToggle } from './FavoriteToggle'
@@ -18,6 +20,18 @@ function resolveResource(item) {
       : { ...item, kindLabel: 'Process Guide', title: item.itemId, description: 'This Process Guide is no longer available.', available: false }
   }
 
+  if (item.itemType === 'common_issue' && item.itemId.startsWith('host:')) {
+    const topic = HOST_SUPPORT_TOPICS.find(candidate => candidate.id === item.itemId.slice(5))
+    return topic
+      ? { ...item, kindLabel: 'Host Guide', title: topic.title, description: 'Approved Host / Arbitrator guided troubleshooting', category: topic.group, available: true }
+      : { ...item, kindLabel: 'Host Guide', title: item.itemId, description: 'This Host guide is no longer available.', available: false }
+  }
+  if (item.itemType === 'common_issue' && item.itemId.startsWith('host-roadblock:')) {
+    const roadblock = HOST_ROADBLOCKS.find(candidate => candidate.id === item.itemId.slice(15))
+    return roadblock
+      ? { ...item, kindLabel: 'Host Roadblock', title: roadblock.title, description: roadblock.trigger, category: 'Tier 1 roadblock', available: true }
+      : { ...item, kindLabel: 'Host Roadblock', title: item.itemId, description: 'This Host roadblock is no longer available.', available: false }
+  }
   const route = routeById(item.itemId)
   return route
     ? {
@@ -111,9 +125,9 @@ export function FavoritesView({
       {loading && <p role="status">Loading your Favorites…</p>}
 
       {!loading && favoriteItems.length === 0 && <section className="favorites-empty">
-        <div className="favorites-empty-star" aria-hidden="true">☆</div>
+        <div className="favorites-empty-star" aria-hidden="true"><OzzieBrandImage variant="owl" className="favorites-empty-ozzie" alt="" /></div>
         <h2>No Favorites yet</h2>
-        <p>Open a Common Issue or Process Guide in Navigator and select the star to keep it here.</p>
+        <p>Open a Common Issue or Process Guide in Navigator, then select the Ozzie owl to keep it here. Host guides and roadblocks can also be saved.</p>
       </section>}
 
       {!loading && commonIssues.length > 0 && <section className="favorites-group" aria-labelledby="favorite-common-issues">
