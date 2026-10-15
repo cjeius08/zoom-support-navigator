@@ -494,3 +494,30 @@ body:has(.readiness-lab-dock) .app-shell-horizontal .readiness-lab-dock .readine
   white-space: normal;
   overflow-wrap: break-word;
 }
+/* Readiness introduction and summary stay readable without crowding. */
+.app-shell-horizontal .readiness-lab-dock .readiness-open-book strong {
+  font-size: var(--ozzie-legible-meta) !important;
+  line-height: 1.4;
+}
+.app-shell-horizontal .readiness-lab-dock .readiness-open-book span {
+  font-size: var(--ozzie-legible-body) !important;
+  line-height: 1.52;
+  overflow-wrap: break-word;
+}
+.app-shell-horizontal .readiness-lab-dock .readiness-part-summary span {
+  font-size: var(--ozzie-legible-meta) !important;
+  line-height: 1.4;
+}
+.app-shell-horizontal .readiness-lab-dock .readiness-part-summary h3 {
+  font-size: var(--ozzie-legible-title) !important;
+  line-height: 1.4;
+}
+.app-shell-horizontal .readiness-lab-dock .readiness-find-card strong {
+  font-size: var(--ozzie-legible-body) !important;
+  line-height: 1.48;
+  overflow-wrap: break-word;
+}
+.app-shell-horizontal .readiness-lab-dock .readiness-feedback :is(p,small),
+.app-shell-horizontal .readiness-lab-dock .readiness-part-result p {
+  overflow-wrap: break-word;
+}
