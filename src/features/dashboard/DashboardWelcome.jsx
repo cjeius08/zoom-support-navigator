@@ -66,7 +66,7 @@ export function DashboardWelcome({
           </div>
         </div>
         <div className="dashboard-welcome-mascot">
-          <img src={assetUrl('assets/ozzie-activation-success.webp')} alt="Ozzie owl mascot" />
+          <img src={assetUrl('assets/ozzie-welcome-open-arms.webp')} alt="Ozzie owl mascot" />
         </div>
       </section>
 
@@ -79,7 +79,7 @@ export function DashboardWelcome({
             <DashIcon type="arrow" /> Submit Feedback
           </button>
         </div>
-        <img className="dashboard-feedback-mascot" src={assetUrl('assets/ozzie-activation-success.webp')} alt="" aria-hidden="true" />
+        <img className="dashboard-feedback-mascot" src={assetUrl('assets/ozzie-feedback-idea.webp')} alt="" aria-hidden="true" />
         <div className="dashboard-feedback-footnote">Your feedback helps make Ozzie better for everyone!</div>
       </section>
     </div>
