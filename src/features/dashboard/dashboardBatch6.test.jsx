@@ -18,7 +18,7 @@ describe('Ozzie Batch 6 — genuine Dashboard welcome for every authenticated ro
   it('keeps approved logo in header, but uses separate repository owl mascot in welcome hero', () => {
     render(<DashboardWelcome username="agent_1" roleLabel="Member" />)
     const hero = screen.getByRole('heading', { name: 'Welcome back!' }).closest('section')
-    expect(within(hero).getByRole('img', { name: 'Ozzie owl mascot' }).getAttribute('src')).toContain('ozzie-activation-success.webp')
+    expect(within(hero).getByRole('img', { name: 'Ozzie owl mascot' }).getAttribute('src')).toContain('ozzie-welcome-open-arms.webp')
     expect(hero).toHaveTextContent('agent_1')
     expect(hero).toHaveTextContent('Member')
     expect(shell).toContain('<OzzieBrandImage variant="full" />')
