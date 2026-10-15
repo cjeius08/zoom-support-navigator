@@ -175,9 +175,9 @@ describe('post-QA remediation gate', () => {
     expect(document.documentElement).toHaveStyle({ overflow: 'hidden' })
   })
 
-  it('marks the active Home destination for assistive technology', () => {
+  it('marks the active Dashboard destination for assistive technology', () => {
     render(<AppShell profile={profile} currentView="navigator"><div>Content</div></AppShell>)
-    expect(screen.getByRole('button', { name: 'Home' })).toHaveAttribute('aria-current', 'page')
+    expect(screen.getByRole('button', { name: 'Dashboard' })).toHaveAttribute('aria-current', 'page')
   })
 
   it('contains a migration that revokes client execution of rls_auto_enable and adds foreign-key indexes', () => {
