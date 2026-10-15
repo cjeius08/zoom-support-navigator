@@ -1,0 +1,24 @@
+/* Ozzie workspace typography — licensed/system-installed font stack.
+ * Candara is a Windows-installed typeface, not an included/downloadable webfont.
+ * Clean fallbacks keep labels, controls, and guides readable on other devices.
+ * The approved Ozzie logo is an image and is deliberately never restyled.
+ */
+:root {
+  --ozzie-ui-font: Candara, Calibri, "Segoe UI", Arial, sans-serif;
+  font-family: var(--ozzie-ui-font);
+}
+
+html,
+body {
+  font-family: var(--ozzie-ui-font);
+}
+
+button,
+input,
+select,
+textarea,
+optgroup {
+  font-family: inherit;
+}
+
+/* Do not override fixed-width technical strings, CSS icon symbols, or image logos. */

@@ -32,6 +32,7 @@ import './features/shell/headerNavRevamp.css'
 import './features/shell/loginRevamp.css'
 import './features/theme/themeSystem.css'
 import './features/theme/dayNight.css'
+import './features/theme/typography.css'
 import './pilotReadiness.css'
 
 const EMPTY_REPORT_CONTEXT = {
