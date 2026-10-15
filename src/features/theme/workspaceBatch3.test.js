@@ -72,7 +72,7 @@ describe('Batch 3: dense responsive Saved Notes, Follow-Ups, and Team Management
     expect(css).toContain('.team-list article > .status-badge')
     expect(css).toContain('.team-list article > .presence-badge')
     expect(css).toContain('@media (max-width: 520px)')
-    for(const hook of ['loadTeam()', 'runAdminAction(payload)', 'action: "generate_invite"', 'setSelected(person)', 'className="status-badge', 'className="profile-panel admin-dialog"']) {
+    for(const hook of ['loadTeam()', 'runAdminAction(payload)', 'action: "generate_invite"', 'setSelected(person)', 'status-badge ${person.status}', 'className="profile-panel admin-dialog"']) {
       expect(team,hook).toContain(hook)
     }
   })
