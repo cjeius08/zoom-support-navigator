@@ -243,16 +243,16 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
 
         <NavDropdown label="Call Flow" active={callFlowActive}>
           <button type="button" aria-label="Call Documentation" aria-pressed={liveTools.documentation !== 'closed'} onClick={event => openToolFromHeader(event, 'documentation')}><Icon type="documentation" /><span><strong>Call Documentation</strong><small>Capture notes without leaving your current page.</small></span></button>
-          <button type="button" aria-label="My Saved Notes" onClick={event => { finishNav(event); onOpenMySavedNotes('') }}><Icon type="notes" /><span><strong>My Saved Notes</strong><small>Review your saved notes and follow-ups.</small></span></button>
+          <button type="button" aria-label="My Saved Notes" aria-current={currentView === 'my_saved_notes' ? 'page' : undefined} onClick={event => { finishNav(event); onOpenMySavedNotes('') }}><Icon type="notes" /><span><strong>My Saved Notes</strong><small>Review your saved notes and follow-ups.</small></span></button>
           <button type="button" aria-label="Scope Check" aria-pressed={liveTools.scope_check !== 'closed'} onClick={event => openToolFromHeader(event, 'scope_check')}><Icon type="scope_check" /><span><strong>Scope Check</strong><small>Confirm the correct support boundary and next step.</small></span></button>
         </NavDropdown>
 
         <NavDropdown label="Knowledge" active={knowledgeActive}>
-          <button type="button" aria-label="Favorites" onClick={event => navigateFromHeader(event, 'favorites')}><Icon type="favorites" /><span><strong>Favorites</strong><small>Your saved support references.</small></span></button>
-          <button type="button" aria-label="Process Documents" onClick={event => navigateFromHeader(event, 'process_documents')}><Icon type="documentation" /><span><strong>Process Documents</strong><small>Original source pages organized by process title.</small></span></button>
-          <button type="button" aria-label="Flex Arbitration Hub" onClick={event => navigateFromHeader(event, 'flex_hub')}><Icon type="documentation" /><span><strong>Flex Arbitration Hub</strong><small>Hub access, PMI scheduling, recording rules, and training videos.</small></span></button>
-          <button type="button" aria-label="Training & Resources" onClick={event => navigateFromHeader(event, 'training')}><Icon type="training" /><span><strong>Training & Resources</strong><small>Guides, scripts, visual lessons, and training.</small></span></button>
-          <button type="button" aria-label="What’s New / Updates" onClick={event => navigateFromHeader(event, 'updates')}><Icon type="updates" /><span><strong>What’s New / Updates</strong><small>Recent workspace changes and release notes.</small></span></button>
+          <button type="button" aria-label="Favorites" aria-current={currentView === 'favorites' ? 'page' : undefined} onClick={event => navigateFromHeader(event, 'favorites')}><Icon type="favorites" /><span><strong>Favorites</strong><small>Your saved support references.</small></span></button>
+          <button type="button" aria-label="Process Documents" aria-current={currentView === 'process_documents' ? 'page' : undefined} onClick={event => navigateFromHeader(event, 'process_documents')}><Icon type="documentation" /><span><strong>Process Documents</strong><small>Original source pages organized by process title.</small></span></button>
+          <button type="button" aria-label="Flex Arbitration Hub" aria-current={currentView === 'flex_hub' ? 'page' : undefined} onClick={event => navigateFromHeader(event, 'flex_hub')}><Icon type="documentation" /><span><strong>Flex Arbitration Hub</strong><small>Hub access, PMI scheduling, recording rules, and training videos.</small></span></button>
+          <button type="button" aria-label="Training & Resources" aria-current={currentView === 'training' ? 'page' : undefined} onClick={event => navigateFromHeader(event, 'training')}><Icon type="training" /><span><strong>Training & Resources</strong><small>Guides, scripts, visual lessons, and training.</small></span></button>
+          <button type="button" aria-label="What’s New / Updates" aria-current={currentView === 'updates' ? 'page' : undefined} onClick={event => navigateFromHeader(event, 'updates')}><Icon type="updates" /><span><strong>What’s New / Updates</strong><small>Recent workspace changes and release notes.</small></span></button>
         </NavDropdown>
 
         <button
@@ -263,16 +263,16 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
         >Readiness Lab</button>
 
         <NavDropdown label="Reports" active={reportsActive}>
-          <button type="button" aria-label="Feedback" onClick={event => navigateFromHeader(event, 'feedback')}><Icon type="feedback" /><span><strong>Feedback</strong><small>Send an issue, suggestion, or workspace report.</small></span></button>
-          {isAdmin && <button type="button" aria-label="Usage Analytics" onClick={event => navigateFromHeader(event, 'usage')}><Icon type="usage" /><span><strong>Usage Analytics</strong><small>Review workspace usage and activity.</small></span></button>}
-          {isAdmin && <button type="button" aria-label="Feedback Queue" onClick={event => navigateFromHeader(event, 'feedback_queue')}><Icon type="feedback_queue" /><span><strong>Feedback Queue</strong><small>Review and manage submitted feedback.</small></span></button>}
+          <button type="button" aria-label="Feedback" aria-current={currentView === 'feedback' ? 'page' : undefined} onClick={event => navigateFromHeader(event, 'feedback')}><Icon type="feedback" /><span><strong>Feedback</strong><small>Send an issue, suggestion, or workspace report.</small></span></button>
+          {isAdmin && <button type="button" aria-label="Usage Analytics" aria-current={currentView === 'usage' ? 'page' : undefined} onClick={event => navigateFromHeader(event, 'usage')}><Icon type="usage" /><span><strong>Usage Analytics</strong><small>Review workspace usage and activity.</small></span></button>}
+          {isAdmin && <button type="button" aria-label="Feedback Queue" aria-current={currentView === 'feedback_queue' ? 'page' : undefined} onClick={event => navigateFromHeader(event, 'feedback_queue')}><Icon type="feedback_queue" /><span><strong>Feedback Queue</strong><small>Review and manage submitted feedback.</small></span></button>}
         </NavDropdown>
 
         {isAdmin && <NavDropdown label="Admin" active={adminActive}>
-          <button type="button" aria-label="Admin Home" onClick={event => navigateFromHeader(event, 'admin')}><Icon type="admin" /><span><strong>Admin Home</strong><small>Workspace administration overview.</small></span></button>
-          <button type="button" aria-label="Saved Notes" onClick={event => navigateFromHeader(event, 'saved_notes')}><Icon type="notes" /><span><strong>Saved Notes</strong><small>Review protected notes and follow-ups.</small></span></button>
-          <button type="button" aria-label="Team Management" onClick={event => navigateFromHeader(event, 'team')}><Icon type="team" /><span><strong>Team Management</strong><small>Manage users, access, and accounts.</small></span></button>
-          <button type="button" aria-label="Avatar Library" onClick={event => navigateFromHeader(event, 'avatar_library')}><Icon type="avatars" /><span><strong>Avatar Library</strong><small>Add or remove available profile avatars.</small></span></button>
+          <button type="button" aria-label="Admin Home" aria-current={currentView === 'admin' ? 'page' : undefined} onClick={event => navigateFromHeader(event, 'admin')}><Icon type="admin" /><span><strong>Admin Home</strong><small>Workspace administration overview.</small></span></button>
+          <button type="button" aria-label="Saved Notes" aria-current={currentView === 'saved_notes' ? 'page' : undefined} onClick={event => navigateFromHeader(event, 'saved_notes')}><Icon type="notes" /><span><strong>Saved Notes</strong><small>Review protected notes and follow-ups.</small></span></button>
+          <button type="button" aria-label="Team Management" aria-current={currentView === 'team' ? 'page' : undefined} onClick={event => navigateFromHeader(event, 'team')}><Icon type="team" /><span><strong>Team Management</strong><small>Manage users, access, and accounts.</small></span></button>
+          <button type="button" aria-label="Avatar Library" aria-current={currentView === 'avatar_library' ? 'page' : undefined} onClick={event => navigateFromHeader(event, 'avatar_library')}><Icon type="avatars" /><span><strong>Avatar Library</strong><small>Add or remove available profile avatars.</small></span></button>
         </NavDropdown>}
       </nav>
     </header>
