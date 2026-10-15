@@ -149,7 +149,9 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
       setSelectedRoute(null)
       setSelectedHostRoadblock(null)
       setSelectedHostRoute(route)
-      setCallContext(current => ({ ...current, role: 'Host', status: 'active' }))
+      setCallContext(current => current.role === 'Host' && current.status === 'active'
+        ? current
+        : { ...current, role: 'Host', status: 'active' })
       return
     }
     if (initialCommonIssueId.startsWith('host-roadblock:')) {
@@ -160,7 +162,9 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
       setSelectedRoute(null)
       setSelectedHostRoute(null)
       setSelectedHostRoadblock(roadblock)
-      setCallContext(current => ({ ...current, role: 'Host', status: 'active' }))
+      setCallContext(current => current.role === 'Host' && current.status === 'active'
+        ? current
+        : { ...current, role: 'Host', status: 'active' })
       return
     }
     const route = routeById(initialCommonIssueId)
