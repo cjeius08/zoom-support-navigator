@@ -54,6 +54,7 @@ import './features/shell/headerBatch5.css'
 import './features/dashboard/dashboardBatch6.css'
 import './features/dashboard/dashboardReference.css'
 import './features/shell/headerReference.css'
+import './features/shell/headerOverlapFix.css'
 
 const EMPTY_REPORT_CONTEXT = {
   selected_tab: null,
