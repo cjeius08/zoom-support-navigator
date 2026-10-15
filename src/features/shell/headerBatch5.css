@@ -1,0 +1,272 @@
+/* Ozzie UI Batch 5 — Linear-inspired premium navigation refinement.
+ * Existing header geometry, full logo, account controls, role gates and
+ * <details> disclosure behavior are all retained. Scoped to signed-in shell.
+ * No changes to login, Dashboard content, tools or Supabase workflows.
+ */
+html[data-theme="day"] .app-shell-horizontal {
+  --b5-header-base: #ffffff;
+  --b5-header-sheen: #eff6f7;
+  --b5-header-border: #c9d9df;
+  --b5-header-shadow: 0 2px 16px rgba(24, 57, 72, .065);
+  --b5-menu-shadow: 0 15px 30px rgba(21, 48, 60, .12);
+}
+html[data-theme="night"] .app-shell-horizontal {
+  --b5-header-base: #17232e;
+  --b5-header-sheen: #203440;
+  --b5-header-border: #465c68;
+  --b5-header-shadow: 0 2px 18px rgba(0, 0, 0, .18);
+  --b5-menu-shadow: 0 16px 34px rgba(0, 0, 0, .30);
+}
+
+/* Only the BACKGROUND slowly shifts, never the brand or interactive controls. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header.app-header-horizontal {
+  background: linear-gradient(
+    112deg,
+    var(--b5-header-base) 12%,
+    var(--b5-header-base) 37%,
+    var(--b5-header-sheen) 50%,
+    var(--b5-header-base) 63%,
+    var(--b5-header-base) 88%
+  ) !important;
+  background-size: 210% 100% !important;
+  background-position: 15% 50%;
+  animation: ozzie-b5-header-drift 36s ease-in-out infinite alternate !important;
+  border-bottom: 1px solid var(--b5-header-border) !important;
+  color: var(--read-ink);
+  box-shadow: var(--b5-header-shadow) !important;
+}
+@keyframes ozzie-b5-header-drift {
+  from { background-position: 5% 50%; }
+  to { background-position: 95% 50%; }
+}
+
+/* Preserve the exact header alignment and logo sizes from approved design.
+ * A 67%-zoom viewport should not force fixed-width labels to collide. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .top-navigation {
+  gap: .24rem;
+  min-width: 0;
+  border-bottom: 1px solid var(--b5-header-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .top-navigation > :is(.topnav-link,.topnav-dropdown) {
+  min-width: 0;
+  flex: 0 1 auto;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-link,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-dropdown > summary {
+  min-height: 2.55rem;
+  padding: .49rem .7rem;
+  color: var(--read-ink);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: .65rem;
+  font-size: var(--ozzie-legible-meta,.9rem) !important;
+  line-height: 1.35;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: color .18s ease, background-color .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+/* Soft selected pill PLUS a contained, 2px underline. No negative offsets,
+ * so active marks cannot overlap the next row or escape the navigation bar. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-link.active,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-dropdown.active > summary {
+  background: var(--read-selected);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-link::after,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-dropdown > summary::after {
+  content: "";
+  position: absolute;
+  bottom: .17rem;
+  left: .72rem;
+  right: .72rem;
+  height: 2px;
+  border-radius: 999px;
+  background: transparent;
+  transition: background-color .18s ease;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-link.active::after,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-dropdown.active > summary::after {
+  background: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-link:is(:hover,:focus-visible),
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-dropdown > summary:is(:hover,:focus-visible),
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-dropdown[open] > summary {
+  color: var(--read-ink);
+  background: var(--read-hover);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-chevron {
+  flex: 0 0 auto;
+  stroke: currentColor;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-dropdown[open] .topnav-chevron {
+  transform: rotate(180deg);
+}
+
+/* Accessible submenus: page-specific indicator now corresponds to aria-current.
+ * Contrast is explicit in BOTH themes, including hover/focus/pressed states. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-menu {
+  width: min(23rem, calc(100vw - 1.75rem));
+  padding: .42rem;
+  gap: .2rem;
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border: 1px solid var(--read-border);
+  border-radius: .8rem;
+  box-shadow: var(--b5-menu-shadow);
+  backdrop-filter: none;
+  transform-origin: top center;
+  animation: ozzie-b5-menu-reveal .17s ease-out both;
+}
+@keyframes ozzie-b5-menu-reveal {
+  from { opacity: .75; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-menu > button {
+  min-width: 0;
+  height: auto;
+  min-height: 3.15rem;
+  gap: .65rem;
+  padding: .57rem .65rem;
+  border: 1px solid transparent;
+  border-radius: .58rem;
+  color: var(--read-ink);
+  background: transparent;
+  text-align: left;
+  transition: background-color .16s ease, border-color .16s ease;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-menu > button:is(:hover,:focus-visible,[aria-pressed="true"]) {
+  background: var(--read-hover);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-menu > button[aria-current="page"] {
+  background: var(--read-selected);
+  border-color: var(--read-ring);
+  box-shadow: inset 3px 0 0 var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-menu > button :is(strong,small) {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-menu strong {
+  color: var(--read-ink);
+  font-size: var(--ozzie-legible-meta,.9rem) !important;
+  line-height: 1.35;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-menu small {
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-meta,.9rem) !important;
+  line-height: 1.4;
+  margin-top: .1rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-menu svg {
+  stroke: var(--read-link);
+}
+
+/* Account, Menu, focus and open-state polish stays within the existing UI. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header-horizontal .account-menu {
+  color: var(--read-ink);
+  background: var(--read-bg);
+  border: 1px solid var(--read-border);
+  border-radius: .7rem;
+  transition: background-color .18s ease, border-color .18s ease;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header-horizontal .account-menu:is(:hover,:focus-visible,[aria-expanded="true"]) {
+  color: var(--read-ink);
+  background: var(--read-hover);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header-horizontal .account-menu :is(strong,small) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header-horizontal .account-menu strong {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header-horizontal .account-menu small {
+  color: var(--read-body);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header-horizontal :is(.topnav-link,.topnav-dropdown > summary,.topnav-menu > button,.account-menu,.menu-toggle):focus-visible {
+  outline: 2px solid var(--read-ring);
+  outline-offset: 2px;
+}
+
+/* In the existing off-canvas mobile menu, indicators become left-side rails,
+ * not underlines. Keep dropdowns in the layout and accessible to touch. */
+@media (max-width: 800px), (hover: none) and (pointer: coarse) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header.app-header-horizontal {
+    background: var(--b5-header-base) !important;
+    background-size: auto !important;
+    animation: none !important;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .top-navigation {
+    gap: .28rem;
+    background: var(--read-bg);
+    color: var(--read-ink);
+    border: 1px solid var(--read-border);
+    box-shadow: var(--b5-menu-shadow);
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .top-navigation > :is(.topnav-link,.topnav-dropdown) {
+    width: 100%;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-link,
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-dropdown > summary {
+    justify-content: space-between;
+    width: 100%;
+    min-height: 2.9rem;
+    padding: .65rem .75rem;
+    white-space: normal;
+    text-align: left;
+    overflow-wrap: break-word;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-link::after,
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-dropdown > summary::after {
+    content: none;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-link.active,
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-dropdown.active > summary {
+    box-shadow: inset 3px 0 0 var(--read-ring);
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-dropdown .topnav-menu {
+    width: 100%;
+    margin-top: .2rem;
+    padding: .28rem;
+    border-radius: .6rem;
+    background: var(--read-soft);
+    box-shadow: none;
+    animation: none;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header-horizontal .menu-toggle {
+    min-height: 2.6rem;
+    padding: .45rem .65rem;
+    background: var(--read-bg);
+    color: var(--read-ink);
+    border: 1px solid var(--read-border);
+    border-radius: .65rem;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header-horizontal .menu-toggle:is(:hover,:focus-visible) {
+    background: var(--read-hover);
+    border-color: var(--read-ring);
+  }
+}
+/* Respect reduced-motion settings; static color and active-state affordances
+ * remain available. */
+@media (prefers-reduced-motion: reduce) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header.app-header-horizontal {
+    animation: none !important;
+    background-position: 50% 50%;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-menu {
+    animation: none !important;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.topnav-link,.topnav-dropdown > summary,.topnav-menu > button,.account-menu,.topnav-chevron) {
+    transition: none !important;
+  }
+}
