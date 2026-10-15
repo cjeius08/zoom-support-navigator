@@ -1,0 +1,254 @@
+/* Ozzie dashboard visual correction:
+   Header controls must share ONE flow layout, never separately absolute-positioned.
+   At 67% and 100% zoom, preserve the existing hover dropdown behavior and
+   give the username, bell and search their own non-overlapping widths. */
+
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  gap: .55rem;
+  min-width: 0;
+  z-index: 31;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail .ozzie-header-actions {
+  position: static !important;
+  inset: auto !important;
+  top: auto !important;
+  right: auto !important;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .35rem;
+  margin: 0;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail .account-menu {
+  position: static !important;
+  inset: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 11.75rem;
+  min-height: 2.55rem;
+  margin: 0 !important;
+  padding: .32rem .48rem;
+  background: var(--ref-sky);
+  border: 1px solid var(--ref-border);
+  border-radius: .65rem;
+  color: var(--ref-text);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail .account-copy {
+  min-width: 0;
+  max-width: 9rem;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail .account-menu :is(strong,small) {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail .header-search-button {
+  position: static;
+  width: 12.4rem;
+  max-width: 12.4rem;
+  min-width: 0;
+  flex: 0 1 auto;
+  margin: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail .header-updates-button {
+  display: inline-grid;
+  flex: 0 0 2.45rem;
+  margin: 0;
+}
+
+/* On wide mouse-driven screens, let the header itself reserve three columns:
+   brand | existing navigation | search + bell + account.
+   No absolute positioning of any control, so no collisions at 67% zoom. */
+@media (min-width: 1341px) and (hover: hover) and (pointer: fine) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header.app-header-horizontal {
+    display: grid !important;
+    grid-template-columns: minmax(10.5rem,12.2rem) minmax(0,1fr) auto !important;
+    grid-template-rows: minmax(4.65rem,auto) !important;
+    align-items: center !important;
+    column-gap: clamp(.5rem,1vw,1.2rem) !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 4.65rem !important;
+    padding: .35rem clamp(.8rem,1.4vw,1.5rem) !important;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header-brand-row {
+    display: contents !important;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-brand-dock {
+    position: relative !important;
+    inset: auto !important;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    justify-self: start;
+    width: min(100%,12.2rem);
+    margin: 0;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .top-navigation {
+    position: relative !important;
+    inset: auto !important;
+    grid-column: 2;
+    grid-row: 1;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0;
+    min-height: 3rem;
+    gap: .1rem;
+    margin: 0 !important;
+    padding: .18rem 0 !important;
+    transform: none !important;
+    border: 0 !important;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .top-navigation :is(.topnav-link,.topnav-dropdown > summary) {
+    min-width: 0;
+    padding: .45rem clamp(.33rem,.65vw,.63rem);
+    font-size: var(--ozzie-legible-meta,.9rem) !important;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: center;
+    justify-self: end;
+  }
+}
+/* On medium desktop screens, use two rows instead of trying to fit
+   three groups into less than their natural widths. */
+@media (min-width: 801px) and (max-width: 1340px) and (hover: hover) and (pointer: fine) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header.app-header-horizontal {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) auto !important;
+    grid-template-rows: minmax(3.75rem,auto) auto !important;
+    align-items: center !important;
+    gap: .1rem .7rem !important;
+    min-height: 0 !important;
+    height: auto !important;
+    padding: .45rem .95rem .32rem !important;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header-brand-row {
+    display: contents !important;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-brand-dock {
+    position: relative !important;
+    inset: auto !important;
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    justify-self: start;
+    width: 11rem;
+    max-width: 100%;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    justify-self: end;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .top-navigation {
+    position: relative !important;
+    inset: auto !important;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0;
+    min-height: 3rem;
+    gap: .2rem;
+    margin: 0 !important;
+    padding: .1rem 0 .22rem !important;
+    transform: none !important;
+    border: 0 !important;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .top-navigation :is(.topnav-link,.topnav-dropdown > summary) {
+    min-height: 2.5rem;
+    padding: .44rem clamp(.35rem,.8vw,.65rem);
+  }
+}
+/* Hide the long search placeholder before it competes with the nav; the icon
+   remains clickable, and the bell and account remain visible. */
+@media (min-width: 801px) and (max-width: 1550px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail .header-search-button {
+    width: 2.6rem;
+    max-width: 2.6rem;
+    min-width: 2.6rem;
+    flex: 0 0 2.6rem;
+    justify-content: center;
+    padding: .45rem;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail .header-search-button span {
+    display: none;
+  }
+}
+/* Touch and narrow widths preserve the existing tap-to-open navigation
+   while flowing account controls next to, not on top of, each other. */
+@media (max-width: 800px), (hover: none) and (pointer: coarse) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header-brand-row {
+    display: grid !important;
+    grid-template-columns: minmax(4.6rem,1fr) auto auto !important;
+    align-items: center !important;
+    column-gap: .38rem !important;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-brand-dock {
+    position: relative !important;
+    inset: auto !important;
+    grid-column: 1;
+    width: min(100%,7rem);
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .menu-toggle {
+    position: relative !important;
+    grid-column: 2;
+    justify-self: center;
+    margin: 0;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail {
+    grid-column: 3;
+    justify-self: end;
+    gap: .15rem;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail .ozzie-header-actions {
+    gap: .1rem;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail .header-search-button {
+    display: flex;
+    width: 2.45rem;
+    min-width: 2.45rem;
+    max-width: 2.45rem;
+    flex: 0 0 2.45rem;
+    justify-content: center;
+    padding: .4rem;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail .header-search-button span {
+    display: none;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail .account-menu {
+    max-width: 9rem;
+  }
+}
+@media (max-width: 520px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail .account-copy {
+    display: none;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-right-rail .account-menu {
+    padding: .3rem .35rem;
+  }
+}
