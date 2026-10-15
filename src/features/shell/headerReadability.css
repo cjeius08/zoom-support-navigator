@@ -154,3 +154,90 @@ html[data-theme="night"] .app-header-horizontal :is(button, summary):focus-visib
 @media (min-width: 801px) and (hover: hover) and (pointer: fine) {
   .ozzie-brand-dock { width: 11.6rem; }
 }
+/* Ozzie Dashboard trial: minimalist Day/Night surfaces + subtle Linear-inspired header.
+ * The illustrated office/library assets remain in the repository and stay available
+ * on non-Home views. This checkpoint does not change layout, nav or tool behaviors.
+ */
+
+/* Day/Night header styling is shared by all authenticated users and views. */
+html[data-theme="day"] .app-shell {
+  --dash-header-base: #ffffff;
+  --dash-header-highlight: #edf5f6;
+  --ozzie-header-surface: #ffffff;
+  --ozzie-nav-surface: #ffffff;
+  --ozzie-nav-hover: #e9f1f3;
+  --ozzie-nav-selected: #dfebee;
+}
+html[data-theme="night"] .app-shell {
+  --dash-header-base: #17232e;
+  --dash-header-highlight: #223843;
+  --ozzie-header-surface: #17232e;
+  --ozzie-nav-surface: #1d303c;
+  --ozzie-nav-hover: #2a4350;
+  --ozzie-nav-selected: #294653;
+}
+
+html:is([data-theme="day"],[data-theme="night"]) .app-shell .app-header.app-header-horizontal {
+  background: linear-gradient(
+    110deg,
+    var(--dash-header-base) 20%,
+    var(--dash-header-highlight) 48%,
+    var(--dash-header-base) 80%
+  ) !important;
+  background-size: 220% 100% !important;
+  animation: ozzie-header-ambient-shift 28s ease-in-out infinite alternate;
+}
+
+/* The Home view is the first step toward the Tabler-style dashboard.
+   Override only the image *layer*, not the login or other workspace pages. */
+html[data-theme="day"] .app-shell[data-view="navigator"] {
+  background: #f5f7fa !important;
+  --dn-text: #1b3145;
+  --dn-muted: #506678;
+  --dn-surface: #ffffff;
+  --dn-surface-strong: #ffffff;
+  --dn-surface-soft: #edf3f5;
+  --dn-border: #d3e0e6;
+  --dn-shadow: 0 6px 22px rgba(30, 58, 75, .07);
+  --ozzie-bg-page: #f5f7fa;
+  --ozzie-bg-card: #ffffff;
+  --ozzie-bg-card-soft: #edf3f5;
+}
+html[data-theme="night"] .app-shell[data-view="navigator"] {
+  background: #111820 !important;
+  --dn-text: #f0f5f8;
+  --dn-muted: #bdccd6;
+  --dn-surface: #1d2833;
+  --dn-surface-strong: #21323e;
+  --dn-surface-soft: #283a47;
+  --dn-border: #3c5360;
+  --dn-shadow: 0 8px 26px rgba(0, 0, 0, .17);
+  --ozzie-bg-page: #111820;
+  --ozzie-bg-card: #1d2833;
+  --ozzie-bg-card-soft: #283a47;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell[data-view="navigator"]::before,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell[data-view="navigator"]::after {
+  display: none !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Accurate thumbnails in the existing Profile > Appearance picker. */
+.theme-option[data-theme-option="day"] .theme-preview-swatch span:nth-child(1) { background: #f5f7fa; }
+.theme-option[data-theme-option="day"] .theme-preview-swatch span:nth-child(2) { background: #ffffff; }
+.theme-option[data-theme-option="day"] .theme-preview-swatch span:nth-child(3) { background: #4c8e99; }
+.theme-option[data-theme-option="night"] .theme-preview-swatch span:nth-child(1) { background: #111820; }
+.theme-option[data-theme-option="night"] .theme-preview-swatch span:nth-child(2) { background: #1d2833; }
+.theme-option[data-theme-option="night"] .theme-preview-swatch span:nth-child(3) { background: #6fa9b3; }
+
+@keyframes ozzie-header-ambient-shift {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell .app-header.app-header-horizontal {
+    animation: none !important;
+    background-position: 50% 50%;
+  }
+}
