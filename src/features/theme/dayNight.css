@@ -1,0 +1,384 @@
+/* Ozzie Day / Night Mode (Ozzie 2.0)
+ * Visual overrides only: original components, layout, logo and workflows remain.
+ * Both background images are approved, repository-bundled, full-detail assets.
+ * Do NOT blur, filter, dim to low opacity, or replace the original scene image.
+ */
+
+/* Shared neutral-teal palette and sharp photo presentation. */
+html[data-theme="day"],
+html[data-theme="night"] {
+  --dn-accent: #4c8e99;
+  --dn-accent-hover: #377781;
+  --dn-focus: #2d8191;
+}
+
+html[data-theme="day"] {
+  color-scheme: light;
+  --dn-text: #173249;
+  --dn-muted: #526c7c;
+  --dn-surface: rgba(250, 252, 252, .93);
+  --dn-surface-strong: #fcfdfd;
+  --dn-surface-soft: rgba(241, 247, 248, .91);
+  --dn-border: #c1d2d9;
+  --dn-shadow: 0 10px 30px rgba(40, 67, 80, .11);
+  --dn-on-accent: #ffffff;
+}
+html[data-theme="night"] {
+  color-scheme: dark;
+  --dn-text: #edf4f5;
+  --dn-muted: #b8c8ce;
+  --dn-surface: rgba(19, 29, 37, .88);
+  --dn-surface-strong: #162631;
+  --dn-surface-soft: rgba(34, 49, 59, .90);
+  --dn-border: rgba(168, 198, 207, .31);
+  --dn-shadow: 0 16px 40px rgba(0, 0, 0, .27);
+  --dn-on-accent: #ffffff;
+  --dn-accent: #6fa9b3;
+  --dn-accent-hover: #82b7c0;
+  --dn-focus: #94cfda;
+}
+
+/* Background: do not use backdrop-filter on the photo or the overlay. */
+html[data-theme="day"] body { background: #dce8ec; color: var(--dn-text); }
+html[data-theme="night"] body { background: #111a22; color: var(--dn-text); }
+html[data-theme="day"] .app-shell { background: transparent; color: var(--dn-text); }
+html[data-theme="night"] .app-shell { background: transparent; color: var(--dn-text); }
+
+html[data-theme="day"] .app-shell::before {
+  background: var(--workspace-image) center center / cover no-repeat;
+  opacity: 1;
+  filter: none;
+  backdrop-filter: none;
+}
+html[data-theme="night"] .app-shell::before {
+  background: var(--workspace-image) center center / cover no-repeat;
+  opacity: 1;
+  filter: none;
+  backdrop-filter: none;
+}
+html[data-theme="day"] .app-shell::after {
+  background: linear-gradient(180deg, rgba(232,242,246,.06), rgba(223,234,238,.08));
+  filter: none;
+  backdrop-filter: none;
+  pointer-events: none;
+}
+html[data-theme="night"] .app-shell::after {
+  background: linear-gradient(180deg, rgba(10,16,23,.12), rgba(10,16,23,.16));
+  filter: none;
+  backdrop-filter: none;
+  pointer-events: none;
+}
+
+/* Header and wordmark: always retain the approved complete Ozzie logo art. */
+html[data-theme="day"] .app-header-horizontal,
+html[data-theme="night"] .app-header-horizontal {
+  color: var(--dn-text);
+  border-color: var(--dn-border);
+  background: var(--dn-surface);
+  box-shadow: var(--dn-shadow);
+}
+html[data-theme="day"] .ozzie-brand-dock,
+html[data-theme="night"] .ozzie-brand-dock {
+  border-radius: 14px;
+  padding: .28rem .45rem;
+  background: rgba(255,255,255,.93);
+  box-shadow: 0 4px 12px rgba(14,38,52,.07);
+}
+html[data-theme="day"] .ozzie-brand-dock img,
+html[data-theme="night"] .ozzie-brand-dock img {
+  filter: none !important;
+  opacity: 1;
+}
+html[data-theme="day"] .top-navigation,
+html[data-theme="night"] .top-navigation { border-bottom-color: var(--dn-border); }
+html[data-theme="day"] .topnav-link,
+html[data-theme="day"] .topnav-dropdown > summary,
+html[data-theme="night"] .topnav-link,
+html[data-theme="night"] .topnav-dropdown > summary { color: var(--dn-text); }
+html[data-theme="day"] .topnav-link:hover,
+html[data-theme="day"] .topnav-dropdown > summary:hover,
+html[data-theme="night"] .topnav-link:hover,
+html[data-theme="night"] .topnav-dropdown > summary:hover {
+  background: var(--dn-surface-soft);
+  color: var(--dn-text);
+}
+html[data-theme="day"] .topnav-link.active::after,
+html[data-theme="day"] .topnav-dropdown.active > summary::after,
+html[data-theme="night"] .topnav-link.active::after,
+html[data-theme="night"] .topnav-dropdown.active > summary::after { background: var(--dn-accent); }
+html[data-theme="day"] .app-header-horizontal .account-menu,
+html[data-theme="night"] .app-header-horizontal .account-menu {
+  background: var(--dn-surface-soft);
+  border-color: var(--dn-border);
+  color: var(--dn-text);
+}
+html[data-theme="day"] .app-header-horizontal .account-menu small,
+html[data-theme="night"] .app-header-horizontal .account-menu small { color: var(--dn-muted); }
+html[data-theme="day"] .topnav-menu,
+html[data-theme="night"] .topnav-menu {
+  background: var(--dn-surface-strong);
+  border-color: var(--dn-border);
+  color: var(--dn-text);
+  box-shadow: var(--dn-shadow);
+}
+html[data-theme="day"] .topnav-menu > button,
+html[data-theme="night"] .topnav-menu > button,
+html[data-theme="day"] .topnav-menu strong,
+html[data-theme="night"] .topnav-menu strong { color: var(--dn-text); }
+html[data-theme="day"] .topnav-menu small,
+html[data-theme="night"] .topnav-menu small { color: var(--dn-muted); }
+html[data-theme="day"] .topnav-menu > button:hover,
+html[data-theme="night"] .topnav-menu > button:hover { background: var(--dn-surface-soft); border-color: var(--dn-border); }
+
+/* Major shared cards — keep all original dimensions and arrangement. */
+html[data-theme="day"] :is(.smart-search-card,.navigator-library,.navigator-session-bar,.home-sandbox-launch,.live-call-flow-approved,.hero,.common-issues,.agent-workflow,.process-card,.category-grid button,.training-card,.training-viewer,.training-roadmap-intro,.console-card,.saved-note-card,.saved-notes-filter-card,.usage-user-row,.feedback-card,.readiness-open-book,.readiness-progress,.readiness-question,.readiness-part-summary,.readiness-find-card,.readiness-part-result,.readiness-admin-report,.admin-account-overview,.avatar-library-panel,.avatar-library-card,.report-panel) {
+  background: var(--dn-surface);
+  border-color: var(--dn-border);
+  color: var(--dn-text);
+  box-shadow: var(--dn-shadow);
+}
+html[data-theme="night"] :is(.smart-search-card,.navigator-library,.navigator-session-bar,.home-sandbox-launch,.live-call-flow-approved,.hero,.common-issues,.agent-workflow,.process-card,.category-grid button,.training-card,.training-viewer,.training-roadmap-intro,.console-card,.saved-note-card,.saved-notes-filter-card,.usage-user-row,.feedback-card,.readiness-open-book,.readiness-progress,.readiness-question,.readiness-part-summary,.readiness-find-card,.readiness-part-result,.readiness-admin-report,.admin-account-overview,.avatar-library-panel,.avatar-library-card,.report-panel) {
+  background: var(--dn-surface);
+  border-color: var(--dn-border);
+  color: var(--dn-text);
+  box-shadow: var(--dn-shadow);
+}
+html[data-theme="day"] .navigator,
+html[data-theme="day"] .console-view,
+html[data-theme="day"] .app-main,
+html[data-theme="night"] .navigator,
+html[data-theme="night"] .console-view,
+html[data-theme="night"] .app-main { color: var(--dn-text); }
+
+html[data-theme="day"] :is(.view-heading h1,.smart-search-heading h1,.live-call-flow-heading-approved h2,.navigator-session-bar strong,.home-sandbox-launch h2,.navigator-tab-panel h2,.search-results-heading h2,.route-card strong,.training-card h3,.readiness-open-book strong,.readiness-question h3,.report-panel h2),
+html[data-theme="night"] :is(.view-heading h1,.smart-search-heading h1,.live-call-flow-heading-approved h2,.navigator-session-bar strong,.home-sandbox-launch h2,.navigator-tab-panel h2,.search-results-heading h2,.route-card strong,.training-card h3,.readiness-open-book strong,.readiness-question h3,.report-panel h2) { color: var(--dn-text); }
+
+html[data-theme="day"] :is(.view-heading p,.smart-search-heading > p:last-child,.live-call-flow-heading-approved > div > p:last-child,.navigator-tab-intro,.search-results-heading > p:last-child,.home-sandbox-copy p:last-child,.route-card small,.navigator-session-bar small,.training-card p,.usage-privacy-note,.readiness-progress span,.saved-note-card small),
+html[data-theme="night"] :is(.view-heading p,.smart-search-heading > p:last-child,.live-call-flow-heading-approved > div > p:last-child,.navigator-tab-intro,.search-results-heading > p:last-child,.home-sandbox-copy p:last-child,.route-card small,.navigator-session-bar small,.training-card p,.usage-privacy-note,.readiness-progress span,.saved-note-card small) { color: var(--dn-muted); }
+
+/* Search and route cards retain contrast, routing, keyboard and autocomplete UX. */
+html[data-theme="day"] .smart-search-card .search-combobox input,
+html[data-theme="day"] .console-view :is(input,select,textarea),
+html[data-theme="day"] .profile-panel :is(input,select,textarea) {
+  background: var(--dn-surface-strong);
+  border-color: var(--dn-border);
+  color: var(--dn-text);
+  color-scheme: light;
+}
+html[data-theme="night"] .smart-search-card .search-combobox input,
+html[data-theme="night"] .console-view :is(input,select,textarea),
+html[data-theme="night"] .profile-panel :is(input,select,textarea) {
+  background: #152631;
+  border-color: var(--dn-border);
+  color: var(--dn-text);
+  color-scheme: dark;
+}
+html[data-theme="day"] .smart-search-card .search-combobox input::placeholder { color: #617b89; }
+html[data-theme="night"] .smart-search-card .search-combobox input::placeholder { color: #bac9cf; }
+html[data-theme="day"] .search-suggestions,
+html[data-theme="night"] .search-suggestions {
+  background: var(--dn-surface-strong);
+  color: var(--dn-text);
+  border-color: var(--dn-border);
+  box-shadow: 0 18px 35px rgba(10,29,39,.19);
+}
+html[data-theme="day"] .search-suggestion,
+html[data-theme="night"] .search-suggestion { color: var(--dn-text); }
+html[data-theme="day"] .search-suggestion:hover,
+html[data-theme="day"] .search-suggestion[aria-selected="true"],
+html[data-theme="night"] .search-suggestion:hover,
+html[data-theme="night"] .search-suggestion[aria-selected="true"] { background: var(--dn-surface-soft); border-color: var(--dn-accent); }
+
+html[data-theme="day"] .navigator-library-tabs,
+html[data-theme="night"] .navigator-library-tabs { border-color: var(--dn-border); }
+html[data-theme="day"] .navigator-library-tabs button,
+html[data-theme="night"] .navigator-library-tabs button { color: var(--dn-muted); }
+html[data-theme="day"] .navigator-library-tabs button[aria-selected="true"],
+html[data-theme="night"] .navigator-library-tabs button[aria-selected="true"] {
+  color: var(--dn-text);
+  border-bottom-color: var(--dn-accent);
+  background: var(--dn-surface-soft);
+}
+html[data-theme="day"] .route-card,
+html[data-theme="night"] .route-card {
+  color: var(--dn-text);
+  border-color: var(--dn-border);
+  background: var(--dn-surface-soft);
+}
+html[data-theme="day"] .route-card:hover,
+html[data-theme="night"] .route-card:hover { border-color: var(--dn-accent); background: var(--dn-surface-strong); }
+html[data-theme="day"] .route-card > span:first-child,
+html[data-theme="night"] .route-card > span:first-child,
+html[data-theme="day"] .route-card b,
+html[data-theme="night"] .route-card b { color: var(--dn-accent-hover); }
+html[data-theme="night"] .route-card > span:first-child,
+html[data-theme="night"] .route-card b { color: #94c5cf; }
+html[data-theme="day"] .smart-search-examples button,
+html[data-theme="night"] .smart-search-examples button {
+  border-color: var(--dn-border);
+  color: var(--dn-text);
+  background: var(--dn-surface-soft);
+}
+html[data-theme="day"] .smart-search-examples button:hover,
+html[data-theme="night"] .smart-search-examples button:hover { border-color: var(--dn-accent); background: var(--dn-surface-strong); }
+
+/* Labels, tabs, resource cards and forms throughout Knowledge, Reports & Admin. */
+html[data-theme="day"] :is(.quick-access-tabs,.training-section-tabs,.communication-mode-tabs,.readiness-part-rail,.saved-notes-summary),
+html[data-theme="night"] :is(.quick-access-tabs,.training-section-tabs,.communication-mode-tabs,.readiness-part-rail,.saved-notes-summary) {
+  background: var(--dn-surface);
+  border-color: var(--dn-border);
+}
+html[data-theme="day"] :is(.quick-access-tabs button,.training-section-tabs button,.communication-mode-tabs button,.readiness-part-rail button),
+html[data-theme="night"] :is(.quick-access-tabs button,.training-section-tabs button,.communication-mode-tabs button,.readiness-part-rail button) { color: var(--dn-muted); }
+html[data-theme="day"] :is(.quick-access-tabs button[aria-selected="true"],.training-section-tabs button[aria-selected="true"],.communication-mode-tabs button[aria-selected="true"],.readiness-part-rail button[aria-selected="true"]),
+html[data-theme="night"] :is(.quick-access-tabs button[aria-selected="true"],.training-section-tabs button[aria-selected="true"],.communication-mode-tabs button[aria-selected="true"],.readiness-part-rail button[aria-selected="true"]) {
+  background: var(--dn-surface-soft);
+  border-color: var(--dn-accent);
+  color: var(--dn-text);
+}
+html[data-theme="day"] :is(.training-controls input,.training-controls select,.usage-custom-range input,.feedback-status-control select),
+html[data-theme="night"] :is(.training-controls input,.training-controls select,.usage-custom-range input,.feedback-status-control select) {
+  background: var(--dn-surface-strong);
+  border-color: var(--dn-border);
+  color: var(--dn-text);
+}
+
+/* Floating documentation and process dialogs remain available and readable. */
+html[data-theme="day"] :is(.documentation-dock,.scope-check-dock,.readiness-lab-dock,.process-drawer,.profile-panel),
+html[data-theme="night"] :is(.documentation-dock,.scope-check-dock,.readiness-lab-dock,.process-drawer,.profile-panel) {
+  background: var(--dn-surface-strong);
+  color: var(--dn-text);
+  border-color: var(--dn-border);
+}
+html[data-theme="day"] :is(.drawer-header h2,.documentation-dock-header h2,.profile-panel h2),
+html[data-theme="night"] :is(.drawer-header h2,.documentation-dock-header h2,.profile-panel h2) { color: var(--dn-text); }
+html[data-theme="day"] :is(.process-tabs button,.process-category,.full-process h3,.documentation-dock-kicker,.process-drawer p,.drawer-header p),
+html[data-theme="night"] :is(.process-tabs button,.process-category,.full-process h3,.documentation-dock-kicker,.process-drawer p,.drawer-header p) { color: var(--dn-muted); }
+html[data-theme="day"] :is(.quick-steps li,.visual-card,.source-pages figure,.documentation-dock input,.documentation-dock select,.documentation-dock textarea),
+html[data-theme="night"] :is(.quick-steps li,.visual-card,.source-pages figure,.documentation-dock input,.documentation-dock select,.documentation-dock textarea) {
+  background: var(--dn-surface-soft);
+  border-color: var(--dn-border);
+  color: var(--dn-text);
+}
+html[data-theme="day"] :is(.source-pages a,.visual-card a,.full-process h3,.process-category),
+html[data-theme="night"] :is(.source-pages a,.visual-card a,.full-process h3,.process-category) { color: var(--dn-accent-hover); }
+html[data-theme="night"] :is(.source-pages a,.visual-card a,.full-process h3,.process-category) { color: #96c8d2; }
+
+/* User-selected light backgrounds must never inherit pale text as in the previous Hub issue. */
+html[data-theme="day"] :is(.home-sandbox-launch,.navigator-library,.smart-search-card,.navigator-session-bar,.training-card,.process-card,.route-card,.console-view,.admin-account-overview,.profile-panel,.documentation-dock) {
+  color: var(--dn-text);
+}
+html[data-theme="day"] .workspace-meta-footer,
+html[data-theme="night"] .workspace-meta-footer { color: var(--dn-muted); border-color: var(--dn-border); }
+html[data-theme="day"] .workspace-meta-footer strong,
+html[data-theme="night"] .workspace-meta-footer strong { color: var(--dn-text); }
+
+/* Preserve semantic red, green and amber alert/status colors. Primary CTA uses muted turquoise. */
+html[data-theme="day"] :is(.primary-action,.home-sandbox-launch button,.documentation-copy),
+html[data-theme="night"] :is(.primary-action,.home-sandbox-launch button,.documentation-copy) {
+  background: linear-gradient(135deg, #3e8390, #66a5ae);
+  border-color: #5b939d;
+  color: #ffffff;
+}
+html[data-theme="day"] :is(.primary-action,.home-sandbox-launch button,.documentation-copy):hover,
+html[data-theme="night"] :is(.primary-action,.home-sandbox-launch button,.documentation-copy):hover { background: #2c6e7c; }
+
+html[data-theme="day"] :is(button,input,select,textarea,a):focus-visible,
+html[data-theme="night"] :is(button,input,select,textarea,a):focus-visible {
+  outline: 2px solid var(--dn-focus);
+  outline-offset: 2px;
+}
+
+/* The previous full-page overlay applied blur(3px); backgrounds must stay genuinely crisp. */
+html[data-theme="day"] .app-shell::before,
+html[data-theme="day"] .app-shell::after,
+html[data-theme="night"] .app-shell::before,
+html[data-theme="night"] .app-shell::after { backdrop-filter: none !important; }
+
+/* Profile Appearance options match the same two Home modes. */
+html[data-theme="day"] .theme-option,
+html[data-theme="night"] .theme-option {
+  color: var(--dn-text);
+  background: var(--dn-surface-soft);
+  border-color: var(--dn-border);
+}
+html[data-theme="day"] .theme-option small,
+html[data-theme="night"] .theme-option small,
+html[data-theme="day"] .theme-picker-copy p,
+html[data-theme="night"] .theme-picker-copy p { color: var(--dn-muted); }
+html[data-theme="day"] .theme-option[aria-pressed="true"],
+html[data-theme="night"] .theme-option[aria-pressed="true"] {
+  border-color: var(--dn-accent);
+  background: var(--dn-surface-soft);
+  box-shadow: inset 0 0 0 1px var(--dn-accent);
+}
+.theme-option[data-theme-option="day"] .theme-preview-swatch span:nth-child(1) { background: #e3edf0; }
+.theme-option[data-theme-option="day"] .theme-preview-swatch span:nth-child(2) { background: #83aeb5; }
+.theme-option[data-theme-option="day"] .theme-preview-swatch span:nth-child(3) { background: #486575; }
+.theme-option[data-theme-option="night"] .theme-preview-swatch span:nth-child(1) { background: #293943; }
+.theme-option[data-theme-option="night"] .theme-preview-swatch span:nth-child(2) { background: #97715c; }
+.theme-option[data-theme-option="night"] .theme-preview-swatch span:nth-child(3) { background: #729eaa; }
+
+/* Small one-click mode switch on Home, alongside the existing Admin visitor count. */
+.home-utilities-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .55rem;
+  min-height: 2.15rem;
+  margin: -.1rem 0 -.45rem;
+  position: relative;
+  z-index: 19;
+}
+.home-appearance-toggle {
+  display: inline-flex;
+  gap: .15rem;
+  border: 1px solid var(--dn-border);
+  border-radius: .72rem;
+  padding: .18rem;
+  background: var(--dn-surface);
+  box-shadow: 0 4px 14px rgba(19,47,57,.09);
+}
+.home-appearance-toggle button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .32rem;
+  min-height: 1.85rem;
+  padding: .36rem .7rem;
+  border-radius: .56rem;
+  color: var(--dn-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  font-size: .77rem;
+  font-weight: 750;
+  line-height: 1;
+  white-space: nowrap;
+}
+.home-appearance-toggle button svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.home-appearance-toggle button:hover {
+  color: var(--dn-text);
+  background: var(--dn-surface-soft);
+}
+.home-appearance-toggle button[aria-pressed="true"] {
+  color: var(--dn-text);
+  background: var(--dn-surface-strong);
+  border-color: var(--dn-border);
+  box-shadow: 0 1px 4px rgba(17,48,60,.08);
+}
+@media (max-width:650px) {
+  .home-utilities-row { margin: 0 0 -.2rem; gap: .4rem; }
+  .home-appearance-toggle button { min-height: 2rem; padding: .35rem .5rem; }
+}
+
+/* Keep original brand and existing content in Night Mode, including the Hub's
+   explicitly dark-on-light reference cards created for contrast compliance. */
