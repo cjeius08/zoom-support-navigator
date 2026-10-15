@@ -97,4 +97,54 @@ describe('Batch 2 — compact feedback, analytics and data quality', () => {
   })
 
 
+
+  it('contrast patch keeps neutral, selected and warning copy legible in both themes', () => {
+    const patch = css.split('/* Batch 2 follow-up: semantic contrast across all report states and themes. */')[1]
+    expect(patch).toBeTruthy()
+    for (const selector of [
+      '.usage-empty-state',
+      '.usage-report-heading p:last-child',
+      '.usage-summary span',
+      '.usage-section-tabs button.active',
+      '.usage-period-controls button.active',
+      '.usage-filter-toggle.active',
+      '.usage-support-switch button.active',
+      '.usage-data-integrity li',
+      '.usage-validation-message',
+      '.global-feedback-dialog',
+      '.feedback-page .empty-state'
+    ]) expect(patch, selector).toContain(selector)
+    for (const variable of [
+      '--read-ink', '--read-body', '--read-bg', '--read-soft',
+      '--read-selected', '--batch2-warning-ink', '--batch2-error-ink'
+    ]) expect(patch, variable).toContain(variable)
+    expect(patch).not.toMatch(/display:\s*none|visibility:\s*hidden|grid-template-columns:|max-height:/)
+    expect(patch).not.toContain('.avatar-library-card')
+    expect(patch).not.toContain('.saved-note-card')
+    expect(patch).not.toContain('.team-list')
+  })
+
+  it('uses AA-contrast semantic warning/error colors in both Day and Night Mode', () => {
+    const hex = {
+      day: {bg:'#f9fbfc',warn:'#85500b',error:'#9b342a'},
+      night: {bg:'#192a35',warn:'#ffd28a',error:'#ffb8ae'}
+    }
+    const luminance = color => {
+      const a = [1,3,5].map(i => parseInt(color.slice(i,i+2),16)/255)
+        .map(v => v <= .04045 ? v/12.92 : ((v+.055)/1.055)**2.4)
+      return a[0]*.2126+a[1]*.7152+a[2]*.0722
+    }
+    const contrast = (a,b) => {
+      const x = luminance(a), y = luminance(b)
+      return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)
+    }
+    for (const mode of ['day','night']) {
+      expect(contrast(hex[mode].bg,hex[mode].warn)).toBeGreaterThanOrEqual(4.5)
+      expect(contrast(hex[mode].bg,hex[mode].error)).toBeGreaterThanOrEqual(4.5)
+      expect(css).toContain('--batch2-warning-ink: ' + hex[mode].warn + ';')
+      expect(css).toContain('--batch2-error-ink: ' + hex[mode].error + ';')
+    }
+  })
+
+
 })
