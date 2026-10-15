@@ -1,0 +1,129 @@
+/* Admin, Usage Analytics, Reports and saved call notes.
+   Preserve role-gated data, chart values, period switching and all actions. */
+html[data-theme] :is(.admin-account-overview,.team-management,.usage-analytics,.feedback-queue,.saved-notes-page,.my-saved-notes-page) {
+  color: var(--read-ink);
+}
+html[data-theme] :is(.admin-account-overview,.team-management,.usage-analytics,.feedback-queue,.saved-notes-page,.my-saved-notes-page) :is(.view-heading h1,.view-heading h2) {
+  color: var(--read-ink);
+}
+html[data-theme] :is(.admin-account-overview,.team-management,.usage-analytics,.feedback-queue,.saved-notes-page,.my-saved-notes-page) :is(.view-heading p,.usage-range-note,.usage-privacy-note,.usage-report-heading p,.saved-notes-result-count) {
+  color: var(--read-body);
+}
+html[data-theme] :is(.admin-account-overview,.team-management,.usage-analytics,.feedback-queue,.saved-notes-page,.my-saved-notes-page) .view-heading {
+  border-color: var(--read-border);
+}
+html[data-theme] :is(.admin-shortcuts button,.team-list article,.real-summary > div,.usage-filter-panel,.usage-report-panel,.usage-user-row,.feedback-list article,.saved-notes-filter-card,.saved-notes-summary > button,.saved-notes-summary > div,.saved-note-card,.readiness-summary-grid > div,.storage-guardrail-card) {
+  background: var(--read-bg);
+  border-color: var(--read-border);
+  color: var(--read-ink);
+}
+html[data-theme] :is(.admin-shortcuts button,.saved-notes-summary > button):is(:hover,:focus-visible,.active) {
+  background: var(--read-selected);
+  border-color: var(--read-ring);
+}
+html[data-theme] :is(.admin-shortcuts strong,.team-list strong,.usage-user-row strong,.real-summary strong,.feedback-list header strong,.saved-note-person strong,.saved-note-meta dd,.readiness-summary-grid strong,.usage-report-panel h2) {
+  color: var(--read-ink);
+}
+html[data-theme] :is(.admin-shortcuts span,.team-list small,.real-summary span,.feedback-list small,.saved-note-time small,.saved-note-person small,.saved-note-meta dt,.usage-user-row dt,.usage-report-heading p,.usage-chart-column small) {
+  color: var(--read-body);
+}
+html[data-theme] .usage-section-tabs button,
+html[data-theme] .usage-period-controls button,
+html[data-theme] .usage-filter-toggle,
+html[data-theme] .usage-reset-button,
+html[data-theme] .usage-refresh-button,
+html[data-theme] .saved-notes-filter-actions > button,
+html[data-theme] .feedback-queue-minimize {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .usage-section-tabs button :is(strong,small) {
+  color: var(--read-ink);
+}
+html[data-theme] .usage-section-tabs button small {
+  color: var(--read-body);
+}
+html[data-theme] :is(.usage-section-tabs button.active,.usage-period-controls button.active,.usage-filter-toggle.active,.saved-notes-summary > button.active) {
+  background: var(--read-selected);
+  color: var(--read-ink);
+  border-color: var(--read-ring);
+}
+html[data-theme] :is(.usage-filter-grid label,.usage-custom-range label,.saved-notes-filter-card label > span,.feedback-status-control label) {
+  color: var(--read-body);
+}
+html[data-theme] :is(.usage-analytics,.feedback-queue,.saved-notes-page,.my-saved-notes-page,.team-management,.admin-dialog) :is(input,select,textarea) {
+  background: var(--read-input);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] :is(.usage-analytics,.feedback-queue,.saved-notes-page,.my-saved-notes-page,.team-management,.admin-dialog) :is(input,textarea)::placeholder {
+  color: var(--read-muted);
+  opacity: 1;
+}
+html[data-theme] :is(.usage-analytics,.feedback-queue,.saved-notes-page,.my-saved-notes-page,.team-management,.admin-dialog) select option {
+  color: var(--read-ink);
+  background: var(--read-input);
+}
+html[data-theme="day"] :is(.usage-analytics,.feedback-queue,.saved-notes-page,.my-saved-notes-page,.team-management,.admin-dialog) :is(select,input[type="date"]) { color-scheme: light; }
+html[data-theme="night"] :is(.usage-analytics,.feedback-queue,.saved-notes-page,.my-saved-notes-page,.team-management,.admin-dialog) :is(select,input[type="date"]) { color-scheme: dark; }
+
+html[data-theme] :is(.usage-table-wrap,.usage-chart-scroll,.usage-detail-grid,.usage-recent-activity,.call-notes-report,.readiness-admin-report) {
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .usage-table-wrap table {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .usage-table-wrap table :is(th,td) {
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .usage-table-wrap table th { background: var(--read-soft); }
+html[data-theme] .usage-table-wrap table tr:hover td { background: var(--read-hover); }
+
+html[data-theme] .saved-note-meta > div,
+html[data-theme] .saved-note-details pre,
+html[data-theme] .call-note-report-details,
+html[data-theme] .usage-chart-column {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .saved-note-meta :is(dd,dt),
+html[data-theme] .saved-note-details pre { color: var(--read-ink); }
+html[data-theme] .saved-note-details summary,
+html[data-theme] .call-note-person-link {
+  color: var(--read-link);
+}
+html[data-theme] .saved-note-person > button,
+html[data-theme] .saved-notes-filter-actions > button {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .saved-notes-filter-card :is(input,select) { color: var(--read-ink); }
+html[data-theme] .feedback-status-control select { color: var(--read-ink); background: var(--read-input); }
+html[data-theme] .call-note-report-row,
+html[data-theme] .readiness-report-user { background: var(--read-bg); color: var(--read-ink); }
+html[data-theme] .storage-guardrail-card small { color: var(--read-body); }
+
+/* Keep success, pending, offline, warning and destructive-action colors semantic.
+   Only focus visibility and neutral text/surfaces are standardized here. */
+html[data-theme] :is(.usage-analytics,.team-management,.feedback-queue,.saved-notes-page,.my-saved-notes-page,.admin-account-overview) :is(button,input,select,textarea,a,summary):focus-visible {
+  outline: 3px solid var(--read-ring);
+  outline-offset: 2px;
+}
+
+/* Day-mode status ink must remain distinguishable on pale report surfaces.
+   Semantics remain unchanged: green=safe/active, amber=warning, red=critical. */
+html[data-theme="day"] .storage-guardrail-card.safe,
+html[data-theme="day"] .status-badge.active,
+html[data-theme="day"] .presence-badge.active { color: #166148; }
+html[data-theme="day"] .storage-guardrail-card.warning,
+html[data-theme="day"] .status-badge.pending,
+html[data-theme="day"] .presence-badge.idle { color: #85500b; }
+html[data-theme="day"] .storage-guardrail-card.critical { color: #9d3d2c; }
+html[data-theme="day"] .presence-badge.offline { color: #415c6c; }

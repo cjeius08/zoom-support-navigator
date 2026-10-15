@@ -1,0 +1,83 @@
+/* Call Documentation floating window — no change to auto-fill, save, or Google handoff. */
+html[data-theme] .documentation-dock {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .documentation-dock-header,
+html[data-theme] .documentation-dock-footer {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .documentation-dock-body {
+  background: var(--read-bg);
+  color: var(--read-ink);
+}
+html[data-theme] .documentation-dock :is(h2,h3,strong,.documentation-dock-header h2) {
+  color: var(--read-ink);
+}
+html[data-theme] .documentation-dock :is(p,small,.documentation-dock-kicker,.documentation-dock-field > span,.documentation-dock-field > small) {
+  color: var(--read-body);
+}
+html[data-theme] .documentation-dock :is(.documentation-dock-section,.documentation-dock-preview,.documentation-saved-notes,.documentation-dock-privacy,.documentation-handoff-status) {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .documentation-dock :is(.documentation-dock-section,.documentation-dock-preview) > summary {
+  color: var(--read-ink);
+}
+html[data-theme] .documentation-dock :is(input,select,textarea) {
+  background: var(--read-input);
+  color: var(--read-ink);
+  border: 1px solid var(--read-border);
+  color-scheme: normal;
+}
+html[data-theme="day"] .documentation-dock :is(input,select,textarea) { color-scheme: light; }
+html[data-theme="night"] .documentation-dock :is(input,select,textarea) { color-scheme: dark; }
+html[data-theme] .documentation-dock :is(input,textarea)::placeholder {
+  color: var(--read-muted);
+  opacity: 1;
+}
+html[data-theme] .documentation-dock select option {
+  background: var(--read-input);
+  color: var(--read-ink);
+}
+html[data-theme] .documentation-dock .documentation-dock-outcomes button {
+  color: var(--read-ink);
+  background: var(--read-bg);
+  border-color: var(--read-border);
+}
+html[data-theme] .documentation-dock .documentation-dock-outcomes button[aria-pressed="true"] {
+  background: var(--read-selected);
+  color: var(--read-ink);
+  border-color: var(--read-ring);
+}
+html[data-theme] .documentation-dock .documentation-dock-preview pre {
+  background: var(--read-input);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .documentation-dock .documentation-copy {
+  background: var(--read-button);
+  border-color: var(--read-ring);
+  color: var(--read-on-button);
+}
+html[data-theme] .documentation-dock .documentation-clear,
+html[data-theme] .documentation-dock .documentation-dock-window-actions button,
+html[data-theme] .documentation-dock .documentation-saved-note-actions button {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .documentation-dock :is(.documentation-copy,.documentation-clear,button,input,select,textarea):focus-visible {
+  outline: 3px solid var(--read-ring);
+  outline-offset: 2px;
+}
+html[data-theme] .documentation-dock :is(.documentation-dock-footer > span,.documentation-dock-footer > small) {
+  color: var(--read-body);
+}
+html[data-theme] .documentation-dock :is(.documentation-dock-restore,.documentation-dock-close) {
+  color: var(--read-ink);
+}

@@ -1,0 +1,32 @@
+/* Section readability palette, distinct from the photo layer.
+   No layout, data, route, or interaction changes. */
+html[data-theme="day"] {
+  --read-bg: #f9fbfc;
+  --read-soft: #edf3f5;
+  --read-input: #ffffff;
+  --read-ink: #173249;
+  --read-body: #435d6c;
+  --read-muted: #4e6877;
+  --read-link: #176174;
+  --read-border: #b6cbd4;
+  --read-selected: #d8ebed;
+  --read-hover: #e0eef0;
+  --read-ring: #247487;
+  --read-button: #276f7d;
+  --read-on-button: #ffffff;
+}
+html[data-theme="night"] {
+  --read-bg: #192a35;
+  --read-soft: #243a47;
+  --read-input: #152630;
+  --read-ink: #f1f6f8;
+  --read-body: #d2e1e5;
+  --read-muted: #bdcfd5;
+  --read-link: #a0d8e2;
+  --read-border: #607883;
+  --read-selected: #31515e;
+  --read-hover: #304a57;
+  --read-ring: #9ad5df;
+  --read-button: #377d8b;
+  --read-on-button: #ffffff;
+}

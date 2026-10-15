@@ -92,7 +92,7 @@ export function ProcessDocuments({ onTrackEvent, onReportContextChange = () => {
             alt={`${selected.title} source page ${index + 1}`}
           />
         </figure>)}
-        {!selected.images?.length && selected.sourceText && <article className="process-document-page" style={{ padding: 22, background: 'var(--surface, #fff)', borderRadius: 14 }}>
+        {!selected.images?.length && selected.sourceText && <article className="process-document-page process-document-text-page">
           <p><strong>{selected.sourceType === 'redacted-transcription' ? 'Agent reference source text (restricted contact withheld)' : 'Complete approved source text'}</strong> — {selected.sourceType === 'redacted-transcription' ? 'The operational content is retained; one confidential contact is intentionally redacted. Original Word page layout is not reproduced.' : 'the original document wording is preserved. Page layout and branding are not reproduced in this text view.'}</p>
           <div className="process-document-transcription">{selected.sourceText}</div>
         </article>}

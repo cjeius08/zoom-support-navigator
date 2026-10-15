@@ -37,6 +37,11 @@ import './features/theme/typography.css'
 import './features/theme/logoLock.css'
 import './features/theme/foundation.css'
 import './features/shell/headerReadability.css'
+import './features/theme/readabilityTokens.css'
+import './features/theme/readabilityKnowledge.css'
+import './features/theme/readabilityFlows.css'
+import './features/theme/readabilityDocumentation.css'
+import './features/theme/readabilityAdmin.css'
 import './pilotReadiness.css'
 
 const EMPTY_REPORT_CONTEXT = {

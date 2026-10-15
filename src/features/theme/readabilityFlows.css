@@ -1,0 +1,145 @@
+/* Home route card legibility: retain size/order/function, remove pale text on grey. */
+html[data-theme] .route-card,
+html[data-theme] .process-card,
+html[data-theme] .favorite-card-shell .route-card,
+html[data-theme] .phase-two-route-group button,
+html[data-theme] .support-reference-card {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] :is(.route-card,.process-card,.phase-two-route-group button):is(:hover,:focus-visible) {
+  background: var(--read-hover);
+  color: var(--read-ink);
+  border-color: var(--read-ring);
+}
+html[data-theme] :is(.route-card,.process-card,.phase-two-route-group button) :is(strong,b,h3) {
+  color: var(--read-ink);
+}
+html[data-theme] :is(.route-card,.process-card,.phase-two-route-group button) :is(small,p) {
+  color: var(--read-body);
+}
+html[data-theme] :is(.route-card,.process-card,.phase-two-route-group button) > span:first-child,
+html[data-theme] :is(.route-card,.process-card) :is(.result-type-badge,.process-meta) {
+  color: var(--read-link);
+}
+html[data-theme] .support-reference-card :is(p,small,span) { color: var(--read-body); }
+html[data-theme] .navigator-tab-panel > :is(p,h2) { color: var(--read-ink); }
+
+/* Approved Live Call Flow is theme-matched both before and after clicking "View". */
+html[data-theme] .live-call-flow,
+html[data-theme] .live-call-workflow-panel {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .live-call-flow-heading h2,
+html[data-theme] .live-call-workflow-panel-heading h2,
+html[data-theme] :is(.live-call-agent-formula,.live-call-guidance-method,.live-call-resolution-branch) :is(h3,strong) {
+  color: var(--read-ink);
+}
+html[data-theme] :is(.live-call-flow-heading,.live-call-workflow-panel-heading,.live-call-guidance-heading) p,
+html[data-theme] .live-call-workflow-panel :is(small,.live-call-cell-label) {
+  color: var(--read-body);
+}
+html[data-theme] :is(.live-call-agent-formula,.live-call-guidance-method,.live-call-workflow-note,.live-call-resolution-branch,.live-call-guidance-grid > *, .live-call-resolution-path) {
+  background: var(--read-soft);
+  border-color: var(--read-border);
+  color: var(--read-ink);
+}
+html[data-theme] .live-call-resolution-branch aside,
+html[data-theme] .live-call-guidance-rule {
+  background: var(--read-soft);
+  color: var(--read-body);
+  border-color: var(--read-border);
+}
+html[data-theme] .live-call-resolution-path p,
+html[data-theme] .live-call-agent-formula p,
+html[data-theme] .live-call-guidance-method p { color: var(--read-body); }
+html[data-theme] .live-call-table-wrap {
+  background: var(--read-bg);
+  border-color: var(--read-border);
+}
+html[data-theme] .live-call-table,
+html[data-theme] .live-call-table :is(thead,tbody,tr,td,th) {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .live-call-table thead th {
+  background: var(--read-soft);
+  color: var(--read-ink);
+}
+html[data-theme] .live-call-table tbody tr:hover :is(td,th) { background: var(--read-hover); }
+html[data-theme] .live-call-table :is(p,blockquote,.live-call-objective,.live-call-step-number) {
+  color: var(--read-body);
+}
+html[data-theme] .live-call-table blockquote {
+  background: var(--read-soft);
+  border-color: var(--read-border);
+  color: var(--read-ink);
+}
+html[data-theme] .live-call-panel-close,
+html[data-theme] .live-call-choice-options button,
+html[data-theme] .live-call-reset {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .live-call-choice-options button[aria-pressed="true"] {
+  background: var(--read-selected);
+  color: var(--read-ink);
+  border-color: var(--read-ring);
+}
+html[data-theme] .live-call-toggle {
+  background: var(--read-button);
+  color: var(--read-on-button);
+  border-color: var(--read-ring);
+}
+html[data-theme] .live-call-toggle :is(span,small) { color: var(--read-on-button); }
+html[data-theme] .live-call-flow :is(button,a):focus-visible,
+html[data-theme] .live-call-workflow-panel :is(button,a):focus-visible {
+  outline: 3px solid var(--read-ring);
+  outline-offset: 3px;
+}
+
+/* Call-flow and Common Issue drawers: preserve tabs and steps, fix surfaces. */
+html[data-theme] .process-drawer {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .process-drawer :is(.drawer-header,.drawer-content,.process-tabs) {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .process-drawer :is(h1,h2,h3,strong,.process-category) { color: var(--read-ink); }
+html[data-theme] .process-drawer :is(p,small,.drawer-header p) { color: var(--read-body); }
+html[data-theme] .process-drawer :is(.quick-steps li,.visual-card,.source-pages figure,.full-process,.common-issue-classification,.common-issue-section,.common-issue-outcome > div,.common-issue-step-list article,.common-issue-context,.common-issue-router-result,.waiting-state-grid article) {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .process-drawer :is(.process-tabs button,.route-switches button,.common-issue-context-options button,.common-issue-status button) {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .process-drawer :is(.process-tabs button[aria-selected="true"],.route-switches button[aria-pressed="true"],.common-issue-context-options button[aria-pressed="true"],.common-issue-status button[aria-pressed="true"]) {
+  background: var(--read-selected);
+  color: var(--read-ink);
+  border-color: var(--read-ring);
+}
+html[data-theme] .process-drawer :is(a,.visual-guidance a,.common-issue-source-list a) {
+  color: var(--read-link);
+}
+html[data-theme] .process-drawer :is(input,select,textarea) {
+  background: var(--read-input);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html[data-theme] .process-drawer :is(button,a,input,select,textarea):focus-visible {
+  outline: 3px solid var(--read-ring);
+  outline-offset: 2px;
+}
