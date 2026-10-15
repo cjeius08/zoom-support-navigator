@@ -1,31 +1,52 @@
 import { HOST_ROADBLOCKS } from '../../data/arbitratorHostSupport'
+import { FavoriteToggle } from '../favorites/FavoriteToggle'
 import { hostFaqItems, hostFastestTopics, hostProcesses, hostTopics } from '../../data/hostExperience'
 
-function HostTopicCard({ topic, onOpen, fast = false }) {
-  return <button type="button" className={`host-topic-card${fast ? ' host-topic-card-fast' : ''}`} onClick={() => onOpen(topic)}>
-    <span>{topic.group}</span>
-    <strong>{topic.title}</strong>
-    <small>Confirm first → approved steps → resolve or stop at boundary</small>
-    <b>Open Host Guide →</b>
-  </button>
+function HostFavoriteCard({ children, title, favorite = false, favoriteBusy = false, onToggleFavorite = () => {} }) {
+  return <article className="favorite-card-shell host-favorite-card">
+    {children}
+    <FavoriteToggle
+      active={favorite}
+      busy={favoriteBusy}
+      compact
+      className="favorite-card-toggle"
+      label={title}
+      onToggle={onToggleFavorite}
+    />
+  </article>
 }
 
-function HostRoadblockCard({ roadblock, onOpen }) {
-  return <button type="button" className="host-roadblock-result-card" onClick={() => onOpen(roadblock)}>
-    <span>Tier 1 roadblock</span>
-    <strong>{roadblock.title}</strong>
-    <small>{roadblock.trigger}</small>
-    <b>Open boundary + script →</b>
-  </button>
+function HostTopicCard({ topic, onOpen, fast = false, ...favoriteProps }) {
+  return <HostFavoriteCard title={topic.title} {...favoriteProps}>
+    <button type="button" className={`host-topic-card${fast ? ' host-topic-card-fast' : ''}`} onClick={() => onOpen(topic)}>
+      <span>{topic.group}</span>
+      <strong>{topic.title}</strong>
+      <small>Confirm first → approved steps → resolve or stop at boundary</small>
+      <b>Open Host Guide →</b>
+    </button>
+  </HostFavoriteCard>
 }
 
-function HostProcessCard({ process, onOpen }) {
-  return <button type="button" className="process-card" onClick={() => onOpen(process)}>
-    <small className="result-type-badge">Approved Process Guide</small>
-    <strong>{process.title}</strong>
-    <span>{process.purpose}</span>
-    <b>Open process →</b>
-  </button>
+function HostRoadblockCard({ roadblock, onOpen, ...favoriteProps }) {
+  return <HostFavoriteCard title={roadblock.title} {...favoriteProps}>
+    <button type="button" className="host-roadblock-result-card" onClick={() => onOpen(roadblock)}>
+      <span>Tier 1 roadblock</span>
+      <strong>{roadblock.title}</strong>
+      <small>{roadblock.trigger}</small>
+      <b>Open boundary + script →</b>
+    </button>
+  </HostFavoriteCard>
+}
+
+function HostProcessCard({ process, onOpen, ...favoriteProps }) {
+  return <HostFavoriteCard title={process.title} {...favoriteProps}>
+    <button type="button" className="process-card" onClick={() => onOpen(process)}>
+      <small className="result-type-badge">Approved Process Guide</small>
+      <strong>{process.title}</strong>
+      <span>{process.purpose}</span>
+      <b>Open process →</b>
+    </button>
+  </HostFavoriteCard>
 }
 
 export function HostLibrary({
@@ -39,11 +60,19 @@ export function HostLibrary({
   onOpenTopic,
   onOpenRoadblock,
   onOpenProcess,
+  isFavorite = () => false,
+  isFavoriteBusy = () => false,
+  onToggleFavorite = () => {},
 }) {
   const allTopics = hostTopics()
   const fastest = hostFastestTopics()
   const approvedProcesses = hostProcesses(processes)
   const hostFaq = hostFaqItems(faqItems)
+  const favoriteProps = (itemType, itemId) => ({
+    favorite: isFavorite(itemType, itemId),
+    favoriteBusy: isFavoriteBusy(itemType, itemId),
+    onToggleFavorite: () => onToggleFavorite(itemType, itemId),
+  })
 
   if (query.trim()) {
     return <section id="search-results" className="combined-search-results host-search-results" aria-live="polite">
@@ -59,7 +88,7 @@ export function HostLibrary({
           <span>{topicMatches.length}</span>
         </div>
         {topicMatches.length ? <div className="host-topic-grid">
-          {topicMatches.map(topic => <HostTopicCard key={topic.id} topic={topic} onOpen={onOpenTopic} />)}
+          {topicMatches.map(topic => <HostTopicCard key={topic.id} topic={topic} onOpen={onOpenTopic} {...favoriteProps('common_issue', `host:${topic.id}`)} />)}
         </div> : <div className="navigator-empty-state">No approved Host troubleshooting route matches this search yet.</div>}
       </section>
 
@@ -69,7 +98,7 @@ export function HostLibrary({
           <span>{roadblockMatches.length}</span>
         </div>
         {roadblockMatches.length ? <div className="host-roadblock-grid">
-          {roadblockMatches.map(roadblock => <HostRoadblockCard key={roadblock.id} roadblock={roadblock} onOpen={onOpenRoadblock} />)}
+          {roadblockMatches.map(roadblock => <HostRoadblockCard key={roadblock.id} roadblock={roadblock} onOpen={onOpenRoadblock} {...favoriteProps('common_issue', `host-roadblock:${roadblock.id}`)} />)}
         </div> : <div className="navigator-empty-state">No direct roadblock matches this search.</div>}
       </section>
 
@@ -79,7 +108,7 @@ export function HostLibrary({
           <span>{processMatches.length}</span>
         </div>
         {processMatches.length ? <div className="process-grid">
-          {processMatches.map(process => <HostProcessCard key={process.id} process={process} onOpen={onOpenProcess} />)}
+          {processMatches.map(process => <HostProcessCard key={process.id} process={process} onOpen={onOpenProcess} {...favoriteProps('process', process.id)} />)}
         </div> : <div className="navigator-empty-state">No Host-safe Process Guide matches this search.</div>}
       </section>
     </section>
@@ -91,7 +120,7 @@ export function HostLibrary({
       <h2 id="host-fastest-heading">Fastest Host Routes</h2>
       <p className="navigator-tab-intro">Start with the arbitrator’s exact concern. Every route confirms the situation before troubleshooting.</p>
       <div className="host-topic-grid host-fastest-grid">
-        {fastest.map(topic => <HostTopicCard key={topic.id} topic={topic} onOpen={onOpenTopic} fast />)}
+        {fastest.map(topic => <HostTopicCard key={topic.id} topic={topic} onOpen={onOpenTopic} {...favoriteProps('common_issue', `host:${topic.id}`)} fast />)}
       </div>
     </section>
   }
@@ -105,7 +134,7 @@ export function HostLibrary({
         {[...new Set(allTopics.map(topic => topic.group))].map(group => <section className="route-group" key={group}>
           <h3>{group}</h3>
           <div className="host-topic-grid">
-            {allTopics.filter(topic => topic.group === group).map(topic => <HostTopicCard key={topic.id} topic={topic} onOpen={onOpenTopic} />)}
+            {allTopics.filter(topic => topic.group === group).map(topic => <HostTopicCard key={topic.id} topic={topic} onOpen={onOpenTopic} {...favoriteProps('common_issue', `host:${topic.id}`)} />)}
           </div>
         </section>)}
       </div>
@@ -118,7 +147,7 @@ export function HostLibrary({
       <h2 id="host-process-heading">Host-safe Process Guides</h2>
       <p className="navigator-tab-intro">Universal/basic procedures only. Participant-only and unconfirmed specialized guides are hidden from Host mode.</p>
       <div className="process-grid">
-        {approvedProcesses.map(process => <HostProcessCard key={process.id} process={process} onOpen={onOpenProcess} />)}
+        {approvedProcesses.map(process => <HostProcessCard key={process.id} process={process} onOpen={onOpenProcess} {...favoriteProps('process', process.id)} />)}
       </div>
     </section>
   }
@@ -144,7 +173,7 @@ export function HostLibrary({
       <h2 id="host-roadblocks-heading">Tier 1 Roadblocks</h2>
       <p className="navigator-tab-intro">A roadblock can be selected immediately or reached after any confirmation step. Open it to see the boundary, next action, approved wording, and documentation handoff.</p>
       <div className="host-roadblock-grid">
-        {HOST_ROADBLOCKS.map(item => <HostRoadblockCard key={item.id} roadblock={item} onOpen={onOpenRoadblock} />)}
+        {HOST_ROADBLOCKS.map(item => <HostRoadblockCard key={item.id} roadblock={item} onOpen={onOpenRoadblock} {...favoriteProps('common_issue', `host-roadblock:${item.id}`)} />)}
       </div>
     </section>
   }
