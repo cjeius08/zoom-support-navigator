@@ -1,0 +1,121 @@
+/* Header to match the approved Ozzie dashboard screenshot.
+ * Screenshot-style single white bar on roomy desktop; keeps earlier
+ * functional hover disclosures, navigation routes, account and mobile drawer.
+ */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .header-nav-icon {
+  display:inline-block; flex:0 0 auto; width:1.14rem; height:1.14rem;
+  fill:none; stroke:currentColor; vertical-align:middle;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-actions {
+  position:absolute; z-index:32; display:flex; align-items:center; gap:.62rem;
+  top:.7rem; right:6.15rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .header-search-button {
+  display:flex; align-items:center; justify-content:flex-start; gap:.6rem;
+  width:12.5rem; min-height:2.55rem; min-width:0;
+  padding:.52rem .7rem; border:1px solid var(--ref-border);
+  border-radius:.62rem; background:var(--ref-card);
+  color:var(--ref-muted); text-align:left;
+  font-size:var(--ozzie-legible-meta,.9rem); line-height:1.4;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .header-updates-button {
+  display:grid; place-items:center; width:2.45rem; height:2.45rem;
+  padding:.35rem; border:1px solid transparent; border-radius:.55rem;
+  background:transparent; color:var(--ref-muted);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.header-search-button,.header-updates-button):is(:hover,:focus-visible) {
+  color:var(--ref-blue); background:var(--ref-sky); border-color:var(--ref-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.header-search-button,.header-updates-button):focus-visible {
+  outline:3px solid var(--ref-blue); outline-offset:2px;
+}
+@media (min-width:1101px) and (hover:hover) and (pointer:fine) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header.app-header-horizontal {
+    position:relative !important; display:block !important;
+    height:4.75rem !important; min-height:4.75rem !important;
+    padding:0 !important; border-bottom:1px solid var(--ref-border) !important;
+    background:var(--ref-card) !important; box-shadow:0 2px 13px rgba(43,78,128,.045) !important;
+    animation:none !important;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-brand-dock {
+    top:.3rem; left:1.1rem; width:12.2rem;
+    padding:0; background:transparent; border:0; box-shadow:none;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .top-navigation {
+    position:absolute; display:flex !important; align-items:center; justify-content:center;
+    top:.57rem; bottom:auto; left:44%;
+    width:min(48rem,calc(100% - 23rem)); max-width:none; min-height:3rem;
+    gap:.18rem; margin:0; padding:0; border:0; transform:translateX(-50%);
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.topnav-link,.topnav-dropdown > summary) {
+    min-height:2.62rem; padding:.5rem .62rem;
+    border:1px solid transparent; border-radius:.65rem;
+    font-size:var(--ozzie-legible-meta,.9rem) !important; font-weight:730;
+    color:var(--ref-muted); white-space:nowrap;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.topnav-link.active,.topnav-dropdown.active > summary) {
+    background:var(--ref-sky); color:var(--ref-blue); border-color:var(--ref-sky);
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.topnav-link,.topnav-dropdown > summary)::after {
+    content:none;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header-horizontal .account-menu {
+    top:.73rem; right:1.1rem; min-height:2.45rem;
+    border-radius:.65rem; background:var(--ref-sky);
+    color:var(--ref-text); border-color:var(--ref-border);
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .topnav-menu {
+    z-index:80; top:calc(100% + .45rem);
+  }
+}
+/* At 100% zoom on mid-sized laptops, retain two safe header rows
+   rather than squeezing icons/search into the navigation. */
+@media (min-width:801px) and (max-width:1450px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .header-search-button {
+    display:none;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-actions {
+    right:5rem;
+  }
+}
+@media (min-width:801px) and (max-width:1100px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header.app-header-horizontal {
+    min-height:7.1rem !important; height:7.1rem !important;
+    background:var(--ref-card) !important; animation:none !important;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .top-navigation {
+    top:auto; bottom:.35rem; left:50%;
+    width:calc(100% - 2rem); transform:translateX(-50%);
+    justify-content:center;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-brand-dock {
+    top:.35rem; left:1rem;
+  }
+}
+/* Mobile remains the approved accessible tap-to-open drawer. */
+@media (max-width:800px), (hover:none) and (pointer:coarse) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .ozzie-header-actions {
+    position:static; justify-self:end; gap:.2rem; order:1;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .header-search-button {
+    width:2.5rem; padding:.45rem; justify-content:center;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .header-search-button span {
+    display:none;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header-brand-row {
+    grid-template-columns:minmax(5.4rem,1fr) auto auto auto;
+    gap:.35rem;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .top-navigation {
+    background:var(--ref-card); color:var(--ref-text);
+  }
+}
+@media (max-width:500px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .header-search-button {
+    display:none;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .app-header-brand-row {
+    grid-template-columns:minmax(4.8rem,1fr) auto auto auto;
+  }
+}
