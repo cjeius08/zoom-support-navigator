@@ -1,0 +1,344 @@
+/* Ozzie Batch 4: compact, readable, responsive Avatar Library.
+ * CSS only: preserve uploads, per-user avatar assignments, bulk selection,
+ * confirmation and database/storage behavior. Scoped to authenticated admin.
+ * Theme: --read-* variables established in Batch 1, with 67% text floor.
+ */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-management {
+  width: 100%;
+  max-width: 98rem;
+  min-width: 0;
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-management > .view-heading {
+  margin: 0;
+  padding-bottom: .6rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-management > .view-heading p:not(.eyebrow) {
+  color: var(--read-body);
+  max-width: 68ch;
+  line-height: 1.45;
+}
+
+/* Two upload actions share the row when space permits, reflow individually
+ * when it doesn't. Neither forces a 50% width native file picker. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-upload-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  align-items: start;
+  gap: .65rem;
+  margin: .65rem 0;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.avatar-library-upload-group,.avatar-library-panel) {
+  min-width: 0;
+  gap: .55rem;
+  padding: .75rem .85rem;
+  border-radius: .8rem;
+  color: var(--read-ink);
+  background: var(--read-bg);
+  border: 1px solid var(--read-border);
+  box-shadow: var(--dn-shadow);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.avatar-library-upload-group h2,.avatar-library-panel h2) {
+  margin: 0;
+  color: var(--read-ink);
+  font-size: var(--ozzie-legible-title,1.12rem);
+  line-height: 1.35;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-file-picker {
+  display: grid;
+  grid-template-columns: minmax(0,1fr);
+  gap: .4rem;
+  align-items: start;
+  min-width: 0;
+  padding: .55rem .65rem;
+  border: 1px dashed var(--read-border);
+  border-radius: .6rem;
+  background: var(--read-soft);
+  color: var(--read-ink);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.4;
+  overflow-wrap: break-word;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-file-picker input[type="file"] {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0;
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.45;
+  color: var(--read-body);
+  background: transparent;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-file-picker input[type="file"]::file-selector-button {
+  padding: .45rem .65rem;
+  margin-right: .5rem;
+  min-height: 2.15rem;
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border: 1px solid var(--read-border);
+  border-radius: .5rem;
+  font: inherit;
+  cursor: pointer;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-upload-group > .primary-action {
+  justify-self: start;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 2.45rem;
+  padding: .48rem .8rem;
+  border: 1px solid var(--read-ring);
+  background: var(--read-button);
+  color: var(--read-on-button);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.4;
+  white-space: normal;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-upload-group > .primary-action:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+/* File previews should be informative without expanding upload forms to
+ * hundreds of pixels. Available content stays scrollable, not hidden. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-upload-preview {
+  gap: .35rem;
+  min-width: 0;
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-upload-preview > strong {
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.4;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-upload-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(min(100%,13rem),1fr));
+  gap: .4rem;
+  max-height: 10rem;
+  overflow: auto;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-upload-preview-grid article {
+  grid-template-columns: 2.5rem minmax(0,1fr);
+  align-items: center;
+  min-width: 0;
+  gap: .45rem;
+  padding: .35rem .5rem;
+  color: var(--read-ink);
+  background: var(--read-soft);
+  border: 1px solid var(--read-border);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.4;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-upload-preview-grid article :is(span,img) {
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-upload-preview-grid article > span:last-child {
+  color: var(--read-body);
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+/* Toolbar buttons wrap onto a second line when narrow, rather than pushing
+ * the available-avatar heading or the selection count out of view. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .55rem .85rem;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-toolbar > div:first-child {
+  flex: 1 1 11rem;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.avatar-library-toolbar span,.avatar-selection-count) {
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.4;
+  overflow-wrap: break-word;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-actions {
+  display: flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .4rem;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-actions button {
+  min-width: 0;
+  min-height: 2.4rem;
+  padding: .45rem .7rem;
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.35;
+  white-space: normal;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-actions button:not(.danger-action) {
+  color: var(--read-ink);
+  background: var(--read-soft);
+  border: 1px solid var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-actions button:not(.danger-action):is(:hover,:focus-visible) {
+  color: var(--read-ink);
+  background: var(--read-selected);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-selection-count {
+  margin: 0;
+}
+
+/* The previous 7rem columns forced tiny avatars + clipped filenames at 67%.
+ * Use fewer, flexible columns; contents stay visible at 67%, 100% and mobile. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(min(100%,12rem),1fr));
+  align-items: start;
+  gap: .6rem;
+  max-width: 100%;
+  min-width: 0;
+  max-height: min(66vh,48rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: .15rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0,1fr);
+  grid-template-rows: auto auto auto;
+  align-content: start;
+  min-width: 0;
+  gap: .35rem;
+  padding: .55rem;
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border: 1px solid var(--read-border);
+  border-radius: .7rem;
+  box-shadow: 0 2px 9px rgba(11,34,49,.065);
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-card:has(.avatar-library-checkbox input:checked) {
+  background: var(--read-selected);
+  border: 2px solid var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-card > img {
+  display: block;
+  width: 100%;
+  height: clamp(5rem,9vw,6.25rem);
+  aspect-ratio: auto;
+  object-fit: contain;
+  background: var(--read-soft);
+  border: 1px solid var(--read-border);
+  border-radius: .55rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-checkbox {
+  position: absolute;
+  top: .7rem;
+  left: .7rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  margin: 0;
+  padding: .25rem;
+  border: 1px solid var(--read-ring);
+  border-radius: .5rem;
+  color: var(--read-ink);
+  background: var(--read-bg);
+  cursor: pointer;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-checkbox input[type="checkbox"] {
+  width: 1.2rem;
+  height: 1.2rem;
+  min-width: 1.2rem;
+  min-height: 1.2rem;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--read-ring);
+  cursor: pointer;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-card-id {
+  display: block;
+  min-width: 0;
+  min-height: 2.65rem;
+  padding: .18rem .1rem;
+  background: transparent;
+  color: var(--read-ink);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  font-weight: 650;
+  line-height: 1.4;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-card button.danger-action {
+  width: 100%;
+  min-height: 2.4rem;
+  padding: .4rem .65rem;
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.35;
+  white-space: normal;
+  color: var(--cleanup-delete-ink) !important;
+  background: var(--cleanup-delete-bg) !important;
+  border: 1px solid var(--cleanup-delete-border) !important;
+}
+
+/* Deletion confirmation is a true modal; match its ink to Day/Night while
+ * retaining Cancel and confirmed Delete as separate actions. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-delete-dialog {
+  width: min(30rem,100%);
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-delete-dialog :is(h2,p) {
+  color: var(--read-ink);
+  line-height: 1.45;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-delete-dialog .dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-delete-dialog .dialog-actions button:not(.danger-action) {
+  color: var(--read-ink);
+  background: var(--read-soft);
+  border: 1px solid var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-delete-dialog .dialog-actions button.danger-action {
+  color: var(--cleanup-delete-ink) !important;
+  background: var(--cleanup-delete-bg) !important;
+  border: 1px solid var(--cleanup-delete-border) !important;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-management :is(button,input):focus-visible,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-delete-dialog :is(button,input):focus-visible {
+  outline: 3px solid var(--read-ring);
+  outline-offset: 2px;
+}
+
+@media (max-width:700px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-toolbar {
+    align-items: stretch;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-actions {
+    justify-content: flex-start;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-actions button {
+    flex: 1 1 8rem;
+  }
+}
+@media (max-width:460px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-grid {
+    grid-template-columns: repeat(auto-fill,minmax(min(100%,9.5rem),1fr));
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .avatar-library-upload-group > .primary-action {
+    width: 100%;
+  }
+}
