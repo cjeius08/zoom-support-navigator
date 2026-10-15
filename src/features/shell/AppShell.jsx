@@ -194,7 +194,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     }
   }
 
-  return <div className="app-shell app-shell-horizontal" style={style}>
+  return <div className="app-shell app-shell-horizontal" data-view={currentView} style={style}>
     <header className="app-header app-header-horizontal">
       <div className="app-header-brand-row">
         <div className="ozzie-brand-dock" aria-label="Ozzie — Ogletree Support Workspace">
@@ -341,12 +341,12 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
         <button type="button" className="theme-option" data-theme-option="day" aria-pressed={theme === 'day'} onClick={() => onThemeChange('day')}>
           <span className="theme-preview-swatch" aria-hidden="true"><span></span><span></span><span></span></span>
           <strong>☀ Day Mode</strong>
-          <small>Crisp bright office, soft grey and ivory cards, muted turquoise accents.</small>
+          <small>Clean off-white Home background, white cards, and muted turquoise accents.</small>
         </button>
         <button type="button" className="theme-option" data-theme-option="night" aria-pressed={theme === 'night'} onClick={() => onThemeChange('night')}>
           <span className="theme-preview-swatch" aria-hidden="true"><span></span><span></span><span></span></span>
           <strong>☾ Night Mode</strong>
-          <small>Premium legal library, charcoal and slate surfaces, warm office lighting.</small>
+          <small>Deep charcoal Home background, slate cards, and softly contrasted text.</small>
         </button>
       </div>
       <div className="theme-picker-actions"><button type="button" onClick={() => setAppearanceOpen(false)}>Back to Profile</button></div>
