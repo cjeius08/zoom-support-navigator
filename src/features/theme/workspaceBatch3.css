@@ -1,0 +1,486 @@
+/* Ozzie UI Batch 3 — compact Saved Notes, Follow-Ups, Team Management.
+ * Visual layout and contrast only; NO changes to role gates, APIs, notes
+ * retention, deletion confirmations, invite creation, or user status logic.
+ * Load after Batch 1/2 styles to override inherited fixed legacy columns.
+ */
+
+/* Shared: dense but legible page headers. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.saved-notes-page,.team-management) {
+  width: 100%;
+  max-width: 98rem;
+  min-width: 0;
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.saved-notes-page,.team-management) > .view-heading {
+  margin: 0;
+  padding: 0 0 .65rem;
+  gap: .8rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.saved-notes-page,.team-management) > .view-heading > div {
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.saved-notes-page,.team-management) > .view-heading p:not(.eyebrow) {
+  color: var(--read-body);
+  max-width: 72ch;
+  line-height: 1.45;
+}
+
+/* Notes summary: replace rigid 4/3 columns and 5.5rem tall tiles with
+ * content-driven, auto-fitting metric cards. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-page {
+  gap: .55rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-page .saved-notes-summary,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .my-saved-notes-page .saved-notes-summary {
+  grid-template-columns: repeat(auto-fit,minmax(min(100%,11rem),1fr));
+  gap: .5rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-summary > :is(button,div) {
+  min-width: 0;
+  min-height: 0;
+  padding: .65rem .8rem;
+  gap: .15rem;
+  background: var(--read-bg);
+  border: 1px solid var(--read-border);
+  border-radius: .72rem;
+  color: var(--read-ink);
+  box-shadow: var(--dn-shadow);
+  align-content: center;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-summary > button:is(.active,:focus-visible,:hover) {
+  background: var(--read-selected);
+  border-color: var(--read-ring);
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-summary > button.follow-up {
+  border-left: 3px solid var(--batch3-follow-accent);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-summary > button.follow-up.active {
+  background: var(--batch3-follow-bg);
+  color: var(--read-ink);
+  border-color: var(--batch3-follow-accent);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-summary strong {
+  color: var(--read-ink);
+  font-size: clamp(1.15rem,1.55vw,1.42rem);
+  line-height: 1.25;
+  white-space: normal;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-summary span {
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.4;
+  white-space: normal;
+}
+
+/* Filters: no cramped 5-column layout at desktop zoom or mobile viewport. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-filter-card {
+  display: grid;
+  gap: .65rem;
+  min-width: 0;
+  padding: .75rem .85rem;
+  border-radius: .8rem;
+  background: var(--read-bg);
+  border: 1px solid var(--read-border);
+  color: var(--read-ink);
+  box-shadow: var(--dn-shadow);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-search-row {
+  grid-template-columns: minmax(0,1fr) minmax(9.5rem,12rem);
+  gap: .55rem;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-filter-grid {
+  grid-template-columns: repeat(auto-fit,minmax(min(100%,10.5rem),1fr));
+  gap: .55rem;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-filter-card label {
+  min-width: 0;
+  gap: .25rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-filter-card label > span {
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.35;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-filter-card :is(input:not([type="checkbox"]),select) {
+  min-width: 0;
+  width: 100%;
+  min-height: 2.4rem;
+  padding: .45rem .6rem;
+  background: var(--read-input);
+  color: var(--read-ink);
+  border: 1px solid var(--read-border);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.4;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-filter-actions {
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-follow-toggle {
+  display: inline-flex !important;
+  align-items: center;
+  gap: .5rem;
+  color: var(--read-ink);
+  white-space: normal;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-follow-toggle input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex: 0 0 auto;
+  accent-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-filter-actions > button {
+  min-height: 2.3rem;
+  padding: .45rem .75rem;
+  color: var(--read-ink);
+  background: var(--read-soft);
+  border: 1px solid var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-result-count {
+  margin: .1rem 0;
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.4;
+}
+
+/* Notes themselves: two balanced columns only where there is room.
+ * Each note's nested metadata stays in two columns with wrapping, avoiding
+ * the previous ellipsis which hid caller refs and long outcomes. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(min(100%,27rem),1fr));
+  align-items: start;
+  gap: .55rem;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-card {
+  min-width: 0;
+  display: grid;
+  gap: .55rem;
+  padding: .72rem .8rem;
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border: 1px solid var(--read-border);
+  border-radius: .8rem;
+  box-shadow: var(--dn-shadow);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-card.follow-up {
+  background: var(--batch3-follow-bg);
+  border-left: 4px solid var(--batch3-follow-accent);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-card > header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .35rem .65rem;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-person {
+  min-width: 0;
+  flex: 1 1 10rem;
+  gap: .35rem;
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-person > button {
+  min-width: 0;
+  padding: .32rem .52rem;
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-person :is(strong,small) {
+  color: var(--read-ink);
+  overflow-wrap: anywhere;
+  white-space: normal;
+  line-height: 1.4;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-time {
+  min-width: 0;
+  flex: 0 1 auto;
+  text-align: right;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-time :is(strong,small) {
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.35;
+  white-space: normal;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-meta {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: .42rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-meta > div {
+  min-width: 0;
+  padding: .42rem .55rem;
+  background: var(--read-soft);
+  border: 1px solid var(--read-border);
+  border-radius: .55rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-meta dt {
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.3;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-meta dd {
+  min-width: 0;
+  margin: .15rem 0 0;
+  color: var(--read-ink);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.4;
+  white-space: normal;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-details {
+  padding-top: .52rem;
+  border-color: var(--read-border);
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-details summary {
+  color: var(--read-link);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.4;
+  white-space: normal;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-details pre {
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border: 1px solid var(--read-border);
+  padding: .6rem .7rem;
+  margin-top: .55rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-card > footer {
+  margin: 0;
+  align-items: center;
+  justify-content: flex-end;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-follow-badge {
+  padding: .3rem .55rem;
+  background: var(--batch3-follow-bg);
+  color: var(--batch3-follow-ink);
+  border: 1px solid var(--batch3-follow-accent);
+  border-radius: .5rem;
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.35;
+  white-space: normal;
+}
+
+/* Team Management: convert huge horizontal strips to compact member cards.
+ * No change to team ordering, presence/status, invite, or account actions. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .view-heading > .primary-action {
+  min-height: 2.6rem;
+  padding: .5rem .8rem;
+  background: var(--read-button);
+  color: var(--read-on-button);
+  white-space: normal;
+  line-height: 1.4;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(min(100%,28rem),1fr));
+  align-items: stretch;
+  gap: .55rem;
+  margin-top: .5rem;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list article {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0,1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: .35rem .65rem;
+  min-width: 0;
+  padding: .65rem .75rem;
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border: 1px solid var(--read-border);
+  border-radius: .8rem;
+  box-shadow: var(--dn-shadow);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list article > :is(img,.avatar-fallback) {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  width: 2.6rem;
+  height: 2.6rem;
+  object-fit: contain;
+  border-radius: 50%;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list article > div {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list article > div strong {
+  color: var(--read-ink);
+  font-size: var(--ozzie-legible-body,1rem);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list article > div small {
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list article > .presence-badge {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: start;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list article > .status-badge {
+  grid-column: 3;
+  grid-row: 1;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list article > .row-menu {
+  grid-column: 3;
+  grid-row: 2;
+  min-height: 2.25rem;
+  min-width: 0;
+  padding: .42rem .62rem;
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border: 1px solid var(--read-border);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.35;
+  white-space: normal;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list article > .row-menu:is(:hover,:focus-visible) {
+  color: var(--read-ink);
+  background: var(--read-selected);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list :is(.presence-badge,.status-badge) {
+  min-width: 0;
+  max-width: 100%;
+  padding: .25rem .5rem;
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.35;
+  border-radius: .5rem;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list .status-badge:not(.active) {
+  color: var(--read-body);
+  background: var(--read-soft);
+}
+html[data-theme="day"] .app-shell-horizontal .team-management .team-list .presence-badge.active,
+html[data-theme="day"] .app-shell-horizontal .team-management .team-list .status-badge.active {
+  color: #146448;
+  background: #e3f5ec;
+}
+html[data-theme="night"] .app-shell-horizontal .team-management .team-list .presence-badge.active,
+html[data-theme="night"] .app-shell-horizontal .team-management .team-list .status-badge.active {
+  color: #b0e5c6;
+  background: #234939;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list .presence-badge.offline {
+  color: var(--read-body);
+  background: var(--read-soft);
+}
+/* Management dialogs are portal-like modal descendants of app-shell.
+ * Keep all actions/fields legible, especially destructive confirmation. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management ~ .modal-backdrop .admin-dialog,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .admin-dialog {
+  background: var(--read-bg);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management ~ .modal-backdrop .admin-dialog :is(p,label),
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .admin-dialog :is(p,label) {
+  color: var(--read-body);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management ~ .modal-backdrop .admin-dialog :is(input,select),
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .admin-dialog :is(input,select) {
+  background: var(--read-input);
+  color: var(--read-ink);
+  border-color: var(--read-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management ~ .modal-backdrop .admin-dialog .admin-actions button,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .admin-dialog .admin-actions button {
+  color: var(--read-ink);
+  background: var(--read-soft);
+  border: 1px solid var(--read-border);
+  text-align: left;
+  white-space: normal;
+  min-height: 2.4rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management ~ .modal-backdrop .admin-dialog .dialog-actions button:not(.danger-action),
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .admin-dialog .dialog-actions button:not(.danger-action) {
+  color: var(--read-ink);
+  background: var(--read-soft);
+  border: 1px solid var(--read-border);
+  white-space: normal;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management ~ .modal-backdrop .admin-dialog .dialog-actions button.primary-action,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .admin-dialog .dialog-actions button.primary-action {
+  color: var(--read-on-button);
+  background: var(--read-button);
+  border-color: var(--read-ring);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management ~ .modal-backdrop .admin-dialog .danger-action,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .admin-dialog .danger-action {
+  color: var(--cleanup-delete-ink) !important;
+  background: var(--cleanup-delete-bg) !important;
+  border: 1px solid var(--cleanup-delete-border) !important;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal :is(.saved-notes-page,.team-management) :is(button,input,select,summary):focus-visible {
+  outline: 3px solid var(--read-ring);
+  outline-offset: 2px;
+}
+
+/* Amber follow-up treatment: explicitly theme-aware; never low contrast. */
+html[data-theme="day"] .app-shell-horizontal {
+  --batch3-follow-bg: #fff7e8;
+  --batch3-follow-ink: #74430b;
+  --batch3-follow-accent: #a15d19;
+}
+html[data-theme="night"] .app-shell-horizontal {
+  --batch3-follow-bg: #342d21;
+  --batch3-follow-ink: #ffdc9d;
+  --batch3-follow-accent: #e0a04f;
+}
+
+@media (max-width: 760px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-search-row {
+    grid-template-columns: minmax(0,1fr);
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-notes-page .saved-note-time {
+    flex: 1 1 100%;
+    text-align: left;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .view-heading {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 520px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .saved-note-meta {
+    grid-template-columns: minmax(0,1fr);
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list article {
+    grid-template-columns: 2.6rem minmax(0,1fr);
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list article > .status-badge {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list article > .presence-badge {
+    grid-column: 2;
+    grid-row: 3;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .team-management .team-list article > .row-menu {
+    grid-column: 1 / -1;
+    grid-row: 4;
+  }
+}
