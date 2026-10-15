@@ -415,3 +415,48 @@ html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-an
     flex: 1 1 8rem;
   }
 }
+/* Last-mile typography: readable labels at 67%, never fixed-height clipping.
+ * The earlier analytics stylesheet had .65–.82rem figures/labels, which render
+ * like microprint when zoomed out. Match the existing responsive legibility
+ * variables; card tracks can grow and text wraps normally. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics :is(
+  .usage-summary span,
+  .usage-overview-highlights span,
+  .usage-overview-highlights small,
+  .usage-section-tabs button strong,
+  .usage-chart-column > strong,
+  .usage-chart-column small,
+  .usage-data-integrity li,
+  .usage-table :is(th,td)
+) {
+  font-size: var(--ozzie-legible-meta) !important;
+  line-height: 1.45;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics .usage-overview-highlights strong {
+  font-size: var(--ozzie-legible-body) !important;
+  line-height: 1.35;
+  white-space: normal;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .usage-analytics .usage-data-integrity li {
+  font-size: var(--ozzie-legible-body) !important;
+  line-height: 1.5;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-queue :is(
+  .feedback-item-type,
+  .feedback-reporter strong,
+  .feedback-item-submitter strong,
+  .feedback-status-control select,
+  .feedback-item-description b,
+  .feedback-item-suggestion b,
+  .feedback-item-submitted b
+) {
+  font-size: var(--ozzie-legible-meta) !important;
+  line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .feedback-queue .feedback-item-toggle {
+  height: auto;
+}
