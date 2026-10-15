@@ -116,3 +116,14 @@ html[data-theme] :is(.usage-analytics,.team-management,.feedback-queue,.saved-no
   outline: 3px solid var(--read-ring);
   outline-offset: 2px;
 }
+
+/* Day-mode status ink must remain distinguishable on pale report surfaces.
+   Semantics remain unchanged: green=safe/active, amber=warning, red=critical. */
+html[data-theme="day"] .storage-guardrail-card.safe,
+html[data-theme="day"] .status-badge.active,
+html[data-theme="day"] .presence-badge.active { color: #166148; }
+html[data-theme="day"] .storage-guardrail-card.warning,
+html[data-theme="day"] .status-badge.pending,
+html[data-theme="day"] .presence-badge.idle { color: #85500b; }
+html[data-theme="day"] .storage-guardrail-card.critical { color: #9d3d2c; }
+html[data-theme="day"] .presence-badge.offline { color: #415c6c; }
