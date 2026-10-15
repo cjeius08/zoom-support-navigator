@@ -31,6 +31,20 @@ function Icon({ type }) {
   return <svg data-testid="nav-icon" aria-hidden="true" viewBox="0 0 24 24"><path d={paths[type] || paths.feedback} /></svg>
 }
 
+function HeaderIcon({ type }) {
+  const paths = {
+    dashboard: <><path d="m3 11 9-8 9 8v10h-7v-7h-4v7H3V11Z" /></>,
+    call: <path d="M6 3h4l1.5 5-2.5 2.2a14 14 0 0 0 4.8 4.8L16 12.5l5 1.5v4a3 3 0 0 1-3.4 3C9 20 4 14.9 3 6.5A3 3 0 0 1 6 3Z" />,
+    knowledge: <><path d="M12 6C9 4.5 6.7 4 3 4v16c3.7 0 6 .5 9 2 3-1.5 5.3-2 9-2V4c-3.7 0-6 .5-9 2Z" /><path d="M12 6v16" /></>,
+    readiness: <><path d="m2 9 10-5 10 5-10 5L2 9Z" /><path d="M6 11v6c3 2.5 9 2.5 12 0v-6" /></>,
+    reports: <><path d="M5 20v-8M11 20V5M17 20v-12M23 20V3" /></>,
+    admin: <><path d="m10 2-.6 2.2-2 .9-2.1-1.1-2 2 1 2.1-.8 2L1 10.7v2.8l2.5.7.8 2-1.1 2.1 2 2 2.1-1.1 2 .9L10 22h3l.6-2 2-.9 2.1 1.1 2-2-1-2.1.8-2 2.5-.7v-2.8l-2.5-.7-.8-2 1-2.1-2-2-2.1 1.1-2-.9L13 2h-3Z" /><circle cx="11.5" cy="12" r="3" /></>,
+    search: <><circle cx="10.6" cy="10.6" r="6.8"/><path d="m15.8 15.8 5 5"/></>,
+    bell: <><path d="M18 8c0-4-2-6-6-6S6 4 6 8v5l-2 3h16l-2-3V8Z"/><path d="M10 19a2 2 0 0 0 4 0" /></>,
+  }
+  return <svg className="header-nav-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{paths[type]}</svg>
+}
+
 function usesCompactNavigation() {
   if (typeof window === 'undefined') return false
   return window.innerWidth <= 800 || window.matchMedia?.('(hover: none) and (pointer: coarse)')?.matches === true
@@ -104,12 +118,12 @@ function NavDropdown({ label, active = false, children }) {
       })
     }}
   >
-    <summary>{label}<svg className="topnav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></summary>
+    <summary><HeaderIcon type={{ 'Call Flow': 'call', Knowledge: 'knowledge', Reports: 'reports', Admin: 'admin' }[label] || 'knowledge'}/>{label}<svg className="topnav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg></summary>
     <div className="topnav-menu" role="group" aria-label={`${label} menu`}>{children}</div>
   </details>
 }
 
-export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onOpenMySavedNotes = () => {}, documentationHandoff = null, onDocumentationHandoffApplied = () => {}, callResetToken = 0, theme = 'day', onThemeChange = () => {}, onFeedback, reportContext = {}, avatars }) {
+export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, onDashboardSearch = () => {}, onDashboardUpdates = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onOpenMySavedNotes = () => {}, documentationHandoff = null, onDocumentationHandoffApplied = () => {}, callResetToken = 0, theme = 'day', onThemeChange = () => {}, onFeedback, reportContext = {}, avatars }) {
   const [open, setOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [avatarOpen, setAvatarOpen] = useState(false)
@@ -280,6 +294,15 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           <span>Menu</span>
         </button>
 
+        <div className="ozzie-header-actions">
+          <button type="button" className="header-search-button" aria-label="Search Ozzie" onClick={onDashboardSearch}>
+            <HeaderIcon type="search" /><span>Search Ozzie...</span>
+          </button>
+          <button type="button" className="header-updates-button" aria-label="What's New and Updates" title="What's New and Updates" onClick={onDashboardUpdates}>
+            <HeaderIcon type="bell" />
+          </button>
+        </div>
+
         <button className="account-menu" aria-expanded={profileOpen} aria-label={`${profile.username} account`} onClick={() => { const next = !profileOpen; setProfileOpen(next); if (next) { setMessage(''); setProfileError(''); setProfileErrorField('') } }}>
           {avatarUrl(profile.avatar_id, avatars) ? <img src={avatarUrl(profile.avatar_id, avatars)} alt="" /> : <span className="avatar-fallback">{profile.initials}</span>}
           <span className="account-copy"><strong>{profile.username}</strong><small>{accountRoleLabel}</small></span>
@@ -305,7 +328,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           className={`topnav-link ${currentView === 'navigator' ? 'active' : ''}`}
           aria-current={currentView === 'navigator' ? 'page' : undefined}
           onClick={event => navigateFromHeader(event, 'navigator')}
-        >Dashboard</button>
+        ><HeaderIcon type="dashboard"/>Dashboard</button>
 
         <NavDropdown label="Call Flow" active={callFlowActive}>
           <button type="button" aria-label="Call Documentation" aria-pressed={liveTools.documentation !== 'closed'} onClick={event => openToolFromHeader(event, 'documentation')}><Icon type="documentation" /><span><strong>Call Documentation</strong><small>Capture notes without leaving your current page.</small></span></button>
@@ -326,7 +349,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
           className={`topnav-link ${liveTools.readiness !== 'closed' ? 'active' : ''}`}
           aria-pressed={liveTools.readiness !== 'closed'}
           onClick={event => openToolFromHeader(event, 'readiness')}
-        >Readiness Lab</button>
+        ><HeaderIcon type="readiness"/>Readiness Lab</button>
 
         <NavDropdown label="Reports" active={reportsActive}>
           <button type="button" aria-label="Feedback" aria-current={currentView === 'feedback' ? 'page' : undefined} onClick={event => navigateFromHeader(event, 'feedback')}><Icon type="feedback" /><span><strong>Feedback</strong><small>Send an issue, suggestion, or workspace report.</small></span></button>
