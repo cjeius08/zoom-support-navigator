@@ -40,7 +40,7 @@ it('shows the Batch 10 and Batch 11 announcements and filters release history wi
   expect(screen.getByRole('heading', { name: /Batch 11 — Find Updates Faster/ })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: /Batch 10 — Meet the New Ozzie Command Center/ })).toBeInTheDocument()
 
-  fireEvent.change(search, { target: { value: 'Command Center' } })
+  fireEvent.change(search, { target: { value: 'Meet the New Ozzie Command Center' } })
   expect(screen.getByRole('heading', { name: /Batch 10 — Meet the New Ozzie Command Center/ })).toBeInTheDocument()
   expect(screen.queryByRole('heading', { name: /Batch 11 — Find Updates Faster/ })).not.toBeInTheDocument()
 
