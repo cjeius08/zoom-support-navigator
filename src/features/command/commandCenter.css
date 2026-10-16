@@ -1,0 +1,281 @@
+/* Batch 10 — keyboard-first global command palette.
+ * Root-level theme variables already define WCAG-readable day/night contrast.
+ * Isolated to this dialog: no header geometry, main navigation, or business
+ * workflows are changed.
+ */
+html:is([data-theme="day"],[data-theme="night"]) .command-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(1rem,8vh,5rem) .7rem 1rem;
+  background: rgba(1,8,19,.56);
+  backdrop-filter: blur(5px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+html[data-theme="night"] .command-backdrop { background: rgba(0,0,0,.77); }
+html:is([data-theme="day"],[data-theme="night"]) .command-dialog {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: min(42rem,100%);
+  min-width: 0;
+  max-height: min(84dvh,45rem);
+  overflow: hidden;
+  color: var(--read-ink);
+  background: var(--read-bg);
+  border: 1px solid var(--read-border);
+  border-radius: 1rem;
+  box-shadow: 0 22px 65px rgba(4,12,27,.24);
+}
+html[data-theme="night"] .command-dialog { box-shadow: 0 26px 65px rgba(0,0,0,.56); }
+html:is([data-theme="day"],[data-theme="night"]) .command-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .6rem;
+  padding: .9rem 1rem .55rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-eyebrow {
+  color: var(--read-link);
+  margin: 0 0 .2rem;
+  font-size: var(--ozzie-legible-meta,.9rem);
+  font-weight: 800;
+  letter-spacing: .065em;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-topline h2 {
+  color: var(--read-ink);
+  margin: 0;
+  line-height: 1.25;
+  font-size: clamp(1.18rem,2vw,1.45rem);
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-close {
+  min-height: 2rem;
+  padding: .28rem .55rem;
+  border-radius: .5rem;
+  border: 1px solid var(--read-border);
+  background: var(--read-soft);
+  color: var(--read-ink);
+  font-size: var(--ozzie-legible-meta,.9rem);
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-searchline {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  margin: .2rem .95rem .75rem;
+  min-width: 0;
+  padding: .15rem .6rem;
+  background: var(--read-input);
+  border: 2px solid var(--read-ring);
+  border-radius: .7rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-searchline > svg {
+  flex: 0 0 1.2rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  fill: none;
+  stroke: var(--read-link);
+  stroke-width: 1.8;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-searchline > input {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  min-height: 2.8rem;
+  border: 0 !important;
+  outline: none !important;
+  padding: .4rem 0;
+  font-size: var(--ozzie-legible-body,1rem);
+  line-height: 1.45;
+  background: transparent !important;
+  color: var(--read-ink) !important;
+  box-shadow: none !important;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-searchline input::placeholder {
+  color: var(--read-muted);
+  opacity: 1;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-shortcut {
+  flex: 0 0 auto;
+  color: var(--read-body);
+  background: var(--read-soft);
+  padding: .15rem .32rem;
+  border: 1px solid var(--read-border);
+  border-radius: .35rem;
+  font-size: .8rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-context {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .45rem .7rem;
+  padding: .5rem .95rem;
+  background: var(--read-soft);
+  border-top: 1px solid var(--read-border);
+  border-bottom: 1px solid var(--read-border);
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-meta,.9rem);
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .28rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-roles button {
+  border: 1px solid var(--read-border);
+  border-radius: .5rem;
+  padding: .36rem .65rem;
+  min-height: 2.1rem;
+  color: var(--read-ink);
+  background: var(--read-bg);
+  font-size: var(--ozzie-legible-meta,.9rem);
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-roles button[aria-pressed="true"] {
+  background: var(--read-selected);
+  border-color: var(--read-ring);
+  color: var(--read-link);
+  font-weight: 800;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-results-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  padding: .66rem .98rem .37rem;
+  font-size: var(--ozzie-legible-meta,.9rem);
+  color: var(--read-body);
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-results-head strong {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-results {
+  display: grid;
+  align-content: start;
+  flex: 1 1 auto;
+  gap: .3rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: .25rem .6rem .7rem;
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-result {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 2.35rem minmax(0,1fr) auto;
+  align-items: center;
+  gap: .65rem;
+  width: 100%;
+  min-width: 0;
+  padding: .6rem .7rem;
+  background: transparent;
+  color: var(--read-ink);
+  border: 1px solid transparent;
+  border-radius: .62rem;
+  text-align: left;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-result:is(:hover,:focus-visible,[aria-selected="true"]) {
+  background: var(--read-selected);
+  border-color: var(--read-ring);
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-result-icon {
+  display: grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: .58rem;
+  background: var(--read-soft);
+  color: var(--read-link);
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-result-content {
+  display: grid;
+  gap: .16rem;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-result-content strong {
+  min-width: 0;
+  color: var(--read-ink);
+  font-size: var(--ozzie-legible-body,1rem);
+  line-height: 1.35;
+  font-weight: 720;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-result-content small {
+  min-width: 0;
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  line-height: 1.38;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-result-meta {
+  display: grid;
+  justify-items: end;
+  gap: .2rem;
+  color: var(--read-link);
+  font-size: .82rem;
+  line-height: 1.3;
+  text-align: right;
+  max-width: 7.5rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-empty {
+  padding: 1.5rem 1rem;
+  color: var(--read-ink);
+  text-align: center;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-empty p {
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-meta,.9rem);
+  margin: .4rem 0 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: .5rem;
+  padding: .65rem 1rem;
+  border-top: 1px solid var(--read-border);
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-meta,.9rem);
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-footer kbd {
+  display: inline-block;
+  border: 1px solid var(--read-border);
+  padding: .12rem .35rem;
+  border-radius: .3rem;
+  color: var(--read-ink);
+  background: var(--read-soft);
+}
+html:is([data-theme="day"],[data-theme="night"]) .command-dialog :is(button,input):focus-visible {
+  outline: 3px solid var(--read-ring);
+  outline-offset: 2px;
+}
+@media (max-width: 600px) {
+  html:is([data-theme="day"],[data-theme="night"]) .command-backdrop {
+    padding: max(.45rem,env(safe-area-inset-top)) .45rem max(.45rem,env(safe-area-inset-bottom));
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .command-dialog {
+    max-height: calc(100dvh - 1rem);
+    border-radius: .8rem;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .command-result {
+    grid-template-columns: 2.2rem minmax(0,1fr);
+    gap: .55rem;
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .command-result-meta { display: none; }
+  html:is([data-theme="day"],[data-theme="night"]) .command-shortcut { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:is([data-theme="day"],[data-theme="night"]) .command-backdrop { backdrop-filter: none; }
+}
