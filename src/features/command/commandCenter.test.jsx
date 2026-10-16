@@ -67,7 +67,7 @@ describe('Ozzie Batch 10 — source-backed universal Command Center', () => {
     await user.click(participantButton)
     expect(participantButton).toHaveAttribute('aria-pressed','true')
     await user.type(screen.getByRole('combobox'), 'Recording')
-    const faqOption = screen.getAllByRole('option').find(x => x.textContent.includes('Recording'))
+    const faqOption = screen.getAllByRole('option').find(x => x.querySelector('.command-result-content strong')?.textContent === 'Recording')
     expect(faqOption).toBeDefined()
     await user.click(faqOption)
     expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({kind:'faq',id:'Recording',role:'Participant'}))
