@@ -22,7 +22,11 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   // New releases can be prepended without invalidating historical entries.
   // Keep the newest announcements visible, while verifying the earlier
   // sequence and all previous records are still preserved.
-  expect(data.updates.slice(0, 3)).toEqual(expect.arrayContaining([
+  expect(data.updates.slice(0, 2)).toEqual([
+    expect.objectContaining({ id: 'batch-11-searchable-updates-and-dashboard-release-links', date: '2026-10-16', audience: 'all' }),
+    expect.objectContaining({ id: 'batch-10-global-command-center', date: '2026-10-16', audience: 'all' }),
+  ])
+  expect(data.updates.slice(2, 5)).toEqual(expect.arrayContaining([
     expect.objectContaining({ id: 'ozzie-workspace-complete-uiux-revamp', date: '2026-10-16', audience: 'all' }),
     expect.objectContaining({ id: 'ozzie-dashboard-home-experience-refresh', date: '2026-10-16', audience: 'all' }),
     expect.objectContaining({ id: 'ozzie-navigation-accessibility-polish', date: '2026-10-16', audience: 'all' }),
@@ -223,4 +227,25 @@ it('lists the September 26 Smart Search safety fix in What’s New', () => {
   expect(entry.changed).toMatch(/hear.*hearing/i)
   expect(entry.changed).toMatch(/every meaningful symptom term/i)
   expect(entry.checks.length).toBeGreaterThanOrEqual(5)
+})
+
+it('publishes Batch 10 and Batch 11 to both Member and Admin update feeds without duplicates', () => {
+  const path = join(cwd(), 'src/features/updates/updatesData.json')
+  const data = JSON.parse(readFileSync(path, 'utf8'))
+  const ids = data.updates.map(item => item.id)
+  expect(new Set(ids).size).toBe(ids.length)
+  for (const id of [
+    'batch-10-global-command-center',
+    'batch-11-searchable-updates-and-dashboard-release-links',
+  ]) {
+    const entry = data.updates.find(item => item.id === id)
+    expect(entry).toMatchObject({ date: '2026-10-16', audience: 'all' })
+    expect(entry.changed.length).toBeGreaterThan(100)
+    expect(entry.checks.length).toBeGreaterThanOrEqual(3)
+    expect(ids.indexOf(id)).toBeLessThan(5)
+  }
+  expect(data.updates.find(item => item.id === 'batch-10-global-command-center').changed)
+    .toMatch(/Ctrl\+K/)
+  expect(data.updates.find(item => item.id === 'batch-11-searchable-updates-and-dashboard-release-links').changed)
+    .toMatch(/release history/i)
 })
