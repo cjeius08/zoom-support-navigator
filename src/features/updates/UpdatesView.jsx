@@ -1,8 +1,15 @@
+import { useState } from 'react'
 import { CONSOLE_METADATA, formatConsoleDate, lastUpdatedForAudience, updatesForAudience } from './updatesData'
 import './updates.css'
 
 export function UpdatesView({ isAdmin = false }) {
+  const [search, setSearch] = useState('')
   const visibleUpdates = updatesForAudience(isAdmin)
+  const term = search.trim().toLocaleLowerCase()
+  const matchingUpdates = term
+    ? visibleUpdates.filter(entry => [entry.title, entry.area, entry.changed, entry.date]
+      .some(value => String(value || '').toLocaleLowerCase().includes(term)))
+    : visibleUpdates
   const metadataRows = [
     ['Workspace Version', CONSOLE_METADATA.version],
     ['Effective Date', formatConsoleDate(CONSOLE_METADATA.effectiveDate)],
@@ -40,8 +47,21 @@ export function UpdatesView({ isAdmin = false }) {
         <p>{CONSOLE_METADATA.updatePolicy}</p>
       </aside>}
 
+      <div className="updates-searchbar" role="search" aria-label="Search update history">
+        <label htmlFor="updates-search">Find an update</label>
+        <div className="updates-search-controls">
+          <input id="updates-search" type="search" value={search}
+            onChange={event => setSearch(event.target.value)}
+            placeholder="Search features, fixes or dates..." />
+          {search && <button type="button" onClick={() => setSearch('')}>Clear search</button>}
+        </div>
+        <p role="status" aria-live="polite">
+          Showing {matchingUpdates.length} of {visibleUpdates.length} updates
+        </p>
+      </div>
+
       <div className="updates-list" aria-label="Update history">
-        {visibleUpdates.map((entry) => (
+        {matchingUpdates.map((entry) => (
           <article className="update-card" key={entry.id}>
             <header>
               <div>
@@ -68,6 +88,10 @@ export function UpdatesView({ isAdmin = false }) {
             </div>
           </article>
         ))}
+        {matchingUpdates.length === 0 && <div className="updates-empty" role="status">
+          <strong>No updates match your search.</strong>
+          <p>Try a different keyword, or clear the search to view all release notes.</p>
+        </div>}
       </div>
     </section>
   )
