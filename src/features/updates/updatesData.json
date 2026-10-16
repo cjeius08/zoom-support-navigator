@@ -10,6 +10,34 @@
   },
   "updates": [
     {
+      "id": "batch-11-searchable-updates-and-dashboard-release-links",
+      "date": "2026-10-16",
+      "area": "What's New / Dashboard",
+      "audience": "all",
+      "title": "Batch 11 — Find Updates Faster, Open Release Notes from Home",
+      "changed": "What’s New is easier to explore: search the full release history by feature, area, and description, see how many announcements match, clear the search in one click, and receive a helpful message when nothing matches. The latest Dashboard announcement cards now open the full Updates page when selected, instead of being static previews. The announcement history remains newest-first, including Batch 10's Command Center release, while administrator-only notices stay hidden from Member and Lead accounts. These changes improve release discoverability without altering existing call flows, support guidance, permissions, or saved data.",
+      "checks": [
+        "On Dashboard, select a What’s New announcement card and confirm the full Updates page opens.",
+        "In What’s New / Updates, search for “Command Center” and confirm the Batch 10 announcement appears; clear the search to restore full history.",
+        "Search for a feature, area, or descriptive phrase; confirm results update and an unmatched phrase shows a clear empty state.",
+        "Sign in as a Member or Lead and confirm Admin-only release notices stay hidden, including in search results."
+      ]
+    },
+    {
+      "id": "batch-10-global-command-center",
+      "date": "2026-10-16",
+      "area": "Global Search / Command Center",
+      "audience": "all",
+      "title": "Batch 10 — Meet the New Ozzie Command Center",
+      "changed": "Find the right Ozzie tool or approved support reference without hunting through pages. Open the global Command Center from the header search control or press Ctrl+K (Cmd+K on Mac) to search workspace destinations, verified Process Guides, Frequently Asked Questions, and caller-role-specific support routes. Switch between Host / Arbitrator and Participant so results remain relevant to the caller; authorized Admin destinations only appear for Admins. Use the arrow keys and Enter to open a result, or Escape to close the dialog. Selecting a result opens the corresponding existing tool, guide, or FAQ directly, with safeguards against reopening a previously selected item. Existing Smart Search, saved documentation, approved procedures, and user permissions are preserved.",
+      "checks": [
+        "Sign in and press Ctrl+K (or Cmd+K on Mac); verify Command Center opens and the input is focused.",
+        "Search a relevant Host guide or FAQ, select it, and confirm the corresponding approved source opens exactly once.",
+        "Switch the caller role to Participant and confirm Host-only support content is not offered.",
+        "Verify Member/Lead accounts cannot see Admin-only destinations; check Day/Night appearance and mobile search controls."
+      ]
+    },
+    {
       "id": "ozzie-workspace-complete-uiux-revamp",
       "date": "2026-10-16",
       "area": "Workspace / UI & Experience",
