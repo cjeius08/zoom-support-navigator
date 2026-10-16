@@ -57,6 +57,7 @@ export function HostLibrary({
   processMatches,
   processes,
   faqItems,
+  focusFaqLabel = '',
   onOpenTopic,
   onOpenRoadblock,
   onOpenProcess,
@@ -158,7 +159,10 @@ export function HostLibrary({
       <h2 id="host-faq-heading">Host / Arbitrator FAQ</h2>
       <p className="navigator-tab-intro">Program-specific account and meeting behaviors relevant to arbitrator calls.</p>
       <div className="support-reference-grid">
-        {hostFaq.map(item => <article key={item.label}>
+        {[...hostFaq].sort((a,b) => Number(b.label === focusFaqLabel) - Number(a.label === focusFaqLabel)).map(item => <article
+          key={item.label}
+          className={item.label === focusFaqLabel ? 'faq-command-target' : undefined}
+          tabIndex={item.label === focusFaqLabel ? -1 : undefined}>
           <h3>{item.label}</h3>
           <p>{item.answer}</p>
           {item.points?.length > 0 && <ul>{item.points.map(point => <li key={point}>{point}</li>)}</ul>}
