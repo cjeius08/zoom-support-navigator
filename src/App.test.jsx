@@ -8,7 +8,10 @@ import App from './App'
 describe('application access gate', () => {
   it('uses the Ozzie brand on the sign-in page while keeping the internal document title', async () => {
     render(<App />)
-    await waitFor(() => expect(screen.getByRole('img', { name: /Ozzie — Ogletree Support Workspace/i })).toBeInTheDocument())
+    await waitFor(() => expect(screen.getAllByRole('img', { name: /Ozzie for Ogletree/i })).toHaveLength(2))
+    expect(document.querySelector('.login-brand-panel')).toBeInTheDocument()
+    expect(document.querySelector('.login-card')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Work smarter/i })).toBeInTheDocument()
     expect(document.querySelector('.login-layout')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Welcome Back!' })).toBeInTheDocument()
     expect(screen.getByText('Sign in to your Ozzie account')).toBeInTheDocument()
