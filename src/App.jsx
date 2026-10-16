@@ -57,6 +57,7 @@ import './features/shell/headerReference.css'
 import './features/shell/headerOverlapFix.css'
 import './features/theme/linearBlueBlack.css'
 import './features/theme/finalQaBatch9.css'
+import './features/theme/faqCompact.css'
 
 const EMPTY_REPORT_CONTEXT = {
   selected_tab: null,
