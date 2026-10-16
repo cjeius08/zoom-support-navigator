@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { expect, it } from 'vitest'
 import { UpdatesView } from './UpdatesView'
 
@@ -31,4 +31,24 @@ it('labels historical updates without showing obsolete verification steps', () =
   const card = historicalHeading.closest('article')
   expect(card).toHaveTextContent('Historical')
   expect(card).not.toHaveTextContent('Verification')
+})
+
+it('shows the Batch 10 and Batch 11 announcements and filters release history without leaking Admin-only changes', () => {
+  render(<UpdatesView isAdmin={false} />)
+  const search = screen.getByRole('searchbox', { name: 'Find an update' })
+
+  expect(screen.getByRole('heading', { name: /Batch 11 — Find Updates Faster/ })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: /Batch 10 — Meet the New Ozzie Command Center/ })).toBeInTheDocument()
+
+  fireEvent.change(search, { target: { value: 'Command Center' } })
+  expect(screen.getByRole('heading', { name: /Batch 10 — Meet the New Ozzie Command Center/ })).toBeInTheDocument()
+  expect(screen.queryByRole('heading', { name: /Batch 11 — Find Updates Faster/ })).not.toBeInTheDocument()
+
+  fireEvent.change(search, { target: { value: 'Team Management adds Member and Lead assignment' } })
+  expect(screen.queryByRole('heading', { name: 'Team Management adds Member and Lead assignment' })).not.toBeInTheDocument()
+  expect(screen.getByText('No updates match your search.')).toBeInTheDocument()
+
+  fireEvent.click(screen.getByRole('button', { name: 'Clear search' }))
+  expect(search).toHaveValue('')
+  expect(screen.getByRole('heading', { name: /Batch 11 — Find Updates Faster/ })).toBeInTheDocument()
 })
