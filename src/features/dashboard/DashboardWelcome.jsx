@@ -20,7 +20,7 @@ function DashIcon({ type }) {
   return <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill={type === 'favorite' ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{paths[type]}</svg>
 }
 
-function UpdateCard({ entry, index }) {
+function UpdateCard({ entry, index, onOpenUpdates }) {
   const kinds = ['blue','green','violet','amber','rose']
   return <article className={`dashboard-update-card dashboard-update-${kinds[index]}`}>
     <div className="dashboard-update-top">
@@ -30,6 +30,8 @@ function UpdateCard({ entry, index }) {
     </div>
     <h3>{entry.title}</h3>
     <p>{entry.area}</p>
+    <button type="button" className="dashboard-update-read" onClick={onOpenUpdates}
+      aria-label={`Read full release notes for ${entry.title}`}>Read update <span aria-hidden="true">→</span></button>
   </article>
 }
 
@@ -92,7 +94,7 @@ export function DashboardWelcome({
         <button type="button" onClick={onOpenUpdates}>View All Updates <span aria-hidden="true">→</span></button>
       </div>
       <div className="dashboard-updates-grid">
-        {latest.map((entry,index) => <UpdateCard key={entry.id} entry={entry} index={index}/>)}
+        {latest.map((entry,index) => <UpdateCard key={entry.id} entry={entry} index={index} onOpenUpdates={onOpenUpdates}/>)}
       </div>
     </section>
 
