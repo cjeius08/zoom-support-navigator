@@ -19,36 +19,55 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   expect(data.metadata.updatePolicy).toMatch(/Admin-only operational or administrative changes/i)
   expect(data.metadata.updatePolicy).toMatch(/Developer-only work/i)
   expect(data.updates.length).toBeGreaterThanOrEqual(4)
-  expect(data.updates[0]).toMatchObject({ id: 'ozzie-2-day-night-modes', date: '2026-10-15', audience: 'all' })
-  expect(data.updates[1]).toMatchObject({ id: 'admin-home-live-visitors', date: '2026-10-15', audience: 'admin' })
-  expect(data.updates[2]).toMatchObject({ id: 'flex-hub-source-import-process-documents', date: '2026-10-14', audience: 'all' })
-  expect(data.updates[3]).toMatchObject({ id: 'flex-hub-agent-reference-videos', date: '2026-10-14', audience: 'all' })
-  expect(data.updates[4]).toMatchObject({ id: 'meeting-breakout-room-process-guides', date: '2026-10-14', audience: 'all' })
-  expect(data.updates.slice(5, 10).map(entry => entry.id)).toEqual([
+  // New releases can be prepended without invalidating historical entries.
+  // Keep the newest announcements visible, while verifying the earlier
+  // sequence and all previous records are still preserved.
+  expect(data.updates.slice(0, 3)).toEqual(expect.arrayContaining([
+    expect.objectContaining({ id: 'ozzie-workspace-complete-uiux-revamp', date: '2026-10-16', audience: 'all' }),
+    expect.objectContaining({ id: 'ozzie-dashboard-home-experience-refresh', date: '2026-10-16', audience: 'all' }),
+    expect.objectContaining({ id: 'ozzie-navigation-accessibility-polish', date: '2026-10-16', audience: 'all' }),
+  ]))
+  const establishedHistory = [
+    'ozzie-2-day-night-modes',
+    'admin-home-live-visitors',
+    'flex-hub-source-import-process-documents',
+    'flex-hub-agent-reference-videos',
+    'meeting-breakout-room-process-guides',
     'smart-search-relevance-hardening',
     'common-issue-scripts-process-roadblocks',
     'troubleshooting-back-navigation',
     'host-arbitrator-guided-support',
     'host-roadblocks-referral-alignment',
-  ])
-  expect(data.updates[5]).toMatchObject({
-    date: '2026-09-26',
-    audience: 'all',
-  })
-  expect(data.updates[10]).toMatchObject({
-    id: 'faq-roadblock-matrix-support-reference',
-    date: '2026-09-25',
-    area: 'Home / Agent Reference',
-    audience: 'all',
-    status: 'historical',
-  })
-  expect(data.updates[11]).toMatchObject({ id: 'flex-arbitration-zoom-support-greeting', audience: 'all' })
-  expect(data.updates[12]).toMatchObject({ id: 'windows-device-sandbox-home-shortcut', audience: 'all' })
-  expect(data.updates.slice(13, 16).map(entry => entry.id)).toEqual([
+    'faq-roadblock-matrix-support-reference',
+    'flex-arbitration-zoom-support-greeting',
+    'windows-device-sandbox-home-shortcut',
     'process-documents-search-normalization',
     'new-call-session-reset',
     'common-issues-smart-routing',
-  ])
+  ]
+  const historicalIds = data.updates.map(entry => entry.id)
+  const historicalIndexes = establishedHistory.map(id => historicalIds.indexOf(id))
+  expect(historicalIndexes.every(index => index >= 0)).toBe(true)
+  expect(historicalIndexes).toEqual([...historicalIndexes].sort((a, b) => a - b))
+  expect(data.updates.find(entry => entry.id === 'ozzie-2-day-night-modes'))
+    .toMatchObject({ date: '2026-10-15', audience: 'all' })
+  expect(data.updates.find(entry => entry.id === 'admin-home-live-visitors'))
+    .toMatchObject({ date: '2026-10-15', audience: 'admin' })
+  expect(data.updates.find(entry => entry.id === 'flex-hub-source-import-process-documents'))
+    .toMatchObject({ date: '2026-10-14', audience: 'all' })
+  expect(data.updates.find(entry => entry.id === 'flex-hub-agent-reference-videos'))
+    .toMatchObject({ date: '2026-10-14', audience: 'all' })
+  expect(data.updates.find(entry => entry.id === 'meeting-breakout-room-process-guides'))
+    .toMatchObject({ date: '2026-10-14', audience: 'all' })
+  expect(data.updates.find(entry => entry.id === 'smart-search-relevance-hardening'))
+    .toMatchObject({ date: '2026-09-26', audience: 'all' })
+  expect(data.updates.find(entry => entry.id === 'faq-roadblock-matrix-support-reference'))
+    .toMatchObject({
+      date: '2026-09-25',
+      area: 'Home / Agent Reference',
+      audience: 'all',
+      status: 'historical',
+    })
   expect(data.updates.map(entry => entry.id)).toEqual(expect.arrayContaining([
     'troubleshooting-back-navigation',
     'host-arbitrator-guided-support',
