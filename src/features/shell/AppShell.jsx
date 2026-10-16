@@ -289,7 +289,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
   return <div className="app-shell app-shell-horizontal" data-view={currentView} style={style}>
     <header className="app-header app-header-horizontal">
       <div className="app-header-brand-row">
-        <div className="ozzie-brand-dock" aria-label="Ozzie — Ogletree Support Workspace">
+        <div className="ozzie-brand-dock" aria-label="Ozzie for Ogletree">
           <OzzieBrandImage variant="full" />
         </div>
 
