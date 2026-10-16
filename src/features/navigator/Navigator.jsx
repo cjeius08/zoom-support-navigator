@@ -670,7 +670,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
             </div>
           </section>}
 
-          {libraryTab === 'faq' && <section className="support-reference-view" aria-labelledby="support-faq-heading">
+          {libraryTab === 'faq' && <section className="support-reference-view faq-compact-view" aria-labelledby="support-faq-heading">
             <p className="eyebrow">Need to know</p>
             <h2 id="support-faq-heading">Need to Know / FAQ</h2>
             <p className="navigator-tab-intro">Quick reference for the account and meeting behaviors agents are most likely to explain during an arbitrator support call.</p>
