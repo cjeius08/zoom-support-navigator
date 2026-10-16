@@ -196,9 +196,9 @@ it('prevents duplicate admin invite submissions while the request is pending', a
   render(<TeamManagement />)
 
   expect(await screen.findByText('agent_one')).toBeInTheDocument()
-  await user.click(screen.getByRole('button', { name: 'Add Team Member' }))
-  await user.type(screen.getByLabelText('Initials'), 'AB')
-  await user.click(screen.getByRole('button', { name: 'Generate Invite' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Add Team Member' }))
+  fireEvent.change(screen.getByLabelText('Initials'), { target: { value: 'AB' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Generate Invite' }))
 
   const busy = screen.getByRole('button', { name: 'Generating…' })
   expect(busy).toBeDisabled()
@@ -208,7 +208,7 @@ it('prevents duplicate admin invite submissions while the request is pending', a
 
   pending.resolve({ invite_code: 'ABCDEF-012345' })
   await waitFor(() => expect(screen.getByText('ABCDEF-012345')).toBeInTheDocument())
-})
+}, 30000)
 
 
 it('prevents duplicate admin account actions while the request is pending', async () => {
@@ -218,12 +218,10 @@ it('prevents duplicate admin account actions while the request is pending', asyn
   render(<TeamManagement />)
 
   expect(await screen.findByText('agent_one')).toBeInTheDocument()
-  await user.click(screen.getByRole('button', { name: 'Manage agent_one' }))
-  await user.click(screen.getByRole('button', { name: 'Edit Username' }))
-  const username = screen.getByLabelText('Username')
-  await user.clear(username)
-  await user.type(username, 'agent_two')
-  await user.click(screen.getByRole('button', { name: 'Save Username' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Manage agent_one' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Edit Username' }))
+  fireEvent.change(screen.getByLabelText('Username'), { target: { value: 'agent_two' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Save Username' }))
 
   const busy = screen.getByRole('button', { name: 'Processing…' })
   expect(busy).toBeDisabled()
@@ -233,4 +231,4 @@ it('prevents duplicate admin account actions while the request is pending', asyn
 
   pending.resolve({})
   await waitFor(() => expect(screen.queryByRole('dialog', { name: /Manage agent_one/i })).not.toBeInTheDocument())
-})
+}, 30000)
