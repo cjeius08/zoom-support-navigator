@@ -16,7 +16,7 @@ import { ESCALATION_REQUIREMENTS, FAQ_ITEMS, ROADBLOCK_MATRIX, SUPPORT_HELPFUL_L
 import { HOST_GUIDED_ROUTES } from '../../data/hostGuidedRoutes'
 import { HOST_ROADBLOCKS } from '../../data/arbitratorHostSupport'
 import { DashboardWelcome } from '../dashboard/DashboardWelcome'
-import { guidedRouteForHostTopic, hostProcesses, searchHostRoadblocks, searchHostTopics } from '../../data/hostExperience'
+import { guidedRouteForHostTopic, hostFaqItems, hostProcesses, searchHostRoadblocks, searchHostTopics } from '../../data/hostExperience'
 
 const categories = [
   ['join', 'Joining Meetings', 'Links, waiting rooms, access errors'],
