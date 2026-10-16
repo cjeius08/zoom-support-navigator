@@ -1,0 +1,111 @@
+/* Compact Host/Arbitrator and Participant FAQs (Batch 9 follow-up).
+ * Scoped to FAQ tab ONLY: no hiding/truncating answers, no changed content,
+ * links, call flow, permissions or data. Maintains >= readable body tokens
+ * at 67% zoom and supports both approved Day/Night palettes.
+ */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: .35rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view > .eyebrow {
+  margin: 0;
+  color: var(--theme-blue-ink);
+  line-height: 1.35;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view > h2 {
+  margin: 0;
+  color: var(--read-ink);
+  line-height: 1.3;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view > .navigator-tab-intro {
+  margin: 0 0 .3rem;
+  color: var(--read-body);
+  max-width: 78ch;
+  line-height: 1.45;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view :is(.support-faq-grid,.support-reference-grid) {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  align-items: start;
+  gap: .55rem;
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view :is(.support-faq-grid,.support-reference-grid) > article {
+  display: grid;
+  align-content: start;
+  gap: .28rem;
+  min-width: 0;
+  margin: 0;
+  padding: .68rem .78rem;
+  border: 1px solid var(--read-border);
+  border-radius: .7rem;
+  background: var(--read-bg);
+  color: var(--read-ink);
+  box-shadow: 0 2px 8px rgba(25,69,134,.035);
+}
+html[data-theme="night"] .app-shell-horizontal .faq-compact-view :is(.support-faq-grid,.support-reference-grid) > article {
+  box-shadow: 0 2px 9px rgba(0,0,0,.19);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view :is(.support-faq-grid,.support-reference-grid) > article h3 {
+  min-width: 0;
+  margin: 0;
+  color: var(--read-ink);
+  font-size: var(--ozzie-legible-title,1rem) !important;
+  font-weight: 760;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view :is(.support-faq-grid,.support-reference-grid) > article :is(p,li) {
+  min-width: 0;
+  margin: 0;
+  color: var(--read-body);
+  font-size: var(--ozzie-legible-body,1rem) !important;
+  line-height: 1.46;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view :is(.support-faq-grid,.support-reference-grid) > article ul {
+  margin: .3rem 0 0;
+  padding-left: 1.15rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view :is(.support-faq-grid,.support-reference-grid) > article li + li {
+  margin-top: .3rem;
+}
+/* Participant's official resource remains obvious without a huge banner. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view .support-helpful-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .4rem .85rem;
+  min-width: 0;
+  margin: .4rem 0 0;
+  padding: .65rem .8rem;
+  background: var(--read-soft);
+  color: var(--read-ink);
+  border: 1px solid var(--read-border);
+  border-radius: .7rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view .support-helpful-links :is(h3,.eyebrow) {
+  color: var(--read-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view .support-helpful-links a {
+  color: var(--read-link);
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+}
+@media (max-width:1250px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view :is(.support-faq-grid,.support-reference-grid) {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+}
+@media (max-width:720px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view :is(.support-faq-grid,.support-reference-grid) {
+    grid-template-columns: minmax(0,1fr);
+  }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view :is(.support-faq-grid,.support-reference-grid) > article {
+    padding: .7rem .75rem;
+  }
+}
