@@ -10,6 +10,7 @@ import { GlobalFeedbackButton } from '../feedback/GlobalFeedbackButton'
 import { CallDocumentation } from '../training/CallDocumentation'
 import { ScopeCheck } from '../live/ScopeCheck'
 import { ReadinessLab } from '../readiness/ReadinessLab'
+import { CommandCenter } from '../command/CommandCenter'
 
 function Icon({ type }) {
   const paths = {
@@ -123,7 +124,7 @@ function NavDropdown({ label, active = false, children }) {
   </details>
 }
 
-export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, onDashboardSearch = () => {}, onDashboardUpdates = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onOpenMySavedNotes = () => {}, documentationHandoff = null, onDocumentationHandoffApplied = () => {}, callResetToken = 0, theme = 'day', onThemeChange = () => {}, onFeedback, reportContext = {}, avatars }) {
+export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswordChange, onMeetOzzie = () => {}, onDashboardSearch = () => {}, onDashboardUpdates = () => {}, commandOpen = false, commandRole = 'Host', onCommandClose = () => {}, onCommandSelect = () => {}, canMeetOzzie = false, currentView = 'navigator', onNavigate = () => {}, onBack = () => {}, canGoBack = false, onOpenReadinessResource = () => {}, onOpenMySavedNotes = () => {}, documentationHandoff = null, onDocumentationHandoffApplied = () => {}, callResetToken = 0, theme = 'day', onThemeChange = () => {}, onFeedback, reportContext = {}, avatars }) {
   const [open, setOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [avatarOpen, setAvatarOpen] = useState(false)
@@ -242,6 +243,17 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
       pointerQuery?.removeEventListener?.('change', updateCompactNav)
     }
   }, [])
+
+  useEffect(() => {
+    function openCommandShortcut(event) {
+      if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === 'k') {
+        event.preventDefault()
+        if (!event.repeat) onDashboardSearch()
+      }
+    }
+    document.addEventListener('keydown', openCommandShortcut)
+    return () => document.removeEventListener('keydown', openCommandShortcut)
+  }, [onDashboardSearch])
 
   useDialogFocus(profileDialogRef, profileOpen, closeProfile)
 
@@ -368,6 +380,12 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
       </nav>
     </header>
 
+    {commandOpen && <CommandCenter
+      isAdmin={isAdmin}
+      initialRole={commandRole}
+      onClose={onCommandClose}
+      onSelect={onCommandSelect}
+    />}
     {open && <button type="button" className="nav-backdrop" aria-label="Close navigation" onClick={() => closeNavigation({ restoreFocus: true })} />}
 
     <main className="app-main app-main-horizontal">
