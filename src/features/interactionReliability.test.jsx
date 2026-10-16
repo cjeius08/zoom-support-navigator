@@ -169,6 +169,9 @@ it('keeps profile changes recoverable with busy state, inline errors, Escape, an
   // Preserve real state and focus assertions without performing 22 expensive
   // jsdom pointer/keystroke simulations in the large workspace header.
   const opener = screen.getByRole('button', { name: /agent_1 account/i })
+  // fireEvent.click does not focus its target like a real pointer activation.
+  // Seed the opener's focus so Escape can restore it correctly.
+  opener.focus()
   fireEvent.click(opener)
   fireEvent.click(screen.getByRole('button', { name: 'Change Password' }))
   fireEvent.change(screen.getByLabelText('New password'), { target: { value: 'password123' } })
