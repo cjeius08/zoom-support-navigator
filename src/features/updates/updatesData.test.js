@@ -22,11 +22,12 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   // New releases can be prepended without invalidating historical entries.
   // Keep the newest announcements visible, while verifying the earlier
   // sequence and all previous records are still preserved.
-  expect(data.updates.slice(0, 2)).toEqual([
+  expect(data.updates.slice(0, 3)).toEqual([
+    expect.objectContaining({ id: 'batch-12-official-brand-login-and-release-quality', date: '2026-10-16', audience: 'all' }),
     expect.objectContaining({ id: 'batch-11-searchable-updates-and-dashboard-release-links', date: '2026-10-16', audience: 'all' }),
     expect.objectContaining({ id: 'batch-10-global-command-center', date: '2026-10-16', audience: 'all' }),
   ])
-  expect(data.updates.slice(2, 5)).toEqual(expect.arrayContaining([
+  expect(data.updates.slice(3, 6)).toEqual(expect.arrayContaining([
     expect.objectContaining({ id: 'ozzie-workspace-complete-uiux-revamp', date: '2026-10-16', audience: 'all' }),
     expect.objectContaining({ id: 'ozzie-dashboard-home-experience-refresh', date: '2026-10-16', audience: 'all' }),
     expect.objectContaining({ id: 'ozzie-navigation-accessibility-polish', date: '2026-10-16', audience: 'all' }),
@@ -248,4 +249,13 @@ it('publishes Batch 10 and Batch 11 to both Member and Admin update feeds withou
     .toMatch(/Ctrl\+K/)
   expect(data.updates.find(item => item.id === 'batch-11-searchable-updates-and-dashboard-release-links').changed)
     .toMatch(/release history/i)
+})
+
+it('keeps Batch 12 user-facing login and branding announcements visible', () => {
+  const data = JSON.parse(readFileSync(join(cwd(), 'src/features/updates/updatesData.json'), 'utf8'))
+  const entry = data.updates.find(item => item.id === 'batch-12-official-brand-login-and-release-quality')
+  expect(entry).toMatchObject({ audience: 'all', date: '2026-10-16' })
+  expect(entry.changed).toMatch(/Username and Password/i)
+  expect(entry.changed).toMatch(/FOR OGLETREE/i)
+  expect(entry.checks.some(check => /Sign In/.test(check))).toBe(true)
 })
