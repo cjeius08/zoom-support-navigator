@@ -1,0 +1,78 @@
+name: Ozzie Release Quality
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ozzie-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Release notes, tests and build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out complete commit history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Ensure user-facing batches appear in What’s New
+        env:
+          RELEASE_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          RELEASE_HEAD_SHA: ${{ github.sha }}
+        run: node scripts/check-release-notes.mjs
+      - name: Check JavaScript and React lint
+        run: npm run lint
+      - name: Run regression tests
+        run: npm test
+      - name: Build production site
+        run: npm run build
+      - name: Confirm Batch 12 branding and deploy marker in dist
+        run: |
+          test -f dist/index.html
+          test -f dist/assets/ozzie-for-ogletree-2026.svg
+          grep -q 'name="ozzie-release" content="batch-12"' dist/index.html
+          echo "Build and release-marker validation passed."
+      - name: Save build for deployment inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: ozzie-verified-dist
+          path: dist/
+          retention-days: 7
+
+  public-hosting:
+    name: Check existing frontend availability (informational)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check GitHub Pages HTTP response
+        continue-on-error: true
+        run: |
+          curl --fail --location --silent --show-error --retry 2 --max-time 20 \
+            --output /dev/null --write-out "GitHub Pages HTTP %{http_code}\n" \
+            https://cjeius08.github.io/zoom-support-navigator/
+      - name: Check Cloudflare Pages when URL is configured
+        if: ${{ vars.OZZIE_CLOUDFLARE_URL != '' }}
+        continue-on-error: true
+        env:
+          HOST_URL: ${{ vars.OZZIE_CLOUDFLARE_URL }}
+        run: curl -fsSL --retry 2 --max-time 20 -o /dev/null "$HOST_URL"
+      - name: Check Netlify when URL is configured
+        if: ${{ vars.OZZIE_NETLIFY_URL != '' }}
+        continue-on-error: true
+        env:
+          HOST_URL: ${{ vars.OZZIE_NETLIFY_URL }}
+        run: curl -fsSL --retry 2 --max-time 20 -o /dev/null "$HOST_URL"
