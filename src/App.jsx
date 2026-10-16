@@ -82,6 +82,7 @@ export default function App() {
   const [commandOpen, setCommandOpen] = useState(false)
   const [commandRole, setCommandRole] = useState('Host')
   const [commandLaunch, setCommandLaunch] = useState(null)
+  const consumeCommandLaunch = useCallback(() => setCommandLaunch(null), [])
   const [trainingVideoId, setTrainingVideoId] = useState(null)
   const [trainingTarget, setTrainingTarget] = useState(null)
   const [navigatorProcessId, setNavigatorProcessId] = useState(null)
@@ -190,6 +191,7 @@ export default function App() {
   }
 
   function navigate(nextView) {
+    setCommandLaunch(null)
     const resetsTraining = nextView === 'training' && (trainingVideoId || trainingTarget)
     const resetsNavigator = nextView === 'navigator' && (navigatorProcessId || navigatorCommonIssueId)
     const changesPage = nextView !== view || resetsTraining || resetsNavigator
@@ -504,6 +506,7 @@ export default function App() {
           initialRole={commandRole}
           commandLaunch={commandLaunch}
           onCallerRoleChange={setCommandRole}
+          onCommandConsumed={consumeCommandLaunch}
           onReportContextChange={updateReportContext}
           isFavorite={isFavorite}
           isFavoriteBusy={isFavoriteBusy}
