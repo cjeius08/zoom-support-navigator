@@ -1,6 +1,5 @@
 import { PROCESSES } from '../../data/processes'
 import { FAQ_ITEMS } from '../../data/supportReference'
-import { HOST_ROADBLOCKS } from '../../data/arbitratorHostSupport'
 import { hostFaqItems, hostProcesses, hostFastestTopics, searchHostTopics, searchHostRoadblocks } from '../../data/hostExperience'
 import { searchProcesses, normalizeSearchText } from '../navigator/smartSearch'
 import { searchCommonIssueRoutes } from '../navigator/commonIssueRoutes'
