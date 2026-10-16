@@ -153,7 +153,7 @@ export function HostLibrary({
   }
 
   if (libraryTab === 'faq') {
-    return <section className="support-reference-view" aria-labelledby="host-faq-heading">
+    return <section className="support-reference-view faq-compact-view" aria-labelledby="host-faq-heading">
       <p className="eyebrow">Need to know</p>
       <h2 id="host-faq-heading">Host / Arbitrator FAQ</h2>
       <p className="navigator-tab-intro">Program-specific account and meeting behaviors relevant to arbitrator calls.</p>
