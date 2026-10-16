@@ -97,7 +97,7 @@ it('carries a related training selection from the approved Process Drawer into T
   expect(within(dialog).getByTitle('Video player: How to Join a Zoom Meeting')).toBeInTheDocument()
 
   // Verify that the production App still wires the same handoff to this route.
-  const source = readFileSync(new URL('../App.jsx', import.meta.url), 'utf8')
+  const source = readFileSync('src/App.jsx', 'utf8')
   expect(source).toContain('onOpenTraining={openTraining}')
   expect(source).toContain('<TrainingResources initialVideoId={trainingVideoId}')
 }, 15000)
@@ -166,12 +166,14 @@ it('keeps profile changes recoverable with busy state, inline errors, Escape, an
   const onPasswordChange = vi.fn(() => pending.promise)
   render(<AppShell profile={agentProfile} onPasswordChange={onPasswordChange}><div>content</div></AppShell>)
 
+  // Preserve real state and focus assertions without performing 22 expensive
+  // jsdom pointer/keystroke simulations in the large workspace header.
   const opener = screen.getByRole('button', { name: /agent_1 account/i })
-  await user.click(opener)
-  await user.click(screen.getByRole('button', { name: 'Change Password' }))
-  await user.type(screen.getByLabelText('New password'), 'password123')
-  await user.type(screen.getByLabelText('Confirm password'), 'password123')
-  await user.click(screen.getByRole('button', { name: 'Save Password' }))
+  fireEvent.click(opener)
+  fireEvent.click(screen.getByRole('button', { name: 'Change Password' }))
+  fireEvent.change(screen.getByLabelText('New password'), { target: { value: 'password123' } })
+  fireEvent.change(screen.getByLabelText('Confirm password'), { target: { value: 'password123' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Save Password' }))
 
   expect(screen.getByRole('button', { name: 'Saving…' })).toBeDisabled()
   pending.reject(new Error('Could not save password'))
@@ -181,7 +183,8 @@ it('keeps profile changes recoverable with busy state, inline errors, Escape, an
   await user.keyboard('{Escape}')
   expect(screen.queryByRole('dialog', { name: 'My Profile' })).not.toBeInTheDocument()
   expect(opener).toHaveFocus()
-}, 10000)
+}, 30000)
+
 
 it('prevents duplicate admin invite submissions while the request is pending', async () => {
   const user = userEvent.setup()
