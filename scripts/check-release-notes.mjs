@@ -21,9 +21,9 @@ for (const number of [10, 11, 12]) {
     errors.push(`Missing What’s New entry for Batch ${number}`)
   }
 }
-if (!history[0]?.id.startsWith('batch-12-') && history[0]?.date === '2026-10-16') {
-  // Batch 12 must remain first until another release is actually published.
-  errors.push('Batch 12 is not the newest October 16 announcement')
+const indexOfBatch = number => history.findIndex(entry => entry.id.startsWith(`batch-${number}-`))
+if (!(indexOfBatch(12) < indexOfBatch(11) && indexOfBatch(11) < indexOfBatch(10))) {
+  errors.push('Batches 12, 11 and 10 are not in newest-first release order')
 }
 
 const base = process.env.RELEASE_BASE_SHA
