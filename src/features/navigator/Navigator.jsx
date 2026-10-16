@@ -102,7 +102,7 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = false, onOpenTraining = () => {}, onOpenFavorites = () => {}, onOpenFeedback = () => {}, onOpenUpdates = () => {}, profile = null, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', commandLaunch = null, onCallerRoleChange = () => {}, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
+export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = false, onOpenTraining = () => {}, onOpenFavorites = () => {}, onOpenFeedback = () => {}, onOpenUpdates = () => {}, profile = null, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', commandLaunch = null, onCallerRoleChange = () => {}, onCommandConsumed = () => {}, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -190,7 +190,10 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
     const roadblock = kind === 'roadblock' && role === 'Host' ? HOST_ROADBLOCKS.find(item => item.id === id) : null
     const approvedFaqs = role === 'Host' ? hostFaqItems(FAQ_ITEMS) : FAQ_ITEMS
     const faq = kind === 'faq' ? approvedFaqs.find(item => item.label === id) : null
-    if (!process && !issue && !hostRoute && !roadblock && !faq) return
+    if (!process && !issue && !hostRoute && !roadblock && !faq) {
+      onCommandConsumed()
+      return
+    }
     setCallContext(current => ({ ...current, role, status: faq ? current.status : 'active' }))
     onCallerRoleChange(role)
     setSelected(null)
@@ -215,7 +218,8 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
       setLibraryTab('faq')
       setFaqFocusLabel(faq.label)
     }
-  }, [commandLaunch, onResourceViewed, onCallerRoleChange])
+    onCommandConsumed()
+  }, [commandLaunch, onResourceViewed, onCallerRoleChange, onCommandConsumed])
 
   useEffect(() => {
     if (!faqFocusLabel || libraryTab !== 'faq') return undefined
