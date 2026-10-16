@@ -5,6 +5,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { FAQ_ITEMS } from '../../data/supportReference'
+import { hostFaqItems } from '../../data/hostExperience'
 import { HostLibrary } from '../navigator/HostLibrary'
 import { Navigator } from '../navigator/Navigator'
 
@@ -20,8 +21,9 @@ describe('Compact but readable Host and Participant FAQs',()=>{
     const section = screen.getByRole('heading',{name:'Host / Arbitrator FAQ'}).closest('section')
     expect(section).toHaveClass('faq-compact-view')
     const cards=section.querySelectorAll('.support-reference-grid > article')
-    expect(cards.length).toBeGreaterThanOrEqual(FAQ_ITEMS.length)
-    for(const item of FAQ_ITEMS) {
+    const hostApproved = hostFaqItems(FAQ_ITEMS)
+    expect(cards).toHaveLength(hostApproved.length)
+    for(const item of hostApproved) {
       const card=Array.from(cards).find(x=>x.querySelector('h3')?.textContent===item.label)
       expect(card, item.label).toBeDefined()
       expect(card).toHaveTextContent(item.answer)
