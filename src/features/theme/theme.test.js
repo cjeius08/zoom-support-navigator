@@ -43,6 +43,6 @@ it('preserves the approved full-detail background imagery without blurring it', 
   expect(shell).toContain('assets/ozzie-night-library.png')
   expect(shell).toContain('<OzzieBrandImage variant="full" />')
   const brand = readFileSync(join(cwd(), 'src/lib/brandAssets.js'), 'utf8')
-  expect(brand).toContain('assets/ozzie-official-full.png')
+  expect(brand).toContain('assets/ozzie-for-ogletree-2026.svg')
   expect(brand).toContain('assets/ozzie-official-owl.png')
 })
