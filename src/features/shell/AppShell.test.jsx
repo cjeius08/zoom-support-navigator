@@ -73,7 +73,7 @@ it('shows the planned horizontal navigation and role-aware account controls', ()
   expect(screen.getByRole('button', { name: /ja_admin account/i })).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /ja_admin account/i })).toHaveTextContent('Admin')
   expect(screen.getAllByTestId('nav-icon').length).toBeGreaterThan(3)
-  expect(screen.getByRole('img', { name: /Ozzie — Ogletree Support Workspace/i })).toBeInTheDocument()
+  expect(screen.getByRole('img', { name: /Ozzie for Ogletree/i })).toBeInTheDocument()
 })
 
 it('keeps top navigation dropdowns in one exclusive group so menus cannot overlap', () => {
@@ -91,8 +91,8 @@ it('keeps Ozzie standalone at the top-left instead of inside a sidebar', () => {
 
   const brand = container.querySelector('.ozzie-brand-dock')
   expect(brand).toBeInTheDocument()
-  expect(brand.querySelector('img')).toHaveAttribute('alt', 'Ozzie — Ogletree Support Workspace')
-  expect(brand.querySelector('img').getAttribute('src')).toContain('ozzie-official-full.png')
+  expect(brand.querySelector('img')).toHaveAttribute('alt', 'Ozzie for Ogletree')
+  expect(brand.querySelector('img').getAttribute('src')).toContain('ozzie-for-ogletree-2026.svg')
   expect(container.querySelector('.sidebar')).not.toBeInTheDocument()
   expect(screen.queryByText('Tier 1 Zoom Support')).not.toBeInTheDocument()
 })
