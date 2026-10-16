@@ -266,3 +266,26 @@ html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboar
     max-width:72%;
   }
 }
+
+/* Batch 11: real action on every Dashboard release preview. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-update-read {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: .3rem .1rem;
+  background: transparent;
+  border: 0;
+  border-radius: .2rem;
+  color: var(--read-link, #0766dc);
+  text-align: left;
+  font-size: .84rem;
+  font-weight: 750;
+  line-height: 1.35;
+  cursor: pointer;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-update-read:is(:hover,:focus-visible) {
+  text-decoration: underline;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboard-update-read:focus-visible {
+  outline: 3px solid var(--read-ring, #3299f6);
+  outline-offset: 2px;
+}
