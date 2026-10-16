@@ -10,25 +10,56 @@
   },
   "updates": [
     {
+      "id": "ozzie-workspace-complete-uiux-revamp",
+      "date": "2026-10-16",
+      "area": "Workspace / UI & Experience",
+      "audience": "all",
+      "title": "A Reimagined Ozzie — Complete UI/UX Revamp",
+      "changed": "Ozzie has undergone a complete visual transformation, bringing a more modern, intuitive, and streamlined experience to the support workspace. From redesigned dashboard cards and improved navigation to refined typography, clearer information hierarchy, consistent spacing, and enhanced Day and Night themes, every improvement has one purpose: helping Agents, Leads, and Operations work smarter, find information faster, and move through support workflows with greater clarity and confidence. The refreshed blue-and-white Day Mode and near-black Night Mode now use carefully balanced contrast and recognizable visual cues throughout Home, Knowledge, Call Flow, Reports, and Admin pages. This refresh goes beyond aesthetics: it reduces visual clutter, makes important tools easier to discover, and creates a more cohesive experience without replacing approved support content, changing access permissions, or altering saved call data.",
+      "checks": [
+        "Explore Dashboard, Call Flow, Knowledge, Reports, and (if authorized) Admin in both Day and Night Mode; confirm readable text, cards, links, buttons, and dialogs.",
+        "Use the top navigation, Smart Search, and an existing support guide; confirm the familiar tools and approved workflows remain available.",
+        "Resize the browser and try keyboard navigation; confirm essential controls and content remain accessible."
+      ]
+    },
+    {
+      "id": "ozzie-dashboard-home-experience-refresh",
+      "date": "2026-10-16",
+      "area": "Dashboard / Home",
+      "audience": "all",
+      "title": "A Smarter Dashboard — Everything You Need, Within Reach",
+      "changed": "The Ozzie Dashboard has been thoughtfully rebuilt around the way the team works. A welcoming hero now highlights Smart Search and training, with Ozzie's friendly open-arms mascot. A distinct Feedback card makes suggestions and issue reports easier to find, while compact What's New cards surface the five latest announcements right on Home. Four practical Quick Access shortcuts lead directly to Smart Search, Favorites, Training & Resources, and Feedback. Clearer card groupings and spacing help agents spot the next action quickly and stay focused during live support.",
+      "checks": [
+        "Open Dashboard and confirm the Welcome, Feedback, What's New, and Quick Access sections are clearly separated and readable.",
+        "Select Smart Search, Favorites, Training & Resources, and Feedback from Quick Access; confirm each opens its corresponding tool.",
+        "Select View All Updates to read complete release details and older updates."
+      ]
+    },
+    {
+      "id": "ozzie-navigation-accessibility-polish",
+      "date": "2026-10-16",
+      "area": "Navigation / Accessibility",
+      "audience": "all",
+      "title": "Clearer Navigation, Better Readability, Smoother Workflows",
+      "changed": "Refined Ozzie's top navigation, page layouts, text contrast, and responsive behavior to make everyday support tasks more comfortable and predictable. The updated header brings together Dashboard, Call Flow, Knowledge, Readiness, Reports, and authorized Admin tools, with easier-to-recognize icons and access to search, updates, and profile settings. Improved dropdown behavior, spacing, focus states, and mobile handling help prevent overlapping controls and make information easier to navigate. Blue accents guide attention in Day Mode, while true dark surfaces and legible text keep Night Mode polished without sacrificing clarity.",
+      "checks": [
+        "Open each available top-navigation section and test menu behavior with mouse, keyboard, and mobile/touch layouts.",
+        "Check search, update notifications, profile menu, and dropdowns in both display modes for overlap or clipped text.",
+        "Review longer Process Documents, call documentation forms, and reporting tables for legibility on narrow screens."
+      ]
+    },
+    {
       "id": "ozzie-2-day-night-modes",
       "date": "2026-10-15",
       "area": "Appearance / Home",
       "audience": "all",
       "title": "Ozzie Day & Night Mode — one-click Home toggle",
-      "changed": "Replaced the Ozzie Original and Alaga appearance choices with two approved workspace modes: Day Mode (bright, sharp professional office background, pale grey/ivory cards and subtle turquoise accents) and Night Mode (crisp premium legal-library image with charcoal/slate surfaces and warm highlights). The original Ozzie owl wordmark, existing layout, tools and workflows are unchanged. Switching themes no longer adds a blur filter to the background image. On Home, use the small Day / Night toggle above the Current Call bar. You can also choose either theme from Profile → Appearance. The preference is remembered on the current browser/device. Older saved Ozzie settings migrate automatically. Typography update: Candara is now the preferred interface font throughout Ozzie, with system-font fallbacks on devices without Candara. No font file is distributed, and the approved Ozzie owl wordmark/logo remains unchanged. Official logo update: the header and sign-in page now use the exact approved transparent Ozzie owl-and-wordmark image; the browser tab uses the matching owl-only icon. The same original assets are reused in Day and Night Mode without recoloring. Header refresh checkpoint: semantic global Day/Night color tokens are standardized, Candara is explicitly used on navigation/header controls, active tabs and account/menu text have stronger contrast, and the approved full Ozzie logo is slightly larger. Existing cards and all call workflows remain unchanged. Readability QA update: refined Process Documents source views, Flex Arbitration Hub references and videos, Home issue-guide cards, the expanded Live Call Flow, floating Call Documentation, and Admin/Usage/Reports/Saved Notes in both modes. This pairs solid card surfaces with readable foreground colors and clearer inputs, selected states, and links. Layout, approved process text, automatic call documentation, Google Sheet reporting, permissions and visitor tracking remain unchanged.",
+      "changed": "Introduced Ozzie's persistent Day and Night display choices with a one-click Dashboard toggle and Profile → Appearance selection. The final Ozzie workspace refresh pairs a clean blue-and-white Day Mode with a polished near-black Night Mode, readable cards, clear interactive states, and consistent color contrast across key pages. Candara is preferred where installed, with readable fallbacks elsewhere. The official approved Ozzie owl-and-wordmark remains on the sign-in page and header, with the matching owl-only browser icon. Changing appearance does not alter existing support procedures, permissions, or saved records. For the broader visual and navigation redesign, see the newer October 16 updates above.",
       "checks": [
-        "Open Home and switch Day ↔ Night using the compact top-right toggle; inspect crisp background edges and text contrast.",
-        "Open Profile → Appearance and confirm only Day Mode and Night Mode are offered.",
-        "Reload and confirm the selected mode persists; both options use the original Ozzie logo.",
-        "Check Smart Search, approved Call Flow, Call Documentation, Google Sheet handoff, Readiness Lab, Flex Arbitration Hub, and Admin Live Visitors for readability and unchanged behavior.",
-        "Test desktop and mobile widths, especially search autocomplete/dropdown and floating tools.",
-        "Compare text in Home, Smart Search, Knowledge, Call Documentation, and Admin on Windows and a mobile device; confirm Candara where installed and a readable fallback elsewhere.",
-        "Check full official Ozzie logo in the header and sign-in, with navy lettering readable on the light brand plate in both Day and Night; confirm matching owl-only browser tab icon.",
-        "In Day and Night Mode, check the larger official full Ozzie logo, Home/Call Flow/Knowledge/Readiness/Reports/Admin nav readability, active tab underline, menu dropdowns, profile/account button, and mobile navigation without changing page cards.",
-        "Day and Night: check Process Documents library and source text reader, Flex Arbitration Hub guide and both video links.",
-        "Day and Night: open Fastest Routes / Common Issues, then expand Live Call Flow and inspect headings, step scripts, and table text.",
-        "Day and Night: open floating Call Documentation, test fields, outcome selection, generated note preview, and existing Google Sheet handoff.",
-        "Admin only: inspect Usage Analytics filters, date range/report tables, Saved Notes, Call Notes Report, Feedback Queue and Live Visitors. Verify no permissions or data changes."
+        "Switch Day ↔ Night from Dashboard or Profile → Appearance and confirm the preference is remembered after reload.",
+        "Confirm the official Ozzie branding appears on the sign-in page, header, and browser tab.",
+        "Review Dashboard, Smart Search, Knowledge, Call Documentation, Reports, and authorized Admin pages for readable colors, labels, and controls in both modes.",
+        "Check responsive layouts, menus, and floating tools for unchanged functionality."
       ]
     },
     {
