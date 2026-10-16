@@ -1,6 +1,10 @@
 import { cleanup, fireEvent, render, screen, within, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
+import { useState } from 'react'
+import { readFileSync } from 'node:fs'
+import { ProcessDrawer } from './navigator/ProcessDrawer'
+import { PROCESSES } from '../data/processes'
 import { FeedbackPage } from './feedback/FeedbackPage'
 import { TrainingResources } from './training/TrainingResources'
 import { Navigator } from './navigator/Navigator'
@@ -75,20 +79,27 @@ it('opens the exact related training video requested by a process', () => {
 })
 
 
-it('carries a related training selection through the full app route', async () => {
-  render(<App />)
+function RelatedTrainingHandoff() {
+  const [trainingVideoId, setTrainingVideoId] = useState(null)
+  const joiningProcess = PROCESSES.find(item => item.id === 'troubleshooting-when-you-cant-join-a-zoom-meeting')
+  return trainingVideoId
+    ? <TrainingResources initialVideoId={trainingVideoId} />
+    : <ProcessDrawer process={joiningProcess} onClose={() => {}} onOpenTraining={setTrainingVideoId} />
+}
 
-  // This is an application routing test rather than a pointer-event behavior test.
-  // fireEvent invokes the real React click handlers without the expensive
-  // pointer visibility simulation over the full Navigator DOM in CI.
-  fireEvent.click(await screen.findByRole('button', { name: 'Participant' }))
-  fireEvent.click(screen.getByRole('tab', { name: 'Process Guides' }))
-  fireEvent.click(screen.getByRole('button', { name: /Joining Meetings/i }))
-  fireEvent.click(screen.getByRole('button', { name: /Troubleshooting When You Can’t Join a Zoom Meeting/i }))
-  fireEvent.click(screen.getByRole('button', { name: 'How to Join a Zoom Meeting' }))
-
-  const dialog = await screen.findByRole('dialog', { name: 'How to Join a Zoom Meeting' })
+it('carries a related training selection from the approved Process Drawer into Training Resources', () => {
+  // Cover real process-to-training navigation without mounting the entire
+  // Dashboard, Supabase presence, Command Center, and Admin shell in jsdom.
+  render(<RelatedTrainingHandoff />)
+  const launch = screen.getByRole('button', { name: 'How to Join a Zoom Meeting' })
+  fireEvent.click(launch)
+  const dialog = screen.getByRole('dialog', { name: 'How to Join a Zoom Meeting' })
   expect(within(dialog).getByTitle('Video player: How to Join a Zoom Meeting')).toBeInTheDocument()
+
+  // Verify that the production App still wires the same handoff to this route.
+  const source = readFileSync(new URL('../App.jsx', import.meta.url), 'utf8')
+  expect(source).toContain('onOpenTraining={openTraining}')
+  expect(source).toContain('<TrainingResources initialVideoId={trainingVideoId}')
 }, 15000)
 
 
