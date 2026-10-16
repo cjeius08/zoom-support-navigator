@@ -20,6 +20,7 @@ import { ProcessDocuments } from './features/knowledge/ProcessDocuments'
 import { FlexHubReference } from './features/knowledge/FlexHubReference'
 import { useFavorites } from './features/favorites/useFavorites'
 import { useRecentlyViewed } from './features/favorites/useRecentlyViewed'
+import { findCommandPage } from './features/command/commandSearch'
 import { OzzieWelcome } from './features/onboarding/OzzieWelcome'
 import { assetUrl } from './lib/assetUrl'
 import { OzzieBrandImage } from './components/OzzieBrandImage'
@@ -58,6 +59,7 @@ import './features/shell/headerOverlapFix.css'
 import './features/theme/linearBlueBlack.css'
 import './features/theme/finalQaBatch9.css'
 import './features/theme/faqCompact.css'
+import './features/command/commandCenter.css'
 
 const EMPTY_REPORT_CONTEXT = {
   selected_tab: null,
@@ -77,6 +79,9 @@ export default function App() {
   const [avatarLibrary, setAvatarLibrary] = useState(() => getBundledAvatarRecords())
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState('navigator')
+  const [commandOpen, setCommandOpen] = useState(false)
+  const [commandRole, setCommandRole] = useState('Host')
+  const [commandLaunch, setCommandLaunch] = useState(null)
   const [trainingVideoId, setTrainingVideoId] = useState(null)
   const [trainingTarget, setTrainingTarget] = useState(null)
   const [navigatorProcessId, setNavigatorProcessId] = useState(null)
@@ -207,6 +212,22 @@ export default function App() {
     }
     setReportContext(EMPTY_REPORT_CONTEXT)
     setView(nextView)
+  }
+
+  function selectCommandResult(item) {
+    if (item.kind === 'page') {
+      if (!findCommandPage(item.id, profile?.role === 'creator_admin')) return
+      navigate(item.id)
+      return
+    }
+    if (!['process','issue','host','roadblock','faq'].includes(item.kind)) return
+    const role = item.role === 'Participant' ? 'Participant' : 'Host'
+    setCommandRole(role)
+    navigate('navigator')
+    // A new object for every selection reopens even the same guide, without
+    // remounting Navigator or losing a separate Call Documentation draft.
+    setCommandLaunch({ kind: item.kind, id: item.id, role })
+    trackEvent({ eventType: 'tool_open', routeId: 'navigator', toolId: 'command_center' })
   }
 
   function openSavedNotes(userId = '') {
@@ -477,9 +498,12 @@ export default function App() {
           onOpenDeviceSandbox={openDeviceSandbox}
           onTrackEvent={trackEvent}
           onAddToDocumentation={addToCallDocumentation}
-          onNewCall={startNewCall}
+          onNewCall={() => { startNewCall(); setCommandRole('Host'); setCommandLaunch(null) }}
           initialProcessId={navigatorProcessId}
           initialCommonIssueId={navigatorCommonIssueId}
+          initialRole={commandRole}
+          commandLaunch={commandLaunch}
+          onCallerRoleChange={setCommandRole}
           onReportContextChange={updateReportContext}
           isFavorite={isFavorite}
           isFavoriteBusy={isFavoriteBusy}
@@ -530,10 +554,11 @@ export default function App() {
         profile={profile}
         currentView={view}
         onNavigate={navigate}
-        onDashboardSearch={() => {
-          navigate('navigator')
-          window.requestAnimationFrame(() => document.querySelector('input[aria-label="Search support processes"]')?.focus())
-        }}
+        onDashboardSearch={() => setCommandOpen(true)}
+        commandOpen={commandOpen}
+        commandRole={commandRole}
+        onCommandClose={() => setCommandOpen(false)}
+        onCommandSelect={selectCommandResult}
         onDashboardUpdates={() => navigate('updates')}
         onBack={goBack}
         canGoBack={navigationHistory.length > 0}
