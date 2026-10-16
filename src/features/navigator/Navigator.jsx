@@ -18,6 +18,8 @@ import { HOST_ROADBLOCKS } from '../../data/arbitratorHostSupport'
 import { DashboardWelcome } from '../dashboard/DashboardWelcome'
 import { guidedRouteForHostTopic, hostFaqItems, hostProcesses, searchHostRoadblocks, searchHostTopics } from '../../data/hostExperience'
 
+const NOOP = () => {}
+
 const categories = [
   ['join', 'Joining Meetings', 'Links, waiting rooms, access errors'],
   ['audio', 'Audio & Microphone', 'Hear, speak, test, Bluetooth'],
@@ -102,7 +104,7 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = false, onOpenTraining = () => {}, onOpenFavorites = () => {}, onOpenFeedback = () => {}, onOpenUpdates = () => {}, profile = null, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', commandLaunch = null, onCallerRoleChange = () => {}, onCommandConsumed = () => {}, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
+export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = false, onOpenTraining = () => {}, onOpenFavorites = () => {}, onOpenFeedback = () => {}, onOpenUpdates = () => {}, profile = null, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', commandLaunch = null, onCallerRoleChange = NOOP, onCommandConsumed = NOOP, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = NOOP, onOpenDeviceSandbox = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
