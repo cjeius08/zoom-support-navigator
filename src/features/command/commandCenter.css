@@ -279,3 +279,14 @@ html:is([data-theme="day"],[data-theme="night"]) .command-dialog :is(button,inpu
 @media (prefers-reduced-motion: reduce) {
   html:is([data-theme="day"],[data-theme="night"]) .command-backdrop { backdrop-filter: none; }
 }
+
+/* If an FAQ was opened from Command Center, the exact question appears first
+ * and stays visually highlighted. Full answer text remains present. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view .faq-command-target {
+  background: var(--read-selected) !important;
+  border: 2px solid var(--read-ring) !important;
+  outline-offset: 2px;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .faq-compact-view .faq-command-target :is(h3,p,li) {
+  color: var(--read-ink);
+}
