@@ -10,6 +10,21 @@
   },
   "updates": [
     {
+      "id": "batch-12-official-brand-login-and-release-quality",
+      "date": "2026-10-16",
+      "area": "Sign-In / Brand Identity / Release Quality",
+      "audience": "all",
+      "title": "Batch 12 — New Ozzie for Ogletree Login & Official Branding",
+      "changed": "Ozzie’s welcome and sign-in experience has a modern, responsive two-panel redesign inspired by the approved midnight-blue and cyan concept. The left panel highlights how Ozzie helps the team find answers faster, stay organized and work together; the right panel keeps the existing secure Username and Password sign-in, Show/Hide Password and invitation-based Activate Account workflow. The first-photo Ozzie logo—bright cyan owl, navy wordmark and FOR OGLETREE subtitle—is now used by the shared branding component for the login page and signed-in header. Because Ozzie currently signs in by username rather than email, the visual reference’s email, Create Account and Forgot Password controls were deliberately not introduced as nonworking features. This release also adds automated release-history, authentication-page, build and code-quality checks to detect regressions and missing batch announcements before future releases. No passwords, permissions, call data, Supabase policies or core support processes were changed.",
+      "checks": [
+        "On the public sign-in page, confirm the two-panel midnight-blue layout appears, with the Ozzie for Ogletree logo on both sides. On mobile, confirm the panels stack without horizontal scrolling.",
+        "Verify Username, Password, Show/Hide Password and Sign In still function with authorized credentials and display useful validation errors.",
+        "Choose Activate Account and confirm the existing invite-code activation process still opens; no unsupported public sign-up or password-reset buttons should appear.",
+        "After sign-in, verify the header shows the same approved Ozzie for Ogletree logo and that Smart Search, Command Center, Call Documentation and authorized admin pages work as before.",
+        "Open Dashboard → What’s New → View All Updates; confirm Batch 12 is listed above Batch 11 and Batch 10. Check release-quality workflow status separately in the GitHub Actions tab."
+      ]
+    },
+    {
       "id": "batch-11-searchable-updates-and-dashboard-release-links",
       "date": "2026-10-16",
       "area": "What's New / Dashboard",
