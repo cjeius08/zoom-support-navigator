@@ -35,7 +35,7 @@ describe('Batch 2 cleanup regression — favorites, training, destructive action
     render(<FavoriteToggle label="test resource" onToggle={onToggle} />)
     const button=screen.getByRole('button',{name:'Add to Favorites'})
     expect(button).toHaveAttribute('aria-pressed','false')
-    expect(button.querySelector('img')).toHaveAttribute('src',expect.stringContaining('ozzie-official-owl.png'))
+    expect(button.querySelector('img')).toHaveAttribute('src',expect.stringContaining('ozzie-for-ogletree-owl-2026.svg'))
     await user.click(button)
     expect(onToggle).toHaveBeenCalledTimes(1)
   })
