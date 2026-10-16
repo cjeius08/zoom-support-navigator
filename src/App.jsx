@@ -594,9 +594,32 @@ export default function App() {
   }
 
   if (activationOpen) return <main className="access-shell" style={accessStyle}><section className="access-card activation-card"><ActivateAccountForm onActivate={activateAccount} onCancel={()=>setActivationOpen(false)}/></section></main>
-  return <main className="access-shell access-shell-login" style={accessStyle}>
+  return <main className="access-shell access-shell-login">
     <div className="login-layout">
+      <aside className="login-brand-panel" aria-label="Introducing Ozzie for Ogletree">
+        <div className="login-brand-plate"><OzzieBrandImage variant="full" className="login-brand-logo" /></div>
+        <div className="login-brand-headline">
+          <h2>Work smarter<br /><span>with Ozzie</span></h2>
+          <p>One workspace. Clearer paths. Faster answers.</p>
+        </div>
+        <div className="login-benefits">
+          <div className="login-benefit">
+            <span className="login-benefit-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H9l-5 4V4Z" /><path d="M8 9h8M8 12h5" /></svg></span>
+            <div><strong>Get answers faster</strong><p>Find the help you need, when you need it, in one place.</p></div>
+          </div>
+          <div className="login-benefit">
+            <span className="login-benefit-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+            <div><strong>Stay organized</strong><p>Access tools, resources, and guides in one workspace.</p></div>
+          </div>
+          <div className="login-benefit">
+            <span className="login-benefit-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2 4 13h7l-1 9 10-12h-7V2Z" /></svg></span>
+            <div><strong>Do more, together</strong><p>Work confidently with your team and move support forward.</p></div>
+          </div>
+        </div>
+      </aside>
+
       <section className="access-card login-card" aria-label="Ozzie sign in">
+        <div className="login-brand-plate login-form-brand"><OzzieBrandImage variant="full" className="login-brand-logo" /></div>
         <header className="login-welcome">
           <h1>Welcome Back!</h1>
           <p>Sign in to your Ozzie account</p>
@@ -607,15 +630,12 @@ export default function App() {
           {error && <p id="login-error" role="alert">{error}</p>}
           <button className="sign-in-button" type="submit">Sign In <span aria-hidden="true">→</span></button>
         </form>
-        <button className="link-button" type="button" onClick={() => setActivationOpen(!activationOpen)}>Activate Account</button>
+        <div className="login-activation">
+          <span>Have an invite code?</span>
+          <button className="link-button" type="button" onClick={() => setActivationOpen(!activationOpen)}>Activate Account</button>
+        </div>
         <div className="access-card-footer">Better support. Smarter workflows.</div>
       </section>
-
-      <aside className="login-brand-panel" aria-label="Ozzie workspace introduction">
-        <OzzieBrandImage variant="full" className="login-brand-logo" />
-        <p className="login-brand-support">Your guide to faster answers<br />and better support.</p>
-        <p className="login-brand-script">One workspace.<br />Clearer paths.<br />Faster answers.</p>
-      </aside>
     </div>
   </main>
 }
