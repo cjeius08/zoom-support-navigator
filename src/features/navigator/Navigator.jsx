@@ -102,7 +102,7 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = false, onOpenTraining = () => {}, onOpenFavorites = () => {}, onOpenFeedback = () => {}, onOpenUpdates = () => {}, profile = null, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
+export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = false, onOpenTraining = () => {}, onOpenFavorites = () => {}, onOpenFeedback = () => {}, onOpenUpdates = () => {}, profile = null, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', commandLaunch = null, onCallerRoleChange = () => {}, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = () => {}, onOpenDeviceSandbox = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -115,6 +115,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
   const [activeSuggestion, setActiveSuggestion] = useState(-1)
   const [libraryTab, setLibraryTab] = useState('fastest')
+  const [faqFocusLabel, setFaqFocusLabel] = useState('')
   const [callFlowExpanded, setCallFlowExpanded] = useState(false)
   const [newCallConfirmOpen, setNewCallConfirmOpen] = useState(false)
   const newCallDialogRef = useRef(null)
@@ -176,6 +177,55 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
     setCommonIssueTab('Find the Right Guide')
     onResourceViewed('common_issue', route.id)
   }, [initialCommonIssueId, onResourceViewed])
+
+  useEffect(() => {
+    if (!commandLaunch?.id) return
+    const role = commandLaunch.role === 'Participant' ? 'Participant' : 'Host'
+    const { kind, id } = commandLaunch
+    // Defend the caller-role boundary again at the actual launch site;
+    // never trust a search result object as an authority to open a route.
+    const process = kind === 'process' ? (role === 'Host' ? hostProcesses(PROCESSES) : PROCESSES).find(item => item.id === id) : null
+    const issue = kind === 'issue' && role === 'Participant' ? routeById(id) : null
+    const hostRoute = kind === 'host' && role === 'Host' ? guidedRouteForHostTopic(id) : null
+    const roadblock = kind === 'roadblock' && role === 'Host' ? HOST_ROADBLOCKS.find(item => item.id === id) : null
+    const approvedFaqs = role === 'Host' ? hostFaqItems(FAQ_ITEMS) : FAQ_ITEMS
+    const faq = kind === 'faq' ? approvedFaqs.find(item => item.label === id) : null
+    if (!process && !issue && !hostRoute && !roadblock && !faq) return
+    setCallContext(current => ({ ...current, role, status: faq ? current.status : 'active' }))
+    onCallerRoleChange(role)
+    setSelected(null)
+    setSelectedRoute(null)
+    setSelectedHostRoute(null)
+    setSelectedHostRoadblock(null)
+    setProcessLaunchContext(null)
+    if (process) {
+      setSelected(process)
+      onResourceViewed('process', process.id)
+    } else if (issue) {
+      setSelectedRoute(issue)
+      setCommonIssueTab('Find the Right Guide')
+      onResourceViewed('common_issue', issue.id)
+    } else if (hostRoute) {
+      setSelectedHostRoute(hostRoute)
+    } else if (roadblock) {
+      setSelectedHostRoadblock(roadblock)
+    } else if (faq) {
+      setQuery('')
+      setSuggestionsOpen(false)
+      setLibraryTab('faq')
+      setFaqFocusLabel(faq.label)
+    }
+  }, [commandLaunch, onResourceViewed, onCallerRoleChange])
+
+  useEffect(() => {
+    if (!faqFocusLabel || libraryTab !== 'faq') return undefined
+    const frame = window.requestAnimationFrame(() => {
+      const focusedCard = document.querySelector('.faq-command-target')
+      focusedCard?.focus()
+      focusedCard?.scrollIntoView?.({ block: 'center', behavior: 'auto' })
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [faqFocusLabel, libraryTab])
 
   useEffect(() => {
     const libraryTabLabels = { fastest: 'Fastest Routes', common: 'Common Issues', processes: 'Process Guides', faq: 'FAQ', roadblocks: 'Roadblock Matrix' }
@@ -275,6 +325,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
     setActiveSuggestion(-1)
     setCategory(null)
     setLibraryTab('fastest')
+    setFaqFocusLabel('')
     setCallFlowExpanded(false)
     setNewCallConfirmOpen(false)
     onNewCall?.()
@@ -373,6 +424,8 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
     setSelectedHostRoadblock(null)
     setProcessLaunchContext(null)
     setCallContext(current => ({ ...current, role, status: current.status || null }))
+    onCallerRoleChange(role)
+    setFaqFocusLabel('')
     setQuery('')
     setSuggestionsOpen(false)
     setActiveSuggestion(-1)
@@ -584,6 +637,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
           processMatches={processMatches}
           processes={PROCESSES}
           faqItems={FAQ_ITEMS}
+          focusFaqLabel={faqFocusLabel}
           onOpenTopic={topic => openHostTopic(topic, 'host_library')}
           onOpenRoadblock={roadblock => openHostRoadblock(roadblock, 'host_library')}
           onOpenProcess={process => openProcess(process, 'host_process')}
@@ -675,7 +729,10 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
             <h2 id="support-faq-heading">Need to Know / FAQ</h2>
             <p className="navigator-tab-intro">Quick reference for the account and meeting behaviors agents are most likely to explain during an arbitrator support call.</p>
             <div className="support-faq-grid">
-              {FAQ_ITEMS.map(item => <article className="support-reference-card" key={item.label}>
+              {[...FAQ_ITEMS].sort((a,b) => Number(b.label === faqFocusLabel) - Number(a.label === faqFocusLabel)).map(item => <article
+                className={`support-reference-card ${item.label === faqFocusLabel ? 'faq-command-target' : ''}`}
+                tabIndex={item.label === faqFocusLabel ? -1 : undefined}
+                key={item.label}>
                 <h3>{item.label}</h3>
                 <p>{item.answer}</p>
                 {item.points?.length > 0 && <ul>
