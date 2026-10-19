@@ -5,7 +5,12 @@ import { expect, it } from 'vitest'
 
 it('rehydrates the full profile after username login so saved avatar_id survives logout and login', () => {
   const source = readFileSync(join(cwd(), 'src/lib/authApi.js'), 'utf8')
-  expect(source).toContain('const profile = await getCurrentProfile()')
+  // A valid setSession response already supplies the user ID; the app can
+  // load the complete profile (including saved avatar) without reading the
+  // session again, preserving the original avatar rehydration guarantee.
+  expect(source).toContain('const profile = established?.user?.id')
+  expect(source).toContain('await getProfileByUserId(established.user.id)')
+  expect(source).toContain('avatar_id,ozzie_intro_seen_at,workspace_role')
   expect(source).toContain('return profile ?? data.user')
 })
 

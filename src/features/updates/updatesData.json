@@ -10,6 +10,21 @@
   },
   "updates": [
     {
+      "id": "sign-in-response-feedback-and-session-retry-20261020",
+      "date": "2026-10-20",
+      "area": "Sign-in / Reliability",
+      "audience": "all",
+      "title": "Improved Sign-In Feedback & Safer Session Recovery",
+      "changed": "Ozzie now shows distinct sign-in stages (verifying credentials, establishing the secure session, opening the workspace), disables duplicate Sign In submissions while a request is pending, and displays an additional helpful message if the shared login service is slow. A temporary profile/session check failure no longer silently signs out the agent; Ozzie offers a retryable session-check screen instead. Opt-in troubleshooting using ?authdebug=1 reports only elapsed stage timings in the browser console, not passwords or other credentials. This is a frontend reliability/diagnostics update, not a confirmed fix for upstream Supabase service latency.",
+      "checks": [
+        "Sign in once and observe the Signing In state and stage indicator; ensure repeated clicks cannot cause duplicate login attempts.",
+        "On an intentionally slow connection, verify the delayed warning appears without auto-resubmission.",
+        "If startup cannot reach the current profile, verify Retry session check works and does not automatically sign the agent out.",
+        "Compare login behavior between GitHub Pages and Cloudflare; they share the same Supabase login backend.",
+        "Verify successful sign-in, role permissions, profile, call flow, and sign-out still behave as before."
+      ]
+    },
+    {
       "id": "batch-13-answer-first-and-compact-callflow-classic-fallback",
       "date": "2026-10-19",
       "area": "Smart Search / Guided Support / Approved Call Flow",

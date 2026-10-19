@@ -326,3 +326,48 @@
 @media (prefers-reduced-motion: reduce) {
   .access-shell-login *, .access-shell-login *::before, .access-shell-login *::after { animation: none !important; transition: none !important; }
 }
+
+
+/* Sign-in diagnostics: visible phases and a stable disabled button prevent
+   repeated attempts while the shared Supabase login function is pending. */
+.access-shell-login .ozzie-login-progress {
+  display: flex;
+  gap: .55rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: .65rem 0 .8rem;
+  padding: .75rem .85rem;
+  border: 1px solid rgba(100, 197, 250, .5);
+  border-radius: .7rem;
+  background: rgba(12, 72, 116, .34);
+  color: #e9f6ff;
+  font-size: .89rem;
+  line-height: 1.45;
+}
+.access-shell-login .ozzie-login-progress small {
+  flex: 0 0 100%;
+  color: #b9def7;
+  font-size: .8rem;
+}
+.access-shell-login .ozzie-login-progress-dot {
+  width: .58rem;
+  height: .58rem;
+  border-radius: 50%;
+  background: #6de3fb;
+  box-shadow: 0 0 0 .2rem rgba(109,227,251,.12);
+  animation: ozzie-login-pulse 1.2s ease-in-out infinite alternate;
+}
+.access-shell-login .login-card .sign-in-button:disabled {
+  opacity: .79;
+  cursor: progress;
+  box-shadow: none;
+}
+.access-shell-login .login-card .access-input:has(input:disabled) {
+  opacity: .74;
+}
+@keyframes ozzie-login-pulse {
+  to { opacity: .32; box-shadow: 0 0 0 .35rem rgba(109,227,251,.06); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .access-shell-login .ozzie-login-progress-dot { animation: none; }
+}
