@@ -34,6 +34,7 @@ export function HostSupportDrawer({
   roadblock = null,
   initialDevice = null,
   onClose,
+  callTracker = null,
   onOpenGuidedRoute = null,
   onContextChange = null,
   onAddToDocumentation = null,
@@ -319,6 +320,7 @@ export function HostSupportDrawer({
         </div>
         <button className="drawer-close" type="button" aria-label="Close host support" onClick={onClose}>×</button>
       </header>
+      {callTracker}
 
       <div className="host-support-context" aria-label="Host support context">
         <div>
