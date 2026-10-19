@@ -384,17 +384,27 @@ export default function App() {
 
   useEffect(() => {
     let active = true
+    let timeoutId
     setLoading(true)
     setSessionStartupError('')
-    // A temporary database/network failure is NOT evidence that credentials
-    // are invalid. Do not silently sign users out on a failed profile check.
-    getCurrentProfile()
+    // A slow or disconnected auth service should not leave the login gate
+    // spinning forever. This is a read-only lookup; Retry is safe.
+    const deadline = new Promise((_, reject) => {
+      timeoutId = window.setTimeout(() => reject(new Error('Session check timed out')), 16000)
+    })
+    Promise.race([getCurrentProfile(), deadline])
       .then(currentProfile => { if (active) setProfile(currentProfile) })
       .catch(() => {
         if (active) setSessionStartupError('Could not check your saved session. Your account has not been signed out.')
       })
-      .finally(() => { if (active) setLoading(false) })
-    return () => { active = false }
+      .finally(() => {
+        window.clearTimeout(timeoutId)
+        if (active) setLoading(false)
+      })
+    return () => {
+      active = false
+      window.clearTimeout(timeoutId)
+    }
   }, [sessionRetry])
 
   useEffect(() => {
