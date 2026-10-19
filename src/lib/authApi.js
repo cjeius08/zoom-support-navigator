@@ -24,13 +24,17 @@ export async function loginWithUsername(username, password, onProgress = () => {
 
   onProgress('Establishing secure session…')
   started = performance.now()
-  const { error: sessionError } = await supabase.auth.setSession({ access_token: data.access_token, refresh_token: data.refresh_token })
+  const { data: established, error: sessionError } = await supabase.auth.setSession({ access_token: data.access_token, refresh_token: data.refresh_token })
   recordAuthTiming('session setup', started)
   if (sessionError) throw sessionError
 
   onProgress('Opening your workspace…')
   started = performance.now()
-  const profile = await getCurrentProfile()
+  // setSession already verifies the JWT and returns its user. Avoid another
+  // getSession() call (which may trigger auth refresh/locking) just to read id.
+  const profile = established?.user?.id
+    ? await getProfileByUserId(established.user.id)
+    : await getCurrentProfile()
   recordAuthTiming('profile lookup', started)
   // Preserve existing fallback for accounts whose profile query returns empty.
   // This response is provided by the verified server-side login function.
@@ -51,14 +55,18 @@ export async function activateAccount(payload) {
   return data
 }
 
+async function getProfileByUserId(userId) {
+  const { data, error } = await supabase.from('zoom_profiles').select('id,username,initials,role,status,must_change_password,avatar_id,ozzie_intro_seen_at,workspace_role').eq('id', userId).maybeSingle()
+  if (error) throw error
+  return data
+}
+
 export async function getCurrentProfile() {
   if (!supabaseConfigured) return null
   const { data: sessionData, error: sessionError } = await supabase.auth.getSession()
   if (sessionError) throw sessionError
   if (!sessionData.session) return null
-  const { data, error } = await supabase.from('zoom_profiles').select('id,username,initials,role,status,must_change_password,avatar_id,ozzie_intro_seen_at,workspace_role').eq('id', sessionData.session.user.id).maybeSingle()
-  if (error) throw error
-  return data
+  return getProfileByUserId(sessionData.session.user.id)
 }
 
 export async function markOzzieIntroSeen() {
