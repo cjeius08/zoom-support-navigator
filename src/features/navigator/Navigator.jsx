@@ -947,5 +947,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
       favoriteBusy={isFavoriteBusy('common_issue', selectedRoute.id)}
       onToggleFavorite={() => onToggleFavorite('common_issue', selectedRoute.id)}
     />}
+    {searchMode === 'answers' && !selected && !selectedRoute && !selectedHostRoute && !selectedHostRoadblock && !newCallConfirmOpen
+      && <CompactCallTracker placement="home" index={callStageIndex} onChange={setCallStageIndex} />}
   </section>
 }
