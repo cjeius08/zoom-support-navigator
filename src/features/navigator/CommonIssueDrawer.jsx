@@ -24,6 +24,7 @@ export function CommonIssueDrawer({
   route,
   callContext,
   onClose,
+  callTracker = null,
   onOpenProcess,
   onOpenRoute,
   onContextChange,
@@ -188,6 +189,7 @@ export function CommonIssueDrawer({
           />
         </div>
       </header>
+      {callTracker}
 
       <div className="common-issue-context common-issue-context-editor" aria-label="Route context">
         <div className="common-issue-context-field">
