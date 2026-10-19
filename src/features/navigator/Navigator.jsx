@@ -5,6 +5,9 @@ import '../knowledge/flexHubReference.css'
 import { ProcessDrawer } from './ProcessDrawer'
 import { LiveVisitors } from './LiveVisitors'
 import { searchProcesses } from './smartSearch'
+import { approvedQuickAnswer } from './answerFirst'
+import { AnswerFirstCard } from './AnswerFirstCard'
+import { CompactCallTracker } from './CompactCallTracker'
 import { LiveCallFlow, LiveCallFlowDetails } from './LiveCallFlow'
 import { CommonIssueDrawer } from './CommonIssueDrawer'
 import { HostSupportDrawer } from './HostSupportDrawer'
@@ -19,6 +22,15 @@ import { DashboardWelcome } from '../dashboard/DashboardWelcome'
 import { guidedRouteForHostTopic, hostFaqItems, hostProcesses, searchHostRoadblocks, searchHostTopics } from '../../data/hostExperience'
 
 const NOOP = () => {}
+const SEARCH_MODE_KEY = 'ozzie.answerFirst.mode.v1'
+function initialSearchMode() {
+  try { return window.localStorage.getItem(SEARCH_MODE_KEY) === 'classic' ? 'classic' : 'answers' }
+  catch { return 'answers' }
+}
+function persistSearchMode(mode) {
+  try { window.localStorage.setItem(SEARCH_MODE_KEY, mode) }
+  catch { /* Navigation still works when local storage is disabled. */ }
+}
 
 const categories = [
   ['join', 'Joining Meetings', 'Links, waiting rooms, access errors'],
@@ -119,6 +131,8 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   const [libraryTab, setLibraryTab] = useState('fastest')
   const [faqFocusLabel, setFaqFocusLabel] = useState('')
   const [callFlowExpanded, setCallFlowExpanded] = useState(false)
+  const [searchMode, setSearchMode] = useState(initialSearchMode)
+  const [callStageIndex, setCallStageIndex] = useState(0)
   const [newCallConfirmOpen, setNewCallConfirmOpen] = useState(false)
   const newCallDialogRef = useRef(null)
   const searchInputRef = useRef(null)
@@ -247,6 +261,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   }, [libraryTab, commonIssueTab, callContext.device, callContext.role, selectedHostRoute, selectedHostRoadblock, selectedRoute, selected, category, onReportContextChange])
 
   const isHost = callContext.role === 'Host'
+  const quickAnswer = useMemo(() => approvedQuickAnswer(query, { role: callContext.role }), [query, callContext.role])
   const approvedHostProcesses = useMemo(() => hostProcesses(PROCESSES), [])
   const participantSearchMatches = useMemo(() => query.trim() ? searchProcesses(PROCESSES, query) : [], [query])
   const participantRouteMatches = useMemo(() => query.trim() ? searchCommonIssueRoutes(query) : [], [query])
@@ -333,6 +348,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
     setLibraryTab('fastest')
     setFaqFocusLabel('')
     setCallFlowExpanded(false)
+    setCallStageIndex(0)
     setNewCallConfirmOpen(false)
     onNewCall?.()
     onTrackEvent?.({
@@ -443,6 +459,31 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
     })
   }
 
+  function openApprovedAnswerGuide(target) {
+    if (!target?.kind || !target.id) return
+    if (target.kind === 'host' && isHost) {
+      openHostGuidedRoute(guidedRouteForHostTopic(target.id), 'answer_first')
+    } else if (target.kind === 'route' && !isHost) {
+      openRoute(routeById(target.id), 'answer_first')
+    } else if (target.kind === 'faq') {
+      const allowed = isHost ? hostFaqItems(FAQ_ITEMS) : FAQ_ITEMS
+      if (!allowed.some(item => item.label === target.id)) return
+      setLibraryTab('faq')
+      setFaqFocusLabel(target.id)
+      setQuery('')
+      setSuggestionsOpen(false)
+    }
+  }
+
+  function switchSearchMode() {
+    const next = searchMode === 'answers' ? 'classic' : 'answers'
+    setSearchMode(next)
+    persistSearchMode(next)
+    setSuggestionsOpen(false)
+    setActiveSuggestion(-1)
+    onTrackEvent?.({ eventType: 'tool_open', routeId: 'navigator', toolId: `search_mode_${next}` })
+  }
+
   function selectSuggestion(suggestion) {
     if (suggestion.kind === 'flex_hub') onOpenFlexHub()
     else if (suggestion.kind === 'host') openHostTopic(suggestion.topic, 'search_suggestion')
@@ -478,7 +519,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
     ? [callContext.device, callContext.role === 'Host' ? 'Host / Arbitrator' : callContext.role].filter(Boolean).join(' · ')
     : 'Ready for a new caller'
 
-  return <section className="navigator" id="navigator" aria-label="Support Navigator">
+  return <section className={`navigator${searchMode === "answers" ? " navigator-answer-first" : ""}`} id="navigator" aria-label="Support Navigator">
     <DashboardWelcome
       username={profile?.username || ''}
       roleLabel={isAdmin ? 'Admin' : profile?.workspace_role === 'lead' ? 'Lead' : 'Member'}
@@ -538,6 +579,12 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
           <p>{isHost ? 'Search Host/Arbitrator symptoms, approved Tier 1 roadblocks, or source-backed processes.' : 'Search by caller symptom or approved process name.'}</p>
         </div>
 
+        <div className="smart-search-mode" role="group" aria-label="Search display preference">
+          <button type="button" onClick={switchSearchMode} aria-pressed={searchMode === 'classic'}>
+            {searchMode === 'answers' ? 'Switch to Classic Search' : 'Enable Answer-First Search'}
+          </button>
+          <small>{searchMode === 'answers' ? 'Verified quick guidance with full guides below' : 'Original Ozzie search results; saved on this device'}</small>
+        </div>
         <div className="search-combobox" onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) { setSuggestionsOpen(false); setActiveSuggestion(-1) } }}>
           <svg className="smart-search-icon" aria-hidden="true" viewBox="0 0 24 24" focusable="false">
             <circle cx="11" cy="11" r="7" />
@@ -613,6 +660,11 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
             }}
           >{example}</button>)}
         </div>
+
+        {searchMode === 'answers' && quickAnswer && <AnswerFirstCard answer={quickAnswer} onOpenGuide={openApprovedAnswerGuide} />}
+        {searchMode === 'answers' && !quickAnswer && query.trim().length >= 12 && <p className="answer-first-disclaimer answer-first-no-match">
+          No verified quick answer for this wording yet. Review the matching approved guides below.
+        </p>}
 
         <span className="sr-only" role="status" aria-live="polite">{query.trim() ? (isHost ? `${hostTopicMatches.length} Host ${hostTopicMatches.length === 1 ? 'route' : 'routes'}, ${hostRoadblockMatches.length} ${hostRoadblockMatches.length === 1 ? 'roadblock' : 'roadblocks'}, and ${processMatches.length} approved ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.` : `${routeMatches.length} common issue ${routeMatches.length === 1 ? 'route' : 'routes'} and ${processMatches.length} related ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.`) : ''}</span>
       </section>
@@ -826,6 +878,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
       </div>
     </section>
     {selectedHostRoute && <HostSupportDrawer
+      callTracker={searchMode === 'answers' ? <CompactCallTracker placement="drawer" index={callStageIndex} onChange={setCallStageIndex} /> : null}
       route={selectedHostRoute}
       initialDevice={callContext.device}
       onClose={closeHostSupport}
@@ -835,6 +888,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
       onTrackEvent={onTrackEvent}
     />}
     {selectedHostRoadblock && <HostSupportDrawer
+      callTracker={searchMode === 'answers' ? <CompactCallTracker placement="drawer" index={callStageIndex} onChange={setCallStageIndex} /> : null}
       roadblock={selectedHostRoadblock}
       initialDevice={callContext.device}
       onClose={closeHostSupport}
@@ -843,6 +897,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
       onTrackEvent={onTrackEvent}
     />}
     {selected&&<ProcessDrawer
+      callTracker={searchMode === 'answers' ? <CompactCallTracker placement="drawer" index={callStageIndex} onChange={setCallStageIndex} /> : null}
       process={selected}
       onClose={closeSelectedProcess}
       onOpenTraining={onOpenTraining}
@@ -879,6 +934,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
     </div>}
 
     {selectedRoute&&<CommonIssueDrawer
+      callTracker={searchMode === 'answers' ? <CompactCallTracker placement="drawer" index={callStageIndex} onChange={setCallStageIndex} /> : null}
       route={selectedRoute}
       callContext={callContext}
       onClose={()=>setSelectedRoute(null)}
@@ -891,5 +947,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
       favoriteBusy={isFavoriteBusy('common_issue', selectedRoute.id)}
       onToggleFavorite={() => onToggleFavorite('common_issue', selectedRoute.id)}
     />}
+    {searchMode === 'answers' && !selected && !selectedRoute && !selectedHostRoute && !selectedHostRoadblock && !newCallConfirmOpen
+      && <CompactCallTracker placement="home" index={callStageIndex} onChange={setCallStageIndex} />}
   </section>
 }

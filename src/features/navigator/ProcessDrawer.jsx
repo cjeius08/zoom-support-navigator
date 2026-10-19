@@ -41,7 +41,7 @@ const trainingCategoryByProcessCategory = {
   devices: "Devices & App",
 };
 
-export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice = null, initialRole = null, initialSourceRouteId = null, onOpenRoute, onContextChange = null, onCallResolved = null, onAddToDocumentation = null, onTrackEvent, isFavorite = false, favoriteBusy = false, onToggleFavorite = () => {} }) {
+export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice = null, initialRole = null, initialSourceRouteId = null, onOpenRoute, onContextChange = null, onCallResolved = null, onAddToDocumentation = null, onTrackEvent, isFavorite = false, favoriteBusy = false, onToggleFavorite = () => {}, callTracker = null }) {
   const [tab, setTab] = useState("quick");
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [selectedRoute, setSelectedRoute] = useState("");
@@ -374,6 +374,7 @@ export function ProcessDrawer({ process, onClose, onOpenTraining, initialDevice 
             />
           </div>
         </header>
+        {callTracker}
         <div className="process-tabs" role="tablist" aria-label="Process views">
           {TABS.map(([id, label], index) => (
             <button
