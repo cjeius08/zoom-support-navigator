@@ -5,6 +5,8 @@ import '../knowledge/flexHubReference.css'
 import { ProcessDrawer } from './ProcessDrawer'
 import { LiveVisitors } from './LiveVisitors'
 import { searchProcesses } from './smartSearch'
+import { approvedQuickAnswer } from './answerFirst'
+import { AnswerFirstCard } from './AnswerFirstCard'
 import { LiveCallFlow, LiveCallFlowDetails } from './LiveCallFlow'
 import { CommonIssueDrawer } from './CommonIssueDrawer'
 import { HostSupportDrawer } from './HostSupportDrawer'
@@ -247,6 +249,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   }, [libraryTab, commonIssueTab, callContext.device, callContext.role, selectedHostRoute, selectedHostRoadblock, selectedRoute, selected, category, onReportContextChange])
 
   const isHost = callContext.role === 'Host'
+  const quickAnswer = useMemo(() => approvedQuickAnswer(query, { role: callContext.role }), [query, callContext.role])
   const approvedHostProcesses = useMemo(() => hostProcesses(PROCESSES), [])
   const participantSearchMatches = useMemo(() => query.trim() ? searchProcesses(PROCESSES, query) : [], [query])
   const participantRouteMatches = useMemo(() => query.trim() ? searchCommonIssueRoutes(query) : [], [query])
@@ -443,6 +446,22 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
     })
   }
 
+  function openApprovedAnswerGuide(target) {
+    if (!target?.kind || !target.id) return
+    if (target.kind === 'host' && isHost) {
+      openHostGuidedRoute(guidedRouteForHostTopic(target.id), 'answer_first')
+    } else if (target.kind === 'route' && !isHost) {
+      openRoute(routeById(target.id), 'answer_first')
+    } else if (target.kind === 'faq') {
+      const allowed = isHost ? hostFaqItems(FAQ_ITEMS) : FAQ_ITEMS
+      if (!allowed.some(item => item.label === target.id)) return
+      setLibraryTab('faq')
+      setFaqFocusLabel(target.id)
+      setQuery('')
+      setSuggestionsOpen(false)
+    }
+  }
+
   function selectSuggestion(suggestion) {
     if (suggestion.kind === 'flex_hub') onOpenFlexHub()
     else if (suggestion.kind === 'host') openHostTopic(suggestion.topic, 'search_suggestion')
@@ -613,6 +632,11 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
             }}
           >{example}</button>)}
         </div>
+
+        {quickAnswer && <AnswerFirstCard answer={quickAnswer} onOpenGuide={openApprovedAnswerGuide} />}
+        {!quickAnswer && query.trim().length >= 12 && <p className="answer-first-disclaimer answer-first-no-match">
+          No verified quick answer for this wording yet. Review the matching approved guides below.
+        </p>}
 
         <span className="sr-only" role="status" aria-live="polite">{query.trim() ? (isHost ? `${hostTopicMatches.length} Host ${hostTopicMatches.length === 1 ? 'route' : 'routes'}, ${hostRoadblockMatches.length} ${hostRoadblockMatches.length === 1 ? 'roadblock' : 'roadblocks'}, and ${processMatches.length} approved ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.` : `${routeMatches.length} common issue ${routeMatches.length === 1 ? 'route' : 'routes'} and ${processMatches.length} related ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.`) : ''}</span>
       </section>

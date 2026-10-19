@@ -1,0 +1,62 @@
+/* Scoped Answer-First pilot: compact, readable, theme-safe quick guidance. */
+.answer-first-card {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  gap: .65rem;
+  margin-top: .9rem;
+  padding: .95rem 1.05rem;
+  background: var(--read-bg, #ffffff);
+  color: var(--read-ink, #183552);
+  border: 1px solid var(--read-border, #96b6cf);
+  border-inline-start: 4px solid #087cc6;
+  border-radius: .85rem;
+  box-shadow: 0 .3rem .75rem rgba(0, 27, 58, .09);
+}
+.answer-first-heading { display: flex; align-items: center; gap: .45rem; flex-wrap: wrap; }
+.answer-first-heading strong { font-size: .91rem; }
+.answer-first-heading small { margin-inline-start: auto; color: var(--read-body, #546d85); font-size: .75rem; }
+.answer-first-check {
+  display: inline-grid;
+  place-items: center;
+  background: #0a779e;
+  color: #fff;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 50%;
+  font-weight: 800;
+}
+.answer-first-instruction { margin: 0; font-size: clamp(.99rem, 1.4vw, 1.12rem); font-weight: 760; line-height: 1.5; color: var(--read-ink, #173a59); }
+.answer-first-confirm { margin: 0; font-size: .86rem; color: var(--read-body, #405b73); line-height: 1.45; }
+.answer-first-source {
+  display: flex;
+  align-items: flex-start;
+  gap: .45rem;
+  font-size: .79rem;
+  font-weight: 650;
+  color: var(--read-body, #3e617e);
+}
+.answer-first-actions { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; }
+.answer-first-actions :is(button, a) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  min-height: 2.65rem;
+  border-radius: .55rem;
+  padding: .5rem .8rem;
+  font: inherit;
+  font-size: .85rem;
+  font-weight: 750;
+  text-decoration: none;
+  cursor: pointer;
+}
+.answer-first-actions button { background: #096cc3; color: white; border: 1px solid #0654a1; }
+.answer-first-actions a { background: var(--read-soft, #edf5fd); color: var(--read-link, #095baf); border: 1px solid var(--read-border, #9cbdd7); }
+.answer-first-actions :is(button, a):focus-visible { outline: 3px solid #24a6ff; outline-offset: 2px; }
+.answer-first-actions button:hover { background: #0857a2; }
+.answer-first-disclaimer { margin: 0; color: var(--read-body, #546d85); font-size: .76rem; line-height: 1.4; }
+@media (max-width: 550px) {
+  .answer-first-actions { flex-direction: column; align-items: stretch; }
+  .answer-first-actions :is(button, a) { width: 100%; }
+}
