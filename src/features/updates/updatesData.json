@@ -10,6 +10,23 @@
   },
   "updates": [
     {
+      "id": "batch-13-answer-first-and-compact-callflow-classic-fallback",
+      "date": "2026-10-19",
+      "area": "Smart Search / Guided Support / Approved Call Flow",
+      "audience": "all",
+      "title": "Batch 13 — Answer-First Search, Compact Call Flow & Classic Fallback",
+      "changed": "Ozzie can now show a concise approved next check directly beneath Home Smart Search when a reviewed Host/Arbitrator or Participant symptom is recognized. Answers are read from existing approved FAQ or troubleshooting data; each card points to its associated guided route and shows an official Zoom reference when the existing content supplies one. The original Common Issue and Process Guide results remain fully available. A Switch to Classic Search control instantly returns the Home experience to the previous search and call-flow presentation without a new deployment; the choice is stored only in that browser. Answer-First mode adds a small interactive tracker displaying the current stage of the approved 11-stage Ogletree call flow, with Previous/Next and an optional official script. It stays available inside Host, Common Issue, and Process Guide drawers; changing a call stage does not mark the troubleshooting action as resolved. New Call resets the tracker. No approved source documents, call-flow wording, authentication, permissions, Supabase storage, or existing documentation were modified.",
+      "checks": [
+        "Search a Host/Arbitrator scenario such as 'The microphone is unmuted but participants cannot hear the arbitrator'. Verify the concise approved check, source label and working guided route.",
+        "Switch Caller role to Participant; search 'They can't hear me' and compare with 'I can't hear anyone'. Confirm the guidance stays on microphone versus speaker paths.",
+        "Check 'wrong camera preview' and 'no host controls' in Host mode, plus 'automatic recording'. For ambiguous recording-during-break queries, do not display a verified quick answer.",
+        "Open any supported troubleshooting drawer. Confirm the compact call tracker is visible within the drawer and advances through the 11 approved stages independently of the troubleshooting steps.",
+        "Click Switch to Classic Search. Confirm the original search cards and approved full workflow return instantly, with no Answer-First card or compact tracker, and the setting persists on refresh; Enable Answer-First Search restores it.",
+        "Start New Call after changing stages. Confirm the tracker resets to Stage 1 while saved notes and existing data remain intact.",
+        "Verify search and tracker on both Day and Night themes, narrow screens, authorized Host and Participant roles, and official source links."
+      ]
+    },
+    {
       "id": "batch-12-official-brand-login-and-release-quality",
       "date": "2026-10-16",
       "area": "Sign-In / Brand Identity / Release Quality",
