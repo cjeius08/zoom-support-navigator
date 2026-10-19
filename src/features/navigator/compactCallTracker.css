@@ -1,0 +1,42 @@
+.compact-call-tracker {
+  color: #eaf7ff; background: linear-gradient(150deg, #102b43, #071828);
+  border: 1px solid rgba(107,190,245,.42); border-radius: .85rem;
+  box-shadow: 0 12px 36px rgba(0,0,0,.3);
+  padding: .68rem .78rem; display: grid; gap: .42rem; min-width: 0;
+  font-size: .83rem;
+}
+.compact-call-tracker--home { position: fixed; right: 1.1rem; bottom: 1rem; width: min(345px, calc(100vw - 2rem)); z-index: 25; }
+.compact-call-tracker--drawer { position: sticky; top: 0; z-index: 7; margin: .35rem .75rem; flex-shrink: 0; }
+.compact-call-tracker-heading,.compact-call-tracker-current,.compact-call-tracker-actions { display:flex; align-items:center; gap:.45rem; }
+.compact-call-tracker-heading strong { flex:1; font-size: .78rem; font-weight: 800; }
+.compact-call-tracker-mark { color:#61c9f6; }
+.compact-call-tracker-number { font-size:.7rem; color:#b5d9ec; }
+.compact-call-tracker-progress { height:4px; border-radius:100px; background:#203b50; overflow:hidden; }
+.compact-call-tracker-progress span { height:100%; display:block; background:#60c9f2; border-radius:100px; transition: width .2s ease; }
+.compact-call-tracker-current { justify-content:space-between; }
+.compact-call-tracker-current strong { font-size:.84rem; color:#fff; line-height:1.35; }
+.compact-call-tracker button { border:1px solid rgba(135,192,228,.36); border-radius:.5rem; background:#173b59; color:#eaf8ff; font-size:.75rem; font-weight:700; padding:.37rem .52rem; cursor:pointer; white-space:nowrap; }
+.compact-call-tracker button:hover:not(:disabled),.compact-call-tracker button:focus-visible { background:#205579; border-color:#7ecff8; }
+.compact-call-tracker button:focus-visible { outline:2px solid #92dfff; outline-offset:2px; }
+.compact-call-tracker button:disabled { opacity:.42; cursor:default; }
+.compact-call-tracker-actions { justify-content:space-between; }
+.compact-call-tracker-details { background: rgba(0,0,0,.22); border-radius:.55rem; padding:.55rem .65rem; display:grid; gap:.42rem; font-size:.78rem; max-height:200px; overflow:auto; }
+.compact-call-tracker-details p,.compact-call-tracker-details blockquote { margin:0; line-height:1.48; color:#dcebf6; }
+.compact-call-tracker-details blockquote { color:#fff; border-left:2px solid #5abce9; padding-left:.55rem; }
+.compact-call-tracker-details small { color:#add1e5; }
+.navigator-answer-first .live-call-flow-approved { padding:.65rem .85rem; gap:.35rem; }
+.navigator-answer-first .live-call-flow-heading-approved > div > p:last-child { display:none; }
+.navigator-answer-first .live-call-flow-heading-approved h2 { font-size:.99rem; margin:0; }
+.navigator-answer-first .live-call-flow-heading-approved .eyebrow { font-size:.65rem; }
+.navigator-answer-first .live-call-toggle { min-height:2rem; padding:.4rem .6rem; }
+.navigator-answer-first .smart-search-mode { display:inline-flex; gap:.5rem; align-items:center; flex-wrap:wrap; margin:.45rem 0 .55rem; }
+.smart-search-mode { display:inline-flex; gap:.5rem; align-items:center; flex-wrap:wrap; margin:.45rem 0 .55rem; }
+.smart-search-mode button { border:1px solid var(--read-border,#9ab6c9); color:var(--read-ink,#23465a); background:var(--read-bg,#fff); padding:.38rem .7rem; border-radius:.5rem; font-size:.81rem; font-weight:750; cursor:pointer; }
+.smart-search-mode button:focus-visible { outline:2px solid #0ba3f0; outline-offset:2px; }
+.smart-search-mode small { font-size:.73rem; color:var(--read-body,#657b8f); }
+.answer-first-no-match { margin:.65rem 0 0; font-size:.77rem; }
+@media(max-width:700px) {
+ .compact-call-tracker--home { right:.55rem; bottom:.55rem; width:min(310px, calc(100vw - 1.1rem)); padding:.55rem .6rem; }
+ .compact-call-tracker--drawer { margin:.3rem .45rem; }
+}
+@media(prefers-reduced-motion:reduce){ .compact-call-tracker-progress span { transition:none; } }
