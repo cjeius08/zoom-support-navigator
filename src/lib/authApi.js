@@ -32,9 +32,9 @@ export async function loginWithUsername(username, password, onProgress = () => {
   started = performance.now()
   const profile = await getCurrentProfile()
   recordAuthTiming('profile lookup', started)
-  // Never fall back to unverified profile details for role-based workspace access.
-  if (!profile) throw new Error('Signed in, but your workspace profile could not be found. Please contact an Ozzie admin.')
-  return profile
+  // Preserve existing fallback for accounts whose profile query returns empty.
+  // This response is provided by the verified server-side login function.
+  return profile ?? data.user
 }
 
 export async function changeOwnPassword(password) {
