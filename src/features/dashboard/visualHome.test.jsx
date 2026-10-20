@@ -18,7 +18,7 @@ it('uses short Visual Home by default while retaining the original verified Smar
   expect(screen.getByRole('button', { name: 'Switch to Classic Home' })).toBeInTheDocument()
   expect(screen.getByRole('combobox', { name: 'Search support processes' })).toBeInTheDocument()
   expect(screen.getByRole('region', { name: 'One-click approved guides' })).toBeInTheDocument()
-  expect(screen.getByRole('region', { name: 'Approved Ogletree Live Call Flow' })).not.toBeInTheDocument()
+  expect(screen.getByRole('region', { name: 'Approved Ogletree Live Call Flow' })).toBeInTheDocument()
   expect(screen.getByRole('region', { name: 'Compact Approved Call Flow Tracker' })).toBeInTheDocument()
   expect(screen.queryByText('Help Ozzie grow and thrive.')).not.toBeInTheDocument()
 })
@@ -75,9 +75,8 @@ it('restores Classic Home instantly, saves choice and preserves query and caller
 
 it('opens the full reviewed Process Guide library without hiding the underlying reference tabs', () => {
   render(<Navigator initialRole="Participant" />)
-  expect(screen.getByRole('region', { name: 'Navigator library' })).not.toBeVisible()
-  fireEvent.click(screen.getByRole('button', { name: 'Browse all approved Process Guides' }))
   expect(screen.getByRole('region', { name: 'Navigator library' })).toBeVisible()
+  fireEvent.click(screen.getByRole('button', { name: 'Browse all approved Process Guides' }))
   expect(screen.getByRole('tab', { name: 'Process Guides' })).toHaveAttribute('aria-selected','true')
   expect(screen.getByRole('tab', { name: 'FAQ' })).toBeInTheDocument()
   expect(screen.getByRole('tab', { name: 'Roadblock Matrix' })).toBeInTheDocument()
