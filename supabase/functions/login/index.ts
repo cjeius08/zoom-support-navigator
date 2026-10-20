@@ -29,7 +29,11 @@ Deno.serve(async request => {
       return generic(request)
     }
     const sessionId = JSON.parse(atob(signedIn.session.access_token.split('.')[1])).session_id
-    await admin.rpc('zoom_service_set_login_security', { account: profile.user_id, failures: 0, window_started: null, locked: null, session: sessionId })
+    // Do not hand a browser tokens that RLS will immediately reject if
+    // current_session_id could not be saved. The wrong-password path is still
+    // handled by the same RPC, but a NULL session now preserves prior sessions.
+    const { error: sessionWriteError } = await admin.rpc('zoom_service_set_login_security', { account: profile.user_id, failures: 0, window_started: null, locked: null, session: sessionId })
+    if (sessionWriteError) return json({ error: 'Unable to complete sign-in right now. Please try again later.' }, 503, request)
     return json({ access_token: signedIn.session.access_token, refresh_token: signedIn.session.refresh_token, expires_in: signedIn.session.expires_in, user: { id: profile.user_id, username: profile.username, initials: profile.initials, role: profile.role, must_change_password: profile.must_change_password } }, 200, request)
   } catch { return generic(request) }
 })

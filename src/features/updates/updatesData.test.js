@@ -22,14 +22,15 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   // New releases can be prepended without invalidating historical entries.
   // Keep the newest announcements visible, while verifying the earlier
   // sequence and all previous records are still preserved.
-  expect(data.updates.slice(0, 5)).toEqual([
+  expect(data.updates.slice(0, 6)).toEqual([
+    expect.objectContaining({ id: 'login-session-preserved-on-failed-password-20261020', date: '2026-10-20', audience: 'all' }),
     expect.objectContaining({ id: 'sign-in-response-feedback-and-session-retry-20261020', date: '2026-10-20', audience: 'all' }),
     expect.objectContaining({ id: 'batch-13-answer-first-and-compact-callflow-classic-fallback', date: '2026-10-19', audience: 'all' }),
     expect.objectContaining({ id: 'batch-12-official-brand-login-and-release-quality', date: '2026-10-16', audience: 'all' }),
     expect.objectContaining({ id: 'batch-11-searchable-updates-and-dashboard-release-links', date: '2026-10-16', audience: 'all' }),
     expect.objectContaining({ id: 'batch-10-global-command-center', date: '2026-10-16', audience: 'all' }),
   ])
-  expect(data.updates.slice(5, 8)).toEqual(expect.arrayContaining([
+  expect(data.updates.slice(6, 9)).toEqual(expect.arrayContaining([
     expect.objectContaining({ id: 'ozzie-workspace-complete-uiux-revamp', date: '2026-10-16', audience: 'all' }),
     expect.objectContaining({ id: 'ozzie-dashboard-home-experience-refresh', date: '2026-10-16', audience: 'all' }),
     expect.objectContaining({ id: 'ozzie-navigation-accessibility-polish', date: '2026-10-16', audience: 'all' }),
@@ -245,7 +246,7 @@ it('publishes Batch 10 and Batch 11 to both Member and Admin update feeds withou
     expect(entry).toMatchObject({ date: '2026-10-16', audience: 'all' })
     expect(entry.changed.length).toBeGreaterThan(100)
     expect(entry.checks.length).toBeGreaterThanOrEqual(3)
-    expect(ids.indexOf(id)).toBeLessThan(5)
+    expect(ids.indexOf(id)).toBeLessThan(15)
   }
   expect(data.updates.find(item => item.id === 'batch-10-global-command-center').changed)
     .toMatch(/Ctrl\+K/)
