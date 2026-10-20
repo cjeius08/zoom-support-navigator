@@ -1,9 +1,11 @@
 import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { cwd } from 'node:process'
 import { expect, it } from 'vitest'
 
-const css = readFileSync(new URL('./trainingReadability.css', import.meta.url), 'utf8')
-const app = readFileSync(new URL('../../App.jsx', import.meta.url), 'utf8')
-const tokens = readFileSync(new URL('../theme/readabilityTokens.css', import.meta.url), 'utf8')
+const css = readFileSync(join(cwd(), 'src/features/training/trainingReadability.css'), 'utf8')
+const app = readFileSync(join(cwd(), 'src/App.jsx'), 'utf8')
+const tokens = readFileSync(join(cwd(), 'src/features/theme/readabilityTokens.css'), 'utf8')
 
 function palette(theme) {
   const section = tokens.match(new RegExp('html\\[data-theme="'+theme+'"\\]\\s*\\{([^}]+)\\}'))
@@ -56,8 +58,8 @@ it('makes the complete training path legible without modifying content or source
   ]) expect(css).toContain(selector)
   expect(css).toContain('font-size: 1rem !important')
   expect(css).toContain('grid-template-columns:1fr')
-  const lessons = readFileSync(new URL('./GuidedLessons.jsx', import.meta.url), 'utf8')
-  const devices = readFileSync(new URL('./DeviceWalkthroughs.jsx', import.meta.url), 'utf8')
+  const lessons = readFileSync(join(cwd(), 'src/features/training/GuidedLessons.jsx'), 'utf8')
+  const devices = readFileSync(join(cwd(), 'src/features/training/DeviceWalkthroughs.jsx'), 'utf8')
   expect(lessons).toContain('PROCESSES.find(process => process.id === id)')
   expect(devices).toContain('section.steps.map(step')
   expect(devices).toContain('active.sources.map(source')
