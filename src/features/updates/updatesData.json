@@ -10,6 +10,20 @@
   },
   "updates": [
     {
+      "id": "login-session-preserved-on-failed-password-20261020",
+      "date": "2026-10-20",
+      "area": "Sign-In / Session Stability",
+      "audience": "all",
+      "title": "Session Stability — Fix for Unexpected Sign-Out",
+      "changed": "Fixed a database authorization issue where an incorrect password attempt could invalidate an existing signed-in agent's session. A failed login now updates its security counters without clearing the established active session. Successful sign-in from another browser or host still replaces the earlier session under the existing single-active-session policy. Admin account deactivation and password reset continue to revoke sessions as before. The login service also now checks that an authenticated session was recorded successfully before returning its tokens, preventing misleading sign-in success. This change affects authentication reliability, not passwords, personal data, approved scripts or process content.",
+      "checks": [
+        "Sign in from a single hosting URL and confirm Ozzie stays connected during normal use.",
+        "Check that mistyping a password in another browser does not unexpectedly revoke the existing active session.",
+        "Remember: signing in successfully to GitHub Pages and Cloudflare concurrently still replaces the earlier session under the existing single-session policy.",
+        "Verify intentional admin deactivation and password reset still end access; report any remaining 401/403 errors with time and endpoint only."
+      ]
+    },
+    {
       "id": "sign-in-response-feedback-and-session-retry-20261020",
       "date": "2026-10-20",
       "area": "Sign-in / Reliability",
