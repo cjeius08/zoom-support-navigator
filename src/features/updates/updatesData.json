@@ -10,24 +10,6 @@
   },
   "updates": [
     {
-      "id": "visual-home-faster-approved-guides-classic-fallback-20261020",
-      "date": "2026-10-20",
-      "area": "Home / Smart Search / Approved Support Guides",
-      "audience": "all",
-      "title": "Visual Home — Find Answers Faster with Classic Fallback",
-      "changed": "Introduced a streamlined Visual Home that prioritizes the real approved Smart Search and one-click role-specific guided troubleshooting instead of long dashboard descriptions. Microphone, Camera, Screen Share, Join/Start and Controls tiles open their existing reviewed Host/Arbitrator or Participant guides; no support instructions, roles, escalation boundaries, source references or ranking rules have been rewritten. More tools are available through a compact menu, with the latest release linked to the full What's New page. All approved Process Guides, FAQ and Roadblock Matrix remain accessible through Browse all approved processes & references, and automatically when searching. The Classic Home toggle immediately restores the previous dashboard without a redeploy or clearing the current call, query or saved notes, and persists its choice on this browser. The previous Answer-First / Classic Search toggle remains independent. A pre-release branch preserves the original implementation for a full rollback if needed.",
-      "checks": [
-        "On desktop and mobile, verify the Visual Home welcomes the agent with concise copy and keeps Smart Search prominent, readable and keyboard-accessible.",
-        "Choose Host/Arbitrator or Participant, then click Microphone, Camera, Screen Share, Join/Start and Controls. Verify each opens the correct approved guide with original warnings and process content.",
-        "Search 'microphone unmuted but nobody can hear arbitrator' and verify the same approved next check, source, guidance and role-specific results as before.",
-        "Use Browse all approved processes & references and confirm Process Guides, FAQ and Roadblock Matrix remain available; choose full training and resources from More tools.",
-        "Switch to Classic Home and confirm the original dashboard, 5 What's New cards, training launch and shortcuts appear immediately without clearing the search/caller context. Refresh to verify the preference persists.",
-        "Enable Visual Home to return, and independently test Switch to Classic Search within Smart Search.",
-        "Confirm approved 11-stage Call Flow tracker remains visible and does not overlap the Report an Issue control.",
-        "Verify Ozzie admin, lead and agent roles, Day/Night themes, notes, saved data and Supabase authentication remain unaffected."
-      ]
-    },
-    {
       "id": "call-flow-report-button-overlap-fix-20261020",
       "date": "2026-10-20",
       "area": "Home / Live Call Flow / Feedback",

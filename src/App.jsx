@@ -61,7 +61,6 @@ import './features/theme/finalQaBatch9.css'
 import './features/theme/faqCompact.css'
 import './features/command/commandCenter.css'
 import './features/shell/batch12Login.css'
-import './features/dashboard/visualHome.css'
 
 const EMPTY_REPORT_CONTEXT = {
   selected_tab: null,
@@ -558,7 +557,6 @@ export default function App() {
           isAdmin={profile.role === 'creator_admin'}
           onOpenTraining={openTraining}
           onOpenFlexHub={() => navigate('flex_hub')}
-          onOpenProcessDocuments={() => navigate('process_documents')}
           onOpenDeviceSandbox={openDeviceSandbox}
           onTrackEvent={trackEvent}
           onAddToDocumentation={addToCallDocumentation}
