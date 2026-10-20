@@ -112,3 +112,16 @@ it('uses viewport-fixed portal styling so resize and page containers cannot cove
   expect(css).toMatch(/\.global-feedback-fab\s*\{[^}]*max-width:\s*calc\(100vw - 24px\)/)
   expect(css).toMatch(/\.global-feedback-backdrop\s*\{[^}]*position:\s*fixed[^}]*inset:\s*0[^}]*z-index:\s*31000/)
 })
+
+
+it('keeps the global Report an issue launcher below the compact call tracker on desktop and mobile', () => {
+  const trackerCss = readFileSync(join(cwd(), 'src/features/navigator/compactCallTracker.css'), 'utf8')
+  const globalCss = readFileSync(join(cwd(), 'src/styles.css'), 'utf8')
+  expect(globalCss).toMatch(/\.global-feedback-fab\s*\{[^}]*position:\s*fixed/)
+  expect(globalCss).toMatch(/\.global-feedback-fab\s*\{[^}]*bottom:\s*max\(12px, env\(safe-area-inset-bottom\)\)/)
+  expect(trackerCss).toMatch(/\.compact-call-tracker--home\s*\{[^}]*bottom:\s*calc\(max\(12px, env\(safe-area-inset-bottom\)\) \+ 3\.85rem\)/)
+  expect(trackerCss).toMatch(/@media\(max-width:700px\)\s*\{[\s\S]*?\.compact-call-tracker--home\s*\{[^}]*bottom:\s*calc\(max\(10px, env\(safe-area-inset-bottom\)\) \+ 3\.45rem\)/)
+  expect(trackerCss).toMatch(/\.compact-call-tracker--home\s*\{[^}]*max-height:\s*calc\(100dvh/)
+  // The sticky in-drawer tracker must not inherit the floating dock offset.
+  expect(trackerCss).toMatch(/\.compact-call-tracker--drawer\s*\{[^}]*position:\s*sticky/)
+})

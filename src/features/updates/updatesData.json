@@ -10,6 +10,20 @@
   },
   "updates": [
     {
+      "id": "call-flow-report-button-overlap-fix-20261020",
+      "date": "2026-10-20",
+      "area": "Home / Live Call Flow / Feedback",
+      "audience": "all",
+      "title": "Live Call Flow — Clear Navigation & Feedback Button",
+      "changed": "Fixed an overlap on the Home dashboard where the floating Report an issue control could cover the compact Live Call Flow tracker’s Previous/Next navigation. The call tracker now reserves a separate bottom-right row above the feedback launcher, with responsive mobile spacing and scrolling when the approved script expands in a short viewport. The feedback button remains available, and all 11 approved call-flow stages and troubleshooting instructions are unchanged.",
+      "checks": [
+        "On the Home dashboard in Answer-First mode, verify Report an issue is below the compact Live Call Flow card and never covers the Previous or Next buttons.",
+        "Check the layout on desktop, narrow mobile screens and short viewports; expand View script and confirm the full tracker can be scrolled without covering its stage controls.",
+        "Verify the Report an issue button still opens the feedback dialog, and its submission works.",
+        "Check that the in-guide sticky tracker and the Classic Search fallback remain unchanged."
+      ]
+    },
+    {
       "id": "login-session-preserved-on-failed-password-20261020",
       "date": "2026-10-20",
       "area": "Sign-In / Session Stability",

@@ -5,7 +5,19 @@
   padding: .68rem .78rem; display: grid; gap: .42rem; min-width: 0;
   font-size: .83rem;
 }
-.compact-call-tracker--home { position: fixed; right: 1.1rem; bottom: 1rem; width: min(345px, calc(100vw - 2rem)); z-index: 25; }
+/* Leave a dedicated row below the tracker for the permanent feedback launcher.
+   That launcher is viewport-fixed at the bottom-right (2.75rem tall, z-index 30000);
+   never let it cover Previous / Next or the expanded approved script. */
+.compact-call-tracker--home {
+  position: fixed;
+  right: 1.1rem;
+  bottom: calc(max(12px, env(safe-area-inset-bottom)) + 3.85rem);
+  width: min(345px, calc(100vw - 2rem));
+  max-height: calc(100dvh - max(12px, env(safe-area-inset-bottom)) - 5.1rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  z-index: 25;
+}
 .compact-call-tracker--drawer { position: sticky; top: 0; z-index: 7; margin: .35rem .75rem; flex-shrink: 0; }
 .compact-call-tracker-heading,.compact-call-tracker-current,.compact-call-tracker-actions { display:flex; align-items:center; gap:.45rem; }
 .compact-call-tracker-heading strong { flex:1; font-size: .78rem; font-weight: 800; }
@@ -36,7 +48,13 @@
 .smart-search-mode small { font-size:.73rem; color:var(--read-body,#657b8f); }
 .answer-first-no-match { margin:.65rem 0 0; font-size:.77rem; }
 @media(max-width:700px) {
- .compact-call-tracker--home { right:.55rem; bottom:.55rem; width:min(310px, calc(100vw - 1.1rem)); padding:.55rem .6rem; }
+ .compact-call-tracker--home {
+   right: .55rem;
+   bottom: calc(max(10px, env(safe-area-inset-bottom)) + 3.45rem);
+   width: min(310px, calc(100vw - 1.1rem));
+   max-height: calc(100dvh - max(10px, env(safe-area-inset-bottom)) - 4.8rem);
+   padding: .55rem .6rem;
+ }
  .compact-call-tracker--drawer { margin:.3rem .45rem; }
 }
 @media(prefers-reduced-motion:reduce){ .compact-call-tracker-progress span { transition:none; } }
