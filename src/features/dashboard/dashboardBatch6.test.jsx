@@ -51,6 +51,8 @@ describe('Ozzie Batch 6 — genuine Dashboard welcome for every authenticated ro
     const user = userEvent.setup()
     const onOpenFavorites = vi.fn()
     render(<Navigator onOpenFavorites={onOpenFavorites} initialRole="Host" />)
+    // Exercise the instant Classic Home fallback for original dashboard controls.
+    await user.click(screen.getByRole('button', { name: 'Switch to Classic Home' }))
     expect(screen.getByRole('heading', { name: 'Welcome back!' })).toBeInTheDocument()
     const search = screen.getByRole('combobox', { name: 'Search support processes' })
     expect(search).not.toHaveFocus()
