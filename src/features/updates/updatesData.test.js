@@ -22,7 +22,8 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   // New releases can be prepended without invalidating historical entries.
   // Keep the newest announcements visible, while verifying the earlier
   // sequence and all previous records are still preserved.
-  expect(data.updates.slice(0, 7)).toEqual([
+  expect(data.updates.slice(0, 8)).toEqual([
+    expect.objectContaining({ id: 'visual-home-faster-approved-guides-classic-fallback-20261020', date: '2026-10-20', audience: 'all' }),
     expect.objectContaining({ id: 'call-flow-report-button-overlap-fix-20261020', date: '2026-10-20', audience: 'all' }),
     expect.objectContaining({ id: 'login-session-preserved-on-failed-password-20261020', date: '2026-10-20', audience: 'all' }),
     expect.objectContaining({ id: 'sign-in-response-feedback-and-session-retry-20261020', date: '2026-10-20', audience: 'all' }),
@@ -31,7 +32,7 @@ it('keeps workspace metadata and update history complete and newest-first', () =
     expect.objectContaining({ id: 'batch-11-searchable-updates-and-dashboard-release-links', date: '2026-10-16', audience: 'all' }),
     expect.objectContaining({ id: 'batch-10-global-command-center', date: '2026-10-16', audience: 'all' }),
   ])
-  expect(data.updates.slice(7, 10)).toEqual(expect.arrayContaining([
+  expect(data.updates.slice(8, 11)).toEqual(expect.arrayContaining([
     expect.objectContaining({ id: 'ozzie-workspace-complete-uiux-revamp', date: '2026-10-16', audience: 'all' }),
     expect.objectContaining({ id: 'ozzie-dashboard-home-experience-refresh', date: '2026-10-16', audience: 'all' }),
     expect.objectContaining({ id: 'ozzie-navigation-accessibility-polish', date: '2026-10-16', audience: 'all' }),

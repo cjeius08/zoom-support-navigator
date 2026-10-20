@@ -44,6 +44,9 @@ export function DashboardWelcome({
   onOpenFavorites = () => {},
   onOpenFeedback = () => {},
   onOpenUpdates = () => {},
+  onOpenDeviceSandbox = () => {},
+  onOpenProcessDocuments = () => {},
+  homeMode = 'classic',
 }) {
   const actions = {
     search: onSearch,
@@ -52,6 +55,34 @@ export function DashboardWelcome({
     feedback: onOpenFeedback,
   }
   const latest = updatesForAudience(isAdmin).slice(0,5)
+
+  if (homeMode === 'visual') return <section className="dashboard-visual-intro" aria-label="Visual Home welcome">
+    <div className="dashboard-visual-intro-top">
+      <div>
+        <p className="dashboard-visual-eyebrow">OZZIE — OGLETREE SUPPORT WORKSPACE · {roleLabel}</p>
+        <h1>Welcome back!</h1>
+        <p className="dashboard-visual-subtitle">Search a symptom or choose a quick guide.{username ? <> <span className="dashboard-visual-username"> {username}</span></> : null}</p>
+      </div>
+      <button type="button" className="dashboard-visual-search-action" onClick={onSearch}><DashIcon type="search"/> Go to Smart Search <span aria-hidden="true">→</span></button>
+    </div>
+    <div className="dashboard-visual-bottom">
+      {latest[0] && <div className="dashboard-visual-update">
+        <span className="dashboard-visual-update-icon" aria-hidden="true"><DashIcon type="updates"/></span>
+        <div><small>Latest update · {formatConsoleDate(latest[0].date, { short: true })}</small><strong>{latest[0].title}</strong></div>
+        <button type="button" onClick={onOpenUpdates} aria-label="View full Ozzie updates">View updates →</button>
+      </div>}
+      <details className="dashboard-visual-more">
+        <summary>More tools <span aria-hidden="true">⌄</span></summary>
+        <div className="dashboard-visual-more-actions" aria-label="Additional workspace tools">
+          <button type="button" onClick={onOpenFavorites}><DashIcon type="favorite"/> Favorites</button>
+          <button type="button" onClick={onOpenTraining}><DashIcon type="training"/> Training</button>
+          <button type="button" onClick={onOpenProcessDocuments}><DashIcon type="search"/> Process Documents</button>
+          <button type="button" onClick={onOpenDeviceSandbox}><DashIcon type="training"/> Zoom Practice</button>
+          <button type="button" onClick={onOpenFeedback}><DashIcon type="feedback"/> Feedback</button>
+        </div>
+      </details>
+    </div>
+  </section>
 
   return <div className="dashboard-welcome-wrap">
     <div className="dashboard-feature-grid">
