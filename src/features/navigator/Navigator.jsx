@@ -627,7 +627,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
         <div className="smart-search-heading">
           <p className="eyebrow">Support workspace</p>
           <h1 id="smart-search-title">Find the next step</h1>
-          {homeMode === 'classic' && <p>{isHost ? 'Search Host/Arbitrator symptoms, approved Tier 1 roadblocks, or source-backed processes.' : 'Search by caller symptom or approved process name.'}</p>
+          {homeMode === 'classic' && <p>{isHost ? 'Search Host/Arbitrator symptoms, approved Tier 1 roadblocks, or source-backed processes.' : 'Search by caller symptom or approved process name.'}</p>}
         </div>
 
         <div className="smart-search-mode" role="group" aria-label="Search display preference">
