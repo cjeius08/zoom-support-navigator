@@ -126,6 +126,24 @@ html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .dashboar
 }
 .dashboard-visual-more-actions button:hover { background: var(--ref-sky,var(--read-soft,#e6f3ff)) !important; }
 
+/* Preserve the actual training launch and approved Live Call Flow in both
+   Home modes, but avoid displaying their long intro copy above Search. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .navigator-visual-home .home-sandbox-launch {
+  margin: 0;
+  padding: .5rem .75rem;
+  gap: .6rem;
+  min-height: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .navigator-visual-home .home-sandbox-copy .eyebrow,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .navigator-visual-home .home-sandbox-copy p:last-child { display: none; }
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .navigator-visual-home .home-sandbox-copy h2 { font-size: .87rem; }
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .navigator-visual-home .live-call-flow-approved {
+  padding: .63rem .83rem;
+  gap: .38rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .navigator-visual-home .live-call-flow-heading-approved > div > p:last-child { display:none; }
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .navigator-visual-home .live-call-flow-heading-approved h2 { font-size:1rem; }
+
 /* Quick-guides launch the exact verified source guides, not copied summaries. */
 html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .navigator-visual-home .navigator-top-workspace {
   grid-template-columns: minmax(0,1fr);
