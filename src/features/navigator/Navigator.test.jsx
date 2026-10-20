@@ -43,7 +43,9 @@ it('shows a friendly decorative icon on every support category card', async () =
   const user = userEvent.setup()
   render(<Navigator initialRole="Participant" />)
   await user.click(screen.getByRole('tab', { name: 'Process Guides' }))
-  const icons = screen.getAllByTestId('category-icon')
+  // Scope to the original seven Process Guide category cards: Visual Home adds six more.
+  const grid = document.querySelector('.category-grid')
+  const icons = within(grid).getAllByTestId('category-icon')
   expect(icons).toHaveLength(7)
   icons.forEach(icon => expect(icon).toHaveAttribute('aria-hidden', 'true'))
 })
