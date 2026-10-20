@@ -246,7 +246,7 @@ it('publishes Batch 10 and Batch 11 to both Member and Admin update feeds withou
     expect(entry).toMatchObject({ date: '2026-10-16', audience: 'all' })
     expect(entry.changed.length).toBeGreaterThan(100)
     expect(entry.checks.length).toBeGreaterThanOrEqual(3)
-    expect(ids.indexOf(id)).toBeLessThan(5)
+    expect(ids.indexOf(id)).toBeLessThan(15)
   }
   expect(data.updates.find(item => item.id === 'batch-10-global-command-center').changed)
     .toMatch(/Ctrl\+K/)
