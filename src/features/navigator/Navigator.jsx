@@ -19,10 +19,27 @@ import { ESCALATION_REQUIREMENTS, FAQ_ITEMS, ROADBLOCK_MATRIX, SUPPORT_HELPFUL_L
 import { HOST_GUIDED_ROUTES } from '../../data/hostGuidedRoutes'
 import { HOST_ROADBLOCKS } from '../../data/arbitratorHostSupport'
 import { DashboardWelcome } from '../dashboard/DashboardWelcome'
-import { guidedRouteForHostTopic, hostFaqItems, hostProcesses, searchHostRoadblocks, searchHostTopics } from '../../data/hostExperience'
+import { guidedRouteForHostTopic, hostFaqItems, hostProcesses, hostTopics, searchHostRoadblocks, searchHostTopics } from '../../data/hostExperience'
 
 const NOOP = () => {}
 const SEARCH_MODE_KEY = 'ozzie.answerFirst.mode.v1'
+const HOME_MODE_KEY = 'ozzie.visualHome.mode.v1'
+function initialHomeMode() {
+  try { return window.localStorage.getItem(HOME_MODE_KEY) === 'classic' ? 'classic' : 'visual' }
+  catch { return 'visual' }
+}
+function persistHomeMode(mode) {
+  try { window.localStorage.setItem(HOME_MODE_KEY, mode) }
+  catch { /* Mode still switches even when storage is blocked. */ }
+}
+// Navigate to actual approved guides. Do not copy or paraphrase instructions.
+const VISUAL_GUIDES = [
+  { key: 'audio', label: 'Microphone', icon: 'audio', hostId: 'host-audio', participantId: 'cant-be-heard' },
+  { key: 'camera', label: 'Camera', icon: 'video', hostId: 'host-camera', participantId: 'camera-not-working' },
+  { key: 'sharing', label: 'Screen Share', icon: 'sharing', hostId: 'host-screen-share', participantId: 'cant-share' },
+  { key: 'join', label: 'Join / Start', icon: 'join', hostId: 'host-start-hearing', participantId: 'cant-join' },
+  { key: 'controls', label: 'Host Controls', icon: 'controls', hostId: 'host-controls-missing', participantId: 'meeting-controls', participantLabel: 'Meeting Controls' },
+]
 function initialSearchMode() {
   try { return window.localStorage.getItem(SEARCH_MODE_KEY) === 'classic' ? 'classic' : 'answers' }
   catch { return 'answers' }
@@ -116,7 +133,7 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = false, onOpenTraining = () => {}, onOpenFavorites = () => {}, onOpenFeedback = () => {}, onOpenUpdates = () => {}, profile = null, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', commandLaunch = null, onCallerRoleChange = NOOP, onCommandConsumed = NOOP, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = NOOP, onOpenDeviceSandbox = () => {} }) {
+export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = false, onOpenTraining = () => {}, onOpenFavorites = () => {}, onOpenFeedback = () => {}, onOpenUpdates = () => {}, profile = null, onOpenFlexHub = () => {}, onOpenProcessDocuments = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', commandLaunch = null, onCallerRoleChange = NOOP, onCommandConsumed = NOOP, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = NOOP, onOpenDeviceSandbox = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -132,6 +149,8 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   const [faqFocusLabel, setFaqFocusLabel] = useState('')
   const [callFlowExpanded, setCallFlowExpanded] = useState(false)
   const [searchMode, setSearchMode] = useState(initialSearchMode)
+  const [homeMode, setHomeMode] = useState(initialHomeMode)
+  const [visualBrowseOpen, setVisualBrowseOpen] = useState(false)
   const [callStageIndex, setCallStageIndex] = useState(0)
   const [newCallConfirmOpen, setNewCallConfirmOpen] = useState(false)
   const newCallDialogRef = useRef(null)
@@ -348,6 +367,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
     setLibraryTab('fastest')
     setFaqFocusLabel('')
     setCallFlowExpanded(false)
+    setVisualBrowseOpen(false)
     setCallStageIndex(0)
     setNewCallConfirmOpen(false)
     onNewCall?.()
@@ -475,6 +495,28 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
     }
   }
 
+  function switchHomeMode() {
+    const next = homeMode === 'visual' ? 'classic' : 'visual'
+    setHomeMode(next)
+    persistHomeMode(next)
+    onTrackEvent?.({ eventType: 'tool_open', routeId: 'navigator', toolId: `home_mode_${next}` })
+  }
+
+  function openVisualGuide(guide) {
+    if (isHost) {
+      const topic = hostTopics().find(item => item.id === guide.hostId)
+      if (topic) openHostTopic(topic, 'visual_home_shortcut')
+    } else {
+      const route = routeById(guide.participantId)
+      if (route) openRoute(route, 'visual_home_shortcut')
+    }
+  }
+
+  function showVisualLibrary() {
+    setVisualBrowseOpen(true)
+    switchLibraryTab('processes')
+  }
+
   function switchSearchMode() {
     const next = searchMode === 'answers' ? 'classic' : 'answers'
     setSearchMode(next)
@@ -519,7 +561,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
     ? [callContext.device, callContext.role === 'Host' ? 'Host / Arbitrator' : callContext.role].filter(Boolean).join(' · ')
     : 'Ready for a new caller'
 
-  return <section className={`navigator${searchMode === "answers" ? " navigator-answer-first" : ""}`} id="navigator" aria-label="Support Navigator">
+  return <section className={`navigator${searchMode === "answers" ? " navigator-answer-first" : ""}${homeMode === "visual" ? " navigator-visual-home" : ""}`} id="navigator" aria-label="Support Navigator">
     <DashboardWelcome
       username={profile?.username || ''}
       roleLabel={isAdmin ? 'Admin' : profile?.workspace_role === 'lead' ? 'Lead' : 'Member'}
@@ -529,8 +571,17 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
       onSearch={() => searchInputRef.current?.focus()}
       onOpenTraining={onOpenTraining}
       onOpenFavorites={onOpenFavorites}
+      onOpenDeviceSandbox={onOpenDeviceSandbox}
+      onOpenProcessDocuments={onOpenProcessDocuments}
+      homeMode={homeMode}
     />
     <div className="home-utilities-row" aria-label="Home display controls">
+      <div className="visual-home-mode-control" role="group" aria-label="Home layout preference">
+        <button type="button" onClick={switchHomeMode} aria-pressed={homeMode === 'classic'}>
+          {homeMode === 'visual' ? 'Switch to Classic Home' : 'Enable Visual Home'}
+        </button>
+        {homeMode === 'visual' && <small>Same approved answers · less reading</small>}
+      </div>
       <div className="home-appearance-toggle" role="group" aria-label="Display mode">
         <button type="button" aria-label="Day Mode" title="Day Mode" aria-pressed={theme === 'day'} onClick={() => onThemeChange('day')}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M19.07 4.93l-1.41 1.41M6.34 17.66l-1.41 1.41"/></svg>
@@ -560,7 +611,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
       </button>}
     </section>
 
-    <section className="home-sandbox-launch" aria-labelledby="home-sandbox-title">
+    {homeMode === "classic" && <section className="home-sandbox-launch" aria-labelledby="home-sandbox-title">
       <div className="home-sandbox-copy">
         <p className="eyebrow">Interactive practice</p>
         <h2 id="home-sandbox-title">Zoom Training Environment</h2>
@@ -569,14 +620,14 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
       <button type="button" onClick={onOpenDeviceSandbox}>
         Open Zoom Training Environment <span aria-hidden="true">→</span>
       </button>
-    </section>
+    </section>}
 
     <section className="navigator-top-workspace" aria-label="Live support workspace">
       <section className="smart-search-card" aria-labelledby="smart-search-title">
         <div className="smart-search-heading">
           <p className="eyebrow">Support workspace</p>
           <h1 id="smart-search-title">Find the next step</h1>
-          <p>{isHost ? 'Search Host/Arbitrator symptoms, approved Tier 1 roadblocks, or source-backed processes.' : 'Search by caller symptom or approved process name.'}</p>
+          {homeMode === 'classic' && <p>{isHost ? 'Search Host/Arbitrator symptoms, approved Tier 1 roadblocks, or source-backed processes.' : 'Search by caller symptom or approved process name.'}</p>
         </div>
 
         <div className="smart-search-mode" role="group" aria-label="Search display preference">
@@ -647,7 +698,25 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
         </div>
 
         {hubMatch && <div className="hub-search-action"><button type="button" onClick={onOpenFlexHub}>Flex Arbitration Hub Reference — open the approved PMI, onboarding, scheduling, and recording rules →</button></div>}
-        <div className="smart-search-examples" aria-label="Example searches">
+        {homeMode === 'visual' && !query.trim() && <section className="visual-quick-guides" aria-label="One-click approved guides">
+          <div className="visual-quick-heading">
+            <strong>Quick troubleshooting</strong>
+            <small>Opens the approved {isHost ? 'Host / Arbitrator' : 'Participant'} guide</small>
+          </div>
+          <div className="visual-quick-grid">
+            {VISUAL_GUIDES.map(guide => <button type="button" key={guide.key}
+              onClick={() => openVisualGuide(guide)}
+              aria-label={`Open approved ${isHost ? guide.label : guide.participantLabel || guide.label} guide`}>
+              <CategoryIcon type={guide.icon}/>
+              <strong>{isHost ? guide.label : guide.participantLabel || guide.label}</strong>
+            </button>)}
+            <button type="button" className="visual-quick-all" onClick={showVisualLibrary} aria-label="Browse all approved Process Guides">
+              <CategoryIcon type="support"/>
+              <strong>All Guides</strong>
+            </button>
+          </div>
+        </section>}
+        {homeMode === 'classic' && <div className="smart-search-examples" aria-label="Example searches">
           <span>Try</span>
           {(isHost ? ['no host controls', 'cant share', 'mic not working', 'stop recording'] : ['cant share', 'cant find chat', 'waiting for host']).map(example => <button
             type="button"
@@ -659,7 +728,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
               setActiveSuggestion(-1)
             }}
           >{example}</button>)}
-        </div>
+        </div>}
 
         {searchMode === 'answers' && quickAnswer && <AnswerFirstCard answer={quickAnswer} onOpenGuide={openApprovedAnswerGuide} />}
         {searchMode === 'answers' && !quickAnswer && query.trim().length >= 12 && <p className="answer-first-disclaimer answer-first-no-match">
@@ -669,15 +738,16 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
         <span className="sr-only" role="status" aria-live="polite">{query.trim() ? (isHost ? `${hostTopicMatches.length} Host ${hostTopicMatches.length === 1 ? 'route' : 'routes'}, ${hostRoadblockMatches.length} ${hostRoadblockMatches.length === 1 ? 'roadblock' : 'roadblocks'}, and ${processMatches.length} approved ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.` : `${routeMatches.length} common issue ${routeMatches.length === 1 ? 'route' : 'routes'} and ${processMatches.length} related ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.`) : ''}</span>
       </section>
 
-      <LiveCallFlow
+      {(homeMode === 'classic' || searchMode === 'classic') && <LiveCallFlow
         expanded={callFlowExpanded}
         onExpandedChange={setCallFlowExpanded}
-      />
+      />}
     </section>
 
     {callFlowExpanded && <LiveCallFlowDetails onClose={() => setCallFlowExpanded(false)} />}
 
-    <section className="navigator-library" aria-label="Navigator library">
+    {homeMode === 'visual' && !query.trim() && !visualBrowseOpen && <button type="button" className="visual-browse-button" onClick={showVisualLibrary}>Browse all approved processes &amp; references →</button>}
+    <section className="navigator-library" aria-label="Navigator library" hidden={homeMode === 'visual' && !query.trim() && !visualBrowseOpen}>
       <div className="navigator-library-tabs" role="tablist" aria-label="Navigator views">
         <button type="button" role="tab" aria-selected={libraryTab === 'fastest'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('fastest')}>Fastest Routes</button>
         <button type="button" role="tab" aria-selected={libraryTab === 'common'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('common')}>Common Issues</button>
