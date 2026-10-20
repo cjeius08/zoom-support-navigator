@@ -10,6 +10,22 @@
   },
   "updates": [
     {
+      "id": "training-lessons-device-readable-day-night-20261021",
+      "date": "2026-10-21",
+      "area": "Training & Resources / Guided Visual Lessons / Device Walkthroughs",
+      "audience": "all",
+      "title": "Training Readability — Clear Lessons and Device Guides",
+      "changed": "Fixed unreadable training labels and paragraphs in Guided Visual Lessons and Device Walkthroughs for Day and Night modes. The lesson picker, approved source chips, visual steps, decision paths, takeaways, device tabs, walkthrough steps, expected results, platform notes, verified source links and Windows Zoom Training Environment now use theme-matched high-contrast text and cards, larger typography and responsive spacing. The shared palette meets at least 4.5:1 computed contrast for normal body text on standard, inset and selected surfaces. All original approved instructions, source references, screenshot assets, device choices, tab interactions and sandbox functionality are unchanged.",
+      "checks": [
+        "Go to Training & Resources > Guided Visual Lessons and inspect each core lesson: picker tabs, source chips, visual flow steps, examples, takeaways, next-step button and images.",
+        "Switch Day and Night themes; ensure text is visible in selected/unselected lesson cards, callouts and all paragraph backgrounds.",
+        "Go to Device Walkthroughs, switch Windows, Mac, iPhone, Android and Browser; check descriptions, ordered steps, 'What they should see', quick facts, platform differences and verified links.",
+        "Open Windows Zoom Training Environment, return to the walkthrough and check the back/launch controls and link readability.",
+        "Check desktop, mobile and reduced/zoomed browser screens; confirm texts wrap without overlap and keyboard focus is visible.",
+        "Confirm training content, approved resources, imagery, documentation actions, and Supabase sign-in behavior remain unchanged."
+      ]
+    },
+    {
       "id": "call-flow-report-button-overlap-fix-20261020",
       "date": "2026-10-20",
       "area": "Home / Live Call Flow / Feedback",
