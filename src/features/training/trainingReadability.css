@@ -1,0 +1,312 @@
+/* Training & Resources readability hotfix.
+   This file loads LAST in App.jsx, after the legacy night-only hardcoded colors.
+   Scope: Guided Visual Lessons and Device Walkthroughs, including the sandbox
+   launcher. No instructions, verified sources, screenshot paths or logic change.
+   Both Day and Night derive surfaces and text from the same active palette. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library {
+  --training-ink: var(--read-ink);
+  --training-body: var(--read-body);
+  --training-muted: var(--read-muted);
+  --training-card: var(--read-bg);
+  --training-inset: var(--read-soft);
+  --training-border: var(--read-border);
+  --training-accent: var(--read-link);
+  --training-active: var(--read-selected);
+  --training-text-size: max(.9375rem, var(--ozzie-legible-meta, .9375rem));
+  color: var(--training-ink);
+}
+
+/* Resource tabs should not be faded into the background in either mode. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .training-section-tabs {
+  background: var(--training-card);
+  border: 1px solid var(--training-border);
+  width: 100%;
+  max-width: 100%;
+  padding: .45rem;
+  gap: .4rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .training-section-tabs button {
+  background: var(--training-card);
+  color: var(--training-ink);
+  border: 1px solid var(--training-border);
+  font-size: var(--training-text-size);
+  font-weight: 720;
+  min-height: 2.7rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .training-section-tabs button[aria-selected="true"] {
+  background: var(--training-active) !important;
+  color: var(--training-ink) !important;
+  border: 2px solid var(--training-accent) !important;
+  font-weight: 800;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .training-section-tabs button:hover {
+  background: var(--read-hover);
+  color: var(--training-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .guided-lessons, .device-walkthroughs
+) {
+  color: var(--training-ink);
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .guided-lessons-intro, .device-walkthrough-intro, .device-walkthrough-header,
+  .device-section-heading, .device-sandbox-heading
+) :is(h2,h3,h4) {
+  color: var(--training-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .guided-lessons-intro > div > p:last-child, .device-walkthrough-intro > div > p:last-child,
+  .device-walkthrough-header > div > p:last-child,
+  .device-sandbox-heading > p:last-child
+) {
+  color: var(--training-body);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .guided-lesson-panel,.device-walkthrough-panel
+) {
+  color: var(--training-ink);
+  background: var(--training-card);
+  border: 1px solid var(--training-border);
+  min-width: 0;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .guided-lesson-panel, .device-walkthrough-panel
+) .eyebrow {
+  color: var(--training-accent);
+  font-size: var(--training-text-size) !important;
+  font-weight: 800;
+}
+
+/* Lesson selection: labels were .55–.66rem and light text sat on pale surfaces. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .guided-lesson-picker {
+  grid-template-columns: repeat(auto-fit,minmax(min(100%,12rem),1fr));
+  gap: .65rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .guided-lesson-picker > button,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .device-selector > button {
+  color: var(--training-ink);
+  background: var(--training-card);
+  border: 1px solid var(--training-border);
+  padding: .85rem;
+  min-width: 0;
+  min-height: 4.4rem;
+  cursor: pointer;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .guided-lesson-picker > button,.device-selector > button
+):hover {
+  background: var(--read-hover);
+  border-color: var(--training-accent);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .guided-lesson-picker > button[aria-selected="true"],.device-selector > button[aria-selected="true"]
+) {
+  color: var(--training-ink);
+  background: var(--training-active);
+  border: 2px solid var(--training-accent);
+  box-shadow: none;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .guided-lesson-picker > button > span {
+  color: var(--training-ink);
+  background: var(--training-active);
+  font-size: .9rem;
+  width: 2rem;
+  height: 2rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .guided-lesson-picker small, .guided-lesson-sources > span,
+  .guided-remember > span, .guided-lesson-split > article > span,
+  .guided-lesson-footer small, .device-verified,
+  .device-quick-facts span
+) {
+  color: var(--training-body);
+  font-size: var(--training-text-size) !important;
+  line-height: 1.45;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .guided-lesson-picker strong, .device-selector strong,
+  .device-selector span, .guided-lesson-sources strong
+) {
+  color: var(--training-ink);
+  font-size: max(.95rem,var(--ozzie-legible-meta,.95rem));
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .device-selector > button span {
+  color: var(--training-body);
+  font-weight: 550;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .guided-lesson-panel > header h3 {
+  color: var(--training-ink);
+  font-size: 1.25rem;
+  line-height: 1.35;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .guided-lesson-panel > header > div:first-child > p:last-child {
+  color: var(--training-body);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .guided-lesson-sources {
+  justify-items: start;
+  min-width: 0;
+  flex-basis: min(21rem,38%);
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .guided-lesson-sources strong {
+  text-align: left;
+  font-weight: 650;
+}
+
+/* All lesson body copy sits on one theme-matched, high-contrast surface. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .guided-remember,.guided-lesson-visual,.guided-flow-stage article,
+  .guided-lesson-split > article,.guided-takeaways
+) {
+  color: var(--training-ink);
+  background: var(--training-inset);
+  border-color: var(--training-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .guided-remember > strong,.guided-flow-stage article > strong,
+  .guided-lesson-split h4,.guided-takeaways h4,.guided-lesson-footer strong
+) {
+  color: var(--training-ink);
+  font-size: max(.99rem,var(--ozzie-legible-meta,.99rem));
+  line-height: 1.48;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .guided-lesson-visual figcaption, .guided-flow-stage article > p,
+  .guided-flow-stage article > small, .guided-lesson-split > article > p,
+  .guided-lesson-split li, .guided-takeaways li p,
+  .guided-practice-note
+) {
+  color: var(--training-body);
+  font-size: 1rem !important;
+  line-height: 1.56;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .guided-lesson-visual {
+  grid-template-columns: minmax(0,1fr) minmax(0,1.05fr);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .guided-takeaways li > span,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .guided-flow-marker > span {
+  color: #fff;
+  background: #205b87;
+  font-size: .875rem;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .guided-lesson-footer {
+  border-top: 1px solid var(--training-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .guided-lesson-footer > div > small {
+  color: var(--training-body);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .guided-lesson-footer button,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .device-sandbox-launch button,
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .device-sandbox-back {
+  color: #fff;
+  background: #205b87;
+  border: 1px solid #205b87;
+  font-size: 1rem;
+  min-height: 2.75rem;
+  font-weight: 760;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .guided-lesson-footer button,.device-sandbox-launch button,.device-sandbox-back
+):hover { background: #174769; color: #fff; }
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .guided-lesson-picker button,.guided-lesson-footer button,.device-selector button,
+  .device-source-list a,.device-sandbox-launch button,.device-sandbox-back,
+  .training-section-tabs button
+):focus-visible {
+  outline: 3px solid var(--training-accent);
+  outline-offset: 3px;
+}
+
+/* Device walk-through details, expected-result callouts, platform notes & URLs. */
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .device-verified,.device-quick-facts span
+) {
+  background: var(--training-inset);
+  border: 1px solid var(--training-border);
+  color: var(--training-ink);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .device-walkthrough-section,.device-platform-notes article,.device-sandbox-launch
+) {
+  background: var(--training-inset);
+  color: var(--training-ink);
+  border: 1px solid var(--training-border);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .device-walkthrough-copy h3,.device-platform-notes strong,
+  .device-sandbox-launch strong,.device-sandbox-heading h2,
+  .device-section-heading h3
+) {
+  color: var(--training-ink);
+  font-size: max(1.02rem,var(--ozzie-legible-title,1.02rem));
+  line-height: 1.4;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+  .device-walkthrough-copy li,.device-expected p,.device-platform-notes p,
+  .device-sandbox-heading > p:last-child,.device-sandbox-actions small,
+  .device-coming-next
+) {
+  color: var(--training-body);
+  font-size: 1rem !important;
+  line-height: 1.58;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .device-expected {
+  background: var(--training-card);
+  border-left: 3px solid var(--training-accent);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .device-expected strong {
+  color: var(--training-ink);
+  font-size: var(--training-text-size);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .device-source-list a {
+  background: var(--training-inset);
+  color: var(--training-accent);
+  border: 1px solid var(--training-border);
+  font-size: var(--training-text-size);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .device-source-list a:hover {
+  color: var(--training-ink);
+  border-color: var(--training-accent);
+  background: var(--read-hover);
+}
+html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .device-sandbox-actions a {
+  color: var(--training-accent);
+  font-size: 1rem;
+  text-decoration: underline;
+  text-underline-offset: .16rem;
+}
+
+/* Windows, Mac, iPhone, Android and Browser stay usable on narrow viewports.
+   The contents and accessibility roles of the lessons are unchanged. */
+@media(max-width:1100px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .guided-lesson-visual {
+    grid-template-columns: 1fr;
+  }
+}
+@media(max-width:700px) {
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .training-section-tabs { width:100%; }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .training-section-tabs button { flex:1 1 10rem; }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+    .guided-lesson-picker,.guided-lesson-flow,.guided-lesson-split,.guided-takeaways,
+    .device-selector,.device-source-list > div:last-child
+  ) { grid-template-columns:1fr; }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library :is(
+    .guided-lesson-panel > header,.guided-lessons-intro,.device-walkthrough-intro,
+    .device-walkthrough-header,.guided-lesson-footer
+  ) { flex-direction:column; align-items:stretch; }
+  html:is([data-theme="day"],[data-theme="night"]) .app-shell-horizontal .training-library .guided-lesson-sources {
+    flex-basis:auto;
+  }
+}
