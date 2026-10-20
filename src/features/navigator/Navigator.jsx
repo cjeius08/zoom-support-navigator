@@ -150,7 +150,6 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   const [callFlowExpanded, setCallFlowExpanded] = useState(false)
   const [searchMode, setSearchMode] = useState(initialSearchMode)
   const [homeMode, setHomeMode] = useState(initialHomeMode)
-  const [visualBrowseOpen, setVisualBrowseOpen] = useState(false)
   const [callStageIndex, setCallStageIndex] = useState(0)
   const [newCallConfirmOpen, setNewCallConfirmOpen] = useState(false)
   const newCallDialogRef = useRef(null)
@@ -367,7 +366,6 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
     setLibraryTab('fastest')
     setFaqFocusLabel('')
     setCallFlowExpanded(false)
-    setVisualBrowseOpen(false)
     setCallStageIndex(0)
     setNewCallConfirmOpen(false)
     onNewCall?.()
@@ -513,7 +511,6 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   }
 
   function showVisualLibrary() {
-    setVisualBrowseOpen(true)
     switchLibraryTab('processes')
   }
 
@@ -611,7 +608,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
       </button>}
     </section>
 
-    {homeMode === "classic" && <section className="home-sandbox-launch" aria-labelledby="home-sandbox-title">
+    <section className="home-sandbox-launch" aria-labelledby="home-sandbox-title">
       <div className="home-sandbox-copy">
         <p className="eyebrow">Interactive practice</p>
         <h2 id="home-sandbox-title">Zoom Training Environment</h2>
@@ -620,7 +617,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
       <button type="button" onClick={onOpenDeviceSandbox}>
         Open Zoom Training Environment <span aria-hidden="true">→</span>
       </button>
-    </section>}
+    </section>
 
     <section className="navigator-top-workspace" aria-label="Live support workspace">
       <section className="smart-search-card" aria-labelledby="smart-search-title">
@@ -738,16 +735,15 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
         <span className="sr-only" role="status" aria-live="polite">{query.trim() ? (isHost ? `${hostTopicMatches.length} Host ${hostTopicMatches.length === 1 ? 'route' : 'routes'}, ${hostRoadblockMatches.length} ${hostRoadblockMatches.length === 1 ? 'roadblock' : 'roadblocks'}, and ${processMatches.length} approved ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.` : `${routeMatches.length} common issue ${routeMatches.length === 1 ? 'route' : 'routes'} and ${processMatches.length} related ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.`) : ''}</span>
       </section>
 
-      {(homeMode === 'classic' || searchMode === 'classic') && <LiveCallFlow
+      <LiveCallFlow
         expanded={callFlowExpanded}
         onExpandedChange={setCallFlowExpanded}
-      />}
+      />
     </section>
 
     {callFlowExpanded && <LiveCallFlowDetails onClose={() => setCallFlowExpanded(false)} />}
 
-    {homeMode === 'visual' && !query.trim() && !visualBrowseOpen && <button type="button" className="visual-browse-button" onClick={showVisualLibrary}>Browse all approved processes &amp; references →</button>}
-    <section className="navigator-library" aria-label="Navigator library" hidden={homeMode === 'visual' && !query.trim() && !visualBrowseOpen}>
+    <section className="navigator-library" aria-label="Navigator library">
       <div className="navigator-library-tabs" role="tablist" aria-label="Navigator views">
         <button type="button" role="tab" aria-selected={libraryTab === 'fastest'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('fastest')}>Fastest Routes</button>
         <button type="button" role="tab" aria-selected={libraryTab === 'common'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('common')}>Common Issues</button>
