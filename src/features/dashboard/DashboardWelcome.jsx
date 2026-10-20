@@ -56,10 +56,10 @@ export function DashboardWelcome({
   }
   const latest = updatesForAudience(isAdmin).slice(0,5)
 
-  if (homeMode === 'visual') return <div className="dashboard-visual-intro" aria-label="Visual Home welcome">
+  if (homeMode === 'visual') return <section className="dashboard-visual-intro" aria-label="Visual Home welcome">
     <div className="dashboard-visual-intro-top">
       <div>
-        <p className="dashboard-visual-eyebrow">OZZIE · OGLETREE SUPPORT WORKSPACE · {roleLabel}</p>
+        <p className="dashboard-visual-eyebrow">OZZIE — OGLETREE SUPPORT WORKSPACE · {roleLabel}</p>
         <h1>Welcome back!</h1>
         <p className="dashboard-visual-subtitle">Search a symptom or choose a quick guide.{username ? <> <span className="dashboard-visual-username"> {username}</span></> : null}</p>
       </div>
@@ -82,7 +82,7 @@ export function DashboardWelcome({
         </div>
       </details>
     </div>
-  </div>
+  </section>
 
   return <div className="dashboard-welcome-wrap">
     <div className="dashboard-feature-grid">
