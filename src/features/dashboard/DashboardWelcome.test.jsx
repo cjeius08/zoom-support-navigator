@@ -6,10 +6,11 @@ it('surfaces the latest session stability announcement and opens full release no
   const onOpenUpdates = vi.fn()
   render(<DashboardWelcome isAdmin={false} onOpenUpdates={onOpenUpdates} />)
 
+  expect(screen.getByRole('heading', { name: 'Smooth Navigation — Quick Page and Tool Transitions' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Training Readability — Clear Lessons and Device Guides' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Live Call Flow — Clear Navigation & Feedback Button' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Session Stability — Fix for Unexpected Sign-Out' })).toBeInTheDocument()
   expect(screen.getByRole('heading', { name: 'Improved Sign-In Feedback & Safer Session Recovery' })).toBeInTheDocument()
-  fireEvent.click(screen.getByRole('button', { name: /Read full release notes for Training Readability/ }))
+  fireEvent.click(screen.getByRole('button', { name: /Read full release notes for Smooth Navigation/ }))
   expect(onOpenUpdates).toHaveBeenCalledTimes(1)
 })
