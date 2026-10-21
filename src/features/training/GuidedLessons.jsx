@@ -86,7 +86,7 @@ export function GuidedLessons({ onOpenResource = () => {}, onReportContextChange
       </button>)}
     </div>
 
-    <section className="guided-lesson-panel" role="tabpanel" aria-label={active.title}>
+    <section key={active.id} className="guided-lesson-panel" role="tabpanel" aria-label={active.title}>
       <header>
         <div>
           <p className="eyebrow">Lesson {active.number} of {GUIDED_LESSONS.length} · {active.level}</p>

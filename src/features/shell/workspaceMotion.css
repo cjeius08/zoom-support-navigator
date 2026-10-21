@@ -1,0 +1,89 @@
+/* Ozzie micro-transitions — visual feedback only.
+   160–220ms durations, no routing timers, loading overlays, focus changes,
+   database work, content changes, or persistent transforms on page containers.
+   Authenticated route main is keyed on currentView; live tools are siblings. */
+@keyframes ozzie-route-reveal {
+  from { opacity: .7; }
+  to { opacity: 1; }
+}
+@keyframes ozzie-content-arrive {
+  from { opacity: .7; transform: translate3d(0, 6px, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ozzie-tool-arrive {
+  from { opacity: .65; transform: translate3d(0, 9px, 0) scale(.99); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ozzie-drawer-arrive {
+  from { opacity: .85; transform: translate3d(11px, 0, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ozzie-menu-arrive {
+  from { opacity: .4; transform: translate3d(0, -5px, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Every real full-page navigation: Dashboard, Knowledge, Reports and Admin.
+   Use opacity on main: transforms here would capture position:fixed drawers. */
+.app-shell-horizontal .app-main.ozzie-page-enter {
+  animation: ozzie-route-reveal 180ms ease-out;
+}
+.app-shell-horizontal .ozzie-page-enter :is(
+  .view-heading, .process-documents-heading, .process-document-reader-heading,
+  .process-document-reader-toolbar, .navigator-session-bar, .search-results-heading
+) {
+  animation: ozzie-content-arrive 210ms cubic-bezier(.22,1,.36,1);
+}
+
+/* Page-internal screens and tabs: source document reader, lessons and devices,
+   guides, reference panels. Do not animate scrolling containers or inputs. */
+.app-shell-horizontal :is(
+  .process-documents-view, .navigator-tab-panel, .guided-lesson-panel,
+  .device-walkthrough-panel, .training-roadmap, .training-grid,
+  .communication-panel, .process-document-page
+) {
+  animation: ozzie-route-reveal 190ms ease-out;
+}
+/* Trigger only on active user selection; native tab and keyboard behavior stays
+   exactly the same, and selected states remain immediately interactive. */
+.app-shell-horizontal :is(
+  .training-section-tabs button, .guided-lesson-picker button,
+  .device-selector button, .navigator-library-tabs button,
+  .process-tabs button, .communication-mode-tabs button,
+  .readiness-part-rail button
+) {
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+/* Open / restore live tools: Call Documentation, Scope Check, Readiness Lab.
+   They stay outside the keyed main so their drafts and decisions persist. */
+.app-shell-horizontal > .documentation-dock:not(.documentation-dock-minimized) {
+  animation: ozzie-tool-arrive 215ms cubic-bezier(.22,1,.36,1);
+}
+.app-shell-horizontal > .documentation-dock.documentation-dock-minimized {
+  animation: ozzie-route-reveal 160ms ease-out;
+}
+
+/* Top navigation and approved-process side drawers. Keep existing focus
+   management, Escape and backdrop click behavior untouched. */
+.app-shell-horizontal details.topnav-dropdown[open] > .topnav-menu {
+  animation: ozzie-menu-arrive 160ms cubic-bezier(.22,1,.36,1);
+}
+.app-shell-horizontal :is(.process-drawer, .host-support-drawer) {
+  animation: ozzie-drawer-arrive 205ms cubic-bezier(.22,1,.36,1);
+}
+.app-shell-horizontal :is(.profile-panel, .training-viewer) {
+  animation: ozzie-tool-arrive 180ms cubic-bezier(.22,1,.36,1);
+}
+
+/* No animations or transitions for agents who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .app-shell-horizontal .ozzie-page-enter,
+  .app-shell-horizontal .ozzie-page-enter *,
+  .app-shell-horizontal .documentation-dock,
+  .app-shell-horizontal details.topnav-dropdown[open] > .topnav-menu,
+  .app-shell-horizontal :is(.process-drawer,.host-support-drawer,.profile-panel,.training-viewer) {
+    animation: none !important;
+    transition: none !important;
+  }
+}

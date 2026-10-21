@@ -96,6 +96,7 @@ export function DeviceWalkthroughs({ initialDeviceId = null, initialSandboxOpen 
 
     <section
       id="device-walkthrough-panel"
+      key={active.id}
       className="device-walkthrough-panel"
       role="tabpanel"
       aria-label={active.title}
