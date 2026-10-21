@@ -10,6 +10,23 @@
   },
   "updates": [
     {
+      "id": "workspace-quick-page-and-live-tool-transitions-20261021",
+      "date": "2026-10-21",
+      "area": "Workspace Navigation / Call Flow / Knowledge / Training & Resources",
+      "audience": "all",
+      "title": "Smooth Navigation — Quick Page and Tool Transitions",
+      "changed": "Added subtle, short entrance transitions (about 160–220 ms) when opening Ozzie pages, Process Documents, reviewed lesson/device panels, navigation menus, and floating Call Documentation, Scope Check and Readiness Lab. Navigation works immediately without waiting for an effect. Live Call Documentation drafts, Scope Check selections and Readiness Lab progress remain mounted separately from the route content when switching pages. The animations do not change approved source documents, troubleshooting guidance, search results, authentication, data, or the original Home design. System reduced-motion preferences disable these animations.",
+      "checks": [
+        "Navigate between Dashboard, Process Documents, Favorites, Training & Resources, Reports and available admin pages. Confirm the fade/slide is fast and each destination works immediately.",
+        "From any page open Call Documentation, enter a caller name, navigate to Process Documents, and verify the draft is still there; open Scope Check and return to Documentation.",
+        "Minimize and restore Call Documentation, Scope Check and Readiness Lab. Confirm all content and progress are retained.",
+        "In Training & Resources, switch Guided Visual Lessons and Device Walkthrough tabs; inspect smooth transitions and unchanged approved details.",
+        "In Process Documents, open a source document and go back; check images/text, focus, keyboard navigation and the menu dropdown.",
+        "Enable reduced motion in device/browser accessibility settings and verify animation is disabled.",
+        "Check mobile, Day/Night mode, and longer source pages; no flicker, scrolling block, duplicate main region or tooltip obstruction."
+      ]
+    },
+    {
       "id": "training-lessons-device-readable-day-night-20261021",
       "date": "2026-10-21",
       "area": "Training & Resources / Guided Visual Lessons / Device Walkthroughs",
