@@ -388,7 +388,7 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
     />}
     {open && <button type="button" className="nav-backdrop" aria-label="Close navigation" onClick={() => closeNavigation({ restoreFocus: true })} />}
 
-    <main className="app-main app-main-horizontal">
+    <main key={currentView} className="app-main app-main-horizontal ozzie-page-enter" data-page-transition={currentView}>
       {currentView !== 'navigator' && <div className="workspace-page-nav">
         <button
           type="button"
