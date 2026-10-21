@@ -59,7 +59,7 @@ export function ProcessDocuments({ onTrackEvent, onReportContextChange = () => {
   }
 
   if (selected) {
-    return <section className="process-documents-view process-document-reader" aria-label="Process document">
+    return <section key={selected.id} className="process-documents-view process-document-reader" aria-label="Process document">
       <div className="process-document-reader-toolbar">
         <button type="button" className="process-document-back" onClick={() => setSelectedId(null)}>
           <span aria-hidden="true">←</span>
