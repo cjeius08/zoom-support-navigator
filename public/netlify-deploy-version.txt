@@ -1,0 +1,5 @@
+Ozzie Netlify production refresh
+Date: 2026-10-27
+Source branch: main
+Source verified before refresh: d8f44719fae8013ff122dc0259075b5648daf150
+Purpose: force a fresh Netlify production build without changing application behavior.
