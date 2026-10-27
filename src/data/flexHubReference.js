@@ -57,6 +57,7 @@ export const FLEX_HUB_VIDEOS = [
 ]
 
 const HUB_QUERIES = [
+  /\breschedul(?:e|ed|ing)\s+(?:a\s+)?hearing\b/,
   /\bflex(?:\s+arbitration)?\s+hub\b/,
   /\barbitration\s+hub\b/,
   /\bsharepoint(?:\s+(?:hub|arbitration|guest|login))?\b/,

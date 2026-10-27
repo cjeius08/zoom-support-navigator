@@ -1,3 +1,4 @@
+import { matchesFlexHubReference } from '../../data/flexHubReference'
 import { PROCESSES } from '../../data/processes'
 import { FAQ_ITEMS } from '../../data/supportReference'
 import { hostFaqItems, hostProcesses, hostFastestTopics, searchHostTopics, searchHostRoadblocks } from '../../data/hostExperience'
@@ -78,7 +79,8 @@ export function commandResults(query, { role = 'Host', isAdmin = false } = {}) {
   }))
   // Approved Host routes and Tier-1 stop boundaries take priority over generic
   // process wording. Never mix Participant-only routes into Host results.
-  return [...pages,...hostRoutes,...roadblocks,...participantRoutes,...processes,...faqMatches(clean, role)].slice(0, 10)
+  const hub = hostMode && matchesFlexHubReference(clean) ? [pageResult(PAGES.find(page => page.id === 'flex_hub'))] : []
+  return [...hub,...pages,...hostRoutes,...roadblocks,...participantRoutes,...processes,...faqMatches(clean, role)].slice(0, 10)
 }
 
 export function findCommandPage(id, isAdmin = false) {

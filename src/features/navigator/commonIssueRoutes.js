@@ -1,4 +1,4 @@
-import { normalizeSearchText, searchProcesses } from './smartSearch'
+import { audioDirection, normalizeSearchText, searchProcesses } from './smartSearch'
 
 export const COMMON_ISSUE_VERIFIED_AT = 'September 26, 2026'
 
@@ -1786,7 +1786,9 @@ export function searchCommonIssueRoutes(query) {
     .filter(Boolean)
 
   const seen = new Set()
-  return [...exactPhraseMatches, ...rankedMatches].filter(route => {
+  const direction = audioDirection(query)
+  const priority = direction === 'microphone' ? 'cant-be-heard' : direction === 'speaker' ? 'cant-hear' : null
+  return [...(priority ? [routesById.get(priority)] : []), ...exactPhraseMatches, ...rankedMatches].filter(route => {
     if (seen.has(route.id)) return false
     seen.add(route.id)
     return true
