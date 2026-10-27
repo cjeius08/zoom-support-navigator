@@ -1787,7 +1787,9 @@ export function searchCommonIssueRoutes(query) {
 
   const seen = new Set()
   const direction = audioDirection(query)
-  const priority = direction === 'microphone' ? 'cant-be-heard' : direction === 'speaker' ? 'cant-hear' : null
+  const joining = /\b(?:cant|cannot|unable to) (?:get into|join) (?:my |the )?(?:hearing|meeting)\b/.test(normalizedQuery)
+  const camera = /\b(camera|video|preview)\b/.test(normalizedQuery) && /\b(wrong|incorrect|expected|select|switch|change)\b/.test(normalizedQuery)
+  const priority = camera ? 'camera-not-working' : joining ? 'cant-join' : direction === 'microphone' ? 'cant-be-heard' : direction === 'speaker' ? 'cant-hear' : null
   return [...(priority ? [routesById.get(priority)] : []), ...exactPhraseMatches, ...rankedMatches].filter(route => {
     if (seen.has(route.id)) return false
     seen.add(route.id)

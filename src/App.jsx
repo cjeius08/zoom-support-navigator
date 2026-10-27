@@ -90,6 +90,7 @@ export default function App() {
   const signInBusyRef = useRef(false)
   const slowLoginTimerRef = useRef(null)
   const [view, setView] = useState('navigator')
+  const [hubSection, setHubSection] = useState(null)
   const [commandOpen, setCommandOpen] = useState(false)
   const [commandRole, setCommandRole] = useState('Host')
   const [commandLaunch, setCommandLaunch] = useState(null)
@@ -230,6 +231,7 @@ export default function App() {
   function selectCommandResult(item) {
     if (item.kind === 'page') {
       if (!findCommandPage(item.id, profile?.role === 'creator_admin')) return
+      setHubSection(item.section || null)
       navigate(item.id)
       return
     }
@@ -559,7 +561,7 @@ export default function App() {
           onThemeChange={changeTheme}
           isAdmin={profile.role === 'creator_admin'}
           onOpenTraining={openTraining}
-          onOpenFlexHub={() => navigate('flex_hub')}
+          onOpenFlexHub={section => { setHubSection(section || null); navigate('flex_hub') }}
           onOpenDeviceSandbox={openDeviceSandbox}
           onTrackEvent={trackEvent}
           onAddToDocumentation={addToCallDocumentation}
@@ -595,7 +597,7 @@ export default function App() {
         : view === 'process_documents'
           ? <ProcessDocuments onTrackEvent={trackEvent} onReportContextChange={updateReportContext} onOpenReference={navigate}/>
         : view === 'flex_hub'
-          ? <FlexHubReference onOpenVideo={openTraining} onReportContextChange={updateReportContext} trackEvent={trackEvent}/>
+          ? <FlexHubReference initialSection={hubSection} onOpenVideo={openTraining} onReportContextChange={updateReportContext} trackEvent={trackEvent}/>
         : view === 'training'
           ? <TrainingResources initialVideoId={trainingVideoId} initialTarget={trainingTarget} onReportContextChange={updateReportContext} trackEvent={trackEvent}/>
           : view === 'updates'

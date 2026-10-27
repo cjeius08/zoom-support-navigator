@@ -249,14 +249,14 @@ export function hostFaqItems(faqItems) {
 
 export function searchHostTopics(query) {
   const text = normalizeSearchText(query)
-  const id = audioDirection(query) ? 'host-audio' : /\b(?:cant|cannot|unable to) get into (?:my |the )?hearing\b/.test(text) ? 'host-start-hearing' : null
+  const id = audioDirection(query) ? 'host-audio' : /\b(camera|video|preview)\b/.test(text) && /\b(wrong|incorrect|expected|select|switch|change)\b/.test(text) ? 'host-camera' : /\b(?:cant|cannot|unable to) get into (?:my |the )?hearing\b/.test(text) ? 'host-start-hearing' : null
   const results = ranked(hostTopics(), query, TOPIC_FIELD_WEIGHTS).map(result => result.item)
   return id ? [hostTopics().find(item => item.id === id), ...results.filter(item => item.id !== id)] : results
 }
 
 export function searchHostRoadblocks(query) {
   const text = normalizeSearchText(query)
-  const id = /\brecording\b.*\bbreaks?\b/.test(text) ? 'roadblock-proceeding-policy' : /\b(?:log out|sign out|switch account)\b/.test(text) ? 'roadblock-account-permission' : null
+  const id = /\brecording\b.*\bbreaks?\b/.test(text) ? 'roadblock-proceeding-policy' : /\b(?:log out|sign out|switch account)\b/.test(text) && /\b(permission|locked|license|administrator|denied)\b/.test(text) ? 'roadblock-account-permission' : null
   const results = ranked(HOST_ROADBLOCKS, query, ROADBLOCK_FIELD_WEIGHTS).map(result => result.item)
   return id ? [HOST_ROADBLOCKS.find(item => item.id === id), ...results.filter(item => item.id !== id)] : results
 }

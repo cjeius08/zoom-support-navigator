@@ -2,7 +2,13 @@ import { useEffect } from 'react'
 import { FLEX_HUB_REFERENCE, FLEX_HUB_VIDEOS } from '../../data/flexHubReference'
 import './flexHubReference.css'
 
-export function FlexHubReference({ onOpenVideo = () => {}, onReportContextChange = () => {}, trackEvent = () => {} }) {
+export function FlexHubReference({ initialSection = null, onOpenVideo = () => {}, onReportContextChange = () => {}, trackEvent = () => {} }) {
+  useEffect(() => {
+    if (!initialSection) return
+    const section = document.getElementById('flex-' + initialSection)
+    section?.scrollIntoView?.({ block: 'start' })
+    section?.focus()
+  }, [initialSection])
   useEffect(() => {
     onReportContextChange({
       selected_tab: 'Flex Arbitration Hub',
@@ -40,7 +46,7 @@ export function FlexHubReference({ onOpenVideo = () => {}, onReportContextChange
     </div>
 
     <div className="flex-hub-topic-grid">
-      {FLEX_HUB_REFERENCE.topics.map((topic, index) => <article className="flex-hub-topic" key={topic.id} id={`flex-${topic.id}`}>
+      {FLEX_HUB_REFERENCE.topics.map((topic, index) => <article className="flex-hub-topic" tabIndex={-1} key={topic.id} id={`flex-${topic.id}`}>
         <div className="flex-hub-topic-heading"><span>{String(index + 1).padStart(2,'0')}</span><div><small>{topic.eyebrow}</small><h2>{topic.label}</h2></div></div>
         <ul>{topic.points.map(point => <li key={point}>{point}</li>)}</ul>
         {topic.id === 'onboarding' && <div className="flex-hub-links">

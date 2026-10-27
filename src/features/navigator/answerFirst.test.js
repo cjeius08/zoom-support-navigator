@@ -52,8 +52,8 @@ describe('approved Answer-First search pilot', () => {
   })
 
   it('does not confuse stopping recording during a break with auto-recording policy', () => {
-    expect(approvedQuickAnswer('Can we pause recording during a break?', { role: 'Host' })).toBeNull()
-    expect(approvedQuickAnswer('Can we stop recording during a break?', { role: 'Host' })).toBeNull()
+    expect(approvedQuickAnswer('Can we pause recording during a break?', { role: 'Host' }).confirmation).toMatch(/program-owner confirmation/)
+    expect(approvedQuickAnswer('Can we stop recording during a break?', { role: 'Host' }).answer).toMatch(/must remain active/)
   })
 
   it('asks for the exact join error rather than prescribing an unverified generic fix', () => {
