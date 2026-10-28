@@ -1,6 +1,8 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { expect, it } from 'vitest'
 import { Navigator } from './Navigator'
+import { AnswerFirstCard } from './AnswerFirstCard'
+import { approvedQuickAnswer } from './answerFirst'
 
 it('puts a sourced answer before the guide results and opens approved Participant troubleshooting', () => {
   render(<Navigator initialRole="Participant" />)
@@ -34,4 +36,16 @@ it('never fabricates quick answers for unmatched search language', () => {
   })
   expect(screen.queryByRole('region', { name: 'Verified quick answer' })).not.toBeInTheDocument()
   expect(screen.getByText(/No verified quick answer for this wording yet/)).toBeInTheDocument()
+})
+
+it('labels account switching as a coverage gap with no misleading troubleshooting CTA', () => {
+  const answer = approvedQuickAnswer('Unable to log out personal Zoom and switch account', { role: 'Host' })
+  expect(answer.status).toBe('coverage_gap')
+  const { container } = render(<AnswerFirstCard answer={answer} onOpenGuide={() => {}} />)
+  const card = screen.getByRole('region', { name: 'Coverage gap — no verified answer' })
+  expect(within(card).getByText('No approved procedure available')).toBeInTheDocument()
+  expect(within(card).getByText(/Coverage gap — confirmation needed/)).toBeInTheDocument()
+  expect(within(card).queryByText('Approved next check')).not.toBeInTheDocument()
+  expect(within(card).queryByRole('button', { name: /Open guided troubleshooting/ })).not.toBeInTheDocument()
+  expect(container.querySelector('.answer-first-check')).toBeNull()
 })

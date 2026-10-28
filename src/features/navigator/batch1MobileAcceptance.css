@@ -1,0 +1,51 @@
+/* Batch 1: direct mobile role selection and non-obstructive Call Flow tracker.
+   Desktop floating tracker stays unchanged. */
+@media (max-width: 800px) {
+  .navigator-session-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  .navigator-session-bar .navigator-role-switch {
+    order: 0;
+    flex: 0 1 auto;
+    width: 100%;
+    min-width: 0;
+    margin-left: 0;
+  }
+  .navigator-session-bar .navigator-role-switch > div {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .4rem;
+    width: 100%;
+    min-width: 0;
+  }
+  .navigator-session-bar .navigator-role-switch button {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    min-height: 2.75rem;
+    padding: .45rem .3rem;
+    line-height: 1.3;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    box-sizing: border-box;
+  }
+  .navigator-session-bar > div:first-child { order: 1; min-width: 0; }
+  .navigator-session-bar .navigator-new-call-button { order: 2; width: 100%; margin-left: 0; }
+  .navigator-answer-first .compact-call-tracker--home {
+    position: static;
+    inset: auto;
+    width: 100%;
+    max-width: 100%;
+    max-height: none;
+    overflow: visible;
+    z-index: auto;
+    margin: 0;
+    padding: .6rem .7rem;
+    box-sizing: border-box;
+  }
+}

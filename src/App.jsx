@@ -64,6 +64,7 @@ import './features/shell/batch12Login.css'
 // Keep these scoped contrast/legibility fixes after every legacy theme layer.
 import './features/training/trainingReadability.css'
 import './features/shell/workspaceMotion.css'
+import './features/navigator/batch1MobileAcceptance.css'
 
 const EMPTY_REPORT_CONTEXT = {
   selected_tab: null,
