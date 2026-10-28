@@ -4,7 +4,7 @@ import { FLEX_HUB_SEARCH_ENTRY, matchesFlexHubReference } from '../../data/flexH
 import '../knowledge/flexHubReference.css'
 import { ProcessDrawer } from './ProcessDrawer'
 import { LiveVisitors } from './LiveVisitors'
-import { searchProcesses } from './smartSearch'
+import { searchParticipantProcesses, searchProcesses } from './smartSearch'
 import { approvedQuickAnswer } from './answerFirst'
 import { AnswerFirstCard } from './AnswerFirstCard'
 import { CompactCallTracker } from './CompactCallTracker'
@@ -263,7 +263,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   const isHost = callContext.role === 'Host'
   const quickAnswer = useMemo(() => approvedQuickAnswer(query, { role: callContext.role }), [query, callContext.role])
   const approvedHostProcesses = useMemo(() => hostProcesses(PROCESSES), [])
-  const participantSearchMatches = useMemo(() => query.trim() ? searchProcesses(PROCESSES, query) : [], [query])
+  const participantSearchMatches = useMemo(() => query.trim() ? searchParticipantProcesses(PROCESSES, query) : [], [query])
   const participantRouteMatches = useMemo(() => query.trim() ? searchCommonIssueRoutes(query) : [], [query])
   const hostTopicMatches = useMemo(() => query.trim() ? searchHostTopics(query) : [], [query])
   const hostRoadblockMatches = useMemo(() => query.trim() ? searchHostRoadblocks(query) : [], [query])

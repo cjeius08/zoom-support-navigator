@@ -1,9 +1,10 @@
+import { FAQ_ROLE_COVERAGE } from '../../data/supportRoleCoverage'
 import { approvedQuickAnswer } from '../navigator/answerFirst'
 import { matchesFlexHubReference } from '../../data/flexHubReference'
 import { PROCESSES } from '../../data/processes'
 import { FAQ_ITEMS } from '../../data/supportReference'
 import { hostFaqItems, hostProcesses, hostFastestTopics, searchHostTopics, searchHostRoadblocks } from '../../data/hostExperience'
-import { searchProcesses, normalizeSearchText } from '../navigator/smartSearch'
+import { searchParticipantProcesses, searchProcesses, normalizeSearchText } from '../navigator/smartSearch'
 import { searchCommonIssueRoutes } from '../navigator/commonIssueRoutes'
 
 const PAGES = [
@@ -36,6 +37,7 @@ function pageResult(page) {
 function faqMatches(query, role) {
   const items = role === 'Host' ? hostFaqItems(FAQ_ITEMS) : FAQ_ITEMS
   return items
+    .filter(item => role === 'Host' || !FAQ_ROLE_COVERAGE.some(coverage => coverage.label === item.label && coverage.classification === 'host-priority'))
     .filter(item => matchesText(query, [item.label, item.answer, ...(item.points || [])].join(' ')))
     .sort((left,right) => Number(matchesText(query, right.label)) - Number(matchesText(query, left.label)))
     .slice(0, 3)
@@ -74,7 +76,7 @@ export function commandResults(query, { role = 'Host', isAdmin = false } = {}) {
     kind: 'issue', id: item.id, title: item.title,
     description: item.subtitle, category: 'Participant common issue', role: 'Participant',
   })) : []
-  const processes = searchProcesses(hostMode ? hostProcesses(PROCESSES) : PROCESSES, clean).slice(0, 3).map(item => ({
+  const processes = (hostMode ? searchProcesses(hostProcesses(PROCESSES), clean) : searchParticipantProcesses(PROCESSES, clean)).slice(0, 3).map(item => ({
     kind: 'process', id: item.id, title: item.title.trim(),
     description: item.purpose, category: 'Approved Process Guide', role,
   }))
