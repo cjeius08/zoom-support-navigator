@@ -299,7 +299,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   }, [category, isHost, approvedHostProcesses])
   const fastestRoutes = useMemo(() => FASTEST_ROUTE_IDS.map(routeById).filter(Boolean), [])
 
-  const hubMatch = matchesFlexHubReference(query) || quickAnswer?.guide?.kind === 'flex_hub'
+  const hubMatch = isHost && (matchesFlexHubReference(query) || quickAnswer?.guide?.kind === 'flex_hub')
   const baseSuggestions = query.trim()
     ? isHost
       ? [

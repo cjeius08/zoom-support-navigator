@@ -150,17 +150,17 @@ function fromApprovedSource(intent, role) {
 export function approvedQuickAnswer(query, { role = 'Host' } = {}) {
   let normalized = normalizeSearchText(query)
   const text = normalized
-  if (/\breschedul(?:e|ed|ing)\b.*\bhearing\b/.test(text)) {
+  if (role === 'Host' && /\breschedul(?:e|ed|ing)\b.*\bhearing\b/.test(text)) {
     const topic = FLEX_HUB_REFERENCE.topics.find(item => item.id === 'scheduling')
     return { id: 'scheduling', heading: topic.label, answer: topic.points.join(' '), sourceLabel: FLEX_HUB_REFERENCE.title, guide: { kind: 'flex_hub', id: 'scheduling' } }
   }
-  if (/\brecording\b.*\bbreaks?\b/.test(text)) return {
+  if (role === 'Host' && /\brecording\b.*\bbreaks?\b/.test(text)) return {
     id: 'recording-break-boundary', heading: 'Approved recording rule',
     answer: FLEX_HUB_REFERENCE.topics.find(item => item.id === 'rules').points[2],
     confirmation: 'Break-specific policy requires program-owner confirmation. No permission to pause or disable recording is provided here.',
     sourceLabel: FLEX_HUB_REFERENCE.title, guide: { kind: 'flex_hub', id: 'rules' }
   }
-  if (/\b(?:log out|sign out|switch account)\b/.test(text) && !/\b(permission|locked|license|administrator|denied)\b/.test(text)) return {
+  if (role === 'Host' && /\b(?:log out|sign out|switch account)\b/.test(text) && !/\b(permission|locked|license|administrator|denied)\b/.test(text)) return {
     id: 'account-switch-coverage', heading: 'Coverage gap: ordinary Zoom account switching',
     answer: 'Approved account-switching navigation guidance is not available in this reference.',
     confirmation: 'Do not infer an account-permission problem from a navigation request. Use the approved account boundary only when the remaining action requires account or administrative access.',

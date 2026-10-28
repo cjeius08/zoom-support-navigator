@@ -81,9 +81,10 @@ export function commandResults(query, { role = 'Host', isAdmin = false } = {}) {
   // Approved Host routes and Tier-1 stop boundaries take priority over generic
   // process wording. Never mix Participant-only routes into Host results.
   const answer = approvedQuickAnswer(clean, { role })
-  const direct = answer?.guide?.kind === 'flex_hub' ? [{ ...pageResult(PAGES.find(page => page.id === 'flex_hub')), section: answer.guide.id, title: answer.heading, description: answer.answer }] : []
+  const direct = hostMode && answer?.guide?.kind === 'flex_hub' ? [{ ...pageResult(PAGES.find(page => page.id === 'flex_hub')), section: answer.guide.id, title: answer.heading, description: answer.answer }] : []
   const hub = hostMode && matchesFlexHubReference(clean) ? [pageResult(PAGES.find(page => page.id === 'flex_hub'))] : []
-  return [...direct,...hub,...pages,...hostRoutes,...roadblocks,...participantRoutes,...processes,...faqMatches(clean, role)].slice(0, 10)
+  return [...direct,...hub,...pages,...hostRoutes,...roadblocks,...participantRoutes,...processes,...faqMatches(clean, role)]
+    .filter((item, index, items) => items.findIndex(other => other.kind === item.kind && other.id === item.id) === index).slice(0, 10)
 }
 
 export function findCommandPage(id, isAdmin = false) {
