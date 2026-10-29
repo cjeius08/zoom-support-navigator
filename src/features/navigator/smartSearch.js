@@ -243,3 +243,25 @@ export function searchProcesses(processes, query) {
     .sort((left, right) => right.score - left.score || left.sourceIndex - right.sourceIndex)
     .map(result => result.process)
 }
+
+// Direction is significant: do not fuzzy-match microphone symptoms to speakers.
+export function audioDirection(query) {
+  const text = normalizeSearchText(query)
+  if (/\b(?:cant|cannot|couldnt|unable to) hear me\b|\b(?:nobody|no one) can hear\b/.test(text)) return 'microphone'
+  if (/\b(?:cant|cannot) hear (?:anyone|anybody|them|anything)\b|\bno sound\b/.test(text)) return 'speaker'
+  return null
+}
+
+// High-consequence subjects must be the guide's declared topic, not an
+// incidental body-text mention or a fuzzy spelling match (e.g. reschedule/share).
+export function participantTopicMatches(document, query) {
+  const terms = normalizeSearchText(query).split(' ')
+  const title = normalizeSearchText(document.title)
+  const anchors = terms.filter(term => /^(?:reschedul\w*|recording)$/.test(term))
+  return anchors.every(term => title.split(' ').some(word =>
+    term.startsWith('reschedul') ? word.startsWith('reschedul') : word === term))
+}
+
+export function searchParticipantProcesses(processes, query) {
+  return searchProcesses(processes.filter(document => participantTopicMatches(document, query)), query)
+}

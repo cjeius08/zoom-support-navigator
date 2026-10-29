@@ -434,3 +434,30 @@ it('keeps only one floating tool open and stacks the other reopen controls', asy
   expect(minimizedControls.map(control => control.style.getPropertyValue('--tool-stack-offset-compact')).sort())
     .toEqual(['0rem', '3.25rem'])
 })
+
+it('keeps mobile navigation above the backdrop and opens Call Documentation', async () => {
+  const previousWidth = window.innerWidth
+  Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390 })
+  window.dispatchEvent(new Event('resize'))
+  try {
+    const user = userEvent.setup()
+    const { container } = render(<AppShell profile={agentProfile} />)
+    await user.click(screen.getByRole('button', { name: 'Toggle navigation' }))
+    const header = container.querySelector('.app-header-horizontal')
+    const backdrop = screen.getByRole('button', { name: 'Close navigation' })
+    const nav = container.querySelector('#primary-navigation')
+    expect(header).toContainElement(backdrop)
+    expect(header).toContainElement(nav)
+    expect(backdrop.compareDocumentPosition(nav) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    await user.click(screen.getByText('Call Flow'))
+    await user.click(within(nav).getByRole('button', { name: 'Call Documentation' }))
+    expect(screen.getByRole('complementary', { name: /Call Documentation/i })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Close navigation' })).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Toggle navigation' }))
+    await user.click(screen.getByRole('button', { name: 'Close navigation' }))
+    expect(screen.queryByRole('button', { name: 'Close navigation' })).not.toBeInTheDocument()
+  } finally {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: previousWidth })
+    window.dispatchEvent(new Event('resize'))
+  }
+})

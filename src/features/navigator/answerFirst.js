@@ -1,4 +1,5 @@
-import { normalizeSearchText } from './smartSearch'
+import { FLEX_HUB_REFERENCE } from '../../data/flexHubReference'
+import { audioDirection, normalizeSearchText } from './smartSearch'
 import { routeById } from './commonIssueRoutes'
 import { FAQ_ITEMS } from '../../data/supportReference'
 import { hostFaqItems, hostTopics } from '../../data/hostExperience'
@@ -7,6 +8,7 @@ import { hostFaqItems, hostTopics } from '../../data/hostExperience'
 // route or program FAQ, never synthesized from arbitrary search text.
 // Order matters: specific symptoms precede broad ones.
 const INTENTS = [
+  { id: 'host-speaker-check', role: 'Host', source: ['host', 'host-audio', 1], matches: text => audioDirection(text) === 'speaker' },
   {
     id: 'host-recording-policy',
     role: 'Host',
@@ -146,7 +148,26 @@ function fromApprovedSource(intent, role) {
 
 // Null means "not verified here". Never manufacture a confident answer.
 export function approvedQuickAnswer(query, { role = 'Host' } = {}) {
-  const normalized = normalizeSearchText(query)
+  let normalized = normalizeSearchText(query)
+  const text = normalized
+  if (role === 'Host' && /\breschedul(?:e|ed|ing)\b.*\bhearing\b/.test(text)) {
+    const topic = FLEX_HUB_REFERENCE.topics.find(item => item.id === 'scheduling')
+    return { id: 'scheduling', heading: topic.label, answer: topic.points.join(' '), sourceLabel: FLEX_HUB_REFERENCE.title, guide: { kind: 'flex_hub', id: 'scheduling' } }
+  }
+  if (role === 'Host' && /\brecording\b.*\bbreaks?\b/.test(text)) return {
+    id: 'recording-break-boundary', heading: 'Approved recording rule',
+    answer: FLEX_HUB_REFERENCE.topics.find(item => item.id === 'rules').points[2],
+    confirmation: 'Break-specific policy requires program-owner confirmation. No permission to pause or disable recording is provided here.',
+    sourceLabel: FLEX_HUB_REFERENCE.title, guide: { kind: 'flex_hub', id: 'rules' }
+  }
+  if (role === 'Host' && /\b(?:log out|sign out|switch account)\b/.test(text) && !/\b(permission|locked|license|administrator|denied)\b/.test(text)) return {
+    id: 'account-switch-coverage', status: 'coverage_gap', heading: 'Coverage gap: ordinary Zoom account switching',
+    answer: 'Approved account-switching navigation guidance is not available in this reference.',
+    confirmation: 'Do not infer an account-permission problem from a navigation request. Use the approved account boundary only when the remaining action requires account or administrative access.',
+    sourceLabel: 'Approved reference coverage boundary', guide: { kind: 'flex_hub', id: 'credentials' }
+  }
+  if (audioDirection(text) === 'microphone') normalized = /\bunmuted\b|not muted/.test(text) ? 'microphone is unmuted but participants cannot hear me' : 'cannot hear me'
+  if (audioDirection(text) === 'speaker') normalized = 'cannot hear anyone' 
   if (normalized.length < 5) return null
   const allowedRole = role === 'Participant' ? 'Participant' : 'Host'
   for (const intent of INTENTS) {

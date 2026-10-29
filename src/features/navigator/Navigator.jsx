@@ -4,7 +4,7 @@ import { FLEX_HUB_SEARCH_ENTRY, matchesFlexHubReference } from '../../data/flexH
 import '../knowledge/flexHubReference.css'
 import { ProcessDrawer } from './ProcessDrawer'
 import { LiveVisitors } from './LiveVisitors'
-import { searchProcesses } from './smartSearch'
+import { searchParticipantProcesses, searchProcesses } from './smartSearch'
 import { approvedQuickAnswer } from './answerFirst'
 import { AnswerFirstCard } from './AnswerFirstCard'
 import { CompactCallTracker } from './CompactCallTracker'
@@ -263,7 +263,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   const isHost = callContext.role === 'Host'
   const quickAnswer = useMemo(() => approvedQuickAnswer(query, { role: callContext.role }), [query, callContext.role])
   const approvedHostProcesses = useMemo(() => hostProcesses(PROCESSES), [])
-  const participantSearchMatches = useMemo(() => query.trim() ? searchProcesses(PROCESSES, query) : [], [query])
+  const participantSearchMatches = useMemo(() => query.trim() ? searchParticipantProcesses(PROCESSES, query) : [], [query])
   const participantRouteMatches = useMemo(() => query.trim() ? searchCommonIssueRoutes(query) : [], [query])
   const hostTopicMatches = useMemo(() => query.trim() ? searchHostTopics(query) : [], [query])
   const hostRoadblockMatches = useMemo(() => query.trim() ? searchHostRoadblocks(query) : [], [query])
@@ -299,7 +299,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   }, [category, isHost, approvedHostProcesses])
   const fastestRoutes = useMemo(() => FASTEST_ROUTE_IDS.map(routeById).filter(Boolean), [])
 
-  const hubMatch = matchesFlexHubReference(query)
+  const hubMatch = isHost && (matchesFlexHubReference(query) || quickAnswer?.guide?.kind === 'flex_hub')
   const baseSuggestions = query.trim()
     ? isHost
       ? [
@@ -461,7 +461,9 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
 
   function openApprovedAnswerGuide(target) {
     if (!target?.kind || !target.id) return
-    if (target.kind === 'host' && isHost) {
+    if (target.kind === 'flex_hub') {
+      onOpenFlexHub(target.id)
+    } else if (target.kind === 'host' && isHost) {
       openHostGuidedRoute(guidedRouteForHostTopic(target.id), 'answer_first')
     } else if (target.kind === 'route' && !isHost) {
       openRoute(routeById(target.id), 'answer_first')
@@ -485,7 +487,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   }
 
   function selectSuggestion(suggestion) {
-    if (suggestion.kind === 'flex_hub') onOpenFlexHub()
+    if (suggestion.kind === 'flex_hub') onOpenFlexHub(quickAnswer?.guide?.kind === 'flex_hub' ? quickAnswer.guide.id : null)
     else if (suggestion.kind === 'host') openHostTopic(suggestion.topic, 'search_suggestion')
     else if (suggestion.kind === 'roadblock') openHostRoadblock(suggestion.roadblock, 'search_suggestion')
     else if (suggestion.kind === 'route') openRoute(suggestion.route, 'search_suggestion')

@@ -1,3 +1,4 @@
+import { audioDirection, normalizeSearchText } from '../features/navigator/smartSearch'
 import { HOST_ROADBLOCKS, HOST_SUPPORT_TOPICS } from './arbitratorHostSupport'
 import { HOST_GUIDED_ROUTES } from './hostGuidedRoutes'
 import { FAQ_ROLE_COVERAGE, PROCESS_ROLE_COVERAGE } from './supportRoleCoverage'
@@ -247,11 +248,17 @@ export function hostFaqItems(faqItems) {
 }
 
 export function searchHostTopics(query) {
-  return ranked(hostTopics(), query, TOPIC_FIELD_WEIGHTS).map(result => result.item)
+  const text = normalizeSearchText(query)
+  const id = audioDirection(query) ? 'host-audio' : /\b(camera|video|preview)\b/.test(text) && /\b(wrong|incorrect|expected|select|switch|change)\b/.test(text) ? 'host-camera' : /\b(?:cant|cannot|unable to) get into (?:my |the )?hearing\b/.test(text) ? 'host-start-hearing' : null
+  const results = ranked(hostTopics(), query, TOPIC_FIELD_WEIGHTS).map(result => result.item)
+  return id ? [hostTopics().find(item => item.id === id), ...results.filter(item => item.id !== id)] : results
 }
 
 export function searchHostRoadblocks(query) {
-  return ranked(HOST_ROADBLOCKS, query, ROADBLOCK_FIELD_WEIGHTS).map(result => result.item)
+  const text = normalizeSearchText(query)
+  const id = /\brecording\b.*\bbreaks?\b/.test(text) ? 'roadblock-proceeding-policy' : /\b(?:log out|sign out|switch account)\b/.test(text) && /\b(permission|locked|license|administrator|denied)\b/.test(text) ? 'roadblock-account-permission' : null
+  const results = ranked(HOST_ROADBLOCKS, query, ROADBLOCK_FIELD_WEIGHTS).map(result => result.item)
+  return id ? [HOST_ROADBLOCKS.find(item => item.id === id), ...results.filter(item => item.id !== id)] : results
 }
 
 // Used by Smart Search QA so dropdown ordering can be audited independently of rendering.

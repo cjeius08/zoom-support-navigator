@@ -324,6 +324,8 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
         </div>
       </div>
 
+      {open && <button type="button" className="nav-backdrop" aria-label="Close navigation" onClick={() => closeNavigation({ restoreFocus: true })} />}
+
       <nav
         id="primary-navigation"
         className={`top-navigation ${open ? 'open' : ''}`}
@@ -386,7 +388,6 @@ export function AppShell({ profile, children, onLogout, onAvatarChange, onPasswo
       onClose={onCommandClose}
       onSelect={onCommandSelect}
     />}
-    {open && <button type="button" className="nav-backdrop" aria-label="Close navigation" onClick={() => closeNavigation({ restoreFocus: true })} />}
 
     <main key={currentView} className="app-main app-main-horizontal ozzie-page-enter" data-page-transition={currentView}>
       {currentView !== 'navigator' && <div className="workspace-page-nav">

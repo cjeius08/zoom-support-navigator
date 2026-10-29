@@ -1,7 +1,10 @@
+import { FAQ_ROLE_COVERAGE } from '../../data/supportRoleCoverage'
+import { approvedQuickAnswer } from '../navigator/answerFirst'
+import { matchesFlexHubReference } from '../../data/flexHubReference'
 import { PROCESSES } from '../../data/processes'
 import { FAQ_ITEMS } from '../../data/supportReference'
 import { hostFaqItems, hostProcesses, hostFastestTopics, searchHostTopics, searchHostRoadblocks } from '../../data/hostExperience'
-import { searchProcesses, normalizeSearchText } from '../navigator/smartSearch'
+import { searchParticipantProcesses, searchProcesses, normalizeSearchText } from '../navigator/smartSearch'
 import { searchCommonIssueRoutes } from '../navigator/commonIssueRoutes'
 
 const PAGES = [
@@ -34,6 +37,7 @@ function pageResult(page) {
 function faqMatches(query, role) {
   const items = role === 'Host' ? hostFaqItems(FAQ_ITEMS) : FAQ_ITEMS
   return items
+    .filter(item => role === 'Host' || !FAQ_ROLE_COVERAGE.some(coverage => coverage.label === item.label && coverage.classification === 'host-priority'))
     .filter(item => matchesText(query, [item.label, item.answer, ...(item.points || [])].join(' ')))
     .sort((left,right) => Number(matchesText(query, right.label)) - Number(matchesText(query, left.label)))
     .slice(0, 3)
@@ -72,13 +76,17 @@ export function commandResults(query, { role = 'Host', isAdmin = false } = {}) {
     kind: 'issue', id: item.id, title: item.title,
     description: item.subtitle, category: 'Participant common issue', role: 'Participant',
   })) : []
-  const processes = searchProcesses(hostMode ? hostProcesses(PROCESSES) : PROCESSES, clean).slice(0, 3).map(item => ({
+  const processes = (hostMode ? searchProcesses(hostProcesses(PROCESSES), clean) : searchParticipantProcesses(PROCESSES, clean)).slice(0, 3).map(item => ({
     kind: 'process', id: item.id, title: item.title.trim(),
     description: item.purpose, category: 'Approved Process Guide', role,
   }))
   // Approved Host routes and Tier-1 stop boundaries take priority over generic
   // process wording. Never mix Participant-only routes into Host results.
-  return [...pages,...hostRoutes,...roadblocks,...participantRoutes,...processes,...faqMatches(clean, role)].slice(0, 10)
+  const answer = approvedQuickAnswer(clean, { role })
+  const direct = hostMode && answer?.guide?.kind === 'flex_hub' ? [{ ...pageResult(PAGES.find(page => page.id === 'flex_hub')), section: answer.guide.id, title: answer.heading, description: answer.answer }] : []
+  const hub = hostMode && matchesFlexHubReference(clean) ? [pageResult(PAGES.find(page => page.id === 'flex_hub'))] : []
+  return [...direct,...hub,...pages,...hostRoutes,...roadblocks,...participantRoutes,...processes,...faqMatches(clean, role)]
+    .filter((item, index, items) => items.findIndex(other => other.kind === item.kind && other.id === item.id) === index).slice(0, 10)
 }
 
 export function findCommandPage(id, isAdmin = false) {
