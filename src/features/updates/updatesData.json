@@ -10,6 +10,20 @@
   },
   "updates": [
     {
+      "id": "search-relevance-recording-20261030",
+      "date": "2026-10-30",
+      "area": "Dashboard / Search / Recording",
+      "audience": "all",
+      "title": "Smarter Search — Approved Answers First",
+      "changed": "Approved, role-appropriate quick answers now appear first in search suggestions. Recording-policy searches such as turn off recording, stop recording, and disable automatic recording use the existing approved Host FAQ; irrelevant process guides that mention recording only in body text no longer appear. No support policies or source documents were changed.",
+      "checks": [
+        "As Host/Arbitrator, search turn off recording, stop recording and disable automatic recording. The Recording approved answer must be first, with no unrelated Transferring Meetings guide.",
+        "Click the approved result and confirm the FAQ opens. Verify recording during breaks retains its separate policy caveat.",
+        "Switch to Participant and confirm no Host-only recording policy is shown as a verified answer.",
+        "Recheck normal mic, camera, joining, scheduling and other searches, including keyboard navigation and Classic Search."
+      ]
+    },
+    {
       "id": "workspace-quick-page-and-live-tool-transitions-20261021",
       "date": "2026-10-21",
       "area": "Workspace Navigation / Call Flow / Knowledge / Training & Resources",

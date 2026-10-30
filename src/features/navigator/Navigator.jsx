@@ -6,6 +6,7 @@ import { ProcessDrawer } from './ProcessDrawer'
 import { LiveVisitors } from './LiveVisitors'
 import { searchParticipantProcesses, searchProcesses } from './smartSearch'
 import { approvedQuickAnswer } from './answerFirst'
+import { buildSearchSuggestions, isRecordingPolicySearch, isRecordingSourceRelevant } from './searchSuggestions'
 import { AnswerFirstCard } from './AnswerFirstCard'
 import { CompactCallTracker } from './CompactCallTracker'
 import { LiveCallFlow, LiveCallFlowDetails } from './LiveCallFlow'
@@ -268,7 +269,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   const hostTopicMatches = useMemo(() => query.trim() ? searchHostTopics(query) : [], [query])
   const hostRoadblockMatches = useMemo(() => query.trim() ? searchHostRoadblocks(query) : [], [query])
   const hostProcessSearchMatches = useMemo(
-    () => query.trim() ? searchProcesses(approvedHostProcesses, query) : [],
+    () => query.trim() ? searchProcesses(approvedHostProcesses, query).filter(process => !isRecordingPolicySearch(query) || isRecordingSourceRelevant(process)) : [],
     [query, approvedHostProcesses],
   )
   const searchMatches = useMemo(() => {
@@ -300,19 +301,10 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   const fastestRoutes = useMemo(() => FASTEST_ROUTE_IDS.map(routeById).filter(Boolean), [])
 
   const hubMatch = isHost && (matchesFlexHubReference(query) || quickAnswer?.guide?.kind === 'flex_hub')
-  const baseSuggestions = query.trim()
-    ? isHost
-      ? [
-          ...hostTopicMatches.map(topic => ({ kind: 'host', topic })),
-          ...hostRoadblockMatches.map(roadblock => ({ kind: 'roadblock', roadblock })),
-          ...processMatches.map(process => ({ kind: 'process', process })),
-        ].slice(0, 8)
-      : [
-          ...routeMatches.map(route => ({ kind: 'route', route })),
-          ...processMatches.map(process => ({ kind: 'process', process })),
-        ].slice(0, 8)
-    : []
-  const suggestions = hubMatch ? [{ kind: 'flex_hub', reference: FLEX_HUB_SEARCH_ENTRY }, ...baseSuggestions].slice(0, 8) : baseSuggestions
+  const suggestions = query.trim() ? buildSearchSuggestions({
+    query, isHost, quickAnswer, hubMatch, hubReference: FLEX_HUB_SEARCH_ENTRY,
+    hostTopicMatches, hostRoadblockMatches, processMatches, routeMatches,
+  }) : []
   const showSuggestions = suggestionsOpen && suggestions.length > 0
 
   function updateCallContext(patch = {}) {
@@ -487,7 +479,8 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   }
 
   function selectSuggestion(suggestion) {
-    if (suggestion.kind === 'flex_hub') onOpenFlexHub(quickAnswer?.guide?.kind === 'flex_hub' ? quickAnswer.guide.id : null)
+    if (suggestion.kind === 'approved_answer') openApprovedAnswerGuide(suggestion.answer?.guide)
+    else if (suggestion.kind === 'flex_hub') onOpenFlexHub(quickAnswer?.guide?.kind === 'flex_hub' ? quickAnswer.guide.id : null)
     else if (suggestion.kind === 'host') openHostTopic(suggestion.topic, 'search_suggestion')
     else if (suggestion.kind === 'roadblock') openHostRoadblock(suggestion.roadblock, 'search_suggestion')
     else if (suggestion.kind === 'route') openRoute(suggestion.route, 'search_suggestion')
@@ -614,16 +607,16 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
           />
           {showSuggestions && <div className="search-suggestions" id="support-search-suggestions" role="listbox" aria-label="Search suggestions">
             {suggestions.map((suggestion, index) => {
-              const item = suggestion.reference || suggestion.topic || suggestion.roadblock || suggestion.route || suggestion.process
-              const isIssue = ['host', 'route'].includes(suggestion.kind)
-              const description = suggestion.kind === 'flex_hub' ? item.purpose : suggestion.kind === 'host'
+              const item = suggestion.answer || suggestion.reference || suggestion.topic || suggestion.roadblock || suggestion.route || suggestion.process
+              const isIssue = ['approved_answer', 'host', 'route'].includes(suggestion.kind)
+              const description = suggestion.kind === 'approved_answer' ? item.answer : suggestion.kind === 'flex_hub' ? item.purpose : suggestion.kind === 'host'
                 ? 'Host / Arbitrator guided troubleshooting'
                 : suggestion.kind === 'roadblock'
                   ? item.trigger
                   : suggestion.kind === 'route'
                     ? item.subtitle
                     : item.purpose
-              const categoryLabel = suggestion.kind === 'flex_hub' ? 'Knowledge Reference' : suggestion.kind === 'host'
+              const categoryLabel = suggestion.kind === 'approved_answer' ? 'Approved Answer' : suggestion.kind === 'flex_hub' ? 'Knowledge Reference' : suggestion.kind === 'host'
                 ? 'Host Guide'
                 : suggestion.kind === 'roadblock'
                   ? 'Tier 1 Roadblock'
@@ -641,7 +634,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
                 onMouseMove={() => setActiveSuggestion(index)}
                 onClick={() => selectSuggestion(suggestion)}
               >
-                <span className="search-suggestion-copy"><strong>{item.title}</strong><small>{description}</small></span>
+                <span className="search-suggestion-copy"><strong>{suggestion.kind === 'approved_answer' ? item.heading : item.title}</strong><small>{description}</small></span>
                 <span className="search-suggestion-category">{categoryLabel}</span>
               </button>
             })}
