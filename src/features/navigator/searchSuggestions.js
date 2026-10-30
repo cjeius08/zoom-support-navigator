@@ -20,7 +20,9 @@ export function buildSearchSuggestions({
   hostTopicMatches = [], hostRoadblockMatches = [], processMatches = [], routeMatches = [],
 }) {
   const recordingPolicySearch = isRecordingPolicySearch(query)
-  const approved = quickAnswer && quickAnswer.status !== 'coverage_gap'
+  // Preserve existing dropdown behavior for other issues. Only recording-policy
+  // queries get an additional pinned answer until broader ranking is accepted.
+  const approved = recordingPolicySearch && quickAnswer && quickAnswer.status !== 'coverage_gap'
     ? [{ kind: 'approved_answer', answer: quickAnswer }]
     : []
   const policyFilter = item => !recordingPolicySearch || isRecordingSourceRelevant(item)
