@@ -14,7 +14,7 @@ const INTENTS = [
     role: 'Host',
     source: ['faq', 'Recording'],
     matches: text => /\b(record|recording)\b/.test(text)
-      && /\b(automatic|automatically|auto|turn off|disable|turned off|cannot turn off|cant turn off)\b/.test(text)
+      && /\b(automatic|automatically|auto|turn off|disable|disabled|turned off|cannot turn off|cant turn off|stop|stopping|pause|pausing)\b/.test(text)
       && !/\b(pause|resume|break|stop and restart)\b/.test(text),
   },
   {
