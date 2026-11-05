@@ -10,6 +10,15 @@ vi.mock('../../lib/callNotesApi', () => ({
 import { CallDocumentation } from './CallDocumentation'
 import { formatCallDocumentation } from './callDocumentationFormat'
 
+function dispatchPointer(target, type, properties) {
+  // JSDOM does not reliably supply PointerEvent coordinates.
+  const event = new Event(type, { bubbles: true, cancelable: true })
+  Object.entries(properties).forEach(([key, value]) => {
+    Object.defineProperty(event, key, { configurable: true, value })
+  })
+  fireEvent(target, event)
+}
+
 it('formats the approved documentation fields in a copy-ready order', () => {
   const text = formatCallDocumentation({
     callerName: 'Sample Caller',
@@ -263,9 +272,9 @@ it('moves the floating note without changing its form or losing the draft', asyn
   const header = screen.getByLabelText(/Move Call Documentation window with arrow keys/i)
   const oldX = parseFloat(panel.style.getPropertyValue('--call-window-x'))
   const oldY = parseFloat(panel.style.getPropertyValue('--call-window-y'))
-  fireEvent.pointerDown(header, { pointerId: 17, pointerType: 'mouse', button: 0, clientX: 100, clientY: 120 })
-  fireEvent.pointerMove(header, { pointerId: 17, clientX: 50, clientY: 150 })
-  fireEvent.pointerUp(header, { pointerId: 17 })
+  dispatchPointer(header, 'pointerdown', { pointerId: 17, pointerType: 'mouse', button: 0, clientX: 100, clientY: 120 })
+  dispatchPointer(header, 'pointermove', { pointerId: 17, clientX: 50, clientY: 150 })
+  dispatchPointer(header, 'pointerup', { pointerId: 17 })
   expect(parseFloat(panel.style.getPropertyValue('--call-window-x'))).toBeLessThan(oldX)
   expect(parseFloat(panel.style.getPropertyValue('--call-window-y'))).toBeGreaterThan(oldY)
   expect(screen.getByLabelText(/Exact issue/i)).toHaveValue('Keep this draft while moving')
@@ -290,9 +299,9 @@ it('supports bounded resize and accessible keyboard repositioning', () => {
   const originalY = parseFloat(panel.style.getPropertyValue('--call-window-y'))
   fireEvent.keyDown(header, { key: 'ArrowDown' })
   expect(parseFloat(panel.style.getPropertyValue('--call-window-y'))).toBeGreaterThan(originalY)
-  fireEvent.pointerDown(resize, { pointerId: 22, pointerType: 'mouse', button: 0, clientX: 200, clientY: 220 })
-  fireEvent.pointerMove(resize, { pointerId: 22, clientX: 15000, clientY: 15000 })
-  fireEvent.pointerUp(resize, { pointerId: 22 })
+  dispatchPointer(resize, 'pointerdown', { pointerId: 22, pointerType: 'mouse', button: 0, clientX: 200, clientY: 220 })
+  dispatchPointer(resize, 'pointermove', { pointerId: 22, clientX: 15000, clientY: 15000 })
+  dispatchPointer(resize, 'pointerup', { pointerId: 22 })
   expect(parseFloat(panel.style.getPropertyValue('--call-window-width'))).toBeLessThanOrEqual(window.innerWidth - 24)
   expect(parseFloat(panel.style.getPropertyValue('--call-window-height'))).toBeLessThanOrEqual(window.innerHeight - 24)
   window.localStorage.removeItem('ozzie.callDocumentation.windowLayout.v1')

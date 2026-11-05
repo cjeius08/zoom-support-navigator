@@ -170,6 +170,7 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
   function beginWindowGesture(event, kind) {
     if (window.innerWidth <= 800 || (event.pointerType === 'mouse' && event.button !== 0)) return
     if (kind === 'move' && event.target.closest?.('button, a, input, select, textarea, summary')) return
+    if (!Number.isFinite(event.clientX) || !Number.isFinite(event.clientY)) return
     event.preventDefault()
     pointerGestureRef.current = {
       pointerId: event.pointerId, kind, originX: event.clientX, originY: event.clientY,
@@ -181,6 +182,7 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
   function moveWindowGesture(event) {
     const gesture = pointerGestureRef.current
     if (!gesture || event.pointerId !== gesture.pointerId) return
+    if (!Number.isFinite(event.clientX) || !Number.isFinite(event.clientY)) return
     const dx = event.clientX - gesture.originX
     const dy = event.clientY - gesture.originY
     const previous = gesture.startingLayout
@@ -200,6 +202,7 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
   }
 
   function moveWindowWithKeyboard(event) {
+    if (event.target !== event.currentTarget) return
     if (window.innerWidth <= 800 || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return
     event.preventDefault()
     const delta = event.shiftKey ? 40 : 16
