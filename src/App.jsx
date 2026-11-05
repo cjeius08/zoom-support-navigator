@@ -65,6 +65,7 @@ import './features/shell/batch12Login.css'
 import './features/training/trainingReadability.css'
 import './features/shell/workspaceMotion.css'
 import './features/navigator/batch1MobileAcceptance.css'
+import './features/training/floatingCallDocumentation.css'
 
 const EMPTY_REPORT_CONTEXT = {
   selected_tab: null,

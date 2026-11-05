@@ -76,6 +76,42 @@ function appendDraftText(existing, incoming) {
   return `${current}\n\n${next}`
 }
 
+
+const WINDOW_LAYOUT_KEY = 'ozzie.callDocumentation.windowLayout.v1'
+const WINDOW_GUTTER = 12
+const WINDOW_MIN_WIDTH = 320
+const WINDOW_MIN_HEIGHT = 340
+
+// Store only UI coordinates and dimensions. Call data is never written to localStorage.
+function clampWindowLayout(layout) {
+  const viewportWidth = Math.max(320, window.innerWidth)
+  const viewportHeight = Math.max(380, window.innerHeight)
+  const maxWidth = Math.max(280, viewportWidth - WINDOW_GUTTER * 2)
+  const maxHeight = Math.max(300, viewportHeight - WINDOW_GUTTER * 2)
+  const width = Math.min(Math.max(Math.min(WINDOW_MIN_WIDTH, maxWidth), Number(layout.width) || 360), maxWidth)
+  const height = Math.min(Math.max(Math.min(WINDOW_MIN_HEIGHT, maxHeight), Number(layout.height) || 580), maxHeight)
+  const x = Math.min(Math.max(WINDOW_GUTTER, Number(layout.x) || WINDOW_GUTTER), Math.max(WINDOW_GUTTER, viewportWidth - width - WINDOW_GUTTER))
+  const y = Math.min(Math.max(WINDOW_GUTTER, Number(layout.y) || WINDOW_GUTTER), Math.max(WINDOW_GUTTER, viewportHeight - height - WINDOW_GUTTER))
+  return { x, y, width, height }
+}
+
+function defaultWindowLayout() {
+  const width = Math.min(360, Math.max(280, window.innerWidth - 24))
+  const height = Math.min(590, Math.max(300, window.innerHeight - 116))
+  return clampWindowLayout({ x: window.innerWidth - width - 22, y: 80, width, height })
+}
+
+function initialWindowLayout() {
+  if (typeof window === 'undefined') return { x: 24, y: 80, width: 360, height: 590 }
+  try {
+    const value = JSON.parse(window.localStorage.getItem(WINDOW_LAYOUT_KEY) || 'null')
+    if (value && ['x', 'y', 'width', 'height'].every(key => Number.isFinite(value[key]))) {
+      return clampWindowLayout(value)
+    }
+  } catch { /* Storage is optional; never block notes because of browser privacy settings. */ }
+  return defaultWindowLayout()
+}
+
 function Field({ label, hint, children }) {
   return <label className="documentation-dock-field">
     <span>{label}</span>
@@ -86,6 +122,9 @@ function Field({ label, hint, children }) {
 
 export function CallDocumentation({ open = false, minimized = false, stackIndex = 0, onMinimize = () => {}, onClose = () => {}, onOpenSavedNotes = null, prefill = null, onPrefillApplied = () => {}, resetToken = 0 }) {
   const [draft, setDraft] = useState(createInitialDraft)
+  const [windowLayout, setWindowLayout] = useState(initialWindowLayout)
+  const windowLayoutRef = useRef(windowLayout)
+  const pointerGestureRef = useRef(null)
   const [copyState, setCopyState] = useState('idle')
   const [activeNoteId, setActiveNoteId] = useState(null)
   const [savedNotes, setSavedNotes] = useState([])
@@ -109,6 +148,82 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
     draft.recommendedContact,
     draft.outcome,
   ].filter(Boolean).length, [draft])
+
+
+  function updateWindowLayout(next) {
+    const clamped = clampWindowLayout(next)
+    windowLayoutRef.current = clamped
+    setWindowLayout(clamped)
+  }
+
+  function saveWindowLayout() {
+    try { window.localStorage.setItem(WINDOW_LAYOUT_KEY, JSON.stringify(windowLayoutRef.current)) }
+    catch { /* Keep drag and resize usable without localStorage. */ }
+  }
+
+  useEffect(() => {
+    const handleResize = () => updateWindowLayout(windowLayoutRef.current)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  function beginWindowGesture(event, kind) {
+    if (window.innerWidth <= 800 || (event.pointerType === 'mouse' && event.button !== 0)) return
+    if (kind === 'move' && event.target.closest?.('button, a, input, select, textarea, summary')) return
+    event.preventDefault()
+    pointerGestureRef.current = {
+      pointerId: event.pointerId, kind, originX: event.clientX, originY: event.clientY,
+      startingLayout: windowLayoutRef.current,
+    }
+    event.currentTarget.setPointerCapture?.(event.pointerId)
+  }
+
+  function moveWindowGesture(event) {
+    const gesture = pointerGestureRef.current
+    if (!gesture || event.pointerId !== gesture.pointerId) return
+    const dx = event.clientX - gesture.originX
+    const dy = event.clientY - gesture.originY
+    const previous = gesture.startingLayout
+    if (gesture.kind === 'move') {
+      updateWindowLayout({ ...previous, x: previous.x + dx, y: previous.y + dy })
+    } else {
+      updateWindowLayout({ ...previous, width: previous.width + dx, height: previous.height + dy })
+    }
+  }
+
+  function finishWindowGesture(event) {
+    const gesture = pointerGestureRef.current
+    if (!gesture || event.pointerId !== gesture.pointerId) return
+    pointerGestureRef.current = null
+    if (event.currentTarget.hasPointerCapture?.(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId)
+    saveWindowLayout()
+  }
+
+  function moveWindowWithKeyboard(event) {
+    if (window.innerWidth <= 800 || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return
+    event.preventDefault()
+    const delta = event.shiftKey ? 40 : 16
+    const offsets = { ArrowLeft: [-delta, 0], ArrowRight: [delta, 0], ArrowUp: [0, -delta], ArrowDown: [0, delta] }
+    const [dx, dy] = offsets[event.key]
+    updateWindowLayout({ ...windowLayoutRef.current, x: windowLayoutRef.current.x + dx, y: windowLayoutRef.current.y + dy })
+    // Keyboard movement is infrequent and should persist immediately.
+    try { window.localStorage.setItem(WINDOW_LAYOUT_KEY, JSON.stringify(clampWindowLayout({
+      ...windowLayoutRef.current, x: windowLayoutRef.current.x, y: windowLayoutRef.current.y,
+    }))) } catch { /* UI still works. */ }
+  }
+
+  function resizeWindowWithKeyboard(event) {
+    if (window.innerWidth <= 800 || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return
+    event.preventDefault()
+    const step = event.shiftKey ? 40 : 16
+    const size = windowLayoutRef.current
+    updateWindowLayout({
+      ...size,
+      width: size.width + (event.key === 'ArrowRight' ? step : event.key === 'ArrowLeft' ? -step : 0),
+      height: size.height + (event.key === 'ArrowDown' ? step : event.key === 'ArrowUp' ? -step : 0),
+    })
+    saveWindowLayout()
+  }
 
   useEffect(() => {
     if (lastResetTokenRef.current === resetToken) return
@@ -245,7 +360,7 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
   if (!open) return null
 
   if (minimized) {
-    return <aside style={{ '--tool-stack-offset': `${Math.max(0, stackIndex) * 4.25}rem`, '--tool-stack-offset-compact': `${Math.max(0, stackIndex) * 3.25}rem` }} className="documentation-dock documentation-dock-minimized" aria-label="Call Documentation minimized">
+    return <aside style={{ '--tool-stack-offset': `${Math.max(0, stackIndex) * 4.25}rem`, '--tool-stack-offset-compact': `${Math.max(0, stackIndex) * 3.25}rem` }} className="documentation-dock documentation-dock-minimized documentation-dock-mini-chip" aria-label="Call Documentation minimized">
       <button type="button" className="documentation-dock-restore" aria-label="Restore Call Documentation" title="Restore Call Documentation" onClick={onMinimize}>
         <span>
           <strong>Call Documentation</strong>
@@ -257,10 +372,24 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
     </aside>
   }
 
-  return <aside className="documentation-dock" aria-labelledby="call-documentation-dock-title">
-    <header className="documentation-dock-header">
+  return <aside className="documentation-dock documentation-dock-floating" aria-labelledby="call-documentation-dock-title"
+    style={{
+      '--call-window-x': windowLayout.x + 'px',
+      '--call-window-y': windowLayout.y + 'px',
+      '--call-window-width': windowLayout.width + 'px',
+      '--call-window-height': windowLayout.height + 'px',
+    }}>
+    <header className="documentation-dock-header documentation-dock-drag-handle"
+      aria-label="Move Call Documentation window with arrow keys, or drag this header"
+      title="Drag to move · Arrow keys move when focused"
+      tabIndex={0}
+      onPointerDown={event => beginWindowGesture(event, 'move')}
+      onPointerMove={moveWindowGesture}
+      onPointerUp={finishWindowGesture}
+      onPointerCancel={finishWindowGesture}
+      onKeyDown={moveWindowWithKeyboard}>
       <div>
-        <span className="documentation-dock-kicker">Live tool · protected notes</span>
+        <span className="documentation-dock-kicker">Drag to move · Call notes</span>
         <h2 id="call-documentation-dock-title">Call Documentation</h2>
       </div>
       <div className="documentation-dock-window-actions">
@@ -388,5 +517,13 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
         <small>Source: {SOURCE_TITLE}</small>
       </footer>
     </div>
+    <button className="documentation-dock-resize-handle" type="button"
+      aria-label="Resize Call Documentation"
+      title="Drag to resize · Arrow keys adjust size"
+      onPointerDown={event => beginWindowGesture(event, 'resize')}
+      onPointerMove={moveWindowGesture}
+      onPointerUp={finishWindowGesture}
+      onPointerCancel={finishWindowGesture}
+      onKeyDown={resizeWindowWithKeyboard}>⌟</button>
   </aside>
 }

@@ -1,0 +1,121 @@
+/* Preview-only: movable Call Documentation window. Other live tools are unchanged.
+   Scoped after existing legacy responsive/typography layers to avoid collateral UI changes. */
+@media (min-width: 801px) {
+  .app-shell-horizontal > .documentation-dock.documentation-dock-floating:not(.documentation-dock-minimized) {
+    position: fixed;
+    top: var(--call-window-y) !important;
+    left: var(--call-window-x) !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: var(--call-window-width) !important;
+    height: var(--call-window-height) !important;
+    max-width: calc(100vw - 24px);
+    max-height: calc(100dvh - 24px);
+  }
+  .app-shell-horizontal > .documentation-dock-floating .documentation-dock-drag-handle {
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+  }
+  .app-shell-horizontal > .documentation-dock-floating .documentation-dock-drag-handle:active { cursor: grabbing; }
+  .app-shell-horizontal > .documentation-dock-floating .documentation-dock-drag-handle:focus-visible {
+    outline: 2px solid var(--read-ring, #63b8ff);
+    outline-offset: -3px;
+  }
+  .app-shell-horizontal > .documentation-dock-floating .documentation-dock-resize-handle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 5;
+    width: 25px;
+    height: 25px;
+    display: grid;
+    place-items: center;
+    color: var(--read-body, #adc8d8);
+    background: transparent;
+    border: 0;
+    cursor: nwse-resize;
+    touch-action: none;
+    font-size: 20px;
+    line-height: 1;
+  }
+  .app-shell-horizontal > .documentation-dock-floating .documentation-dock-resize-handle:focus-visible {
+    outline: 2px solid var(--read-ring, #63b8ff);
+    outline-offset: -3px;
+  }
+}
+
+/* Keep Call Notes distinct from the other three live-tool windows. */
+.app-shell-horizontal > .documentation-dock.documentation-dock-mini-chip {
+  top: auto !important;
+  left: auto !important;
+  right: 12px !important;
+  bottom: calc(12px + var(--tool-stack-offset, 0rem)) !important;
+  width: min(196px, calc(100vw - 24px)) !important;
+  height: auto !important;
+  min-width: 0 !important;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+.app-shell-horizontal > .documentation-dock-mini-chip .documentation-dock-restore {
+  min-width: 0;
+  justify-content: flex-start !important;
+  padding: 9px 10px !important;
+}
+.app-shell-horizontal > .documentation-dock-mini-chip .documentation-dock-restore > span:first-child {
+  display: grid !important;
+}
+.app-shell-horizontal > .documentation-dock-mini-chip .documentation-dock-restore > span[aria-hidden="true"] { display: none !important; }
+.app-shell-horizontal > .documentation-dock-mini-chip .documentation-dock-restore::after { content: none !important; }
+.app-shell-horizontal > .documentation-dock-mini-chip .documentation-dock-close { margin-right: 4px; }
+
+/* Call Notes-specific density: preserve readable input sizes and approved labels.
+   This overrides legacy global readability rules that inflated tiny dock text. */
+.app-shell-horizontal > .documentation-dock-floating .documentation-dock-header { padding: 9px 11px; }
+.app-shell-horizontal > .documentation-dock-floating .documentation-dock-header h2 { font-size: 16px; line-height: 1.25; }
+.app-shell-horizontal > .documentation-dock-floating .documentation-dock-kicker {
+  font-size: 11px !important;
+  letter-spacing: .025em;
+}
+.app-shell-horizontal > .documentation-dock-floating .documentation-dock-body { gap: 8px; padding: 9px; }
+.app-shell-horizontal > .documentation-dock-floating :is(.documentation-dock-privacy, .documentation-dock-fields) { gap: 6px; }
+.app-shell-horizontal > .documentation-dock-floating .documentation-dock-section > summary,
+.app-shell-horizontal > .documentation-dock-floating .documentation-dock-preview > summary { font-size: 13px; padding: 8px 9px; }
+.app-shell-horizontal > .documentation-dock-floating .documentation-dock-field > span { font-size: 12.5px !important; line-height: 1.3; }
+.app-shell-horizontal > .documentation-dock-floating .documentation-dock-field > small { font-size: 11.5px !important; line-height: 1.35; }
+.app-shell-horizontal > .documentation-dock-floating .documentation-dock-field :is(input,select,textarea) {
+  font-size: 14px !important;
+  line-height: 1.4;
+  padding: 8px;
+}
+.app-shell-horizontal > .documentation-dock-floating .documentation-dock-privacy span {
+  font-size: 12px !important;
+  line-height: 1.4;
+}
+.app-shell-horizontal > .documentation-dock-floating .documentation-dock-outcomes button { font-size: 12px; padding: 7px 9px; }
+.app-shell-horizontal > .documentation-dock-floating .documentation-dock-actions { gap: 6px; }
+.app-shell-horizontal > .documentation-dock-floating .documentation-dock-actions button {
+  font-size: 12px !important;
+  line-height: 1.3;
+  min-height: 34px;
+}
+.app-shell-horizontal > .documentation-dock-floating .documentation-dock-footer { padding: 8px 9px 17px; }
+.app-shell-horizontal > .documentation-dock-floating .documentation-dock-footer > small { font-size: 11px !important; }
+
+/* On touch/mobile screens use a contained bottom sheet; no dragging. */
+@media (max-width: 800px) {
+  .app-shell-horizontal > .documentation-dock.documentation-dock-floating:not(.documentation-dock-minimized) {
+    top: auto !important;
+    bottom: 8px !important;
+    left: 8px !important;
+    right: 8px !important;
+    width: auto !important;
+    height: min(75dvh, 610px) !important;
+    max-height: calc(100dvh - 78px);
+  }
+  .app-shell-horizontal > .documentation-dock-floating .documentation-dock-resize-handle { display: none; }
+  .app-shell-horizontal > .documentation-dock-floating .documentation-dock-drag-handle { cursor: default; }
+}
+@media (max-width: 420px) {
+  .app-shell-horizontal > .documentation-dock-floating .documentation-dock-actions { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
