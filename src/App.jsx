@@ -65,6 +65,7 @@ import './features/shell/batch12Login.css'
 import './features/training/trainingReadability.css'
 import './features/shell/workspaceMotion.css'
 import './features/navigator/batch1MobileAcceptance.css'
+import './features/training/floatingCallDocumentation.css'
 
 const EMPTY_REPORT_CONTEXT = {
   selected_tab: null,
@@ -616,7 +617,7 @@ export default function App() {
                     : view === 'saved_notes'
                       ? <SavedNotesPage initialUserId={savedNotesUserId}/>
                       : view === 'my_saved_notes'
-                        ? <MySavedNotesPage initialNoteId={mySavedNoteId}/>
+                        ? <MySavedNotesPage initialNoteId={mySavedNoteId} ownerName={profile.username}/>
                         : <FeedbackQueue onOpenPage={openFeedbackTarget}/>
     return <>
       <AppShell

@@ -84,7 +84,7 @@ it('opens prefiltered for a clicked person and allows changing the user filter',
   expect(await screen.findByText('CASE-101')).toBeInTheDocument()
   expect(screen.queryByText('CASE-202')).not.toBeInTheDocument()
 
-  await user.selectOptions(screen.getByLabelText('User'), 'u2')
+  await user.selectOptions(screen.getByLabelText('Saved by / Owner'), 'u2')
   expect(screen.getByText('CASE-202')).toBeInTheDocument()
   expect(screen.queryByText('CASE-101')).not.toBeInTheDocument()
 })
@@ -106,4 +106,28 @@ it('searches saved note fields and lets admin permanently delete a note', async 
 
   await waitFor(() => expect(deleteCallNoteAsAdmin).toHaveBeenCalledTimes(1))
   expect(screen.queryByText('CASE-101')).not.toBeInTheDocument()
+})
+
+it('clearly labels the owner on each note and filters by the saving account', async () => {
+  const user = userEvent.setup()
+  const { SavedNotesPage } = await import('./SavedNotesPage')
+  render(<SavedNotesPage />)
+  await screen.findByText('CASE-101')
+  const ownershipLabels = screen.getAllByText('Saved by / Owner')
+  expect(ownershipLabels.length).toBeGreaterThanOrEqual(3)
+  expect(screen.getAllByText('agent_one').length).toBeGreaterThan(0)
+  expect(screen.getAllByText('agent_two').length).toBeGreaterThan(0)
+  await user.selectOptions(screen.getByLabelText('Saved by / Owner'), 'u2')
+  expect(screen.queryByText('CASE-101')).not.toBeInTheDocument()
+  expect(screen.getByText('CASE-202')).toBeInTheDocument()
+})
+
+it('shows an unambiguous owner reference when an old note has no matching profile', async () => {
+  loadCallNotesReport.mockResolvedValueOnce({ notes, profiles: [profiles[0]] })
+  const { SavedNotesPage } = await import('./SavedNotesPage')
+  render(<SavedNotesPage />)
+  await screen.findByText('CASE-202')
+  expect(screen.getAllByText('Profile unavailable').length).toBeGreaterThan(0)
+  expect(screen.getByText(/Account ID ending u2/i)).toBeInTheDocument()
+  expect(screen.getByRole('option', { name: /Profile unavailable.*u2/i })).toBeInTheDocument()
 })

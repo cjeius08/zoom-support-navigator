@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
 
@@ -9,6 +9,15 @@ vi.mock('../../lib/callNotesApi', () => ({
 
 import { CallDocumentation } from './CallDocumentation'
 import { formatCallDocumentation } from './callDocumentationFormat'
+
+function dispatchPointer(target, type, properties) {
+  // JSDOM does not reliably supply PointerEvent coordinates.
+  const event = new Event(type, { bubbles: true, cancelable: true })
+  Object.entries(properties).forEach(([key, value]) => {
+    Object.defineProperty(event, key, { configurable: true, value })
+  })
+  fireEvent(target, event)
+}
 
 it('formats the approved documentation fields in a copy-ready order', () => {
   const text = formatCallDocumentation({
@@ -252,4 +261,48 @@ it('clears only the current unsaved documentation state when a New Call reset is
   expect(screen.getByLabelText(/Exact issue/i)).toHaveValue('')
   expect(screen.getByLabelText('Device / platform')).toHaveValue('')
   expect(api.saveOwnCallNote).not.toHaveBeenCalled()
+})
+
+it('moves the floating note without changing its form or losing the draft', async () => {
+  window.localStorage.removeItem('ozzie.callDocumentation.windowLayout.v1')
+  const user = userEvent.setup()
+  const { rerender, container } = render(<CallDocumentation open />)
+  await user.type(screen.getByLabelText(/Exact issue/i), 'Keep this draft while moving')
+  const panel = container.querySelector('.documentation-dock-floating')
+  const header = screen.getByLabelText(/Move Call Documentation window with arrow keys/i)
+  const oldX = parseFloat(panel.style.getPropertyValue('--call-window-x'))
+  const oldY = parseFloat(panel.style.getPropertyValue('--call-window-y'))
+  dispatchPointer(header, 'pointerdown', { pointerId: 17, pointerType: 'mouse', button: 0, clientX: 100, clientY: 120 })
+  dispatchPointer(header, 'pointermove', { pointerId: 17, clientX: 50, clientY: 150 })
+  dispatchPointer(header, 'pointerup', { pointerId: 17 })
+  expect(parseFloat(panel.style.getPropertyValue('--call-window-x'))).toBeLessThan(oldX)
+  expect(parseFloat(panel.style.getPropertyValue('--call-window-y'))).toBeGreaterThan(oldY)
+  expect(screen.getByLabelText(/Exact issue/i)).toHaveValue('Keep this draft while moving')
+  const movedX = panel.style.getPropertyValue('--call-window-x')
+  rerender(<CallDocumentation open minimized />)
+  expect(screen.getByLabelText('Call Documentation minimized')).toBeInTheDocument()
+  rerender(<CallDocumentation open />)
+  expect(container.querySelector('.documentation-dock-floating').style.getPropertyValue('--call-window-x')).toBe(movedX)
+  expect(screen.getByLabelText(/Exact issue/i)).toHaveValue('Keep this draft while moving')
+  window.localStorage.removeItem('ozzie.callDocumentation.windowLayout.v1')
+})
+
+it('supports bounded resize and accessible keyboard repositioning', () => {
+  window.localStorage.removeItem('ozzie.callDocumentation.windowLayout.v1')
+  const { container } = render(<CallDocumentation open />)
+  const panel = container.querySelector('.documentation-dock-floating')
+  const resize = screen.getByRole('button', { name: 'Resize Call Documentation' })
+  const originalWidth = parseFloat(panel.style.getPropertyValue('--call-window-width'))
+  fireEvent.keyDown(resize, { key: 'ArrowLeft' })
+  expect(parseFloat(panel.style.getPropertyValue('--call-window-width'))).toBeLessThan(originalWidth)
+  const header = screen.getByLabelText(/Move Call Documentation window with arrow keys/i)
+  const originalY = parseFloat(panel.style.getPropertyValue('--call-window-y'))
+  fireEvent.keyDown(header, { key: 'ArrowDown' })
+  expect(parseFloat(panel.style.getPropertyValue('--call-window-y'))).toBeGreaterThan(originalY)
+  dispatchPointer(resize, 'pointerdown', { pointerId: 22, pointerType: 'mouse', button: 0, clientX: 200, clientY: 220 })
+  dispatchPointer(resize, 'pointermove', { pointerId: 22, clientX: 15000, clientY: 15000 })
+  dispatchPointer(resize, 'pointerup', { pointerId: 22 })
+  expect(parseFloat(panel.style.getPropertyValue('--call-window-width'))).toBeLessThanOrEqual(window.innerWidth - 24)
+  expect(parseFloat(panel.style.getPropertyValue('--call-window-height'))).toBeLessThanOrEqual(window.innerHeight - 24)
+  window.localStorage.removeItem('ozzie.callDocumentation.windowLayout.v1')
 })
