@@ -6,8 +6,15 @@ import './savedNotes.css'
 const FOLLOW_UP_OUTCOME = 'Follow-Up Required'
 
 function personLabel(person) {
-  if (!person) return 'Unknown user'
-  return person.username || person.initials || 'Unknown user'
+  return person?.username || 'Profile unavailable'
+}
+
+// A note's immutable user_id is the source of ownership; the public-facing
+// username is metadata that can be missing for deactivated/deleted profiles.
+// Show a short reference for admins without guessing an agent identity.
+function ownerReference(note) {
+  const id = String(note?.user_id || '')
+  return id ? 'Account ID ending ' + id.slice(-8) : 'Account ID unavailable'
 }
 
 function dateStart(value) {
@@ -26,6 +33,7 @@ function noteSearchText(note, person) {
   return [
     person?.username,
     person?.initials,
+    note.user_id,
     note.caller_ref,
     note.device,
     note.outcome,
@@ -71,11 +79,14 @@ export function SavedNotesPage({ initialUserId = '' }) {
     const notes = state.data?.notes || []
     const profiles = state.data?.profiles || []
     const people = new Map(profiles.map(person => [person.id, person]))
+    const owners = [...new Set(notes.map(note => note.user_id).filter(Boolean))]
+      .map(id => ({ id, person: people.get(id) }))
+      .sort((a, b) => personLabel(a.person).localeCompare(personLabel(b.person)))
     const outcomes = [...new Set(notes.map(note => note.outcome).filter(Boolean))].sort()
     const devices = [...new Set(notes.map(note => note.device).filter(Boolean))].sort()
     const usersWithNotes = new Set(notes.map(note => note.user_id)).size
     const followUps = notes.filter(note => note.outcome === FOLLOW_UP_OUTCOME).length
-    return { notes, profiles, people, outcomes, devices, usersWithNotes, followUps }
+    return { notes, profiles, people, owners, outcomes, devices, usersWithNotes, followUps }
   }, [state.data])
 
   const visibleNotes = useMemo(() => {
@@ -190,12 +201,12 @@ export function SavedNotesPage({ initialUserId = '' }) {
 
         <div className="saved-notes-filter-grid">
           <label>
-            <span>User</span>
+            <span>Saved by / Owner</span>
             <select value={userId} onChange={event => setUserId(event.target.value)}>
-              <option value="">All users</option>
-              {report.profiles
-                .filter(person => report.notes.some(note => note.user_id === person.id))
-                .map(person => <option value={person.id} key={person.id}>{personLabel(person)} ({person.initials || '—'})</option>)}
+              <option value="">All owners</option>
+              {report.owners.map(({ id, person }) => <option value={id} key={id}>
+                {personLabel(person)} · {person?.initials || 'No initials'} · ID ending {String(id).slice(-8)}
+              </option>)}
             </select>
           </label>
           <label>
@@ -244,10 +255,12 @@ export function SavedNotesPage({ initialUserId = '' }) {
                 <button
                   type="button"
                   onClick={() => setUserId(note.user_id)}
-                  title={`Show all notes for ${personLabel(person)}`}
+                  title={`Show all notes owned by ${personLabel(person)}`}
+                  aria-label={`Filter notes saved by ${personLabel(person)}`}
                 >
+                  <span className="saved-note-owner-label">Saved by / Owner</span>
                   <strong>{personLabel(person)}</strong>
-                  <small>{person?.initials || '—'}</small>
+                  <small>{person?.initials ? `Initials: ${person.initials} · ` : ''}{ownerReference(note)}</small>
                 </button>
                 {isFollowUp && <span className="saved-note-follow-badge">Follow-Up Required</span>}
               </div>
@@ -258,6 +271,7 @@ export function SavedNotesPage({ initialUserId = '' }) {
             </header>
 
             <dl className="saved-note-meta">
+              <div><dt>Saved by</dt><dd title={ownerReference(note)}>{personLabel(person)}</dd></div>
               <div><dt>Caller ref</dt><dd>{note.caller_ref || '—'}</dd></div>
               <div><dt>Device</dt><dd>{note.device || '—'}</dd></div>
               <div><dt>Outcome</dt><dd>{note.outcome || '—'}</dd></div>

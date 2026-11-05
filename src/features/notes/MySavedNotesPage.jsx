@@ -27,7 +27,7 @@ function searchText(note) {
   ].filter(Boolean).join(' ').toLowerCase()
 }
 
-export function MySavedNotesPage({ initialNoteId = '' }) {
+export function MySavedNotesPage({ initialNoteId = '', ownerName = '' }) {
   const [state, setState] = useState({ loading: true, notes: [], error: '' })
   const [query, setQuery] = useState('')
   const [outcome, setOutcome] = useState('')
@@ -133,6 +133,7 @@ export function MySavedNotesPage({ initialNoteId = '' }) {
             <header>
               <div className="saved-note-person">
                 <strong>{note.caller_ref || note.device || 'Saved call note'}</strong>
+                <small className="saved-note-personal-owner">Saved by: {ownerName || 'Your account'}</small>
                 {followUp && <span className="saved-note-follow-badge">Follow-Up Required</span>}
               </div>
               <div className="saved-note-time"><strong>{new Date(note.created_at).toLocaleString()}</strong><small>Retained until {new Date(note.expires_at).toLocaleDateString()}</small></div>

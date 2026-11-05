@@ -337,3 +337,22 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Make note ownership explicit in protected admin reporting. */
+.saved-note-owner-label {
+  color: var(--read-body, #9fb0bf);
+  font-size: 11px;
+  line-height: 1.25;
+  font-weight: 750;
+  letter-spacing: .025em;
+  text-transform: uppercase;
+}
+.saved-note-person > button .saved-note-owner-label { display: block; }
+.saved-note-person > button small { white-space: normal; overflow-wrap: anywhere; }
+.saved-note-meta { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 980px) { .saved-note-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .saved-note-meta { grid-template-columns: 1fr; } }
+.my-saved-notes-page .saved-note-meta { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.my-saved-notes-page .saved-note-personal-owner { color: var(--read-body, #9fb0bf); font-size: 12px; }
+@media (max-width: 980px) { .my-saved-notes-page .saved-note-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .my-saved-notes-page .saved-note-meta { grid-template-columns: 1fr; } }

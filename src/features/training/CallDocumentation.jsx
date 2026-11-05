@@ -392,7 +392,7 @@ export function CallDocumentation({ open = false, minimized = false, stackIndex 
       onPointerCancel={finishWindowGesture}
       onKeyDown={moveWindowWithKeyboard}>
       <div>
-        <span className="documentation-dock-kicker">Drag to move · Call notes</span>
+        <span className="documentation-dock-kicker">⠿ Drag this bar to move · Protected notes</span>
         <h2 id="call-documentation-dock-title">Call Documentation</h2>
       </div>
       <div className="documentation-dock-window-actions">
