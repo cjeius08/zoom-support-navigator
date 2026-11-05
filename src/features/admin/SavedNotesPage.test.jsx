@@ -84,7 +84,7 @@ it('opens prefiltered for a clicked person and allows changing the user filter',
   expect(await screen.findByText('CASE-101')).toBeInTheDocument()
   expect(screen.queryByText('CASE-202')).not.toBeInTheDocument()
 
-  await user.selectOptions(screen.getByLabelText('User'), 'u2')
+  await user.selectOptions(screen.getByLabelText('Saved by / Owner'), 'u2')
   expect(screen.getByText('CASE-202')).toBeInTheDocument()
   expect(screen.queryByText('CASE-101')).not.toBeInTheDocument()
 })
