@@ -1,6 +1,6 @@
 import { FAQ_ROLE_COVERAGE } from '../../data/supportRoleCoverage'
 import { approvedQuickAnswer } from '../navigator/answerFirst'
-import { matchesFlexHubReference } from '../../data/flexHubReference'
+import { findFlexHubTopic, matchesFlexHubReference } from '../../data/flexHubReference'
 import { PROCESSES } from '../../data/processes'
 import { FAQ_ITEMS } from '../../data/supportReference'
 import { hostFaqItems, hostProcesses, hostFastestTopics, searchHostTopics, searchHostRoadblocks } from '../../data/hostExperience'
@@ -84,7 +84,13 @@ export function commandResults(query, { role = 'Host', isAdmin = false } = {}) {
   // process wording. Never mix Participant-only routes into Host results.
   const answer = approvedQuickAnswer(clean, { role })
   const direct = hostMode && answer?.guide?.kind === 'flex_hub' ? [{ ...pageResult(PAGES.find(page => page.id === 'flex_hub')), section: answer.guide.id, title: answer.heading, description: answer.answer }] : []
-  const hub = hostMode && matchesFlexHubReference(clean) ? [pageResult(PAGES.find(page => page.id === 'flex_hub'))] : []
+  const hubTopic = hostMode ? findFlexHubTopic(clean) : null
+  const hub = hostMode && matchesFlexHubReference(clean) ? [{
+    ...pageResult(PAGES.find(page => page.id === 'flex_hub')),
+    section: hubTopic?.id || null,
+    title: hubTopic ? 'Flex Hub: ' + hubTopic.label : 'Flex Arbitration Hub',
+    description: hubTopic?.summary || 'Hub access, case folders and hearing processes',
+  }] : []
   return [...direct,...hub,...pages,...hostRoutes,...roadblocks,...participantRoutes,...processes,...faqMatches(clean, role)]
     .filter((item, index, items) => items.findIndex(other => other.kind === item.kind && other.id === item.id) === index).slice(0, 10)
 }
