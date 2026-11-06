@@ -1,37 +1,171 @@
-// Approved agent-facing reference based on the Flex Arbitration Hub – Agent Reference Guide.
-// Do NOT put the separately marked internal-only escalation email in public frontend code.
+// Agent-facing operational guide. Keep the original Process Document unchanged.
+// Sources: Flex Arbitration Hub – Agent Reference Guide and Flex SP Site Overview (Arbitrator).
+// Do NOT include the internal-only Alaga escalation contact in publicly hosted code.
 export const FLEX_HUB_REFERENCE = {
   id: 'flex-arbitration-hub-reference',
   title: 'Flex Arbitration Hub – Agent Reference Guide',
-  updatedFrom: 'Flex Arbitration Hub – Agent Reference Guide',
+  updatedFrom: 'Agent Reference Guide + Flex SP Site Overview (Arbitrator)',
   hubUrl: 'https://ogletree.sharepoint.com/sites/AmazonFlexArbitration',
   arbitratorHelpEmail: 'kipsflexmassarbs@ogletreedeakins.com',
   topics: [
-    { id: 'onboarding', label: 'Hub access & onboarding', eyebrow: 'SharePoint access',
+    {
+      id: 'onboarding', label: 'Hub access & onboarding', eyebrow: 'Access', group: 'Hub access',
+      keywords: 'welcome email invitation invited email SharePoint individual folder login',
+      source: 'Agent Reference Guide · Flex SP Site Overview',
+      summary: 'Sign in with the email address that received the Welcome Email.',
       points: [
-        'The Flex Arbitration Hub is a SharePoint site. The Welcome Email links to each arbitrator’s individual folder.',
-        'Sign in with the exact email address that received the Welcome Email.',
-        'For Hub access questions, first ask whether the arbitrator has contacted the arbitrator help address listed in their welcome pack.'
-      ] },
-    { id: 'credentials', label: 'Zoom account & credentials', eyebrow: 'Welcome Email',
+        'The Flex Arbitration Hub is an Ogletree SharePoint site for assigned arbitration documents.',
+        'Access is granted after the arbitrator’s email address is on file. The Welcome Email provides an access link.',
+        'Sign in using the exact same email address that received the Welcome Email.',
+        'If a Hub issue remains unresolved, check whether the arbitrator has contacted the arbitrator help contact in the welcome pack.',
+      ],
+    },
+    {
+      id: 'sign-in', label: 'SharePoint verification methods', eyebrow: 'Source check needed', group: 'Hub access',
+      keywords: 'path a path b path c company verification send code outlook microsoft password authenticator',
+      source: 'Referenced SharePoint Guest Sign-in Guide · not yet verified in Ozzie',
+      summary: 'Only the invited-email requirement has been verified; Path A/B/C needs the guest sign-in guide.',
+      points: [
+        'Use the exact email address where the Welcome Email was received.',
+        'Different Microsoft sign-in screens may appear. Do not assume the specific company password, email-code, or personal-account flow without checking the SharePoint Guest Sign-in Guide.',
+        'The referenced guest sign-in walkthrough is not included in this approved Ozzie guide yet. Verify it before giving path-specific instructions.',
+      ],
+      pending: true,
+    },
+    {
+      id: 'navigation', label: 'Locate assigned matters', eyebrow: 'Hub navigation', group: 'Case folders',
+      keywords: 'active cases tranche library tranche number arbitrator claimant matter AAA claim number individual folder',
+      source: 'Flex SP Site Overview · folder walkthrough',
+      summary: 'Active Cases → numbered tranche → arbitrator → claimant → Arbitrator File.',
+      points: [
+        'The navigation panel is on the left of the SharePoint home page; current matters are under Active Cases.',
+        'Tranche libraries are grouped by number. The assigned tranche number is listed in the Welcome Email.',
+        'The tranche library contains a folder labeled with the arbitrator’s name.',
+        'Inside, each assigned matter has a claimant folder labeled with the claimant name and AAA claim number.',
+        'Only folders and documents allowed by the account’s permissions will appear.',
+      ],
+    },
+    {
+      id: 'arbitrator-file', label: 'Arbitrator File: filings & orders', eyebrow: 'Electronic court file', group: 'Case folders',
+      keywords: 'arbitrator file pleading filing serve service docket ECF order decision parties AAA electronic court file',
+      source: 'Flex SP Site Overview · Arbitrator File',
+      summary: 'Electronic case file where pleadings, filings, orders and decisions are handled.',
+      points: [
+        'Each claimant folder contains an Arbitrator File, the electronic court file for that matter, similar to an ECF docket.',
+        'Filings and pleadings are uploaded and served on the arbitrator, the parties, and AAA.',
+        'Arbitrators may upload their orders and decisions directly; the parties are automatically notified.',
+        'If an arbitrator prefers to send an order by email, the team can upload it on the arbitrator’s behalf.',
+        'The Arbitrator File includes Exhibits and Transcripts subfolders.',
+      ],
+    },
+    {
+      id: 'exhibits', label: 'Exhibits subfolder', eyebrow: 'Evidence documents', group: 'Case folders',
+      keywords: 'exhibits joint exhibit lists claimant 1099 driver data both sides evidence',
+      source: 'Flex SP Site Overview · Exhibits',
+      summary: 'Joint exhibit lists, claimant 1099/driver data, and exhibits from both sides.',
+      points: [
+        'Located inside the Arbitrator File for each assigned matter.',
+        'Contains joint exhibit lists.',
+        'Contains the claimant’s 1099 and driver data.',
+        'Contains each side’s exhibits.',
+      ],
+    },
+    {
+      id: 'transcripts', label: 'Transcripts subfolder', eyebrow: 'Hearing records', group: 'Case folders',
+      keywords: 'transcript transcripts deposition hearing related exhibits recording Verbit processing',
+      source: 'Flex SP Site Overview · Transcripts',
+      summary: 'Deposition/hearing transcripts and related exhibits; completed Verbit output.',
+      points: [
+        'Located inside the Arbitrator File for each assigned matter.',
+        'Contains deposition transcripts, hearing transcripts, and their related exhibits.',
+        'After a recorded hearing, Verbit processes the recording as an AI-powered legal transcription service.',
+        'The completed transcript is uploaded to the Transcripts subfolder.',
+      ],
+    },
+    {
+      id: 'document-search', label: 'Find a document', eyebrow: 'Search procedure', group: 'Document actions',
+      keywords: 'search find documents file search box claimant name claimant number matter reference',
+      source: 'Flex SP Site Overview · Search for documents',
+      summary: 'Search by document name, claimant name or number, or matter reference.',
+      points: [],
+      steps: [
+        'Locate the search box at the top of the SharePoint page.',
+        'Enter the document name, claimant name or number, or matter reference.',
+        'Select the relevant document from the search results.',
+      ],
+    },
+    {
+      id: 'document-upload', label: 'Upload documents', eyebrow: 'Document procedure', group: 'Document actions',
+      keywords: 'upload file drag drop create or upload document upload orders decisions notification',
+      source: 'Flex SP Site Overview · Upload documents',
+      summary: 'Use Create or Upload → Files Upload, or drag and drop into the folder.',
+      points: [],
+      steps: [
+        'Open the correct folder for the assigned matter.',
+        'Select Create or Upload, then Files Upload, and choose the file.',
+        'Alternatively, drag and drop the file into the open white space inside the folder.',
+      ],
+    },
+    {
+      id: 'document-download', label: 'Download documents', eyebrow: 'Document procedure', group: 'Document actions',
+      keywords: 'download documents multiple files checkbox selection radio button zip',
+      source: 'Flex SP Site Overview · Download documents',
+      summary: 'Select a document and download it; multiple selected files arrive as ZIP.',
+      points: [
+        'For multiple documents, the selected files are downloaded together as a ZIP file.',
+      ],
+      steps: [
+        'For one document, select the control next to the file and choose Download from the menu.',
+        'For several documents, select the files using their checkboxes and click Download.',
+      ],
+    },
+    {
+      id: 'document-sharing', label: 'Sharing documents', eyebrow: 'Pending verification', group: 'Document actions',
+      keywords: 'share document share file sharing permissions access recipients copy link',
+      source: 'Flex SP Site Overview · automatic notifications only',
+      summary: 'Automatic party notifications are verified; manual Share permissions are not.',
+      points: [
+        'When an arbitrator uploads orders or decisions to the Arbitrator File, the parties are automatically notified.',
+        'The training overview does not explain which recipients may receive manually shared links or the approved Share-button workflow.',
+        'Verify the separate sharing procedure and access rules before guiding a caller to share a document.',
+      ],
+      pending: true,
+    },
+    {
+      id: 'credentials', label: 'Assigned Zoom account', eyebrow: 'Welcome Email', group: 'Zoom hearings',
+      keywords: 'zoom username credentials password assigned account activation',
+      source: 'Agent Reference Guide · Zoom account',
+      summary: 'Use Zoom credentials provided in the Welcome Email; no separate activation.',
       points: [
         'The assigned Zoom username and password are supplied in the arbitrator’s Welcome Email.',
-        'There is no separate account activation or setup step required before the first sign-in.',
-        'Arbitrators cannot change their assigned Zoom username or password.'
-      ] },
-    { id: 'scheduling', label: 'Hearing scheduling & PMI', eyebrow: 'One-link rule',
+        'There is no separate account activation or setup step required before the first login.',
+        'Arbitrators cannot change their assigned Zoom username or password.',
+      ],
+    },
+    {
+      id: 'scheduling', label: 'Hearing invitations & PMI', eyebrow: 'One-link rule', group: 'Zoom hearings',
+      keywords: 'PMI PML personal meeting ID meeting link schedule scheduling reschedule cancel invites Outlook Google hearing',
+      source: 'Agent Reference Guide · Flex SP Site Overview',
+      summary: 'The arbitrator owns invitations and reuses the same assigned PMI link.',
       points: [
-        'The arbitrator is responsible for creating and distributing meeting invitations to all participants.',
-        'The assigned Zoom account uses its preconfigured Personal Meeting ID (PMI) link for all meetings and hearing dates, including different claimants.',
-        'The arbitrator may share that SAME PMI link by direct email, Zoom scheduler, or an external calendar invitation such as Outlook or Google Calendar.',
-        'When a hearing is rescheduled or canceled, update the invitation sent to participants. The PMI link itself does not need to be edited or canceled in Zoom.'
-      ] },
-    { id: 'rules', label: 'Meeting rules & recording', eyebrow: 'Strict recording rule',
+        'The arbitrator is responsible for scheduling and distributing hearing links to all participants.',
+        'The assigned Zoom account uses its preconfigured Personal Meeting ID (PMI) link for every hearing date and claimant.',
+        'The arbitrator may distribute the SAME PMI link by email, Zoom scheduler, or external calendars such as Outlook and Google Calendar.',
+        'When a hearing moves or is canceled, update the invitation sent to participants; the PMI link itself does not need to change in Zoom.',
+        'The overview identifies the Welcome Email as the source of merits-hearing links, apart from the preliminary hearing conference managed by AAA.',
+      ],
+    },
+    {
+      id: 'rules', label: 'Meeting rules & recording', eyebrow: 'Strict recording rule', group: 'Zoom hearings',
+      keywords: 'recording cannot turn off stop recording automatic waiting room breakout naming title',
+      source: 'Agent Reference Guide · Meeting parameters',
+      summary: 'Never turn off recording; waiting rooms and breakout rooms are configurable.',
       points: [
-        'No mandatory meeting title or case-number naming format is required by this guide.',
-        'Arbitrators may toggle in-meeting options such as Waiting Rooms and Breakout Rooms when the relevant controls are available.',
-        'Recording must remain active. Arbitrators must NOT stop or turn off recordings.'
-      ] }
+        'No mandatory meeting title or case-number naming format is specified in the guide.',
+        'Arbitrators may toggle in-meeting features such as Waiting Rooms and Breakout Rooms.',
+        'Recording must remain active. Arbitrators must NOT stop or turn off recordings.',
+      ],
+    },
   ],
   internalBoundary: 'If the matter needs Alaga-level internal escalation, follow the approved private team escalation route. Do not share the internal escalation contact with the caller.',
   relatedSourceTitles: [
@@ -41,36 +175,57 @@ export const FLEX_HUB_REFERENCE = {
     'New Document Notification Template Flex Mass Arbs',
     'Amazon Flex Arbitration Hub FAQ (Arbitrators)',
     'SharePoint Guest Sign-in Guide',
-    'Zoom Meeting Login Walkthrough'
-  ]
+    'Zoom Meeting Login Walkthrough',
+  ],
 }
 
 export const FLEX_HUB_VIDEOS = [
   { id: 'flex-hub-site-overview', title: 'Flex SP Site Overview (Arbitrator)', provider: 'Synthesia',
     externalUrl: 'https://share.synthesia.io/1244ebcd-573b-4095-886c-7727c3bcdff6',
-    usefulFor: 'Arbitrator orientation to the Flex SharePoint Hub and its access workflow',
+    usefulFor: 'Arbitrator orientation, folder structure and document actions',
     relatedCategories: ['Flex Arbitration Hub'], sortOrder: 32 },
   { id: 'flex-hub-overview-session', title: 'Flex Mass Arbitration SharePoint Hub Overview Session (15:40)', provider: 'Vimeo',
     externalUrl: 'https://vimeo.com/1229686236/22d91e6a9f?share=copy&fl=sv&fe=ci',
     usefulFor: 'Detailed SharePoint Hub overview session for agent reference',
-    relatedCategories: ['Flex Arbitration Hub'], sortOrder: 33 }
+    relatedCategories: ['Flex Arbitration Hub'], sortOrder: 33 },
 ]
 
-const HUB_QUERIES = [
-  /\breschedul(?:e|ed|ing)\s+(?:a\s+)?hearing\b/,
-  /\bflex(?:\s+arbitration)?\s+hub\b/,
-  /\barbitration\s+hub\b/,
-  /\bsharepoint(?:\s+(?:hub|arbitration|guest|login))?\b/,
-  /\bpersonal\s+meeting\s+id\b/,
-  /\bpmi\b/,
-  /\bwelcome\s+email\b/,
-  /\bhearing\s+(?:scheduling|schedule|invite|reschedul|cancel|link)/,
-  /\b(?:zoom|meeting)\s+recording\s+(?:rule|policy|stop|disable)/,
-  /\b(?:one|same|permanent)\s+(?:meeting\s+)?(?:link|pmi)\b/
+// Specific queries map to an exact section instead of dumping agents at the top of the guide.
+// Generic Zoom microphone, audio, screen-sharing and download queries remain in their own routes.
+const HUB_SEARCH_ROUTES = [
+  { id: 'exhibits', test: /\b(?:exhibits?|1099|driver data|joint exhibit)\b/ },
+  { id: 'transcripts', test: /\b(?:transcripts?|deposition|verbit)\b/ },
+  { id: 'arbitrator-file', test: /\b(?:arbitrator file|pleadings?|filings?|electronic court file|ecf docket)\b/ },
+  { id: 'navigation', test: /\b(?:active cases|tranche|assigned matter|aaa claim number|claimant folder)\b/ },
+  { id: 'document-search', test: /\b(?:search|find|locate)\b.*\b(?:documents?|files?|claimant|matter|sharepoint|flex hub)\b|\b(?:documents?|files?)\b.*\bsearch\b/ },
+  { id: 'document-upload', test: /\bupload\b.*\b(?:documents?|files?|orders?|decisions?|sharepoint|flex hub)\b|\b(?:documents?|files?)\b.*\bupload\b/ },
+  { id: 'document-download', test: /\bdownload\b.*\b(?:documents?|files?|zip|sharepoint|flex hub)\b|\b(?:documents?|files?)\b.*\bdownload\b/ },
+  { id: 'document-sharing', test: /\bshar(?:e|ing)\b.*\b(?:documents?|files?|sharepoint|hub)\b|\b(?:documents?|files?)\b.*\bshar(?:e|ing)\b/ },
+  { id: 'sign-in', test: /\b(?:path a|path b|path c|send code|verification code|microsoft authenticator)\b.*\b(?:sharepoint|hub|arbitrator|email|sign in)\b|\b(?:sharepoint|hub)\b.*\b(?:path a|path b|path c|verification code)\b/ },
+  { id: 'credentials', test: /\b(?:zoom credentials|assigned zoom password|zoom username)\b/ },
+  { id: 'scheduling', test: /\b(?:pmi|pml|personal meeting id|personal meeting link|hearing scheduling|reschedule hearing|schedule hearing)\b/ },
+  { id: 'rules', test: /\b(?:stop recording|turn off recording|disable recording|recording rule)\b/ },
+  { id: 'onboarding', test: /\b(?:sharepoint|flex hub|arbitration hub|welcome email|sharepoint guest login)\b/ },
 ]
-export function matchesFlexHubReference(query) {
-  const normalized = String(query || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
-  return normalized.length > 2 && HUB_QUERIES.some(pattern => pattern.test(normalized))
+function normalizedHubQuery(value) {
+  return String(value ?? '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
 }
-export const FLEX_HUB_SEARCH_ENTRY = { id: FLEX_HUB_REFERENCE.id, title: FLEX_HUB_REFERENCE.title,
-  purpose: 'Hub sign-in, welcome email, permanent PMI hearing link, invitations, recording rules, and where to find training videos.' }
+export function findFlexHubTopic(query) {
+  const normalized = normalizedHubQuery(query)
+  if (normalized.length < 3) return null
+  const route = HUB_SEARCH_ROUTES.find(item => item.test.test(normalized))
+  return route ? FLEX_HUB_REFERENCE.topics.find(topic => topic.id === route.id) || null : null
+}
+export function matchesFlexHubReference(query) {
+  return Boolean(findFlexHubTopic(query))
+}
+export const FLEX_HUB_SEARCH_ENTRY = {
+  id: FLEX_HUB_REFERENCE.id, title: FLEX_HUB_REFERENCE.title,
+  purpose: 'Hub access, assigned matter folders, document actions, PMI invitations and recording rules.',
+}
+export function flexHubSearchEntry(query) {
+  const topic = findFlexHubTopic(query)
+  return topic
+    ? { id: topic.id, title: topic.label, purpose: topic.summary }
+    : FLEX_HUB_SEARCH_ENTRY
+}
