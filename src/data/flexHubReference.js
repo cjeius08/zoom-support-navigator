@@ -151,7 +151,7 @@ export const FLEX_HUB_REFERENCE = {
         'The arbitrator is responsible for scheduling and distributing hearing links to all participants.',
         'The assigned Zoom account uses its preconfigured Personal Meeting ID (PMI) link for every hearing date and claimant.',
         'The arbitrator may distribute the SAME PMI link by email, Zoom scheduler, or external calendars such as Outlook and Google Calendar.',
-        'When a hearing moves or is canceled, update the invitation sent to participants; the PMI link itself does not need to change in Zoom.',
+        'When a hearing moves or is canceled, update the invitation sent to participants; the PMI link itself does not need to be edited or canceled in Zoom.',
         'The overview identifies the Welcome Email as the source of merits-hearing links, apart from the preliminary hearing conference managed by AAA.',
       ],
     },
