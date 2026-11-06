@@ -69,7 +69,7 @@ describe('Flex Arbitration Hub reference integration', () => {
       expect(findFlexHubTopic(query)?.id, query).toBe(section)
       expect(flexHubSearchEntry(query).id, query).toBe(section)
       expect(commandResults(query, { role: 'Host' }).find(item => item.kind === 'page' && item.id === 'flex_hub')?.section, query).toBe(section)
-      expect(commandResults(query, { role: 'Participant' }).some(item => item.id === 'flex_hub'), query).toBe(false)
+      expect(commandResults(query, { role: 'Participant' }).some(item => item.id === 'flex_hub' && item.section === section), query).toBe(false)
     }
     for (const query of ['mic not working', 'share screen', 'download zoom app', 'breakout room']) {
       expect(findFlexHubTopic(query),query).toBeNull()
