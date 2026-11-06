@@ -5,15 +5,19 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { FlexHubReference } from './FlexHubReference'
-import { FLEX_HUB_REFERENCE, FLEX_HUB_VIDEOS, matchesFlexHubReference } from '../../data/flexHubReference'
+import { FLEX_HUB_REFERENCE, FLEX_HUB_VIDEOS, findFlexHubTopic, flexHubSearchEntry, matchesFlexHubReference } from '../../data/flexHubReference'
 import { ALL_TRAINING_VIDEOS, TRAINING_VIDEOS } from '../../data/trainingVideos'
+import { commandResults } from '../command/commandSearch'
 
 describe('Flex Arbitration Hub reference integration', () => {
   it('has complete program reference, hides internal-only escalation email, and retains the one-link and recording rules', () => {
-    expect(FLEX_HUB_REFERENCE.topics).toHaveLength(4)
+    expect(FLEX_HUB_REFERENCE.topics).toHaveLength(13)
     expect(FLEX_HUB_REFERENCE.topics.find(topic => topic.id === 'scheduling').points.join(' ')).toMatch(/SAME PMI link/)
     expect(FLEX_HUB_REFERENCE.topics.find(topic => topic.id === 'rules').points.join(' ')).toMatch(/NOT stop or turn off recordings/)
     expect(JSON.stringify(FLEX_HUB_REFERENCE)).not.toContain('odflexmassarbs@')
+    expect(FLEX_HUB_REFERENCE.topics.find(topic => topic.id === 'document-sharing').pending).toBe(true)
+    expect(FLEX_HUB_REFERENCE.topics.find(topic => topic.id === 'sign-in').pending).toBe(true)
+    expect(FLEX_HUB_REFERENCE.topics.find(topic => topic.id === 'exhibits').points.join(' ')).toMatch(/1099 and driver data/)
   })
 
   it('opens the two source-provided videos through Training & Resources', async () => {
@@ -43,7 +47,49 @@ describe('Flex Arbitration Hub reference integration', () => {
     }
     expect(matchesFlexHubReference('mic not working')).toBe(false)
     expect(matchesFlexHubReference('breakout room')).toBe(false)
+    expect(matchesFlexHubReference('share screen')).toBe(false)
+    expect(matchesFlexHubReference('download zoom app')).toBe(false)
   })
+
+  it('indexes verified Hub procedures by specific keywords with no screen-share takeover', () => {
+    const matrix = {
+      '1099': 'exhibits',
+      'Joint exhibits': 'exhibits',
+      'Verbit': 'transcripts',
+      'deposition transcript': 'transcripts',
+      'Arbitrator File': 'arbitrator-file',
+      'tranche 2': 'navigation',
+      'search documents': 'document-search',
+      'upload documents': 'document-upload',
+      'download files': 'document-download',
+      'share a document': 'document-sharing',
+      'PMI': 'scheduling',
+    }
+    for (const [query, section] of Object.entries(matrix)) {
+      expect(findFlexHubTopic(query)?.id, query).toBe(section)
+      expect(flexHubSearchEntry(query).id, query).toBe(section)
+      expect(commandResults(query, { role: 'Host' }).find(item => item.kind === 'page' && item.id === 'flex_hub')?.section, query).toBe(section)
+      expect(commandResults(query, { role: 'Participant' }).some(item => item.id === 'flex_hub'), query).toBe(false)
+    }
+    for (const query of ['mic not working', 'share screen', 'download zoom app', 'breakout room']) {
+      expect(findFlexHubTopic(query),query).toBeNull()
+    }
+  })
+
+  it('filters guide topics by keyword and shows source and verification boundaries', async () => {
+    const user = userEvent.setup()
+    render(<FlexHubReference />)
+    const search = screen.getByRole('searchbox', { name: 'Find a guide topic' })
+    await user.type(search, '1099')
+    expect(screen.getByRole('heading', { name: 'Exhibits subfolder' })).toBeInTheDocument()
+    expect(screen.getByText('1 of 13 topics')).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Transcripts subfolder' })).not.toBeInTheDocument()
+    await user.clear(search)
+    await user.type(search, 'share document')
+    expect(screen.getByRole('heading', { name: 'Sharing documents' })).toBeInTheDocument()
+    expect(screen.getByText(/Do not present this topic as a complete approved procedure/)).toBeInTheDocument()
+  })
+
 })
 
 it('keeps Hub information high contrast regardless of inherited workspace text theme', () => {
