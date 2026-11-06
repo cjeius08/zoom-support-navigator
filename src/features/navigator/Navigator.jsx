@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
-import { FLEX_HUB_SEARCH_ENTRY, matchesFlexHubReference } from '../../data/flexHubReference'
+import { findFlexHubTopic, flexHubSearchEntry, matchesFlexHubReference } from '../../data/flexHubReference'
 import '../knowledge/flexHubReference.css'
 import { ProcessDrawer } from './ProcessDrawer'
 import { LiveVisitors } from './LiveVisitors'
@@ -300,9 +300,10 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   }, [category, isHost, approvedHostProcesses])
   const fastestRoutes = useMemo(() => FASTEST_ROUTE_IDS.map(routeById).filter(Boolean), [])
 
+  const hubTopic = isHost ? findFlexHubTopic(query) : null
   const hubMatch = isHost && (matchesFlexHubReference(query) || quickAnswer?.guide?.kind === 'flex_hub')
   const suggestions = query.trim() ? buildSearchSuggestions({
-    query, isHost, quickAnswer, hubMatch, hubReference: FLEX_HUB_SEARCH_ENTRY,
+    query, isHost, quickAnswer, hubMatch, hubReference: flexHubSearchEntry(query),
     hostTopicMatches, hostRoadblockMatches, processMatches, routeMatches,
   }) : []
   const showSuggestions = suggestionsOpen && suggestions.length > 0
@@ -480,7 +481,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
 
   function selectSuggestion(suggestion) {
     if (suggestion.kind === 'approved_answer') openApprovedAnswerGuide(suggestion.answer?.guide)
-    else if (suggestion.kind === 'flex_hub') onOpenFlexHub(quickAnswer?.guide?.kind === 'flex_hub' ? quickAnswer.guide.id : null)
+    else if (suggestion.kind === 'flex_hub') onOpenFlexHub(quickAnswer?.guide?.kind === 'flex_hub' ? quickAnswer.guide.id : hubTopic?.id || null)
     else if (suggestion.kind === 'host') openHostTopic(suggestion.topic, 'search_suggestion')
     else if (suggestion.kind === 'roadblock') openHostRoadblock(suggestion.roadblock, 'search_suggestion')
     else if (suggestion.kind === 'route') openRoute(suggestion.route, 'search_suggestion')
