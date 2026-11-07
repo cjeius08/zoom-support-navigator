@@ -1,14 +1,21 @@
 import { useEffect, useState } from 'react'
-import { FLEX_HUB_REFERENCE, FLEX_HUB_VIDEOS } from '../../data/flexHubReference'
+import { FLEX_HUB_FAQS, FLEX_HUB_ROADBLOCKS, FLEX_HUB_REFERENCE, FLEX_HUB_VIDEOS } from '../../data/flexHubReference'
 import './flexHubReference.css'
 
 export function FlexHubReference({ initialSection = null, onOpenVideo = () => {}, onReportContextChange = () => {}, trackEvent = () => {} }) {
+  const [guideTab, setGuideTab] = useState('processes')
   const [search, setSearch] = useState('')
   const normalizedSearch = search.toLowerCase().trim()
   const visibleTopics = FLEX_HUB_REFERENCE.topics.filter(topic => !normalizedSearch || [topic.label, topic.eyebrow, topic.group, topic.keywords, topic.summary, ...topic.points, ...(topic.steps || [])].join(' ').toLowerCase().includes(normalizedSearch))
 
+  const visibleFaqs = FLEX_HUB_FAQS.filter(item => !normalizedSearch || [item.label, item.answer].join(' ').toLowerCase().includes(normalizedSearch))
+  const visibleRoadblocks = FLEX_HUB_ROADBLOCKS.filter(item => !normalizedSearch || [item.issue, item.check, item.next].join(' ').toLowerCase().includes(normalizedSearch))
+  const resultsLabel = guideTab === 'processes' ? `${visibleTopics.length} of ${FLEX_HUB_REFERENCE.topics.length} topics` : guideTab === 'faqs' ? `${visibleFaqs.length} of ${FLEX_HUB_FAQS.length} FAQs` : `${visibleRoadblocks.length} of ${FLEX_HUB_ROADBLOCKS.length} roadblocks`
+  const sourceTitle = topicId => FLEX_HUB_REFERENCE.topics.find(topic => topic.id === topicId)?.source || 'Flex Hub reference'
+
   useEffect(() => {
     if (!initialSection) return
+    setGuideTab('processes')
     const section = document.getElementById('flex-' + initialSection)
     section?.scrollIntoView?.({ block: 'start' })
     section?.focus()
@@ -44,12 +51,19 @@ export function FlexHubReference({ initialSection = null, onOpenVideo = () => {}
       <div><small>HEARING LINK</small><strong>Use the same PMI link</strong><p>One assigned Personal Meeting ID link across all hearing dates and claimants.</p></div>
     </div>
 
+    <div className="flex-hub-section-tabs" role="tablist" aria-label="Flex Hub reference sections">
+      <button type="button" role="tab" aria-selected={guideTab === 'processes'} aria-controls="flex-hub-section-panel" onClick={() => setGuideTab('processes')}>Process Guides</button>
+      <button type="button" role="tab" aria-selected={guideTab === 'faqs'} aria-controls="flex-hub-section-panel" onClick={() => setGuideTab('faqs')}>FAQs</button>
+      <button type="button" role="tab" aria-selected={guideTab === 'roadblocks'} aria-controls="flex-hub-section-panel" onClick={() => setGuideTab('roadblocks')}>Roadblock Matrix</button>
+    </div>
     <div className="flex-hub-guide-tools">
       <label htmlFor="flex-hub-guide-search">Find a guide topic</label>
       <input id="flex-hub-guide-search" type="search" value={search} onChange={event => setSearch(event.target.value)}
         placeholder="Try: 1099, transcript, tranche, search, PMI…" autoComplete="off" />
-      <span role="status">{visibleTopics.length} of {FLEX_HUB_REFERENCE.topics.length} topics</span>
+      <span role="status">{resultsLabel}</span>
     </div>
+    <div id="flex-hub-section-panel" role="tabpanel" aria-label={guideTab === "processes" ? "Flex Hub Process Guides" : guideTab === "faqs" ? "Flex Hub FAQs" : "Flex Hub Roadblock Matrix"}>
+    {guideTab === "processes" && <>
     <div className="flex-hub-jump" aria-label="Reference sections">
       {visibleTopics.map(topic => <a key={topic.id} href={`#flex-${topic.id}`}>{topic.label} ↓</a>)}
       <a href="#flex-videos">Hub videos ↓</a>
@@ -68,6 +82,28 @@ export function FlexHubReference({ initialSection = null, onOpenVideo = () => {}
         </div>}
         <p className="flex-hub-source">Source: {topic.source}</p>
       </article>)}
+    </div>
+    </>}
+    {guideTab === 'faqs' && <div className="flex-hub-faq-grid">
+      {visibleFaqs.map(item => <article key={item.id} className="flex-hub-faq-card">
+        <h2>{item.label}</h2>
+        <p>{item.answer}</p>
+        {item.pending && <p className="flex-hub-pending"><strong>Needs source verification.</strong> Do not provide unverified manual steps.</p>}
+        <small>Source: {sourceTitle(item.sourceTopic)}</small>
+        <button type="button" onClick={() => { setSearch(''); setGuideTab('processes'); window.requestAnimationFrame(() => document.getElementById('flex-' + item.sourceTopic)?.scrollIntoView({ block: 'start' })) }}>View process reference</button>
+      </article>)}
+      {visibleFaqs.length === 0 && <p className="flex-hub-empty">No matching FAQs. Clear the search or try a different keyword.</p>}
+    </div>}
+    {guideTab === 'roadblocks' && <div className="flex-hub-roadblock-grid">
+      {visibleRoadblocks.map(item => <article key={item.id} className="flex-hub-roadblock-card">
+        <h2>{item.issue}</h2>
+        <dl><dt>What to confirm</dt><dd>{item.check}</dd><dt>Next step / boundary</dt><dd>{item.next}</dd></dl>
+        {item.pending && <p className="flex-hub-pending"><strong>Needs source verification.</strong> Do not treat this as a completed escalation procedure.</p>}
+        <small>Source: {sourceTitle(item.sourceTopic)}</small>
+        <button type="button" onClick={() => { setSearch(''); setGuideTab('processes'); window.requestAnimationFrame(() => document.getElementById('flex-' + item.sourceTopic)?.scrollIntoView({ block: 'start' })) }}>View process reference</button>
+      </article>)}
+      {visibleRoadblocks.length === 0 && <p className="flex-hub-empty">No matching roadblocks. Clear the search or try a different keyword.</p>}
+    </div>}
     </div>
 
     <aside className="flex-hub-private" aria-label="Internal escalation boundary">
