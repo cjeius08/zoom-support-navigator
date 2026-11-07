@@ -76,6 +76,21 @@ describe('Flex Arbitration Hub reference integration', () => {
     }
   })
 
+  it('separates source-backed Flex process guides, FAQs, and roadblocks', async () => {
+    const user = userEvent.setup()
+    render(<FlexHubReference />)
+    expect(screen.getByRole('tab', { name: 'Process Guides' })).toHaveAttribute('aria-selected', 'true')
+    await user.click(screen.getByRole('tab', { name: 'FAQs' }))
+    expect(screen.getByRole('heading', { name: 'What is in Exhibits?' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'How is a document manually shared?' })).toBeInTheDocument()
+    expect(screen.getByText(/Do not provide unverified manual steps/)).toBeInTheDocument()
+    await user.click(screen.getByRole('tab', { name: 'Roadblock Matrix' }))
+    expect(screen.getByRole('heading', { name: 'Cannot access assigned Hub folder' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Document recipient or Share permission is unclear' })).toBeInTheDocument()
+    await user.click(screen.getByRole('tab', { name: 'Process Guides' }))
+    expect(screen.getByRole('heading', { name: 'Exhibits subfolder' })).toBeInTheDocument()
+  })
+
   it('filters guide topics by keyword and shows source and verification boundaries', async () => {
     const user = userEvent.setup()
     render(<FlexHubReference />)
