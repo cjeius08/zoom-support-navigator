@@ -3,6 +3,21 @@ import userEvent from '@testing-library/user-event'
 import { expect, it, vi } from 'vitest'
 import { Navigator } from './Navigator'
 
+it('keeps three simple support areas without mixing Zoom and Flex procedures', async () => {
+  const user = userEvent.setup()
+  const onOpenFlexHub = vi.fn()
+  render(<Navigator initialRole="Participant" onOpenFlexHub={onOpenFlexHub} />)
+  expect(screen.getByRole('tab', { name: 'Common Issues' })).toBeInTheDocument()
+  expect(screen.getByRole('tab', { name: 'Zoom Troubleshooting' })).toHaveAttribute('aria-selected', 'true')
+  expect(screen.getByRole('tab', { name: 'Flex Arbitration Hub' })).toBeInTheDocument()
+  await user.click(screen.getByRole('tab', { name: 'Common Issues' }))
+  expect(screen.queryByRole('tab', { name: 'Process Guides' })).not.toBeInTheDocument()
+  await user.click(screen.getByRole('tab', { name: 'Zoom Troubleshooting' }))
+  expect(screen.getByRole('tab', { name: 'Process Guides' })).toBeInTheDocument()
+  await user.click(screen.getByRole('tab', { name: 'Flex Arbitration Hub' }))
+  expect(onOpenFlexHub).toHaveBeenCalledWith(null)
+})
+
 it('opens a source-driven Call Guide with safe copy actions before lossless source views', async () => {
   const user = userEvent.setup()
   render(<Navigator initialRole="Participant" />)
