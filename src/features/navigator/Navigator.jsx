@@ -681,7 +681,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
         <button type="button" role="tab" aria-selected={libraryTab !== 'common'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab(zoomLibraryTab)}>Zoom Troubleshooting</button>
         <button type="button" role="tab" aria-selected={false} onClick={() => onOpenFlexHub(null)}>Flex Arbitration Hub</button>
       </div>
-      {libraryTab !== 'common' && <div className="navigator-library-tabs navigator-zoom-subtabs" role="tablist" aria-label="Zoom troubleshooting sections">
+      {libraryTab !== 'common' && <div className="navigator-library-tabs navigator-zoom-subtabs" role="tablist" aria-label="Navigator views">
         <button type="button" role="tab" aria-selected={libraryTab === 'fastest'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('fastest')}>Fastest Routes</button>
         <button type="button" role="tab" aria-selected={libraryTab === 'processes'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('processes')}>Process Guides</button>
         <button type="button" role="tab" aria-selected={libraryTab === 'faq'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('faq')}>FAQ</button>
