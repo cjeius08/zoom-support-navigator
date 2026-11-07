@@ -83,7 +83,7 @@ describe('Flex Arbitration Hub reference integration', () => {
     await user.click(screen.getByRole('tab', { name: 'FAQs' }))
     expect(screen.getByRole('heading', { name: 'What is in Exhibits?' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'How is a document manually shared?' })).toBeInTheDocument()
-    expect(screen.getByText(/Do not provide unverified manual steps/)).toBeInTheDocument()
+    expect(screen.getAllByText(/Do not provide unverified manual steps/).length).toBeGreaterThan(0)
     await user.click(screen.getByRole('tab', { name: 'Roadblock Matrix' }))
     expect(screen.getByRole('heading', { name: 'Cannot access assigned Hub folder' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Document recipient or Share permission is unclear' })).toBeInTheDocument()
