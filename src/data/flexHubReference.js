@@ -179,6 +179,29 @@ export const FLEX_HUB_REFERENCE = {
   ],
 }
 
+// Quick-reference facts, not quiz scenarios; every answer maps to a cited guide topic.
+export const FLEX_HUB_FAQS = [
+  { id: 'where-cases', label: 'Where are assigned matters?', answer: 'Open Active Cases, then the tranche library from the Welcome Email, the arbitrator-named folder, and the claimant folder identified by name and AAA claim number.', sourceTopic: 'navigation' },
+  { id: 'exhibits-contents', label: 'What is in Exhibits?', answer: 'Joint exhibit lists, the claimant’s 1099 and driver data, and each side’s exhibits.', sourceTopic: 'exhibits' },
+  { id: 'transcripts-contents', label: 'What is in Transcripts?', answer: 'Deposition and hearing transcripts and related exhibits. Completed recordings processed by Verbit are placed here.', sourceTopic: 'transcripts' },
+  { id: 'arbitrator-file-use', label: 'What is the Arbitrator File?', answer: 'The electronic court file for an assigned matter; filings and pleadings are uploaded and served there. Arbitrators may upload orders and decisions, which automatically notify the parties.', sourceTopic: 'arbitrator-file' },
+  { id: 'find-documents', label: 'How are documents found?', answer: 'Use the SharePoint search box at the top of the page; enter a document name, claimant name or number, or matter reference, then select the result.', sourceTopic: 'document-search' },
+  { id: 'multiple-downloads', label: 'How are multiple documents downloaded?', answer: 'Select the desired files using their checkboxes and choose Download. The selection is downloaded as a ZIP file.', sourceTopic: 'document-download' },
+  { id: 'same-pmi', label: 'Does the hearing link change when rescheduled?', answer: 'No. The same assigned PMI is reused. The arbitrator updates the invitation sent to participants instead.', sourceTopic: 'scheduling' },
+  { id: 'recording-rule', label: 'Can the recording be turned off?', answer: 'No. The Agent Reference Guide requires recording to stay active throughout the hearing.', sourceTopic: 'rules' },
+  { id: 'manual-sharing', label: 'How is a document manually shared?', answer: 'The training material confirms automatic party notification for uploaded orders/decisions, but does not establish approved manual Share-button steps or recipient permissions.', sourceTopic: 'document-sharing', pending: true },
+  { id: 'guest-verification', label: 'Which SharePoint sign-in path is required?', answer: 'Sign in with the exact invited email address. The company-password, email-code, and personal Microsoft-account paths still require verification against the SharePoint Guest Sign-in Guide.', sourceTopic: 'sign-in', pending: true },
+]
+
+export const FLEX_HUB_ROADBLOCKS = [
+  { id: 'hub-access', issue: 'Cannot access assigned Hub folder', check: 'Confirm the same email address used for the Welcome Email and the individual folder link.', next: 'If access still cannot be established, verify the arbitrator has used the help contact listed in the Welcome Email.', sourceTopic: 'onboarding' },
+  { id: 'matter-missing', issue: 'Assigned matter does not appear', check: 'Confirm the assigned tranche library, arbitrator folder, claimant folder and visible account permissions.', next: 'Do not assume missing folders are public; use the approved arbitrator help contact if the expected matter is unavailable.', sourceTopic: 'navigation' },
+  { id: 'manual-sharing-unknown', issue: 'Document recipient or Share permission is unclear', check: 'Only the automatic notifications for orders/decisions are verified by the video.', next: 'Do not instruct an unverified manual sharing or permissions change. Obtain the approved SharePoint sharing procedure first.', sourceTopic: 'document-sharing', pending: true },
+  { id: 'verification-path-unknown', issue: 'Company verification or email-code path is unclear', check: 'Confirm the email address that received the Welcome Email.', next: 'Use the SharePoint Guest Sign-in Guide for the correct path; its detailed steps are not yet verified in this reference.', sourceTopic: 'sign-in', pending: true },
+  { id: 'recording-change', issue: 'Request to stop or disable hearing recording', check: 'The Agent Reference Guide states that hearing recording must stay active.', next: 'Do not stop or turn off the recording.', sourceTopic: 'rules' },
+  { id: 'rescheduling', issue: 'Request to change the PMI when a hearing moves', check: 'The same assigned PMI is used across hearing dates and claimants.', next: 'Update the invitation distributed to participants; there is no need to edit or cancel the PMI in Zoom.', sourceTopic: 'scheduling' },
+]
+
 export const FLEX_HUB_VIDEOS = [
   { id: 'flex-hub-site-overview', title: 'Flex SP Site Overview (Arbitrator)', provider: 'Synthesia',
     externalUrl: 'https://share.synthesia.io/1244ebcd-573b-4095-886c-7727c3bcdff6',
