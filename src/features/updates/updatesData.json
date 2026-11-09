@@ -10,6 +10,61 @@
   },
   "updates": [
     {
+      "id": "flex-hub-knowledge-three-areas-and-reference-20261110",
+      "date": "2026-11-10",
+      "area": "Dashboard / Common Issues / Zoom Troubleshooting / Flex Arbitration Hub",
+      "audience": "all",
+      "title": "Easier Knowledge Navigation — Three Support Areas and Expanded Flex Hub",
+      "changed": "The Navigator support library now has three clear areas: Common Issues, Zoom Troubleshooting, and Flex Arbitration Hub. Existing Zoom troubleshooting still has Fastest Routes, Process Guides, FAQ, and Roadblock Matrix under its own area; the Flex Arbitration Hub now has its own Process Guides, FAQs, and Roadblock Matrix. The Flex guide includes 13 topic-based procedures, 10 short FAQs, and 6 roadblock references based on the approved Agent Reference Guide and Flex SP Site Overview training narration. Folder navigation, Exhibits, Transcripts, Arbitrator File, document search/upload/download and PMI guidance are searchable by topic from Ozzie Smart Search, Command Center and the guide's own search field. Manual document-sharing permissions and the detailed SharePoint Path A/B/C workflows are marked Needs source verification rather than presented as approved instructions. Original Process Documents, role boundaries and recording rules remain unchanged.",
+      "checks": [
+        "In Dashboard, confirm the three support areas read Common Issues, Zoom Troubleshooting, and Flex Arbitration Hub; Zoom-only subsections appear only under Zoom Troubleshooting.",
+        "Open Flex Arbitration Hub and switch Process Guides, FAQs, and Roadblock Matrix. Verify topic search for 1099, Verbit, tranche, Arbitrator File, transcripts, PMI and document search.",
+        "Use Smart Search / Command Center to jump to a specific Flex section; confirm standard microphone and screen-sharing queries still lead to Zoom support.",
+        "Check the source labels, pending-verification notices, mobile readability, and that the original supporting training videos still open."
+      ]
+    },
+    {
+      "id": "floating-call-notes-owner-labels-20261106",
+      "date": "2026-11-06",
+      "area": "Call Documentation / My Saved Notes / Admin Saved Notes",
+      "audience": "all",
+      "title": "Floating Call Documentation and Clearer Saved-Note Owners",
+      "changed": "Call Documentation is more compact and can be dragged, resized and minimized on desktop, with a smaller restore control and responsive mobile layout. An in-progress note is retained while the floating panel is minimized or navigation changes. My Saved Notes shows the signed-in owner's username; Admin Saved Notes displays the note owner prominently and includes an owner filter, including a safe label for missing profile information. No saved-note ownership, permissions, database records, or submission behavior was changed.",
+      "checks": [
+        "Open Call Documentation on desktop, drag the header, resize from the corner, minimize and restore; verify text stays readable and the draft remains.",
+        "On mobile, verify the bottom-sheet layout and that floating controls do not obstruct the page.",
+        "In My Saved Notes, confirm Saved by shows the current signed-in account; in Admin Saved Notes verify the agent owner labels and filter, including All owners.",
+        "Confirm saved notes and reporting still work with their existing access permissions."
+      ]
+    },
+    {
+      "id": "recording-search-relevance-20261030",
+      "date": "2026-10-30",
+      "area": "Smart Search / Host and Participant Guides",
+      "audience": "all",
+      "title": "Recording Questions — More Relevant First Answers",
+      "changed": "Smart Search now prioritizes the reviewed recording-policy answer for matching Host or Arbitrator queries and filters out unrelated recording search results. The more focused ranking preserves existing approved recording instructions, related process guidance, role boundaries and saved-note features; it does not change Zoom recording behavior.",
+      "checks": [
+        "Search Host / Arbitrator recording-policy questions, including whether hearing recording can be stopped, and verify the approved policy answer is prioritized.",
+        "Try an ordinary Zoom microphone or speaker search and verify it is not incorrectly pinned as a recording answer.",
+        "Confirm Participant searches only show relevant Participant guidance and the existing recording rule remains intact."
+      ]
+    },
+    {
+      "id": "role-aware-search-mobile-guides-20261030",
+      "date": "2026-10-30",
+      "area": "Dashboard Smart Search / Mobile Navigation / Call Documentation",
+      "audience": "all",
+      "title": "More Accurate Host Search and Mobile Call Support",
+      "changed": "Improved role-aware Smart Search so Host / Arbitrator issues are less likely to be confused with Participant-only topics, including microphone-versus-speaker symptoms, meeting rescheduling and account switching. Mobile navigation and support panels were adjusted to prevent controls from overlapping or becoming inaccessible on narrow screens, including the role selector, call documentation taps and Quick Answers presentation. These changes preserve approved source guidance and existing call documentation content.",
+      "checks": [
+        "Search Host microphone and Participant audio issues separately; confirm the recommended guides match the selected caller role.",
+        "Search hearing rescheduling and Host controls issues and verify the appropriate reviewed topic is shown.",
+        "At narrow mobile widths, check the role selector, Quick Answers and Call Documentation pointer/tap access.",
+        "Verify existing guide content, notes and desktop navigation remain available."
+      ]
+    },
+    {
       "id": "workspace-quick-page-and-live-tool-transitions-20261021",
       "date": "2026-10-21",
       "area": "Workspace Navigation / Call Flow / Knowledge / Training & Resources",
