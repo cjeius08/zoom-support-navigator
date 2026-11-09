@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
-import { FLEX_HUB_SEARCH_ENTRY, matchesFlexHubReference } from '../../data/flexHubReference'
+import { findFlexHubTopic, flexHubSearchEntry, matchesFlexHubReference } from '../../data/flexHubReference'
 import '../knowledge/flexHubReference.css'
 import { ProcessDrawer } from './ProcessDrawer'
 import { LiveVisitors } from './LiveVisitors'
@@ -130,6 +130,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   const [suggestionsOpen, setSuggestionsOpen] = useState(false)
   const [activeSuggestion, setActiveSuggestion] = useState(-1)
   const [libraryTab, setLibraryTab] = useState('fastest')
+  const [zoomLibraryTab, setZoomLibraryTab] = useState('fastest')
   const [faqFocusLabel, setFaqFocusLabel] = useState('')
   const [callFlowExpanded, setCallFlowExpanded] = useState(false)
   const [searchMode, setSearchMode] = useState(initialSearchMode)
@@ -300,9 +301,10 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   }, [category, isHost, approvedHostProcesses])
   const fastestRoutes = useMemo(() => FASTEST_ROUTE_IDS.map(routeById).filter(Boolean), [])
 
+  const hubTopic = isHost ? findFlexHubTopic(query) : null
   const hubMatch = isHost && (matchesFlexHubReference(query) || quickAnswer?.guide?.kind === 'flex_hub')
   const suggestions = query.trim() ? buildSearchSuggestions({
-    query, isHost, quickAnswer, hubMatch, hubReference: FLEX_HUB_SEARCH_ENTRY,
+    query, isHost, quickAnswer, hubMatch, hubReference: flexHubSearchEntry(query),
     hostTopicMatches, hostRoadblockMatches, processMatches, routeMatches,
   }) : []
   const showSuggestions = suggestionsOpen && suggestions.length > 0
@@ -352,6 +354,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
 
   function switchLibraryTab(nextTab) {
     setLibraryTab(nextTab)
+    if (nextTab !== 'common') setZoomLibraryTab(nextTab)
     setCategory(null)
     setQuery('')
     setSuggestionsOpen(false)
@@ -480,7 +483,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
 
   function selectSuggestion(suggestion) {
     if (suggestion.kind === 'approved_answer') openApprovedAnswerGuide(suggestion.answer?.guide)
-    else if (suggestion.kind === 'flex_hub') onOpenFlexHub(quickAnswer?.guide?.kind === 'flex_hub' ? quickAnswer.guide.id : null)
+    else if (suggestion.kind === 'flex_hub') onOpenFlexHub(quickAnswer?.guide?.kind === 'flex_hub' ? quickAnswer.guide.id : hubTopic?.id || null)
     else if (suggestion.kind === 'host') openHostTopic(suggestion.topic, 'search_suggestion')
     else if (suggestion.kind === 'roadblock') openHostRoadblock(suggestion.roadblock, 'search_suggestion')
     else if (suggestion.kind === 'route') openRoute(suggestion.route, 'search_suggestion')
@@ -673,13 +676,17 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
     {callFlowExpanded && <LiveCallFlowDetails onClose={() => setCallFlowExpanded(false)} />}
 
     <section className="navigator-library" aria-label="Navigator library">
-      <div className="navigator-library-tabs" role="tablist" aria-label="Navigator views">
-        <button type="button" role="tab" aria-selected={libraryTab === 'fastest'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('fastest')}>Fastest Routes</button>
+      <div className="navigator-library-tabs navigator-support-areas" role="tablist" aria-label="Support areas">
         <button type="button" role="tab" aria-selected={libraryTab === 'common'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('common')}>Common Issues</button>
+        <button type="button" role="tab" aria-selected={libraryTab !== 'common'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab(zoomLibraryTab)}>Zoom Troubleshooting</button>
+        <button type="button" role="tab" aria-selected={false} onClick={() => onOpenFlexHub(null)}>Flex Arbitration Hub</button>
+      </div>
+      {libraryTab !== 'common' && <div className="navigator-library-tabs navigator-zoom-subtabs" role="tablist" aria-label="Navigator views">
+        <button type="button" role="tab" aria-selected={libraryTab === 'fastest'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('fastest')}>Fastest Routes</button>
         <button type="button" role="tab" aria-selected={libraryTab === 'processes'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('processes')}>Process Guides</button>
         <button type="button" role="tab" aria-selected={libraryTab === 'faq'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('faq')}>FAQ</button>
         <button type="button" role="tab" aria-selected={libraryTab === 'roadblocks'} aria-controls="navigator-library-panel" onClick={() => switchLibraryTab('roadblocks')}>Roadblock Matrix</button>
-      </div>
+      </div>}
 
       <div id="navigator-library-panel" className="navigator-tab-panel" role="tabpanel">
         {isHost ? <HostLibrary

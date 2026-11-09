@@ -13,7 +13,7 @@ it('keeps workspace metadata and update history complete and newest-first', () =
     effectiveDate: '2026-09-18',
     owner: 'Cjei A.',
     collaborator: 'Nina F.',
-    nextReview: '2026-10-18',
+    nextReview: '2026-11-24',
   })
   expect(data.metadata.updatePolicy).toMatch(/User-facing features/i)
   expect(data.metadata.updatePolicy).toMatch(/Admin-only operational or administrative changes/i)
@@ -22,7 +22,24 @@ it('keeps workspace metadata and update history complete and newest-first', () =
   // New releases can be prepended without invalidating historical entries.
   // Keep the newest announcements visible, while verifying the earlier
   // sequence and all previous records are still preserved.
-  expect(data.updates.slice(0, 9)).toEqual([
+  const newReleases = [
+    'flex-hub-knowledge-three-areas-and-reference-20261110',
+    'floating-call-notes-owner-labels-20261106',
+    'recording-search-relevance-20261030',
+    'role-aware-search-mobile-guides-20261030',
+  ]
+  expect(data.updates.slice(0, 4).map(entry => entry.id)).toEqual(newReleases)
+  expect(data.updates[0].changed).toMatch(/three clear areas/)
+  expect(data.updates[0].changed).toMatch(/13 topic-based procedures, 10 short FAQs, and 6 roadblock/)
+  expect(data.updates[0].changed).toMatch(/Needs source verification/)
+  expect(data.updates[1].changed).toMatch(/My Saved Notes/)
+  expect(data.updates[1].changed).toMatch(/owner filter/)
+  expect(data.updates[2].changed).toMatch(/recording-policy answer/)
+  expect(data.updates[3].changed).toMatch(/role-aware Smart Search/)
+  // Keep the original historical sequence intact as new releases are prepended.
+  const priorHistoryStart = data.updates.findIndex(entry => entry.id === 'workspace-quick-page-and-live-tool-transitions-20261021')
+  expect(priorHistoryStart).toBe(4)
+  expect(data.updates.slice(priorHistoryStart, priorHistoryStart + 9)).toEqual([
     expect.objectContaining({ id: 'workspace-quick-page-and-live-tool-transitions-20261021', date: '2026-10-21', audience: 'all' }),
     expect.objectContaining({ id: 'training-lessons-device-readable-day-night-20261021', date: '2026-10-21', audience: 'all' }),
     expect.objectContaining({ id: 'call-flow-report-button-overlap-fix-20261020', date: '2026-10-20', audience: 'all' }),
@@ -33,7 +50,7 @@ it('keeps workspace metadata and update history complete and newest-first', () =
     expect.objectContaining({ id: 'batch-11-searchable-updates-and-dashboard-release-links', date: '2026-10-16', audience: 'all' }),
     expect.objectContaining({ id: 'batch-10-global-command-center', date: '2026-10-16', audience: 'all' }),
   ])
-  expect(data.updates.slice(9, 12)).toEqual(expect.arrayContaining([
+  expect(data.updates.slice(priorHistoryStart + 9, priorHistoryStart + 12)).toEqual(expect.arrayContaining([
     expect.objectContaining({ id: 'ozzie-workspace-complete-uiux-revamp', date: '2026-10-16', audience: 'all' }),
     expect.objectContaining({ id: 'ozzie-dashboard-home-experience-refresh', date: '2026-10-16', audience: 'all' }),
     expect.objectContaining({ id: 'ozzie-navigation-accessibility-polish', date: '2026-10-16', audience: 'all' }),
