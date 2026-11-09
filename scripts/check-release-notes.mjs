@@ -1,7 +1,7 @@
-/** Batch 12 release gate.
- * Ensures numbered user-facing batches have corresponding What’s New entries.
- * On CI, compares new commit titles against base/head; local runs check the
- * current release history even when git history is unavailable.
+/** Ozzie release-notes gate.
+ * Enforce ordered, distinct What’s New entries, mandatory numbered-batch
+ * announcements and a curated release note for user-facing code/content
+ * changes. On CI compare the base/head diff; local runs still validate history.
  */
 import { readFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
@@ -38,6 +38,27 @@ if (base && !/^0+$/.test(base)) {
         errors.push(`Batch ${number} changed user-visible code but has no What’s New entry`)
       }
     }
+
+    // An existing weakness: this guard only checked numbered Batch commits.
+    // All user-facing source changes now require a curated What’s New entry
+    // in the same PR/release. Explicit chore/refactor/test/docs/ci-only
+    // changes can skip announcements under the documented update policy.
+    const changedFiles = execFileSync('git', ['diff', '--name-only', base, head], { encoding: 'utf8' })
+      .split(/\r?\n/).filter(Boolean)
+    const isUserFacingFile = file => /^src\/.*\.(?:jsx?|css|json)$/.test(file)
+      && !/\.(?:test|spec)\.[jt]sx?$/.test(file)
+      && file !== 'src/features/updates/updatesData.json'
+    const userFacingChanges = changedFiles.filter(isUserFacingFile)
+    const commitSubjects = subjects.split(/\r?\n/).filter(Boolean)
+    const allDeveloperOnly = commitSubjects.length > 0
+      && commitSubjects.every(subject => /^(?:chore|refactor|test|docs|ci)(?:\([^)]*\))?:\s/i.test(subject))
+    if (userFacingChanges.length && !allDeveloperOnly
+        && !changedFiles.includes('src/features/updates/updatesData.json')) {
+      errors.push(
+        `User-facing source code changed without a What’s New update: ${userFacingChanges.slice(0, 5).join(', ')}. `
+        + 'Add a curated release note to src/features/updates/updatesData.json in the same PR.'
+      )
+    }
   } catch (error) {
     errors.push(`Could not verify changed batch commits: ${error.message}`)
   }
@@ -47,5 +68,5 @@ if (errors.length) {
   console.error('Ozzie release gate failed:\n' + errors.map(error => `- ${error}`).join('\n'))
   process.exitCode = 1
 } else {
-  console.log(`Ozzie release gate passed: ${history.length} announcements, Batches 10–12 recorded.`)
+  console.log(`Ozzie release gate passed: ${history.length} announcements, numbered batches and user-facing diffs checked.`)
 }
