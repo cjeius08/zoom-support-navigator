@@ -13,7 +13,7 @@ it('keeps workspace metadata and update history complete and newest-first', () =
     effectiveDate: '2026-09-18',
     owner: 'Cjei A.',
     collaborator: 'Nina F.',
-    nextReview: '2026-10-18',
+    nextReview: '2026-11-24',
   })
   expect(data.metadata.updatePolicy).toMatch(/User-facing features/i)
   expect(data.metadata.updatePolicy).toMatch(/Admin-only operational or administrative changes/i)
