@@ -94,9 +94,11 @@ export function commandResults(query, { role = 'Host', isAdmin = false } = {}) {
   }] : []
   // Preserve validated troubleshooting and role-aware priorities, then surface
   // content from all searchable Ozzie libraries instead of Zoom processes only.
-  const core = [...direct,...hub,...pages,...hostRoutes,...roadblocks,...participantRoutes,...processes,...faqMatches(clean, role)]
+  const core = [...direct,...hub,...pages,...hostRoutes,...roadblocks,...participantRoutes,...faqMatches(clean, role),...processes]
   const supplemental = searchOzzieContent(clean, { isAdmin, role, limit: 7 })
-  return [...core.slice(0,6),...supplemental.slice(0,5),...core.slice(6),...supplemental.slice(5)]
+  // Reserve space for reviewed Host/Participant routes and exact approved FAQs
+  // before results from other workspace libraries.
+  return [...core.slice(0,8),...supplemental.slice(0,4),...core.slice(8),...supplemental.slice(4)]
     .filter((item,index,items) => items.findIndex(other => other.kind === item.kind && other.id === item.id) === index).slice(0, 12)
 }
 
