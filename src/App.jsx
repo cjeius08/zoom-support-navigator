@@ -93,6 +93,8 @@ export default function App() {
   const slowLoginTimerRef = useRef(null)
   const [view, setView] = useState('navigator')
   const [hubSection, setHubSection] = useState(null)
+  const [hubTab, setHubTab] = useState('processes')
+  const [hubSearchItem, setHubSearchItem] = useState(null)
   const [commandOpen, setCommandOpen] = useState(false)
   const [commandRole, setCommandRole] = useState('Host')
   const [commandLaunch, setCommandLaunch] = useState(null)
@@ -260,8 +262,10 @@ export default function App() {
       return
     }
     if (item.kind === 'hub_reference') {
-      setHubSection(item.topicId || null)
       navigate('flex_hub')
+      setHubTab(item.tab || 'processes')
+      setHubSearchItem(item.id)
+      setHubSection(item.topicId || null)
       return
     }
     if (item.kind === 'page') {
@@ -597,7 +601,7 @@ export default function App() {
           isAdmin={profile.role === 'creator_admin'}
           onOpenTraining={openTraining}
           onOpenGlobalResult={selectCommandResult}
-          onOpenFlexHub={section => { setHubSection(section || null); navigate('flex_hub') }}
+          onOpenFlexHub={section => { setHubTab('processes'); setHubSearchItem(null); setHubSection(section || null); navigate('flex_hub') }}
           onOpenDeviceSandbox={openDeviceSandbox}
           onTrackEvent={trackEvent}
           onAddToDocumentation={addToCallDocumentation}
@@ -633,7 +637,7 @@ export default function App() {
         : view === 'process_documents'
           ? <ProcessDocuments initialDocumentId={sourceDocumentTarget} onTrackEvent={trackEvent} onReportContextChange={updateReportContext} onOpenReference={navigate}/>
         : view === 'flex_hub'
-          ? <FlexHubReference initialSection={hubSection} onOpenVideo={openTraining} onReportContextChange={updateReportContext} trackEvent={trackEvent}/>
+          ? <FlexHubReference initialSection={hubSection} initialTab={hubTab} initialEntryId={hubSearchItem} onOpenVideo={openTraining} onReportContextChange={updateReportContext} trackEvent={trackEvent}/>
         : view === 'training'
           ? <TrainingResources initialVideoId={trainingVideoId} initialTarget={trainingTarget} onReportContextChange={updateReportContext} trackEvent={trackEvent}/>
           : view === 'updates'
