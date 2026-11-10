@@ -99,6 +99,8 @@ export default function App() {
   const consumeCommandLaunch = useCallback(() => setCommandLaunch(null), [])
   const [trainingVideoId, setTrainingVideoId] = useState(null)
   const [trainingTarget, setTrainingTarget] = useState(null)
+  const [sourceDocumentTarget, setSourceDocumentTarget] = useState(null)
+  const [updateTarget, setUpdateTarget] = useState(null)
   const [navigatorProcessId, setNavigatorProcessId] = useState(null)
   const [navigatorCommonIssueId, setNavigatorCommonIssueId] = useState(null)
   const [reportContext, setReportContext] = useState(EMPTY_REPORT_CONTEXT)
@@ -167,6 +169,8 @@ export default function App() {
       view,
       trainingVideoId,
       trainingTarget,
+      sourceDocumentTarget,
+      updateTarget,
       navigatorProcessId,
       navigatorCommonIssueId,
       savedNotesUserId,
@@ -185,6 +189,8 @@ export default function App() {
     setView(snapshot.view || 'navigator')
     setTrainingVideoId(snapshot.trainingVideoId || null)
     setTrainingTarget(snapshot.trainingTarget || null)
+    setSourceDocumentTarget(snapshot.sourceDocumentTarget || null)
+    setUpdateTarget(snapshot.updateTarget || null)
     setNavigatorProcessId(snapshot.navigatorProcessId || null)
     setNavigatorCommonIssueId(snapshot.navigatorCommonIssueId || null)
     setSavedNotesUserId(snapshot.savedNotesUserId || '')
@@ -216,6 +222,8 @@ export default function App() {
       setTrainingVideoId(null)
       setTrainingTarget(null)
     }
+    if (nextView === 'process_documents') setSourceDocumentTarget(null)
+    if (nextView === 'updates') setUpdateTarget(null)
     if (nextView === 'navigator') {
       setNavigatorProcessId(null)
       setNavigatorCommonIssueId(null)
@@ -231,6 +239,31 @@ export default function App() {
   }
 
   function selectCommandResult(item) {
+    if (item.kind === 'video') {
+      openTraining(item.id)
+      return
+    }
+    if (item.kind === 'training_section') {
+      openReadinessResource({ view: 'training', section: item.section,
+        device: item.device, lessonId: item.lessonId,
+        mode: item.mode, subsection: item.subsection, scenario: item.scenario })
+      return
+    }
+    if (item.kind === 'source_document') {
+      navigate('process_documents')
+      setSourceDocumentTarget(item.id)
+      return
+    }
+    if (item.kind === 'update') {
+      navigate('updates')
+      setUpdateTarget(item.id)
+      return
+    }
+    if (item.kind === 'hub_reference') {
+      setHubSection(item.topicId || null)
+      navigate('flex_hub')
+      return
+    }
     if (item.kind === 'page') {
       if (!findCommandPage(item.id, profile?.role === 'creator_admin')) return
       setHubSection(item.section || null)
@@ -563,6 +596,7 @@ export default function App() {
           onThemeChange={changeTheme}
           isAdmin={profile.role === 'creator_admin'}
           onOpenTraining={openTraining}
+          onOpenGlobalResult={selectCommandResult}
           onOpenFlexHub={section => { setHubSection(section || null); navigate('flex_hub') }}
           onOpenDeviceSandbox={openDeviceSandbox}
           onTrackEvent={trackEvent}
@@ -597,13 +631,13 @@ export default function App() {
             onOpenCommonIssue={openFavoriteCommonIssue}
           />
         : view === 'process_documents'
-          ? <ProcessDocuments onTrackEvent={trackEvent} onReportContextChange={updateReportContext} onOpenReference={navigate}/>
+          ? <ProcessDocuments initialDocumentId={sourceDocumentTarget} onTrackEvent={trackEvent} onReportContextChange={updateReportContext} onOpenReference={navigate}/>
         : view === 'flex_hub'
           ? <FlexHubReference initialSection={hubSection} onOpenVideo={openTraining} onReportContextChange={updateReportContext} trackEvent={trackEvent}/>
         : view === 'training'
           ? <TrainingResources initialVideoId={trainingVideoId} initialTarget={trainingTarget} onReportContextChange={updateReportContext} trackEvent={trackEvent}/>
           : view === 'updates'
-            ? <UpdatesView isAdmin={profile.role === 'creator_admin'}/>
+            ? <UpdatesView initialEntryId={updateTarget} isAdmin={profile.role === 'creator_admin'}/>
             : view === 'feedback'
               ? <FeedbackPage onSubmit={submitFeedback} onCancel={navigationHistory.length ? goBack : ()=>navigate('navigator')}/>
               : view === 'admin'
