@@ -44,8 +44,11 @@ function LessonSplit({ items }) {
   </div>
 }
 
-export function GuidedLessons({ onOpenResource = () => {}, onReportContextChange = () => {} }) {
-  const [activeId, setActiveId] = useState(GUIDED_LESSONS[0].id)
+export function GuidedLessons({ initialLessonId = null, onOpenResource = () => {}, onReportContextChange = () => {} }) {
+  const [activeId, setActiveId] = useState(GUIDED_LESSONS.some(lesson => lesson.id === initialLessonId) ? initialLessonId : GUIDED_LESSONS[0].id)
+  useEffect(() => {
+    if (initialLessonId && GUIDED_LESSONS.some(lesson => lesson.id === initialLessonId)) setActiveId(initialLessonId)
+  }, [initialLessonId])
   const active = GUIDED_LESSONS.find(lesson => lesson.id === activeId) ?? GUIDED_LESSONS[0]
 
   useEffect(() => {
