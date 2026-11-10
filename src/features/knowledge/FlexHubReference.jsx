@@ -15,11 +15,17 @@ export function FlexHubReference({ initialSection = null, initialTab = 'processe
 
   useEffect(() => {
     setGuideTab(initialTab)
+    // Preserve the original immediate anchor focus expected by approved
+    // Process Guide links, keyboard navigation, and existing regression tests.
+    if (initialTab === 'processes') {
+      const section = initialSection && document.getElementById('flex-' + initialSection)
+      section?.scrollIntoView?.({ block: 'start' })
+      section?.focus()
+      return
+    }
+    // The FAQ / roadblock panel only mounts after the tab changes.
     const frame = window.requestAnimationFrame(() => {
-      const id = initialTab === 'processes'
-        ? initialSection && 'flex-' + initialSection
-        : initialEntryId && 'flex-search-' + initialEntryId
-      const element = id ? document.getElementById(id) : null
+      const element = initialEntryId && document.getElementById('flex-search-' + initialEntryId)
       element?.scrollIntoView?.({ block: 'start' })
       element?.focus()
     })
