@@ -16,9 +16,13 @@ const categoryLabels = {
   hub: 'Flex Arbitration Hub',
 }
 
-export function ProcessDocuments({ onTrackEvent, onReportContextChange = () => {}, onOpenReference = () => {} }) {
+export function ProcessDocuments({ initialDocumentId = null, onTrackEvent, onReportContextChange = () => {}, onOpenReference = () => {} }) {
   const [query, setQuery] = useState('')
-  const [selectedId, setSelectedId] = useState(null)
+  const [selectedId, setSelectedId] = useState(initialDocumentId)
+
+  useEffect(() => {
+    if (initialDocumentId) setSelectedId(initialDocumentId)
+  }, [initialDocumentId])
 
   const documents = useMemo(
     () => [...PROCESSES.filter(process => process.images?.length > 0 || process.sourceText?.length > 0), ...SUPPLEMENTAL_PROCESS_DOCUMENTS]
