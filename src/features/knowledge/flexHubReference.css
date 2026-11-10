@@ -335,3 +335,44 @@
   .navigator-library .navigator-support-areas { grid-template-columns: 1fr; }
   .navigator-library .navigator-support-areas button { min-height: 44px; }
 }
+
+/* Ozzie-wide Dashboard search suggestions; scoped to existing dark navigator. */
+.navigator .ozzie-all-results {
+  margin: .9rem 0 0;
+  padding: .8rem .9rem;
+  border: 1px solid rgba(155,188,205,.32);
+  border-radius: 12px;
+  background: rgba(15,31,46,.52);
+}
+.navigator .ozzie-all-results h3 {
+  margin: 0 0 .55rem;
+  color: #f3f7fb;
+  font-size: .95rem;
+  font-weight: 750;
+}
+.navigator .ozzie-all-result-list { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .5rem; }
+.navigator .ozzie-all-result-list button {
+  display: flex;
+  gap: .6rem;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 0;
+  padding: .62rem .75rem;
+  text-align: left;
+  color: #e8f4fa;
+  background: rgba(26,49,70,.92);
+  border: 1px solid rgba(160,197,215,.38);
+  border-radius: 9px;
+  cursor: pointer;
+  font: inherit;
+}
+.navigator .ozzie-all-result-list strong { display: block; font-size: .9rem; line-height: 1.3; color: #f6fbff; }
+.navigator .ozzie-all-result-list small { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; margin-top: .25rem; color: #c9dbe7; font-size: .77rem; line-height: 1.4; }
+.navigator .ozzie-all-result-list button:hover, .navigator .ozzie-all-result-list button:focus-visible {
+  border-color: #70bed9;
+  background: rgba(29,69,96,.96);
+}
+.navigator .ozzie-all-result-list button:focus-visible { outline: 3px solid #6baabc; outline-offset: 2px; }
+@media (max-width: 700px) {
+  .navigator .ozzie-all-result-list { grid-template-columns: 1fr; }
+}
