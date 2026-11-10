@@ -66,19 +66,19 @@ function searchableEntries(isAdmin) {
     ...FLEX_HUB_REFERENCE.topics.map(topic => ({
       kind:'hub_reference',id:'guide-'+topic.id,title:topic.label,description:topic.summary,
       category:topic.pending?'Flex Hub Guide · Source verification needed':'Flex Hub Process Guide',
-      topicId:topic.id,
+      topicId:topic.id,tab:'processes',
       keywords:[topic.keywords,...topic.points,...(topic.steps||[])].join(' '),
     })),
     ...FLEX_HUB_FAQS.map(item => ({
       kind:'hub_reference',id:item.id,title:item.label,description:item.answer,
       category:item.pending?'Flex Hub FAQ · Source verification needed':'Flex Hub FAQ',
-      topicId:item.sourceTopic,keywords:'flex arbitration hub faq',
+      topicId:item.sourceTopic,tab:'faqs',keywords:'flex arbitration hub faq',
     })),
     ...FLEX_HUB_ROADBLOCKS.map(item => ({
       kind:'hub_reference',id:'roadblock-'+item.id,title:item.issue,
       description:item.check+' '+item.next,
       category:item.pending?'Flex Hub Roadblock · Source verification needed':'Flex Hub Roadblock',
-      topicId:item.sourceTopic,keywords:'flex arbitration hub roadblock',
+      topicId:item.sourceTopic,tab:'roadblocks',keywords:'flex arbitration hub roadblock',
     })),
     ...updatesForAudience(isAdmin).map(entry => ({
       kind:'update',id:entry.id,title:entry.title,description:entry.area,
