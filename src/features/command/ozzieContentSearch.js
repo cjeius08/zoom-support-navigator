@@ -2,7 +2,7 @@
 // private notes, passwords, profiles, or Supabase rows in the client bundle.
 import { ALL_TRAINING_VIDEOS } from '../../data/trainingVideos'
 import { SUPPLEMENTAL_PROCESS_DOCUMENTS } from '../../data/processDocumentExtras'
-import { FLEX_HUB_FAQS, FLEX_HUB_ROADBLOCKS } from '../../data/flexHubReference'
+import { FLEX_HUB_REFERENCE, FLEX_HUB_FAQS, FLEX_HUB_ROADBLOCKS } from '../../data/flexHubReference'
 import { updatesForAudience } from '../updates/updatesData'
 import { GUIDED_LESSONS } from '../training/guidedLessonsData'
 import { DEVICE_WALKTHROUGHS } from '../training/deviceWalkthroughs'
@@ -41,10 +41,10 @@ function searchableEntries(isAdmin) {
       keywords:video.relatedCategories.join(' '),
     })),
     ...GUIDED_LESSONS.map(lesson => training('lessons',lesson.id,lesson.title,lesson.summary,{
-      lessonId:lesson.id,keywords:[lesson.remember,lesson.sourceLabel].join(' '),
+      lessonId:lesson.id,keywords:[lesson.remember,lesson.sourceLabel,...(lesson.takeaways||[]),...(lesson.flow||[]).map(stage=>stage.label+' '+stage.cue)].join(' '),
     })),
     ...DEVICE_WALKTHROUGHS.map(device => training('devices',device.id,device.title,device.summary,{
-      device:device.id,keywords:device.label+' '+device.subtitle,
+      device:device.id,keywords:[device.label,device.subtitle,...(device.sections||[]).map(section=>section.title+' '+section.steps.join(' '))].join(' '),
     })),
     ...TRAINING_ROADMAP_MODULES.filter(module => module.status === 'available').map(module =>
       training(module.target?.section || 'roadmap','roadmap-'+module.id,module.title,module.objective,{
@@ -53,15 +53,21 @@ function searchableEntries(isAdmin) {
     ...COMMUNICATION_SECTIONS.map(section =>
       training('scripts','script-'+section.id,section.title,section.purpose,{
         mode:'language',subsection:section.id,
-        keywords:section.phrases?.map(phrase => phrase.label).join(' ') || '',
+        keywords:section.phrases?.map(phrase => phrase.label+' '+phrase.text).join(' ') || '',
       })),
     ...SCENARIO_SCRIPTS.map(script => training('scripts','scenario-'+script.id,
       script.label+' — call scenario','Approved scenario script and guided caller discovery',{
-        mode:'scenarios',scenario:script.id,keywords:script.opening,
+        mode:'scenarios',scenario:script.id,keywords:[script.opening,script.guidePhrase,script.confirmPhrase,script.boundaryPhrase].join(' '),
       })),
     ...SUPPLEMENTAL_PROCESS_DOCUMENTS.map(doc => ({
       kind:'source_document',id:doc.id,title:doc.title,description:doc.purpose,
-      category:'Process Documents',keywords:doc.category,
+      category:'Process Documents',keywords:doc.sourceText || doc.category,
+    })),
+    ...FLEX_HUB_REFERENCE.topics.map(topic => ({
+      kind:'hub_reference',id:'guide-'+topic.id,title:topic.label,description:topic.summary,
+      category:topic.pending?'Flex Hub Guide · Source verification needed':'Flex Hub Process Guide',
+      topicId:topic.id,
+      keywords:[topic.keywords,...topic.points,...(topic.steps||[])].join(' '),
     })),
     ...FLEX_HUB_FAQS.map(item => ({
       kind:'hub_reference',id:item.id,title:item.label,description:item.answer,
