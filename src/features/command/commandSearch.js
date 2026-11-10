@@ -6,6 +6,7 @@ import { FAQ_ITEMS } from '../../data/supportReference'
 import { hostFaqItems, hostProcesses, hostFastestTopics, searchHostTopics, searchHostRoadblocks } from '../../data/hostExperience'
 import { searchParticipantProcesses, searchProcesses, normalizeSearchText } from '../navigator/smartSearch'
 import { searchCommonIssueRoutes } from '../navigator/commonIssueRoutes'
+import { searchOzzieContent } from './ozzieContentSearch'
 
 const PAGES = [
   { id: 'navigator', title: 'Dashboard & Smart Search', description: 'Search approved Zoom support and start a call', keywords: 'home smart search find help' },
@@ -91,8 +92,12 @@ export function commandResults(query, { role = 'Host', isAdmin = false } = {}) {
     title: hubTopic ? 'Flex Hub: ' + hubTopic.label : 'Flex Arbitration Hub',
     description: hubTopic?.summary || 'Hub access, case folders and hearing processes',
   }] : []
-  return [...direct,...hub,...pages,...hostRoutes,...roadblocks,...participantRoutes,...processes,...faqMatches(clean, role)]
-    .filter((item, index, items) => items.findIndex(other => other.kind === item.kind && other.id === item.id) === index).slice(0, 10)
+  // Preserve validated troubleshooting and role-aware priorities, then surface
+  // content from all searchable Ozzie libraries instead of Zoom processes only.
+  const core = [...direct,...hub,...pages,...hostRoutes,...roadblocks,...participantRoutes,...processes,...faqMatches(clean, role)]
+  const supplemental = searchOzzieContent(clean, { isAdmin, role, limit: 7 })
+  return [...core.slice(0,6),...supplemental.slice(0,5),...core.slice(6),...supplemental.slice(5)]
+    .filter((item,index,items) => items.findIndex(other => other.kind === item.kind && other.id === item.id) === index).slice(0, 12)
 }
 
 export function findCommandPage(id, isAdmin = false) {
