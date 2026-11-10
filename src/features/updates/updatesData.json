@@ -10,6 +10,20 @@
   },
   "updates": [
     {
+      "id": "ozzie-cross-workspace-search-20261110",
+      "date": "2026-11-10",
+      "area": "Dashboard Smart Search / Command Center / Training & Resources / Process Documents / Flex Arbitration Hub / What’s New",
+      "audience": "all",
+      "title": "Search Across Ozzie — Guides, Videos, Documents, Training and Updates",
+      "changed": "Smart Search and Ctrl+K Command Center now find more than Zoom troubleshooting: searchable entries include individual training videos, Guided Visual Lessons, device walkthroughs, scripts and communication, source documents, Flex Arbitration Hub FAQs and roadblocks, What’s New announcements, and existing workspace pages. Matching results can open the exact video, lesson, source document or announcement instead of only the top of its library. Reviewed Host/Participant troubleshooting and recording-policy answers keep their current ranking, while permissions still hide admin-only pages and updates from members. This searches curated Ozzie reference content; it does not search across other agents’ private saved-note text or expose backend records.",
+      "checks": [
+        "On Dashboard, search 'Windows desktop walkthrough', 'Flex SP Site Overview', and 'Easier Knowledge Navigation'; click an Other matches across Ozzie result and verify it opens the correct resource.",
+        "Open Command Center using Ctrl+K and search the same topics, plus 'Opening Greeting' and 'Flex Arbitration Hub Agent Reference Guide'.",
+        "Search 'no host controls', 'cant share', 'Recording' and 'mic not working' to verify existing approved role-aware troubleshooting answers remain prioritized.",
+        "As a Member, search saved notes, team management, admin release announcements, and manual document sharing. Verify only authorized page links and approved or clearly pending reference entries appear."
+      ]
+    },
+    {
       "id": "flex-hub-knowledge-three-areas-and-reference-20261110",
       "date": "2026-11-10",
       "area": "Dashboard / Common Issues / Zoom Troubleshooting / Flex Arbitration Hub",

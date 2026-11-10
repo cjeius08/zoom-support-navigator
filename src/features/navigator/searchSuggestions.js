@@ -17,7 +17,7 @@ export function isRecordingSourceRelevant(item) {
 
 export function buildSearchSuggestions({
   query, isHost, quickAnswer, hubMatch, hubReference,
-  hostTopicMatches = [], hostRoadblockMatches = [], processMatches = [], routeMatches = [],
+  hostTopicMatches = [], hostRoadblockMatches = [], processMatches = [], routeMatches = [], globalResults = [],
 }) {
   const recordingPolicySearch = isRecordingPolicySearch(query)
   // Preserve existing dropdown behavior for other issues. Only recording-policy
@@ -40,5 +40,8 @@ export function buildSearchSuggestions({
     ...approved,
     ...(hubMatch ? [{ kind: 'flex_hub', reference: hubReference }] : []),
     ...regular,
+    // Universal index only fills unused suggestion slots so the reviewed
+    // quick-answer, symptom and process ordering is not disturbed.
+    ...globalResults.map(result => ({ kind: 'global', result })),
   ].slice(0, 8)
 }

@@ -1,9 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CONSOLE_METADATA, formatConsoleDate, lastUpdatedForAudience, updatesForAudience } from './updatesData'
 import './updates.css'
 
-export function UpdatesView({ isAdmin = false }) {
+export function UpdatesView({ isAdmin = false, initialEntryId = null }) {
   const [search, setSearch] = useState('')
+  useEffect(() => {
+    if (!initialEntryId) return
+    const entry = updatesForAudience(isAdmin).find(item => item.id === initialEntryId)
+    if (entry) setSearch(entry.title)
+  }, [initialEntryId, isAdmin])
   const visibleUpdates = updatesForAudience(isAdmin)
   const term = search.trim().toLocaleLowerCase()
   const matchingUpdates = term

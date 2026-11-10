@@ -18,6 +18,20 @@ it('keeps three simple support areas without mixing Zoom and Flex procedures', a
   expect(onOpenFlexHub).toHaveBeenCalledWith(null)
 })
 
+it('finds Ozzie training content from the Dashboard Smart Search, not only troubleshooting', async () => {
+  const user = userEvent.setup()
+  const onOpenGlobalResult = vi.fn()
+  render(<Navigator initialRole="Host" onOpenGlobalResult={onOpenGlobalResult}/>)
+  const input = screen.getByRole('combobox',{name:'Search support processes'})
+  await user.type(input, 'Windows desktop walkthrough')
+  const results = screen.getByRole('region',{name:'More matches across Ozzie'})
+  const openResult = within(results).getByRole('button',{name:/Windows desktop walkthrough/i})
+  await user.click(openResult)
+  expect(onOpenGlobalResult).toHaveBeenCalledWith(expect.objectContaining({
+    kind:'training_section',id:'windows',section:'devices',device:'windows'
+  }))
+})
+
 it('opens a source-driven Call Guide with safe copy actions before lossless source views', async () => {
   const user = userEvent.setup()
   render(<Navigator initialRole="Participant" />)

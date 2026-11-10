@@ -29,6 +29,7 @@ export function TrainingResources({ initialVideoId = null, initialTarget = null,
   const [category, setCategory] = useState('All')
   const [activeIndex, setActiveIndex] = useState(initialIndex >= 0 ? initialIndex : null)
   const [deviceTarget, setDeviceTarget] = useState(initialTarget?.device || null)
+  const [lessonTarget, setLessonTarget] = useState(initialTarget?.lessonId || null)
   const [scriptTarget, setScriptTarget] = useState({
     mode: initialTarget?.mode || null,
     subsection: initialTarget?.subsection || null,
@@ -50,6 +51,7 @@ export function TrainingResources({ initialVideoId = null, initialTarget = null,
     if (!initialTarget?.section) return
     setSection(initialTarget.section)
     setActiveIndex(null)
+    if (initialTarget.section === 'lessons') setLessonTarget(initialTarget.lessonId || null)
     if (initialTarget.section === 'devices') {
       setDeviceTarget(initialTarget.device || null)
     }
@@ -159,7 +161,7 @@ export function TrainingResources({ initialVideoId = null, initialTarget = null,
     {section === 'roadmap'
       ? <TrainingRoadmap onOpenResource={openRoadmapResource} />
       : section === 'lessons'
-        ? <GuidedLessons onOpenResource={openRoadmapResource} onReportContextChange={onReportContextChange} />
+        ? <GuidedLessons initialLessonId={lessonTarget} onOpenResource={openRoadmapResource} onReportContextChange={onReportContextChange} />
         : section === 'devices'
           ? <DeviceWalkthroughs initialDeviceId={deviceTarget} initialSandboxOpen={Boolean(initialTarget?.sandboxOpen)} onReportContextChange={onReportContextChange} trackEvent={trackEvent} />
         : section === 'scripts'

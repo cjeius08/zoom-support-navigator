@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { PROCESSES } from '../../data/processes'
 import { findFlexHubTopic, flexHubSearchEntry, matchesFlexHubReference } from '../../data/flexHubReference'
+import { searchOzzieContent } from '../command/ozzieContentSearch'
+import { commandResults } from '../command/commandSearch'
 import '../knowledge/flexHubReference.css'
 import { ProcessDrawer } from './ProcessDrawer'
 import { LiveVisitors } from './LiveVisitors'
@@ -117,7 +119,7 @@ function FavoriteProcessCard({
   </article>
 }
 
-export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = false, onOpenTraining = () => {}, onOpenFavorites = () => {}, onOpenFeedback = () => {}, onOpenUpdates = () => {}, profile = null, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', commandLaunch = null, onCallerRoleChange = NOOP, onCommandConsumed = NOOP, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = NOOP, onOpenDeviceSandbox = () => {} }) {
+export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = false, onOpenTraining = () => {}, onOpenGlobalResult = () => {}, onOpenFavorites = () => {}, onOpenFeedback = () => {}, onOpenUpdates = () => {}, profile = null, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', commandLaunch = null, onCallerRoleChange = NOOP, onCommandConsumed = NOOP, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = NOOP, onOpenDeviceSandbox = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(null)
@@ -301,11 +303,21 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   }, [category, isHost, approvedHostProcesses])
   const fastestRoutes = useMemo(() => FASTEST_ROUTE_IDS.map(routeById).filter(Boolean), [])
 
+  const globalResults = useMemo(() => {
+    if (!query.trim()) return []
+    const context = { role: callContext.role, isAdmin }
+    const pages = commandResults(query, context).filter(item => item.kind === 'page' && item.id !== 'navigator')
+    const indexed = searchOzzieContent(query, { ...context, limit: 6 })
+    return [...pages,...indexed]
+      .filter((item,index,items) => items.findIndex(other => other.kind === item.kind && other.id === item.id) === index)
+      .slice(0,6)
+  }, [query, callContext.role, isAdmin])
   const hubTopic = isHost ? findFlexHubTopic(query) : null
   const hubMatch = isHost && (matchesFlexHubReference(query) || quickAnswer?.guide?.kind === 'flex_hub')
   const suggestions = query.trim() ? buildSearchSuggestions({
     query, isHost, quickAnswer, hubMatch, hubReference: flexHubSearchEntry(query),
     hostTopicMatches, hostRoadblockMatches, processMatches, routeMatches,
+    globalResults,
   }) : []
   const showSuggestions = suggestionsOpen && suggestions.length > 0
 
@@ -484,10 +496,11 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   function selectSuggestion(suggestion) {
     if (suggestion.kind === 'approved_answer') openApprovedAnswerGuide(suggestion.answer?.guide)
     else if (suggestion.kind === 'flex_hub') onOpenFlexHub(quickAnswer?.guide?.kind === 'flex_hub' ? quickAnswer.guide.id : hubTopic?.id || null)
+    else if (suggestion.kind === 'global') onOpenGlobalResult(suggestion.result)
     else if (suggestion.kind === 'host') openHostTopic(suggestion.topic, 'search_suggestion')
     else if (suggestion.kind === 'roadblock') openHostRoadblock(suggestion.roadblock, 'search_suggestion')
     else if (suggestion.kind === 'route') openRoute(suggestion.route, 'search_suggestion')
-    else openProcess(suggestion.process, 'search_suggestion')
+    else if (suggestion.process) openProcess(suggestion.process, 'search_suggestion')
     setSuggestionsOpen(false)
     setActiveSuggestion(-1)
   }
@@ -574,7 +587,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
         <div className="smart-search-heading">
           <p className="eyebrow">Support workspace</p>
           <h1 id="smart-search-title">Find the next step</h1>
-          <p>{isHost ? 'Search Host/Arbitrator symptoms, approved Tier 1 roadblocks, or source-backed processes.' : 'Search by caller symptom or approved process name.'}</p>
+          <p>Search across Ozzie: support guides, Flex Hub, training videos, source documents, updates and workspace pages.</p>
         </div>
 
         <div className="smart-search-mode" role="group" aria-label="Search display preference">
@@ -606,20 +619,20 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
               setSuggestionsOpen(Boolean(nextQuery.trim()))
               setActiveSuggestion(-1)
             }}
-            placeholder={isHost ? 'Try: no host controls, can’t share, mic not working, stop recording…' : 'Try: can’t share, can’t find chat, waiting for host…'}
+            placeholder="Try: mic not working, Verbit, transcript, saved notes, video training…"
           />
           {showSuggestions && <div className="search-suggestions" id="support-search-suggestions" role="listbox" aria-label="Search suggestions">
             {suggestions.map((suggestion, index) => {
-              const item = suggestion.answer || suggestion.reference || suggestion.topic || suggestion.roadblock || suggestion.route || suggestion.process
+              const item = suggestion.answer || suggestion.reference || suggestion.topic || suggestion.roadblock || suggestion.route || suggestion.process || suggestion.result
               const isIssue = ['approved_answer', 'host', 'route'].includes(suggestion.kind)
-              const description = suggestion.kind === 'approved_answer' ? item.answer : suggestion.kind === 'flex_hub' ? item.purpose : suggestion.kind === 'host'
+              const description = suggestion.kind === 'global' ? item.description : suggestion.kind === 'approved_answer' ? item.answer : suggestion.kind === 'flex_hub' ? item.purpose : suggestion.kind === 'host'
                 ? 'Host / Arbitrator guided troubleshooting'
                 : suggestion.kind === 'roadblock'
                   ? item.trigger
                   : suggestion.kind === 'route'
                     ? item.subtitle
                     : item.purpose
-              const categoryLabel = suggestion.kind === 'approved_answer' ? 'Approved Answer' : suggestion.kind === 'flex_hub' ? 'Knowledge Reference' : suggestion.kind === 'host'
+              const categoryLabel = suggestion.kind === 'global' ? item.category : suggestion.kind === 'approved_answer' ? 'Approved Answer' : suggestion.kind === 'flex_hub' ? 'Knowledge Reference' : suggestion.kind === 'host'
                 ? 'Host Guide'
                 : suggestion.kind === 'roadblock'
                   ? 'Tier 1 Roadblock'
@@ -644,6 +657,12 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
           </div>}
         </div>
 
+        {globalResults.length > 0 && <section className="ozzie-all-results" aria-label="More matches across Ozzie">
+          <h3>Other matches across Ozzie</h3>
+          <div className="ozzie-all-result-list">{globalResults.map(item => <button type="button" key={`${item.kind}-${item.id}`} onClick={() => onOpenGlobalResult(item)}>
+            <span><strong>{item.title}</strong><small>{item.category} · {item.description}</small></span><span aria-hidden="true">→</span>
+          </button>)}</div>
+        </section>}
         {hubMatch && <div className="hub-search-action"><button type="button" onClick={onOpenFlexHub}>Flex Arbitration Hub Reference — open the approved PMI, onboarding, scheduling, and recording rules →</button></div>}
         <div className="smart-search-examples" aria-label="Example searches">
           <span>Try</span>
@@ -660,7 +679,7 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
         </div>
 
         {searchMode === 'answers' && quickAnswer && <AnswerFirstCard answer={quickAnswer} onOpenGuide={openApprovedAnswerGuide} />}
-        {searchMode === 'answers' && !quickAnswer && query.trim().length >= 12 && <p className="answer-first-disclaimer answer-first-no-match">
+        {searchMode === 'answers' && !quickAnswer && !globalResults.length && query.trim().length >= 12 && <p className="answer-first-disclaimer answer-first-no-match">
           No verified quick answer for this wording yet. Review the matching approved guides below.
         </p>}
 

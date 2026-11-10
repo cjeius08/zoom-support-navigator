@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { FLEX_HUB_FAQS, FLEX_HUB_ROADBLOCKS, FLEX_HUB_REFERENCE, FLEX_HUB_VIDEOS } from '../../data/flexHubReference'
 import './flexHubReference.css'
 
-export function FlexHubReference({ initialSection = null, onOpenVideo = () => {}, onReportContextChange = () => {}, trackEvent = () => {} }) {
-  const [guideTab, setGuideTab] = useState('processes')
+export function FlexHubReference({ initialSection = null, initialTab = 'processes', initialEntryId = null, onOpenVideo = () => {}, onReportContextChange = () => {}, trackEvent = () => {} }) {
+  const [guideTab, setGuideTab] = useState(initialTab)
   const [search, setSearch] = useState('')
   const normalizedSearch = search.toLowerCase().trim()
   const visibleTopics = FLEX_HUB_REFERENCE.topics.filter(topic => !normalizedSearch || [topic.label, topic.eyebrow, topic.group, topic.keywords, topic.summary, ...topic.points, ...(topic.steps || [])].join(' ').toLowerCase().includes(normalizedSearch))
@@ -14,12 +14,23 @@ export function FlexHubReference({ initialSection = null, onOpenVideo = () => {}
   const sourceTitle = topicId => FLEX_HUB_REFERENCE.topics.find(topic => topic.id === topicId)?.source || 'Flex Hub reference'
 
   useEffect(() => {
-    if (!initialSection) return
-    setGuideTab('processes')
-    const section = document.getElementById('flex-' + initialSection)
-    section?.scrollIntoView?.({ block: 'start' })
-    section?.focus()
-  }, [initialSection])
+    setGuideTab(initialTab)
+    // Preserve the original immediate anchor focus expected by approved
+    // Process Guide links, keyboard navigation, and existing regression tests.
+    if (initialTab === 'processes') {
+      const section = initialSection && document.getElementById('flex-' + initialSection)
+      section?.scrollIntoView?.({ block: 'start' })
+      section?.focus()
+      return
+    }
+    // The FAQ / roadblock panel only mounts after the tab changes.
+    const frame = window.requestAnimationFrame(() => {
+      const element = initialEntryId && document.getElementById('flex-search-' + initialEntryId)
+      element?.scrollIntoView?.({ block: 'start' })
+      element?.focus()
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [initialTab, initialSection, initialEntryId])
   useEffect(() => {
     onReportContextChange({
       selected_tab: 'Flex Arbitration Hub',
@@ -85,7 +96,7 @@ export function FlexHubReference({ initialSection = null, onOpenVideo = () => {}
     </div>
     </>}
     {guideTab === 'faqs' && <div className="flex-hub-faq-grid">
-      {visibleFaqs.map(item => <article key={item.id} className="flex-hub-faq-card">
+      {visibleFaqs.map(item => <article key={item.id} id={'flex-search-' + item.id} tabIndex={-1} className="flex-hub-faq-card">
         <h2>{item.label}</h2>
         <p>{item.answer}</p>
         {item.pending && <p className="flex-hub-pending"><strong>Needs source verification.</strong> Do not provide unverified manual steps.</p>}
@@ -95,7 +106,7 @@ export function FlexHubReference({ initialSection = null, onOpenVideo = () => {}
       {visibleFaqs.length === 0 && <p className="flex-hub-empty">No matching FAQs. Clear the search or try a different keyword.</p>}
     </div>}
     {guideTab === 'roadblocks' && <div className="flex-hub-roadblock-grid">
-      {visibleRoadblocks.map(item => <article key={item.id} className="flex-hub-roadblock-card">
+      {visibleRoadblocks.map(item => <article key={item.id} id={'flex-search-roadblock-' + item.id} tabIndex={-1} className="flex-hub-roadblock-card">
         <h2>{item.issue}</h2>
         <dl><dt>What to confirm</dt><dd>{item.check}</dd><dt>Next step / boundary</dt><dd>{item.next}</dd></dl>
         {item.pending && <p className="flex-hub-pending"><strong>Needs source verification.</strong> Do not treat this as a completed escalation procedure.</p>}
