@@ -22,3 +22,13 @@ export function normalizeSupportQuery(query) {
 
   return text
 }
+
+ // This keeps unverified Host-only policy topics out of Participant quick discovery.
+ // Users can still navigate to general resources; no procedure is implied here.
+export function isUnverifiedParticipantSearch(query) {
+  const text = normalizeSupportQuery(query)
+  return /\breschedul\w*\b.*\bhearing\b/.test(text)
+    || /\b(?:automatic|automatically|auto|stop|pause|disable|turn off)\b.*\brecording\b/.test(text)
+    || /\brecording\b.*\bbreaks?\b/.test(text)
+    || /\b(?:log out|sign out|switch account)\b/.test(text)
+}
