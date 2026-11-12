@@ -36,12 +36,18 @@ export function buildSearchSuggestions({
         ...routeMatches.filter(policyFilter).map(route => ({ kind: 'route', route })),
         ...processMatches.filter(policyFilter).map(process => ({ kind: 'process', process })),
       ]
-  return [
+  const reviewed = [
     ...approved,
     ...(hubMatch ? [{ kind: 'flex_hub', reference: hubReference }] : []),
     ...regular,
-    // Universal index only fills unused suggestion slots so the reviewed
-    // quick-answer, symptom and process ordering is not disturbed.
-    ...globalResults.map(result => ({ kind: 'global', result })),
+  ]
+  // Keep the approved route order, but reserve room for 1–2 exact content
+  // destinations so large troubleshooting lists never hide training/docs.
+  const reserved = globalResults.length ? Math.min(2, Math.max(1, 8 - Math.min(reviewed.length, 7))) : 0
+  const primary = reviewed.slice(0, 8 - reserved)
+  return [
+    ...primary,
+    ...globalResults.slice(0, reserved).map(result => ({ kind: 'global', result })),
+    ...reviewed.slice(primary.length),
   ].slice(0, 8)
 }
