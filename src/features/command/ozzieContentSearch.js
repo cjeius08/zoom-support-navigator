@@ -10,7 +10,7 @@ import { TRAINING_ROADMAP_MODULES } from '../training/trainingRoadmapData'
 import { COMMUNICATION_SECTIONS } from '../training/communicationScripts'
 import { SCENARIO_SCRIPTS } from '../training/scenarioScripts'
 import { normalizeSearchText } from '../navigator/smartSearch'
-import { normalizeSupportQuery } from './supportSearchLanguage'
+import { isUnverifiedParticipantSearch, normalizeSupportQuery } from './supportSearchLanguage'
 
 const STOP = new Set([
   'the','for','and','with','how','do','does','can','where','what','is','are','an','a','in','to','on',
@@ -146,7 +146,7 @@ function searchableEntries(isAdmin) {
       })),
     ...SUPPLEMENTAL_PROCESS_DOCUMENTS.map(doc => ({
       kind:'source_document',id:doc.id,title:doc.title,description:doc.purpose,
-      category:'Process Documents',keywords:doc.sourceText || doc.category,
+      category:'Process Documents',sourceCategory:doc.category,keywords:doc.sourceText || doc.category,
     })),
     ...FLEX_HUB_REFERENCE.topics.map(topic => ({
       kind:'hub_reference',id:'guide-'+topic.id,title:topic.label,description:topic.summary,
@@ -175,8 +175,9 @@ function searchableEntries(isAdmin) {
 export function searchOzzieContent(query,{isAdmin=false,role='Host',limit=6}={}) {
   const normalized=normalizeSupportQuery(query)
   if(!normalized || terms(normalized).every(word=>word.length<2))return []
+  if(role==='Participant' && isUnverifiedParticipantSearch(normalized))return []
   return indexedEntries(isAdmin)
-    .filter(({item})=>role==='Host'||item.kind!=='hub_reference')
+    .filter(({item})=>role==='Host'||(item.kind!=='hub_reference' && item.sourceCategory!=='hub'))
     .map(entry=>({item:entry.item,score:scoreFor(normalized,entry)}))
     .filter(result=>result.score>0)
     .sort((a,b)=>b.score-a.score||a.item.title.localeCompare(b.item.title))
