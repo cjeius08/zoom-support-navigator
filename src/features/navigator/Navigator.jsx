@@ -3,7 +3,7 @@ import { PROCESSES } from '../../data/processes'
 import { findFlexHubTopic, flexHubSearchEntry, matchesFlexHubReference } from '../../data/flexHubReference'
 import { searchOzzieContent } from '../command/ozzieContentSearch'
 import { commandResults } from '../command/commandSearch'
-import { normalizeSupportQuery } from '../command/supportSearchLanguage'
+import { isUnverifiedParticipantSearch, normalizeSupportQuery } from '../command/supportSearchLanguage'
 import '../knowledge/flexHubReference.css'
 import { ProcessDrawer } from './ProcessDrawer'
 import { LiveVisitors } from './LiveVisitors'
@@ -707,9 +707,12 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
         </div>
 
         {searchMode === 'answers' && quickAnswer && <AnswerFirstCard answer={quickAnswer} onOpenGuide={openApprovedAnswerGuide} />}
-        {searchMode === 'answers' && !quickAnswer && !globalResults.length && !hostTopicMatches.length && !hostRoadblockMatches.length && !routeMatches.length && !processMatches.length && query.trim().length >= 6 && <p className="answer-first-disclaimer answer-first-no-match">
-          No verified match for this wording. Try a shorter symptom or a topic such as “join hearing”, “transcript”, or “recording”. If the approved guide is missing, <button type="button" onClick={onOpenFeedback}>report missing information</button>.
-        </p>}
+        {searchMode === 'answers' && !quickAnswer && query.trim().length >= 12 &&
+          ((!isHost && isUnverifiedParticipantSearch(normalizedQuery)) ||
+            (!hostTopicMatches.length && !hostRoadblockMatches.length && !routeMatches.length && !processMatches.length)) &&
+          <p className="answer-first-disclaimer answer-first-no-match">
+            No verified quick answer for this wording yet. Related references are not a substitute for an approved caller procedure. Try a shorter symptom or topic; if the guide is missing, <button type="button" onClick={onOpenFeedback}>report missing information</button>.
+          </p>}
 
         <span className="sr-only" role="status" aria-live="polite">{query.trim() ? (isHost ? `${hostTopicMatches.length} Host ${hostTopicMatches.length === 1 ? 'route' : 'routes'}, ${hostRoadblockMatches.length} ${hostRoadblockMatches.length === 1 ? 'roadblock' : 'roadblocks'}, and ${processMatches.length} approved ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.` : `${routeMatches.length} common issue ${routeMatches.length === 1 ? 'route' : 'routes'} and ${processMatches.length} related ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.`) : ''}</span>
       </section>
