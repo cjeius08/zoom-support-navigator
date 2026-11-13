@@ -19,6 +19,21 @@ describe('Ozzie-wide source-backed search', () => {
     ]))
   })
 
+
+  it('finds specific training even with conversational wording and a typo', () => {
+    expect(searchOzzieContent('pano Windows desktp walkthrough',{role:'Host'})[0])
+      .toMatchObject({kind:'training_section',id:'windows'})
+    expect(searchOzzieContent('Opening Greeting',{role:'Host'})[0])
+      .toMatchObject({kind:'training_section',id:'script-opening'})
+  })
+
+  it('keeps role boundaries and avoids hallucinating an unrelated reference', () => {
+    const request='How is a document manually shared?'
+    expect(searchOzzieContent(request,{role:'Participant'}).every(item=>item.kind!=='hub_reference')).toBe(true)
+    expect(searchOzzieContent('zzzzxxxyyyunknownmaterial',{role:'Host'})).toEqual([])
+    expect(commandResults('no host controls',{role:'Host'})[0]).toMatchObject({kind:'host',id:'host-controls-missing'})
+  })
+
   it('integrates training, documents and updates with Command Center results', () => {
     expect(commandResults('Windows desktop walkthrough',{role:'Host'}).some(result => result.kind === 'training_section' && result.device === 'windows')).toBe(true)
     expect(commandResults('Flex SP Site Overview',{role:'Host'}).some(result => result.kind === 'video' && result.id === 'flex-hub-site-overview')).toBe(true)

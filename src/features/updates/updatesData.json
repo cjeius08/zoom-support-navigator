@@ -10,6 +10,21 @@
   },
   "updates": [
     {
+      "id": "ozzie-search-v2-natural-language-20261113",
+      "date": "2026-11-13",
+      "area": "Dashboard Smart Search / Command Center / Search Suggestions",
+      "audience": "all",
+      "title": "Search 2.0 — Easier Queries and Faster Source Discovery",
+      "changed": "Ozzie search now understands several everyday Taglish caller phrases, tolerates small typos in cross-workspace content, and ranks exact titles and approved source topics ahead of incidental mentions. Dashboard cross-workspace matches place specific references before generic pages, offer accessible Training, Flex Hub, Documents, Updates and Pages filters, and show clearer help when no verified result is found. Search suggestions reserve space for source destinations while preserving approved Host/Participant quick guidance, recording rules and role restrictions. Nothing changes in stored notes, login, Supabase, reporting, source documents or approved troubleshooting procedures.",
+      "checks": [
+        "Search 'pano Windows desktp walkthrough' and verify the Windows device guide appears; select Training filter, then All.",
+        "Try Taglish microphone vs speaker phrases with Participant selected. Confirm the approved symptom direction and first step.",
+        "Verify recording during breaks, rescheduling, Host controls and Participant screen sharing still surface approved role-specific guides.",
+        "Use Ctrl+K for Opening Greeting, Flex SP Site Overview and source documents; open direct destinations.",
+        "Check no-match messaging, keyboard navigation, mobile Day/Night layout, Call Documentation, and What's New visibility."
+      ]
+    },
+    {
       "id": "ozzie-cross-workspace-search-20261110",
       "date": "2026-11-10",
       "area": "Dashboard Smart Search / Command Center / Training & Resources / Process Documents / Flex Arbitration Hub / What’s New",

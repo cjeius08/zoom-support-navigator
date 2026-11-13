@@ -32,6 +32,23 @@ it('finds Ozzie training content from the Dashboard Smart Search, not only troub
   }))
 })
 
+it('filters cross-Ozzie source matches without losing the original guided search', async () => {
+  const user = userEvent.setup()
+  const onOpenGlobalResult = vi.fn()
+  render(<Navigator initialRole="Host" onOpenGlobalResult={onOpenGlobalResult} />)
+  const input = screen.getByRole('combobox', {name:'Search support processes'})
+  await user.type(input, 'pano Windows desktp walkthrough')
+  const cross = screen.getByRole('region', {name:'More matches across Ozzie'})
+  const filters = within(cross).getByRole('group', {name:'Filter other matches across Ozzie'})
+  await user.click(within(filters).getByRole('button', {name:'Training'}))
+  expect(within(filters).getByRole('button', {name:'Training'})).toHaveAttribute('aria-pressed', 'true')
+  const result = within(cross).getByRole('button', {name:/Windows desktop walkthrough/i})
+  await user.click(result)
+  expect(onOpenGlobalResult).toHaveBeenCalledWith(expect.objectContaining({kind:'training_section',id:'windows'}))
+  await user.click(within(filters).getByRole('button', {name:'All'}))
+  expect(within(filters).getByRole('button', {name:'All'})).toHaveAttribute('aria-pressed', 'true')
+})
+
 it('opens a source-driven Call Guide with safe copy actions before lossless source views', async () => {
   const user = userEvent.setup()
   render(<Navigator initialRole="Participant" />)

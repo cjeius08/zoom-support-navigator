@@ -3,6 +3,7 @@ import { PROCESSES } from '../../data/processes'
 import { findFlexHubTopic, flexHubSearchEntry, matchesFlexHubReference } from '../../data/flexHubReference'
 import { searchOzzieContent } from '../command/ozzieContentSearch'
 import { commandResults } from '../command/commandSearch'
+import { isUnverifiedParticipantSearch, normalizeSupportQuery } from '../command/supportSearchLanguage'
 import '../knowledge/flexHubReference.css'
 import { ProcessDrawer } from './ProcessDrawer'
 import { LiveVisitors } from './LiveVisitors'
@@ -46,6 +47,21 @@ const categories = [
 ]
 
 const FASTEST_ROUTE_IDS = ['cant-join', 'waiting-entry', 'cant-hear', 'cant-be-heard', 'camera-not-working']
+const SEARCH_CONTENT_FILTERS = [
+  { id: 'all', label: 'All' },
+  { id: 'flex', label: 'Flex Hub' },
+  { id: 'training', label: 'Training' },
+  { id: 'documents', label: 'Documents' },
+  { id: 'updates', label: 'Updates' },
+  { id: 'pages', label: 'Pages' },
+]
+function contentCategory(item) {
+  if (item.kind === 'hub_reference') return 'flex'
+  if (item.kind === 'training_section' || item.kind === 'video') return 'training'
+  if (item.kind === 'source_document') return 'documents'
+  if (item.kind === 'update') return 'updates'
+  return 'pages'
+}
 const EMPTY_CALL_CONTEXT = { device: null, role: 'Host', hearingStatus: null, impact: null, status: null }
 
 const categoryIconPaths = {
@@ -122,6 +138,7 @@ function FavoriteProcessCard({
 export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = false, onOpenTraining = () => {}, onOpenGlobalResult = () => {}, onOpenFavorites = () => {}, onOpenFeedback = () => {}, onOpenUpdates = () => {}, profile = null, onOpenFlexHub = () => {}, onTrackEvent, onAddToDocumentation = null, onNewCall = () => {}, initialProcessId = null, initialCommonIssueId = null, initialRole = 'Host', commandLaunch = null, onCallerRoleChange = NOOP, onCommandConsumed = NOOP, onReportContextChange = () => {}, isFavorite = () => false, isFavoriteBusy = () => false, onToggleFavorite = () => {}, onResourceViewed = NOOP, onOpenDeviceSandbox = () => {} }) {
   const [category, setCategory] = useState(null)
   const [query, setQuery] = useState('')
+  const [searchContentFilter, setSearchContentFilter] = useState('all')
   const [selected, setSelected] = useState(null)
   const [processLaunchContext, setProcessLaunchContext] = useState(null)
   const [selectedRoute, setSelectedRoute] = useState(null)
@@ -265,15 +282,16 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   }, [libraryTab, commonIssueTab, callContext.device, callContext.role, selectedHostRoute, selectedHostRoadblock, selectedRoute, selected, category, onReportContextChange])
 
   const isHost = callContext.role === 'Host'
-  const quickAnswer = useMemo(() => approvedQuickAnswer(query, { role: callContext.role }), [query, callContext.role])
+  const normalizedQuery = normalizeSupportQuery(query)
+  const quickAnswer = useMemo(() => approvedQuickAnswer(normalizedQuery, { role: callContext.role }), [normalizedQuery, callContext.role])
   const approvedHostProcesses = useMemo(() => hostProcesses(PROCESSES), [])
-  const participantSearchMatches = useMemo(() => query.trim() ? searchParticipantProcesses(PROCESSES, query) : [], [query])
-  const participantRouteMatches = useMemo(() => query.trim() ? searchCommonIssueRoutes(query) : [], [query])
-  const hostTopicMatches = useMemo(() => query.trim() ? searchHostTopics(query) : [], [query])
-  const hostRoadblockMatches = useMemo(() => query.trim() ? searchHostRoadblocks(query) : [], [query])
+  const participantSearchMatches = useMemo(() => normalizedQuery ? searchParticipantProcesses(PROCESSES, normalizedQuery) : [], [normalizedQuery])
+  const participantRouteMatches = useMemo(() => normalizedQuery ? searchCommonIssueRoutes(normalizedQuery) : [], [normalizedQuery])
+  const hostTopicMatches = useMemo(() => normalizedQuery ? searchHostTopics(normalizedQuery) : [], [normalizedQuery])
+  const hostRoadblockMatches = useMemo(() => normalizedQuery ? searchHostRoadblocks(normalizedQuery) : [], [normalizedQuery])
   const hostProcessSearchMatches = useMemo(
-    () => query.trim() ? searchProcesses(approvedHostProcesses, query).filter(process => !isRecordingPolicySearch(query) || isRecordingSourceRelevant(process)) : [],
-    [query, approvedHostProcesses],
+    () => normalizedQuery ? searchProcesses(approvedHostProcesses, normalizedQuery).filter(process => !isRecordingPolicySearch(normalizedQuery) || isRecordingSourceRelevant(process)) : [],
+    [normalizedQuery, approvedHostProcesses],
   )
   const searchMatches = useMemo(() => {
     const matches = isHost ? hostProcessSearchMatches : participantSearchMatches
@@ -304,20 +322,22 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
   const fastestRoutes = useMemo(() => FASTEST_ROUTE_IDS.map(routeById).filter(Boolean), [])
 
   const globalResults = useMemo(() => {
-    if (!query.trim()) return []
+    if (!normalizedQuery) return []
     const context = { role: callContext.role, isAdmin }
-    const pages = commandResults(query, context).filter(item => item.kind === 'page' && item.id !== 'navigator')
-    const indexed = searchOzzieContent(query, { ...context, limit: 6 })
-    return [...pages,...indexed]
+    const indexed = searchOzzieContent(normalizedQuery, { ...context, limit: 35 })
+    const pages = commandResults(normalizedQuery, context).filter(item => item.kind === 'page' && item.id !== 'navigator')
+    return [...indexed, ...pages]
       .filter((item,index,items) => items.findIndex(other => other.kind === item.kind && other.id === item.id) === index)
-      .slice(0,6)
-  }, [query, callContext.role, isAdmin])
-  const hubTopic = isHost ? findFlexHubTopic(query) : null
-  const hubMatch = isHost && (matchesFlexHubReference(query) || quickAnswer?.guide?.kind === 'flex_hub')
-  const suggestions = query.trim() ? buildSearchSuggestions({
-    query, isHost, quickAnswer, hubMatch, hubReference: flexHubSearchEntry(query),
+  }, [normalizedQuery, callContext.role, isAdmin])
+  const filteredGlobalResults = globalResults
+    .filter(item => searchContentFilter === 'all' || contentCategory(item) === searchContentFilter)
+    .slice(0, 6)
+  const hubTopic = isHost ? findFlexHubTopic(normalizedQuery) : null
+  const hubMatch = isHost && (matchesFlexHubReference(normalizedQuery) || quickAnswer?.guide?.kind === 'flex_hub')
+  const suggestions = normalizedQuery ? buildSearchSuggestions({
+    query: normalizedQuery, isHost, quickAnswer, hubMatch, hubReference: flexHubSearchEntry(normalizedQuery),
     hostTopicMatches, hostRoadblockMatches, processMatches, routeMatches,
-    globalResults,
+    globalResults: globalResults.slice(0, 6),
   }) : []
   const showSuggestions = suggestionsOpen && suggestions.length > 0
 
@@ -659,9 +679,17 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
 
         {globalResults.length > 0 && <section className="ozzie-all-results" aria-label="More matches across Ozzie">
           <h3>Other matches across Ozzie</h3>
-          <div className="ozzie-all-result-list">{globalResults.map(item => <button type="button" key={`${item.kind}-${item.id}`} onClick={() => onOpenGlobalResult(item)}>
-            <span><strong>{item.title}</strong><small>{item.category} · {item.description}</small></span><span aria-hidden="true">→</span>
-          </button>)}</div>
+          <div className="smart-search-examples" role="group" aria-label="Filter other matches across Ozzie">
+            <span>Show</span>
+            {SEARCH_CONTENT_FILTERS.map(filter => <button type="button" key={filter.id}
+              aria-pressed={searchContentFilter === filter.id}
+              onClick={() => setSearchContentFilter(filter.id)}>{filter.label}</button>)}
+          </div>
+          {filteredGlobalResults.length > 0
+            ? <div className="ozzie-all-result-list">{filteredGlobalResults.map(item => <button type="button" key={`${item.kind}-${item.id}`} onClick={() => onOpenGlobalResult(item)}>
+              <span><strong>{item.title}</strong><small>{item.category} · {item.description}</small></span><span aria-hidden="true">→</span>
+            </button>)}</div>
+            : <p className="answer-first-disclaimer">No matches in this reference category. <button type="button" onClick={() => setSearchContentFilter('all')}>Show all results</button></p>}
         </section>}
         {hubMatch && <div className="hub-search-action"><button type="button" onClick={onOpenFlexHub}>Flex Arbitration Hub Reference — open the approved PMI, onboarding, scheduling, and recording rules →</button></div>}
         <div className="smart-search-examples" aria-label="Example searches">
@@ -679,9 +707,12 @@ export function Navigator({ theme = 'day', onThemeChange = () => {}, isAdmin = f
         </div>
 
         {searchMode === 'answers' && quickAnswer && <AnswerFirstCard answer={quickAnswer} onOpenGuide={openApprovedAnswerGuide} />}
-        {searchMode === 'answers' && !quickAnswer && !globalResults.length && query.trim().length >= 12 && <p className="answer-first-disclaimer answer-first-no-match">
-          No verified quick answer for this wording yet. Review the matching approved guides below.
-        </p>}
+        {searchMode === 'answers' && !quickAnswer && query.trim().length >= 12 &&
+          ((!isHost && isUnverifiedParticipantSearch(normalizedQuery)) ||
+            (!hostTopicMatches.length && !hostRoadblockMatches.length && !routeMatches.length && !processMatches.length)) &&
+          <p className="answer-first-disclaimer answer-first-no-match">
+            No verified quick answer for this wording yet. Related references are not a substitute for an approved caller procedure. Try a shorter symptom or topic; if the guide is missing, <button type="button" onClick={onOpenFeedback}>report missing information</button>.
+          </p>}
 
         <span className="sr-only" role="status" aria-live="polite">{query.trim() ? (isHost ? `${hostTopicMatches.length} Host ${hostTopicMatches.length === 1 ? 'route' : 'routes'}, ${hostRoadblockMatches.length} ${hostRoadblockMatches.length === 1 ? 'roadblock' : 'roadblocks'}, and ${processMatches.length} approved ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.` : `${routeMatches.length} common issue ${routeMatches.length === 1 ? 'route' : 'routes'} and ${processMatches.length} related ${processMatches.length === 1 ? 'Process Guide' : 'Process Guides'}.`) : ''}</span>
       </section>

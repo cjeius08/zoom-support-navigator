@@ -7,6 +7,7 @@ import { hostFaqItems, hostProcesses, hostFastestTopics, searchHostTopics, searc
 import { searchParticipantProcesses, searchProcesses, normalizeSearchText } from '../navigator/smartSearch'
 import { searchCommonIssueRoutes } from '../navigator/commonIssueRoutes'
 import { searchOzzieContent } from './ozzieContentSearch'
+import { normalizeSupportQuery } from './supportSearchLanguage'
 
 const PAGES = [
   { id: 'navigator', title: 'Dashboard & Smart Search', description: 'Search approved Zoom support and start a call', keywords: 'home smart search find help' },
@@ -56,7 +57,7 @@ export function commandQuickLinks(isAdmin = false, role = 'Host') {
 }
 
 export function commandResults(query, { role = 'Host', isAdmin = false } = {}) {
-  const clean = String(query || '').trim()
+  const clean = normalizeSupportQuery(query)
   if (!clean) return commandQuickLinks(isAdmin, role)
   const allowedPages = PAGES.filter(page => !page.adminOnly || isAdmin)
   const pages = allowedPages
